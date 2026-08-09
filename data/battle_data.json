@@ -1,0 +1,44 @@
+{
+  "moves": {
+    "pounce": { "name": "Pounce", "power": 40, "type": "Normal", "damage_class": "Physical" },
+    "quick_bump": { "name": "Quick Bump", "power": 30, "type": "Normal", "damage_class": "Physical", "condition": "Flinch", "condition_chance": 0.3 },
+    "ignite": { "name": "Ignite", "power": 40, "type": "Fire", "damage_class": "Special", "condition": "Burned", "condition_chance": 0.3 },
+    "cinder_flick": { "name": "Cinder Flick", "power": 30, "type": "Fire", "damage_class": "Special", "condition": "Burned", "condition_chance": 0.15 },
+    "soak": { "name": "Soak", "power": 40, "type": "Water", "damage_class": "Special", "condition": "Frozen", "condition_chance": 0.15 },
+    "bubble_bop": { "name": "Bubble Bop", "power": 30, "type": "Water", "damage_class": "Special" },
+    "petal_whip": { "name": "Petal Whip", "power": 40, "type": "Plant", "damage_class": "Physical" },
+    "seed_tap": { "name": "Seed Tap", "power": 30, "type": "Plant", "damage_class": "Physical", "condition": "Poisoned", "condition_chance": 0.3 },
+    "radiant_jolt": { "name": "Radiant Jolt", "power": 40, "type": "Light", "damage_class": "Special", "condition": "Paralyzed", "condition_chance": 0.25 },
+    "sunbeam": { "name": "Sunbeam", "power": 35, "type": "Light", "damage_class": "Special" },
+    "nightmare_nudge": { "name": "Nightmare Nudge", "power": 35, "type": "Dark", "damage_class": "Special", "condition": "Asleep", "condition_chance": 0.25 },
+    "shadow_snap": { "name": "Shadow Snap", "power": 40, "type": "Dark", "damage_class": "Physical" }
+    ,"restore": { "name": "Restore", "power": 0, "type": "Normal", "damage_class": "Status", "cures_conditions": true, "description": "Removes all special conditions from the user." }
+    ,"burn_off": { "name": "Burn Off", "power": 0, "type": "Fire", "damage_class": "Status", "cures_conditions": true, "description": "Burns away all special conditions from the user." }
+    ,"cleanse": { "name": "Cleanse", "power": 0, "type": "Water", "damage_class": "Status", "cures_conditions": true, "description": "Washes away all special conditions from the user." }
+    ,"remedy": { "name": "Remedy", "power": 0, "type": "Plant", "damage_class": "Status", "cures_conditions": true, "description": "Uses restorative growth to remove all special conditions." }
+    ,"purify": { "name": "Purify", "power": 0, "type": "Light", "damage_class": "Status", "cures_conditions": true, "description": "Purifies the user of all special conditions." }
+    ,"absolve": { "name": "Absolve", "power": 0, "type": "Dark", "damage_class": "Status", "cures_conditions": true, "description": "Releases the user from all special conditions." }
+    ,"sentence": { "name": "Sentence", "power": 0, "type": "Dark", "damage_class": "Status", "condition": "Condemned", "condition_chance": 1.0, "description": "Condemns the target." }
+    ,"dread_glare": { "name": "Dread Glare", "power": 0, "type": "Dark", "damage_class": "Status", "condition": "Despairing", "condition_chance": 1.0, "description": "Fills the target with despair." }
+    ,"charm_ray": { "name": "Charm Ray", "power": 0, "type": "Light", "damage_class": "Status", "condition": "Infatuated", "condition_chance": 1.0, "description": "Adds one Infatuation stack, up to five." }
+  },
+  "conditions": {
+    "Burned": { "persistent": true, "post_move_hp_fraction": 0.125, "attack_multiplier": 0.75, "defense_multiplier": 0.75 },
+    "Poisoned": { "persistent": true, "end_turn_hp_fraction": 0.0625, "overworld_damage_per_step": 1 },
+    "Paralyzed": { "persistent": true, "move_failure_chance": 0.15, "prevents_switch": true, "prevents_flee": true },
+    "Frozen": { "persistent": true, "minimum_turns": 1, "maximum_turns": 4 },
+    "Asleep": { "persistent": true, "minimum_turns": 1, "maximum_turns": 4 },
+    "Flinch": { "persistent": false, "turns": 1 }
+    ,"Condemned": { "persistent": true, "special_defense_multiplier": 0.8, "backlash_power": 30, "removed_weakness": "Light" }
+    ,"Despairing": { "persistent": true, "move_failure_chance": 0.2, "removed_weakness": "Dark" }
+    ,"Infatuated": { "persistent": false, "maximum_stacks": 5, "failure_chance_per_stack": 0.1, "genderless_attack_multiplier_per_stack": 0.1 }
+  },
+  "fakemon": [
+    { "name": "Ember Square", "gender": "Male", "type": "Fire", "moves": ["ignite", "cinder_flick", "burn_off"], "level": 5, "max_hp": 35, "attack": 15, "defense": 15, "special_attack": 17, "special_defense": 15, "speed": 17, "color": "e45b5b", "size": "0.6 m", "description": "A warm-bodied Fakemon that stores sunlight as heat. When excited, soft sparks skip across the edges of its square form. It prefers dry clearings near the rainforest canopy.", "catch_rate": 90, "base_exp": 62 },
+    { "name": "Brook Square", "gender": "Female", "type": "Water", "moves": ["soak", "bubble_bop", "cleanse"], "level": 5, "max_hp": 35, "attack": 15, "defense": 15, "special_attack": 17, "special_defense": 16, "speed": 14, "color": "5596e6", "size": "0.7 m", "description": "It gathers clean rainwater inside its cool body and releases it in short bursts. Travelers sometimes follow one to locate hidden rainforest streams.", "catch_rate": 75, "base_exp": 64 },
+    { "name": "Sprout Square", "gender": "Genderless", "type": "Plant", "moves": ["petal_whip", "seed_tap", "remedy"], "level": 5, "max_hp": 35, "attack": 15, "defense": 15, "special_attack": 16, "special_defense": 17, "speed": 12, "color": "55c878", "size": "0.5 m", "description": "Tiny roots underneath its body sense changes in the soil. Groups of Sprout Squares gather beneath healthy canopy and turn toward patches of filtered sunlight.", "catch_rate": 120, "base_exp": 60 },
+    { "name": "Plain Square", "gender": "Female", "type": "Normal", "moves": ["pounce", "quick_bump", "restore"], "level": 5, "max_hp": 35, "attack": 15, "defense": 15, "special_attack": 15, "special_defense": 15, "speed": 15, "color": "c4b9a8", "size": "0.65 m", "description": "An adaptable Fakemon seen throughout Paradise. Its unassuming shape hides sharp senses and a playful habit of copying the movement of nearby creatures.", "catch_rate": 200, "base_exp": 55 },
+    { "name": "Gleam Square", "gender": "Genderless", "type": "Light", "moves": ["radiant_jolt", "sunbeam", "purify", "charm_ray"], "level": 5, "max_hp": 34, "attack": 16, "defense": 14, "special_attack": 18, "special_defense": 15, "speed": 18, "color": "d4aa24", "size": "0.55 m", "description": "It bends scattered sunlight into a warm glow. Gleam Squares are often seen hovering beneath gaps in the rainforest canopy after storms.", "catch_rate": 80, "base_exp": 66 },
+    { "name": "Gloom Square", "gender": "Male", "type": "Dark", "moves": ["nightmare_nudge", "shadow_snap", "absolve", "sentence", "dread_glare"], "level": 5, "max_hp": 36, "attack": 16, "defense": 15, "special_attack": 17, "special_defense": 16, "speed": 13, "color": "57456f", "size": "0.7 m", "description": "It settles into deep shade and muffles the sounds around it. Its edges become difficult to distinguish when the canopy blocks the moon.", "catch_rate": 70, "base_exp": 68 }
+  ]
+}

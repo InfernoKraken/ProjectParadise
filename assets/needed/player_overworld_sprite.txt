@@ -1,0 +1,3 @@
+PLACEHOLDER IN USE: green square Sprite3D.
+Needed later: a transparent 2D overworld player sprite or directional sprite sheet.
+

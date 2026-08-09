@@ -1,0 +1,7 @@
+ASSET NEEDED: Fire Fakemon sprite
+
+Current placeholder: Red square labeled "FAKEMON PLACEHOLDER"
+Used for: Ember Square in the selection screen and battle scene
+Suggested format: Transparent PNG
+Suggested facing variants: Front/battle opponent and back/battle player
+Current display area: 125 x 125 pixels

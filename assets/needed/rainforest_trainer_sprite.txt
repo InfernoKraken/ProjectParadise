@@ -1,0 +1,3 @@
+PLACEHOLDER IN USE: red square Sprite3D.
+Needed later: a transparent 2D overworld character or creature sprite for the rainforest encounter.
+

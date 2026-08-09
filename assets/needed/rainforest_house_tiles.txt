@@ -1,0 +1,3 @@
+PLACEHOLDERS IN USE: brown exterior block, tan interior floor, pale walls, red rug, and gold door tiles.
+Needed later: 2D rainforest house exterior, floor, wall, rug, furniture, and doorway sprites for Sprite3D placement.
+

@@ -1,0 +1,3 @@
+PLACEHOLDERS IN USE: pale floor, pink reception counter, and cyan door tile.
+Needed later: 2D medical-ward floor, wall, counter, equipment, attendant, and door sprites for Sprite3D placement.
+

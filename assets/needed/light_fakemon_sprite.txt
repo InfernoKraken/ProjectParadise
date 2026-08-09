@@ -1,0 +1,3 @@
+PLACEHOLDER IN USE: gold square for Gleam Square.
+Needed later: transparent battle, overworld follower, and Dex portrait art for the Light-type Fakemon.
+

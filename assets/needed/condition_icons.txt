@@ -1,0 +1,3 @@
+PLACEHOLDER IN USE: text labels for Burned, Poisoned, Paralyzed, Frozen, Asleep, and Flinch.
+Needed later: accessible status icons with distinct shapes and colors for every special condition.
+

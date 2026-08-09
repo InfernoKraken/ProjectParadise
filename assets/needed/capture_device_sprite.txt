@@ -1,0 +1,3 @@
+PLACEHOLDER IN USE: text-only Capture battle button.
+Needed later: the game's capture-device concept, name, inventory rules, icon, throw animation, and battle effect.
+

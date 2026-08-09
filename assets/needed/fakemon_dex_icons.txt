@@ -1,0 +1,4 @@
+PLACEHOLDERS IN USE: each Dex entry displays a colored square portrait.
+Needed later: one transparent portrait or Dex icon for each Fakemon species.
+Suggested delivery: consistently sized PNG files with transparent backgrounds.
+

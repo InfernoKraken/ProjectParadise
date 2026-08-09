@@ -1,0 +1,3 @@
+PLACEHOLDER IN USE: tan 3D block tile.
+Needed later: transparent 2D building facade, roof, doorway, and side sprites suitable for Sprite3D layering.
+

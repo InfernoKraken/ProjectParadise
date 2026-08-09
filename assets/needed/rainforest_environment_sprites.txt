@@ -1,0 +1,4 @@
+PLACEHOLDERS IN USE: flat green ground and dark-green billboard squares.
+Needed later: transparent 2D rainforest floor, tree/trunk, canopy, foliage, and bridge assets.
+Assets should support distinct visual layers while remaining Sprite3D objects in the 3D map.
+
