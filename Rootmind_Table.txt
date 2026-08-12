@@ -1,0 +1,17 @@
+| Move                   | Normal                                        | During Rootmind                     |
+| ---------------------- | --------------------------------------------- | ----------------------------------- |
+| **Petal Whip**         | 40 BP, 20% Poison                             | **45 BP, 30% Poison**               |
+| **Constrict**          | 45 BP, 20% Paralysis                          | **50 BP, 30% Paralysis**            |
+| **Drain**              | 35 BP, ½ damage healed                        | **45 BP**, ½ damage healed          |
+| **Remedy**             | Cure user's special condition                 | Cure condition + **restore 1/8 HP** |
+| **Bloom**              | +1 SpA/+1 SpD + heal                          | Same buffs + **+5% healing**        |
+| **Mind Wave**          | 40 BP, 20% Confusion                          | **40 BP, 30% Confusion**            |
+| **Mind Bolt**          | 50 BP, Low chance for Confusion or Flinch     | **50 BP, +10% secondary effect**    |
+| **Seed**               | Leech Seed                                    | **20% Increased drain/healing**     |
+| **Regrow**             | 10% HP per removed effect                     | **12.5% per effect**                |
+| **Mycelial Hunt**      | 75 → 90 vs afflicted                          | **90 → 120 vs afflicted**           |
+| **Drain Toxin**        | 45 BP, heal 15%, lose Poison Weakness 3 turns | **55 BP, heal 20%, 5 turns**        |
+| **Synaptic Bloom**     | 80 → 100 with any stat change                 | **90 → 110**                        |
+| **Hysteria**           | 80 BP, 20% Paralysis                          | 80 BP, **30% Paralysis**            |
+| **Chlorophyll Cannon** | 100 BP, 20% Burn                              | **110 BP, 30% Burn**                |
+| **Vital Cognition**    | 25% heal + effect                             | **⅓ HP** + effect                   |

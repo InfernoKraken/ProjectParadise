@@ -1,0 +1,15 @@
+{
+  "groups": ["Bird", "Fish", "Reptile", "Mammal", "Amphibian", "Mollusk", "Angellic", "Demonic", "Mineral", "Cosmic", "Plant", "Bug"],
+  "default_groups": ["Mineral", "Mineral"],
+  "assignments": {
+    "Keklid": ["Plant", "Cosmic"],
+    "Phaloa": ["Plant", "Cosmic"],
+    "Junrift": ["Plant", "Cosmic"],
+    "Scorchick": ["Bird", "Cosmic"],
+    "Scorcaw": ["Bird", "Cosmic"],
+    "Pyravion": ["Bird", "Cosmic"],
+    "Sylvafin": ["Fish", "Angellic"],
+    "Serafin": ["Fish", "Angellic"],
+    "Celestraal": ["Fish", "Angellic"]
+  }
+}

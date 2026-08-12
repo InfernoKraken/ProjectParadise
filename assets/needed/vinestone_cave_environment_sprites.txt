@@ -1,0 +1,4 @@
+ASSETS NEEDED: Vinestone Cave environment sprites
+
+Needed later: rocky cave floor/background, cave-mouth transition, rock wall and boulder sprites,
+small blue flower sprites, and hanging/ground vine sprites suitable for Sprite3D layering.

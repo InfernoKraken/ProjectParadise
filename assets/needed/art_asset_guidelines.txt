@@ -1,0 +1,17 @@
+PROJECT PARADISE PLACEHOLDER ART TARGETS
+
+- Use transparent RGBA PNG files for sprites.
+- Pixel art is recommended for the intended style, but is not an engine requirement.
+- Author hard pixel edges without antialiasing; import with nearest-neighbor filtering and mipmaps disabled.
+- Treat 64 source pixels as roughly one world unit / one map tile. The prototype currently uses
+  Sprite3D pixel_size values near 0.015, which makes a 64 px image about 0.96 world units wide.
+- Suggested overworld character/NPC frame: 64x80 px or 64x96 px, bottom-center foot anchor,
+  consistent transparent padding, four directions, and 3-4 walking frames per direction.
+- Suggested small flower frame: about 24x32 px. Keep its foot/ground contact at bottom center.
+- Suggested tree source: about 128x192 px. Prefer separate trunk and canopy layers when possible.
+- Keep every animation frame on the same canvas size so characters do not visually jump.
+- Avoid large transparent margins, except where needed to keep animation frames aligned.
+- Use sRGB color and preserve transparency around silhouettes.
+
+These are production targets rather than hard import restrictions. Final scale can be tuned per asset
+through Sprite3D pixel_size without changing collision or map data.

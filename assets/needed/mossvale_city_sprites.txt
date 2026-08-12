@@ -1,0 +1,5 @@
+ASSETS NEEDED: Mossvale rainforest city and residents
+
+Needed later: rainforest city ground and plaza tiles, northern forest transition, medical ward,
+two house exteriors/interiors, ground orchid resident, two adult family members, and three child sprites.
+The child sprites should support simple walking animation in four directions.

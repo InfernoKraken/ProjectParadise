@@ -1,0 +1,7 @@
+ASSETS NEEDED: Player character sprites
+
+Provide overworld sprite sets for these eight selectable player appearances:
+- Male: dark blue, red, green, and black
+- Female: cyan, pink, teal, and white
+
+Each set should support four-direction idle and walking animation for the 2.5D Sprite3D overworld.

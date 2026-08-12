@@ -1,0 +1,246 @@
+{
+  "active_party_index": 1,
+  "location": "rainforest",
+  "party": [
+    {
+      "art_id": "Scorchick",
+      "attack": 70.0,
+      "base_exp": 62.0,
+      "catch_rate": 90.0,
+      "color": "e45b5b",
+      "condition": "",
+      "condition_turns": 0,
+      "current_hp": 55,
+      "defense": 50.0,
+      "description": "A cheery rainforest Fakemon, Scorchick's feathers glow with heat. Their sweet natured personalities and strong verbal communication skills help them form close bonds with parents, trainers and other nest mates. Scorchick love spicy peppers, and can be a pest to growers that specialize in these fruits. It's thought that the capsaicin is related to the chemical reaction required to power their flames, which ignite the wings, tail and tuft of the Fakemon without harming the chick itself. Don't be deceived by the cute Fakemon however, the fires ignited are hot enough to melt iron.",
+      "egg_groups": [
+        "Bird",
+        "Cosmic"
+      ],
+      "experience": 145,
+      "gender": "Female",
+      "learnset": [
+        {
+          "level": 1.0,
+          "move": "squawk"
+        },
+        {
+          "level": 2.0,
+          "move": "ignite"
+        },
+        {
+          "level": 3.0,
+          "move": "peck"
+        },
+        {
+          "level": 5.0,
+          "move": "mimic"
+        },
+        {
+          "level": 7.0,
+          "move": "scratch"
+        },
+        {
+          "level": 12.0,
+          "move": "heat_up"
+        },
+        {
+          "level": 17.0,
+          "move": "singe"
+        },
+        {
+          "level": 20.0,
+          "move": "intercept"
+        },
+        {
+          "level": 22.0,
+          "move": "fire_charge"
+        },
+        {
+          "level": 25.0,
+          "move": "nest"
+        },
+        {
+          "level": 27.0,
+          "move": "fireheart"
+        },
+        {
+          "level": 30.0,
+          "move": "whirlwind"
+        },
+        {
+          "level": 33.0,
+          "move": "wingbeat"
+        },
+        {
+          "level": 36.0,
+          "move": "burn_off"
+        },
+        {
+          "level": 38.0,
+          "move": "skyfall"
+        },
+        {
+          "level": 40.0,
+          "move": "phoenix_charge"
+        },
+        {
+          "level": 42.0,
+          "move": "challenging_call"
+        },
+        {
+          "level": 45.0,
+          "move": "harsh_sunlight"
+        },
+        {
+          "level": 50.0,
+          "move": "inferno_plume"
+        },
+        {
+          "level": 55.0,
+          "move": "inner_focus"
+        },
+        {
+          "level": 60.0,
+          "move": "inferno"
+        }
+      ],
+      "level": 5.0,
+      "male_ratio": 0.5,
+      "max_hp": 55.0,
+      "moves": [
+        "squawk",
+        "ignite",
+        "peck",
+        "mimic"
+      ],
+      "name": "Scorchick",
+      "size": "0.6 m",
+      "special_attack": 40.0,
+      "special_defense": 45.0,
+      "speed": 50.0,
+      "type": "Fire"
+    },
+    {
+      "art_id": "Sylvafin",
+      "attack": 35.0,
+      "base_exp": 64.0,
+      "catch_rate": 75.0,
+      "color": "5596e6",
+      "condition": "",
+      "condition_turns": 0,
+      "current_hp": 55,
+      "defense": 50.0,
+      "description": "These rare and graceful Fakemon inhabit the warmest and most heavily planted bodies of water in the rainforest. Sylvafin carry themselves with a sense of dignity and grace - until it is feeding time. In this instance, they become quite the little beggars, forgetting to act the part of an elitist. Their scales reflect sunlight, and perhaps something deeper, causing the Fakemon to glow. It's methods baffle scientists, who have recently discovered that the source of the glow has nothing to do with bioluminescence, as if the source of the glow cannot be explained by the natural world alone. The trusting disposition and rarity of these Fakemon makes conducting any studies extremely unpopular with most people.",
+      "egg_groups": [
+        "Fish",
+        "Angellic"
+      ],
+      "experience": 145,
+      "gender": "Male",
+      "learnset": [
+        {
+          "level": 1.0,
+          "move": "peck"
+        },
+        {
+          "level": 2.0,
+          "move": "soak"
+        },
+        {
+          "level": 3.0,
+          "move": "flutter"
+        },
+        {
+          "level": 5.0,
+          "move": "photon_beam"
+        },
+        {
+          "level": 7.0,
+          "move": "flip_turn"
+        },
+        {
+          "level": 9.0,
+          "move": "discern"
+        },
+        {
+          "level": 13.0,
+          "move": "purify"
+        },
+        {
+          "level": 15.0,
+          "move": "fin_flash"
+        },
+        {
+          "level": 20.0,
+          "move": "aqua_jet"
+        },
+        {
+          "level": 23.0,
+          "move": "dazzle"
+        },
+        {
+          "level": 25.0,
+          "move": "brilliant_light"
+        },
+        {
+          "level": 27.0,
+          "move": "veil"
+        },
+        {
+          "level": 30.0,
+          "move": "disable"
+        },
+        {
+          "level": 32.0,
+          "move": "prayer"
+        },
+        {
+          "level": 35.0,
+          "move": "scald"
+        },
+        {
+          "level": 40.0,
+          "move": "smite"
+        },
+        {
+          "level": 45.0,
+          "move": "aureal_flood"
+        },
+        {
+          "level": 50.0,
+          "move": "remembrance"
+        },
+        {
+          "level": 55.0,
+          "move": "celestial_chorus"
+        }
+      ],
+      "level": 5.0,
+      "male_ratio": 0.5,
+      "max_hp": 55.0,
+      "moves": [
+        "peck",
+        "soak",
+        "flutter",
+        "photon_beam"
+      ],
+      "name": "Sylvafin",
+      "size": "0.7 m",
+      "special_attack": 65.0,
+      "special_defense": 65.0,
+      "speed": 40.0,
+      "type": "Water"
+    }
+  ],
+  "player_color": "dc75a8",
+  "player_color_name": "Pink",
+  "player_gender": "Female",
+  "player_position": [
+    0.0,
+    0.649999976158142,
+    7.0
+  ],
+  "poison_step_distance": 0.0,
+  "version": 1
+}

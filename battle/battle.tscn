@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://v56bmhqcf087"]
 
-[ext_resource path="res://battle/battle.gd" type="Script" id="1"]
+[ext_resource type="Script" uid="uid://rlnu6igt50wd" path="res://battle/battle.gd" id="1"]
 
-[node name="Battle" type="Control"]
+[node name="Battle" type="Control" unique_id=2024576076]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
