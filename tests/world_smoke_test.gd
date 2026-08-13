@@ -8,6 +8,8 @@ func _initialize() -> void:
 	root.add_child(main)
 	await process_frame
 	assert(main.player != null, "Player placeholder must be created.")
+	assert(InputMap.action_get_events("move_left").any(func(event: InputEvent) -> bool: return event is InputEventKey and (event as InputEventKey).physical_keycode == KEY_LEFT), "move_left must include the Left Arrow key.")
+	assert(InputMap.action_get_events("move_right").any(func(event: InputEvent) -> bool: return event is InputEventKey and (event as InputEventKey).physical_keycode == KEY_RIGHT), "move_right must include the Right Arrow key.")
 	assert(main.opponent != null, "Trainer placeholder must be created.")
 	assert(main.route_origin == Vector3(80, 0, 0), "Canopy Route must be built as a separate map region.")
 	assert(main.world.get_node_or_null("CanopyRouteEntrance") != null, "The clearing must have a forest route warp.")
@@ -87,8 +89,8 @@ func _initialize() -> void:
 	assert(keklid["name"] == "Keklid", "Keklid must replace Sprout Square in the roster.")
 	assert(main.map_data["tall_grass_species"] is Array and main.map_data["medical_ward"]["tall_grass_species"] is Array and main.map_data["house"]["tall_grass_species"] is Array and main.map_data["route"]["tall_grass_species"] is Array and main.map_data["east_route"]["tall_grass_species"] is Array and main.map_data["west_route"]["tall_grass_species"] is Array and main.map_data["east_cave"]["tall_grass_species"] is Array and main.map_data["rainforest_city"]["tall_grass_species"] is Array and main.map_data["rainforest_city"]["medical_ward"]["tall_grass_species"] is Array and main.map_data["rainforest_city"]["orchid_house"]["tall_grass_species"] is Array and main.map_data["rainforest_city"]["family_house"]["tall_grass_species"] is Array, "Every map must define an editable tall-grass encounter species array.")
 	assert(keklid["egg_groups"] == ["Plant", "Cosmic"], "Keklid's egg groups must be Plant and Cosmic.")
-	var plain_square: Dictionary = main.battle.battle_data["fakemon"][3]
-	assert(plain_square["egg_groups"] == ["Mineral", "Mineral"], "Unassigned Fakemon must default to two Mineral egg groups.")
+	var slumboth: Dictionary = main.battle.battle_data["fakemon"][3]
+	assert(slumboth["name"] == "Slumboth" and slumboth["egg_groups"] == ["Mammal", "Mineral"], "Slumboth must replace Plain Square and use its assigned egg groups.")
 	assert(main.dex_panel._move_effect_summary(main.battle.battle_data["moves"]["flutter"]) == "Raises the user's Special Attack and Special Defense by 10%.", "Dex move details must describe Flutter's stat boosts.")
 	main.battle._set_fakemon_art(main.battle.opponent_square, keklid, "Wild")
 	assert(main.battle.opponent_square.texture.resource_path.ends_with("Keklid_Wild.png"), "Keklid must use its wild-side battle sprite.")
@@ -100,6 +102,18 @@ func _initialize() -> void:
 	main._on_fakemon_selected(0)
 	assert(main.follower.name == "ScorchickFollower", "Scorchick must use its overworld follower art.")
 	assert(main.follower_sprite.texture.resource_path.ends_with("Scorchick_Follow_Down.png"), "Scorchick must initially face down behind the player.")
+	var movement_start: Vector3 = main.player.position
+	Input.action_press("move_up")
+	main._physics_process(0.1)
+	Input.action_release("move_up")
+	assert(main.player.position.z < movement_start.z, "The configured move_up action must move the player north.")
+	movement_start = main.player.position
+	Input.action_press("move_right")
+	main._physics_process(0.1)
+	Input.action_release("move_right")
+	assert(main.player.position.x > movement_start.x, "The configured move_right action must move the player east.")
+	main.follower_facing = "Down"
+	main._update_follower_appearance()
 	assert(main.evolution_screen != null and not main.evolution_screen.visible, "The evolution overlay must be built and hidden until a level-up evolution is pending.")
 	var evolving_keklid: Dictionary = main.battle.create_fakemon(main.battle.battle_data["fakemon"][2])
 	evolving_keklid["level"] = 39

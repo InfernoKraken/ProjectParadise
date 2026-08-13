@@ -7,12 +7,15 @@ const DATA_PATH := "res://data/battle_data.json"
 const EVOLVED_DATA_PATH := "res://data/evolved_fakemon.json"
 const EGG_GROUP_DATA_PATH := "res://data/egg_groups.json"
 const BATTLE_BACKGROUND := preload("res://assets/battle/battle_background.png")
+const BATTLE_ANIMATOR_SCENE := preload("res://battle/vfx/battle_animator.tscn")
+const FAKEMON_ANIMATOR_SCRIPT := preload("res://battle/vfx/fakemon_animator.gd")
 const OPPONENT_ART_POSITION := Vector2(610, 115)
 const PLAYER_ART_POSITION := Vector2(245, 260)
 const DEFAULT_BATTLE_ART_SIZE := Vector2(125, 125)
 const MAX_BATTLE_ART_DIMENSION := 200.0
 const MAX_POSITIVE_STAT_MODIFIER := 1.9
 const NEUTRAL_STAT_MODIFIER := 1.0
+const MAX_BATTLE_LOG_CHARACTERS := 300
 const COMBAT_STATS := ["attack", "defense", "special_attack", "special_defense", "speed"]
 const TYPE_EFFECTIVENESS := {
 	"Fire": {"Plant": 2.0, "Fire": 0.5, "Water": 0.5, "Air": 2.0, "Bug": 2.0},
@@ -21,11 +24,13 @@ const TYPE_EFFECTIVENESS := {
 	"Light": {"Dark": 2.0, "Water": 2.0, "Plant": 0.5, "Bug": 0.5, "Ghost": 2.0, "Psychic": 2.0},
 	"Dark": {"Light": 0.5, "Bug": 0.5, "Ghost": 2.0, "Psychic": 2.0},
 	"Normal": {"Bug": 2.0, "Ghost": 0.5, "Psychic": 0.5},
-	"Air": {"Fire": 2.0, "Plant": 0.5, "Bug": 2.0},
+	"Air": {"Fire": 2.0, "Plant": 0.5, "Bug": 2.0, "Fighting": 2.0},
 	"Bug": {"Fire": 0.5, "Plant": 2.0, "Normal": 0.5, "Light": 2.0, "Dark": 2.0, "Air": 0.5},
 	"Mystic": {},
 	"Ghost": {"Normal": 0.5, "Light": 0.5, "Dark": 0.5, "Psychic": 2.0},
-	"Psychic": {"Normal": 2.0, "Light": 0.5, "Dark": 0.5, "Ghost": 0.5}
+	"Psychic": {"Normal": 2.0, "Light": 0.5, "Dark": 0.5, "Ghost": 0.5, "Fighting": 2.0, "Poison": 2.0},
+	"Fighting": {"Normal": 2.0, "Bug": 2.0, "Ghost": 0.5, "Air": 0.5, "Psychic": 0.5},
+	"Poison": {"Normal": 2.0, "Water": 2.0, "Plant": 2.0, "Psychic": 0.5}
 }
 
 var battle_data: Dictionary
@@ -75,6 +80,7 @@ var run_button: Button
 var switch_panel: PanelContainer
 var switch_list: VBoxContainer
 var restart_button: Button
+var battle_animator: BattleAnimator
 
 
 func _ready() -> void:
@@ -356,14 +362,8 @@ func _build_battle_screen() -> void:
 	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	battle_screen.add_child(background)
-
-	var title := Label.new()
-	title.text = "PROJECT PARADISE — BATTLE TEST"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 24)
-	title.position = Vector2(0, 18)
-	title.size = Vector2(960, 40)
-	battle_screen.add_child(title)
+	battle_animator = BATTLE_ANIMATOR_SCENE.instantiate() as BattleAnimator
+	battle_screen.add_child(battle_animator)
 
 	var opponent_parts := _create_combatant_panel(Vector2(55, 80), OPPONENT_ART_POSITION)
 	opponent_name_label = opponent_parts["name"]
@@ -378,29 +378,31 @@ func _build_battle_screen() -> void:
 	player_square = player_parts["square"]
 
 	message_panel = Panel.new()
-	message_panel.position = Vector2(33, 385)
-	message_panel.size = Vector2(600, 126)
+	message_panel.position = Vector2(33, 365)
+	message_panel.size = Vector2(600, 175)
 	battle_screen.add_child(message_panel)
 
 	message_label = Label.new()
 	message_label.position = Vector2(20, 14)
-	message_label.size = Vector2(560, 92)
+	message_label.size = Vector2(560, 147)
 	message_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	message_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	message_label.clip_text = true
 	message_label.add_theme_font_size_override("font_size", 19)
 	message_panel.add_child(message_label)
 
 	move_menu = GridContainer.new()
 	move_menu.columns = 2
 	move_menu.position = Vector2(16, 10)
-	move_menu.size = Vector2(568, 106)
+	move_menu.size = Vector2(568, 155)
 	move_menu.add_theme_constant_override("h_separation", 8)
 	move_menu.add_theme_constant_override("v_separation", 5)
 	move_menu.hide()
 	message_panel.add_child(move_menu)
 
 	action_panel = Panel.new()
-	action_panel.position = Vector2(648, 385)
-	action_panel.size = Vector2(279, 126)
+	action_panel.position = Vector2(648, 365)
+	action_panel.size = Vector2(279, 175)
 	battle_screen.add_child(action_panel)
 
 	action_button = Button.new()
@@ -441,7 +443,7 @@ func _build_battle_screen() -> void:
 	battle_screen.add_child(switch_panel)
 
 	restart_button = Button.new()
-	restart_button.text = "Return to Map"
+	restart_button.text = "[5/Enter] Return to Map"
 	restart_button.position = Vector2(12, 35)
 	restart_button.size = Vector2(255, 50)
 	restart_button.pressed.connect(_on_return_pressed)
@@ -579,6 +581,7 @@ func _show_move_menu() -> void:
 		if choice.disabled:
 			choice.tooltip_text = _move_unavailable_reason(player, move_id)
 		move_menu.add_child(choice)
+	_add_move_menu_cancel_button()
 	message_label.hide()
 	move_menu.show()
 	_set_action_buttons_disabled(true)
@@ -586,6 +589,12 @@ func _show_move_menu() -> void:
 
 func _on_move_selected(move_id: String) -> void:
 	if battle_over or not battle_data["moves"].has(move_id) or not _is_move_selectable(player, move_id):
+		return
+	if not _move_condition_is_met(player, battle_data["moves"][move_id]):
+		message_label.text = _move_unavailable_reason(player, move_id)
+		return
+	if bool(battle_data["moves"][move_id].get("calls_random_move", false)):
+		_resolve_player_move_definition(_choose_random_called_move(), move_id)
 		return
 	if bool(battle_data["moves"][move_id].get("calls_another_move", false)) and not bool(battle_data["moves"][move_id].get("copies_opponent_last_move", false)):
 		_show_called_move_menu(move_id)
@@ -620,6 +629,25 @@ func _show_called_move_menu(caller_id: String) -> void:
 		choice.text = "%s | %s | %s" % [candidate["name"], candidate["type"], candidate["damage_class"]]
 		choice.pressed.connect(_on_called_move_selected.bind(caller_id, candidate_id))
 		move_menu.add_child(choice)
+	_add_move_menu_cancel_button()
+
+
+func _add_move_menu_cancel_button() -> void:
+	var cancel := Button.new()
+	cancel.text = "[Esc] Back"
+	cancel.custom_minimum_size = Vector2(275, 28)
+	cancel.pressed.connect(_cancel_action_selection)
+	move_menu.add_child(cancel)
+
+
+func _cancel_action_selection() -> void:
+	if battle_over or forced_switch:
+		return
+	move_menu.hide()
+	switch_panel.hide()
+	message_label.show()
+	message_label.text = "Choose an action."
+	_set_action_buttons_disabled(false)
 
 
 func _on_called_move_selected(caller_id: String, called_move_id: String) -> void:
@@ -627,33 +655,34 @@ func _on_called_move_selected(caller_id: String, called_move_id: String) -> void
 
 
 func _resolve_player_move(move_id: String, spent_move_id: String = "") -> void:
+	_resolve_player_move_definition(battle_data["moves"][move_id], move_id if spent_move_id.is_empty() else spent_move_id)
+
+
+func _resolve_player_move_definition(selected_move: Dictionary, spent_move_id: String) -> void:
 	move_menu.hide()
 	message_label.show()
-	var selected_move: Dictionary = battle_data["moves"][move_id]
-	if spent_move_id.is_empty():
-		spent_move_id = move_id
 	opponent_was_replaced_this_action = false
 	_set_action_buttons_disabled(true)
 	var enemy_move_id := _choose_enemy_move_id()
-	var player_priority := int(selected_move.get("priority", 0))
-	var enemy_priority := int(battle_data["moves"][enemy_move_id].get("priority", 0))
+	var player_priority := int(selected_move.get("priority", 0)) + int(player.get("next_move_priority", 0))
+	var enemy_priority := int(battle_data["moves"][enemy_move_id].get("priority", 0)) + int(opponent.get("next_move_priority", 0))
 	var player_goes_first := player_priority > enemy_priority or (player_priority == enemy_priority and _effective_stat(player, "speed") >= _effective_stat(opponent, "speed"))
 	if player_goes_first:
-		if _perform_player_attack(selected_move, spent_move_id):
+		if await _perform_player_attack(selected_move, spent_move_id):
 			return
 		await get_tree().create_timer(0.6).timeout
-		_perform_enemy_attack(true, enemy_move_id)
+		await _perform_enemy_attack(true, enemy_move_id)
 	else:
-		if _perform_enemy_attack(false, enemy_move_id):
+		if await _perform_enemy_attack(false, enemy_move_id):
 			return
 		_set_action_buttons_disabled(true)
 		await get_tree().create_timer(0.6).timeout
-		if not _perform_player_attack(selected_move, spent_move_id) and not _finish_turn_conditions():
+		if not await _perform_player_attack(selected_move, spent_move_id) and not _finish_turn_conditions():
 			_set_action_buttons_disabled(false)
 
 
 func _perform_player_attack(move: Dictionary, move_id: String = "") -> bool:
-	if not _can_use_move(player):
+	if not _can_use_move(player, move):
 		return false
 	if move_id.is_empty():
 		move_id = _move_id_for(move)
@@ -671,7 +700,9 @@ func _perform_player_attack(move: Dictionary, move_id: String = "") -> bool:
 		_update_hp_ui()
 		return _finish_turn_conditions() if player_hp == 0 else false
 	if String(move["damage_class"]) == "Status":
-		message_label.text += "%s used %s!" % [player["name"], move["name"]]
+		message_label.text += " %s used %s! " % [player["name"], move["name"]]
+		await _animate_move_to_impact(move, player_square, opponent_square)
+		_record_received_move(opponent, move, 0)
 		if bool(move.get("force_random_opponent_switch", false)):
 			if _apply_whirlwind(true):
 				return true
@@ -681,17 +712,19 @@ func _perform_player_attack(move: Dictionary, move_id: String = "") -> bool:
 		_apply_burn_after_move(true)
 		_update_hp_ui()
 		return _finish_turn_conditions() if player_hp == 0 else false
-	var result := _calculate_damage(player, opponent, move)
+	var result := _calculate_move_damage(player, opponent, move)
+	await _animate_move_to_impact(move, player_square, opponent_square)
 	if bool(opponent.get("protected", false)):
 		result["damage"] = 0
 		message_label.text = "%s used %s! %s protected itself! " % [player["name"], move["name"], opponent["name"]]
 	else:
-		result["damage"] = _apply_hp_damage(opponent, int(result["damage"]), false)
+		result["damage"] = _apply_move_damage(opponent, int(result["damage"]), false, move)
+		_record_received_move(opponent, move, int(result["damage"]))
 		message_label.text = _attack_message(player, move, result)
 	if int(result["damage"]) > 0:
 		_try_inflict_condition(opponent, move, player, true)
 		if randf() < float(move.get("target_stat_change_chance", 1.0)):
-			_apply_stat_changes(opponent, move.get("target_stat_changes", []))
+			_apply_target_stat_changes(opponent, move.get("target_stat_changes", []))
 	_apply_after_damage_effects(player, opponent, move, true, int(result["damage"]))
 	if bool(move.get("cleanse_user_party", false)):
 		_cleanse_party(battle_party)
@@ -709,7 +742,7 @@ func _perform_player_attack(move: Dictionary, move_id: String = "") -> bool:
 
 func _choose_enemy_move_id() -> String:
 	var opponent_move_ids: Array = opponent["moves"]
-	var available_move_ids := opponent_move_ids.filter(func(id: String) -> bool: return _is_move_selectable(opponent, id))
+	var available_move_ids := opponent_move_ids.filter(func(id: String) -> bool: return _is_move_selectable(opponent, id) and _move_condition_is_met(opponent, battle_data["moves"][id]))
 	if available_move_ids.is_empty():
 		available_move_ids = opponent_move_ids
 	return String(available_move_ids.pick_random())
@@ -723,20 +756,34 @@ func _choose_confused_move_id(mon: Dictionary) -> String:
 	return "" if available.is_empty() else String(available.pick_random())
 
 
+func _choose_random_called_move() -> Dictionary:
+	var eligible: Array[String] = []
+	for candidate_id: String in battle_data["moves"]:
+		var candidate: Dictionary = battle_data["moves"][candidate_id]
+		if not bool(candidate.get("calls_another_move", false)) and not bool(candidate.get("copies_opponent_last_move", false)):
+			eligible.append(candidate_id)
+	var called: Dictionary = battle_data["moves"][String(eligible.pick_random())].duplicate(true)
+	called["ignore_sleep_lock"] = true
+	return called
+
+
 func _perform_enemy_attack(end_turn: bool = true, selected_move_id: String = "") -> bool:
 	if battle_over:
 		return true
-	if not _can_use_move(opponent):
+	var move_id := selected_move_id if not selected_move_id.is_empty() else _choose_enemy_move_id()
+	var move: Dictionary = battle_data["moves"][move_id]
+	if not _can_use_move(opponent, move):
 		if end_turn:
 			if _finish_turn_conditions():
 				return true
 			_set_action_buttons_disabled(false)
 		return false
-	var move_id := selected_move_id if not selected_move_id.is_empty() else _choose_enemy_move_id()
 	if opponent_was_replaced_this_action or not opponent["moves"].has(move_id):
 		move_id = _choose_enemy_move_id()
 	opponent_was_replaced_this_action = false
-	var move: Dictionary = battle_data["moves"][move_id]
+	move = battle_data["moves"][move_id]
+	if bool(move.get("calls_random_move", false)):
+		move = _choose_random_called_move()
 	_record_successful_move(opponent, move_id)
 	if bool(move.get("copies_opponent_last_move", false)):
 		var copied_move := _copy_last_move(player)
@@ -755,7 +802,9 @@ func _perform_enemy_attack(end_turn: bool = true, selected_move_id: String = "")
 			_set_action_buttons_disabled(false)
 		return false
 	if String(move["damage_class"]) == "Status":
-		message_label.text += "%s used %s! " % [opponent["name"], move["name"]]
+		message_label.text += " %s used %s! " % [opponent["name"], move["name"]]
+		await _animate_move_to_impact(move, opponent_square, player_square)
+		_record_received_move(player, move, 0)
 		if bool(move.get("force_random_opponent_switch", false)):
 			if _apply_whirlwind(false):
 				return true
@@ -770,17 +819,19 @@ func _perform_enemy_attack(end_turn: bool = true, selected_move_id: String = "")
 				return true
 			_set_action_buttons_disabled(false)
 		return false
-	var result := _calculate_damage(opponent, player, move)
+	var result := _calculate_move_damage(opponent, player, move)
+	await _animate_move_to_impact(move, opponent_square, player_square)
 	if bool(player.get("protected", false)):
 		result["damage"] = 0
 		message_label.text = "%s used %s! %s protected itself! " % [opponent["name"], move["name"], player["name"]]
 	else:
-		result["damage"] = _apply_hp_damage(player, int(result["damage"]), true)
+		result["damage"] = _apply_move_damage(player, int(result["damage"]), true, move)
+		_record_received_move(player, move, int(result["damage"]))
 		message_label.text = _attack_message(opponent, move, result)
 	if int(result["damage"]) > 0:
 		_try_inflict_condition(player, move, opponent, false)
 		if randf() < float(move.get("target_stat_change_chance", 1.0)):
-			_apply_stat_changes(player, move.get("target_stat_changes", []))
+			_apply_target_stat_changes(player, move.get("target_stat_changes", []))
 	_apply_after_damage_effects(opponent, player, move, false, int(result["damage"]))
 	if bool(move.get("cleanse_user_party", false)):
 		_cleanse_party([opponent])
@@ -826,19 +877,46 @@ func _ensure_condition_fields(mon: Dictionary) -> void:
 	mon["voluntary_switch_block_turns"] = 0
 	mon["seeded_by_side"] = ""
 	mon["weakness_suppressions"] = {}
+	mon["last_received_damage"] = 0
+	mon["last_received_damage_class"] = ""
+	mon["tormented"] = false
+	mon["charged_type"] = ""
+	mon["charge_multiplier"] = 1.0
+	mon["charge_turns"] = 0
+	mon["condition_immunities"] = []
+	mon["condition_immunity_turns"] = 0
+	mon["next_move_priority"] = 0
+	mon["reactive_poison_damage_class"] = ""
+	mon["reactive_poison_turns"] = 0
+	mon["fey_infatuation_bonus_used"] = false
 
 
 func _apply_status_move(user: Dictionary, target: Dictionary, move: Dictionary, user_is_player: bool) -> void:
+	if bool(move.get("counter_last_physical_damage", false)):
+		_apply_counter(user, target, user_is_player)
+		return
 	var had_condition := _has_any_special_condition(user)
 	var fixed_heal_fraction := _move_effect_float(move, "fixed_max_hp_heal_fraction", 0.0)
 	if fixed_heal_fraction > 0.0:
 		_heal_fixed_max_hp(user, fixed_heal_fraction, user_is_player)
 	if bool(move.get("cures_conditions", false)):
 		_cure_conditions(user)
+	if bool(move.get("cures_one_condition", false)):
+		_remove_one_condition(user)
+	if not String(move.get("self_condition", "")).is_empty():
+		_inflict_self_condition(user, String(move["self_condition"]), user_is_player)
 	if move.has("stat_changes"):
 		_apply_stat_changes(user, move["stat_changes"])
 	if move.has("target_stat_changes"):
-		_apply_stat_changes(target, move["target_stat_changes"])
+		var conditional_egg: Dictionary = move.get("target_egg_group_condition", {})
+		if conditional_egg.is_empty() or not target.get("egg_groups", []).has(String(conditional_egg.get("egg_group", ""))) or not bool(conditional_egg.get("replaces_target_stat_changes", false)):
+			_apply_target_stat_changes(target, move["target_stat_changes"])
+	var conditional_egg: Dictionary = move.get("target_egg_group_condition", {})
+	if not conditional_egg.is_empty() and target.get("egg_groups", []).has(String(conditional_egg.get("egg_group", ""))):
+		_try_inflict_condition(target, {"condition": String(conditional_egg.get("condition", "")), "condition_chance": float(conditional_egg.get("condition_chance", 1.0))}, user, user_is_player)
+	var conditional_weather: Dictionary = move.get("weather_target_condition", {})
+	if not conditional_weather.is_empty() and weather == String(conditional_weather.get("weather", "")):
+		_try_inflict_condition(target, {"condition": String(conditional_weather.get("condition", "")), "condition_chance": float(conditional_weather.get("condition_chance", 1.0))}, user, user_is_player)
 	if not String(move.get("condition", "")).is_empty():
 		var condition_move := move
 		var conditional: Dictionary = move.get("condition_chance_if_target_type", {})
@@ -847,7 +925,22 @@ func _apply_status_move(user: Dictionary, target: Dictionary, move: Dictionary, 
 			condition_move["condition_chance"] = float(conditional.get("chance", move.get("condition_chance", 0.0)))
 		_try_inflict_condition(target, condition_move, user, user_is_player)
 	if bool(move.get("protect", false)):
-		_apply_protection(user)
+		_apply_protection(user, move)
+	if bool(move.get("torment_target", false)):
+		target["tormented"] = true
+		message_label.text += " %s was tormented and cannot repeat its last move! " % target["name"]
+	if not String(move.get("charge_type", "")).is_empty():
+		user["charged_type"] = String(move["charge_type"])
+		user["charge_multiplier"] = float(move.get("charge_multiplier", 1.0))
+		user["charge_turns"] = 2
+		message_label.text += " %s charged its %s attacks! " % [user["name"], user["charged_type"]]
+	if not move.get("next_turn_condition_immunities", []).is_empty():
+		user["condition_immunities"] = move["next_turn_condition_immunities"].duplicate(true)
+		user["condition_immunity_turns"] = 2
+		message_label.text += " %s prepared itself against disruption! " % user["name"]
+	if not String(move.get("reactive_poison_damage_class", "")).is_empty():
+		user["reactive_poison_damage_class"] = String(move["reactive_poison_damage_class"])
+		user["reactive_poison_turns"] = int(move.get("reactive_poison_turns", 2))
 	if int(move.get("disable_last_move_turns", 0)) > 0:
 		_disable_last_move(target, int(move["disable_last_move_turns"]))
 	if not String(move.get("sets_weather", "")).is_empty():
@@ -865,25 +958,50 @@ func _apply_status_move(user: Dictionary, target: Dictionary, move: Dictionary, 
 		var heal_percent := 10 + int(floor(float(user["level"]) / 5.0)) + int(_move_effect_float(move, "bloom_heal_percent_bonus", 0.0))
 		_heal_mon(user, int(floor(float(user["max_hp"]) * float(heal_percent) / 100.0)), user_is_player)
 	if bool(move.get("seed_target", false)):
-		if not String(target.get("seeded_by_side ", "")).is_empty():
+		if not String(target.get("seeded_by_side", "")).is_empty():
 			message_label.text += " But %s is already seeded. " % target["name"]
 		else:
 			target["seeded_by_side"] = "player" if user_is_player else "opponent"
 			message_label.text += " %s was seeded! " % target["name"]
 	if bool(move.get("regrow", false)):
 		_apply_regrow(user, user_is_player, _move_effect_float(move, "regrow_heal_fraction", 0.1))
+	if bool(move.get("paradise_bloom", false)):
+		_apply_paradise_bloom(user, user_is_player)
 	if move.has("cure_or_stat_change"):
 		if had_condition:
 			_remove_all_removable_conditions(user)
 			message_label.text += " %s's conditions were cured. " % user["name"]
 		else:
-			_apply_stat_changes(user, move["cure_or_stat_change "])
+			_apply_stat_changes(user, move["cure_or_stat_change"])
 	if float(move.get("delayed_heal_fraction", 0.0)) > 0.0:
 		if bool(user.get("prayer_pending", false)):
 			message_label.text += " But a Prayer is already pending. "
 		else:
 			user["prayer_pending"] = true
 			message_label.text += " %s began praying. " % user["name"]
+	_apply_fey_gardens_healing_bonus(user, move, user_is_player)
+
+
+func _inflict_self_condition(user: Dictionary, condition: String, user_is_player: bool) -> void:
+	user["condition"] = condition
+	var condition_data: Dictionary = battle_data["conditions"].get(condition, {})
+	user["condition_turns"] = randi_range(int(condition_data.get("minimum_turns", 1)), int(condition_data.get("maximum_turns", 1)))
+	message_label.text += " %s became %s! " % [user["name"], condition.to_lower()]
+	_update_hp_ui()
+
+
+func _apply_counter(user: Dictionary, target: Dictionary, user_is_player: bool) -> void:
+	if String(user.get("last_received_damage_class", "")) != "Physical" or int(user.get("last_received_damage", 0)) <= 0:
+		message_label.text += " But it failed because the last move was not a damaging physical move. "
+		return
+	var damage := int(user["last_received_damage"]) * 2
+	var actual_damage := _apply_hp_damage(target, damage, not user_is_player)
+	message_label.text += " %s countered for %d damage! " % [user["name"], actual_damage]
+
+
+func _record_received_move(target: Dictionary, move: Dictionary, damage: int) -> void:
+	target["last_received_damage_class"] = String(move.get("damage_class", ""))
+	target["last_received_damage"] = damage
 
 
 func _apply_stat_changes(mon: Dictionary, changes: Array) -> void:
@@ -900,6 +1018,20 @@ func _apply_stat_changes(mon: Dictionary, changes: Array) -> void:
 		var updated := minf(MAX_POSITIVE_STAT_MODIFIER, current + amount) if amount > 0.0 else current + amount
 		modifiers[stat] = updated
 		message_label.text += " %s's %s %s!" % [mon["name"], _stat_display_name(stat), "rose" if amount > 0.0 else "fell"]
+
+
+func _apply_target_stat_changes(mon: Dictionary, changes: Array) -> void:
+	if weather != "Fey Gardens" or not (_fakemon_types(mon).has("Plant") or _fakemon_types(mon).has("Mystic")):
+		_apply_stat_changes(mon, changes)
+		return
+	var allowed: Array = []
+	var protected_stats: Array = battle_data["weather"]["Fey Gardens"].get("protected_stats", [])
+	for change: Dictionary in changes:
+		if float(change.get("amount", 0.0)) < 0.0 and protected_stats.has(String(change.get("stat", ""))):
+			message_label.text += " Fey Gardens protected %s's %s! " % [mon["name"], _stat_display_name(String(change["stat"]))]
+		else:
+			allowed.append(change)
+	_apply_stat_changes(mon, allowed)
 
 
 func _stat_display_name(stat: String) -> String:
@@ -941,6 +1073,41 @@ func _remove_all_removable_conditions(mon: Dictionary) -> int:
 	return removed
 
 
+func _remove_one_condition(mon: Dictionary) -> int:
+	if not String(mon.get("condition", "")).is_empty():
+		mon["condition"] = ""
+		mon["condition_turns"] = 0
+		return 1
+	if int(mon.get("infatuation_stacks", 0)) > 0:
+		_clear_infatuation(mon)
+		return 1
+	if not String(mon.get("seeded_by_side", "")).is_empty():
+		mon["seeded_by_side"] = ""
+		return 1
+	return 0
+
+
+func _apply_paradise_bloom(mon: Dictionary, player_side: bool) -> int:
+	var stage_count := 0
+	for stat: String in COMBAT_STATS:
+		var modifier := float(mon["stat_modifiers"].get(stat, NEUTRAL_STAT_MODIFIER))
+		stage_count += int(round(absf(modifier - NEUTRAL_STAT_MODIFIER) * 10.0))
+		mon["stat_modifiers"][stat] = NEUTRAL_STAT_MODIFIER
+	var condition_count := _remove_all_removable_conditions(mon)
+	var fraction := 0.15 + 0.1 * float(stage_count) + 0.2 * float(condition_count)
+	_heal_fixed_max_hp(mon, fraction, player_side)
+	message_label.text += " Paradise Bloom consumed %d stat stages and %d conditions. " % [stage_count, condition_count]
+	return stage_count + condition_count
+
+
+func _apply_fey_gardens_healing_bonus(mon: Dictionary, move: Dictionary, player_side: bool) -> void:
+	if weather != "Fey Gardens" or not (_fakemon_types(mon).has("Plant") or _fakemon_types(mon).has("Mystic")):
+		return
+	var is_healing_move: bool = float(move.get("fixed_max_hp_heal_fraction", 0.0)) > 0.0 or bool(move.get("bloom_healing", false)) or bool(move.get("regrow", false)) or bool(move.get("paradise_bloom", false)) or float(move.get("drain_damage_fraction", 0.0)) > 0.0 or not move.get("heal_fraction_during_weather", {}).is_empty()
+	if is_healing_move:
+		_heal_fixed_max_hp(mon, float(battle_data["weather"]["Fey Gardens"].get("typed_healing_bonus_fraction", 0.1)), player_side)
+
+
 func _apply_regrow(mon: Dictionary, player_side: bool, heal_fraction: float = 0.1) -> int:
 	var removed := _remove_all_removable_conditions(mon)
 	for stat: String in COMBAT_STATS:
@@ -959,9 +1126,13 @@ func _heal_fixed_max_hp(mon: Dictionary, fraction: float, player_side: bool) -> 
 	_heal_mon(mon, maxi(1, int(floor(float(mon["max_hp"]) * fraction))), player_side)
 
 
-func _apply_protection(mon: Dictionary) -> void:
+func _apply_protection(mon: Dictionary, move: Dictionary = {}) -> void:
 	var chain := int(mon.get("protect_chain", 0))
-	var success_chance := pow(1.0 / 3.0, chain)
+	var success_chance := float(move.get("protect_success_base", 1.0))
+	if move.has("protect_success_decrement"):
+		success_chance = maxf(0.0, success_chance - float(move["protect_success_decrement"]) * chain)
+	else:
+		success_chance *= pow(1.0 / 3.0, chain)
 	if randf() <= success_chance:
 		mon["protected"] = true
 		mon["protect_chain"] = chain + 1
@@ -984,6 +1155,9 @@ func _disable_last_move(target: Dictionary, turns: int) -> void:
 func _set_weather(weather_name: String) -> void:
 	weather = weather_name
 	weather_turns_remaining = int(battle_data.get("weather", {}).get(weather_name, {}).get("duration", 3))
+	if weather_name == "Fey Gardens":
+		player["fey_infatuation_bonus_used"] = false
+		opponent["fey_infatuation_bonus_used"] = false
 	message_label.text += " The weather became %s! " % weather_name
 
 
@@ -1058,6 +1232,19 @@ func _tick_temporary_state(mon: Dictionary) -> void:
 		mon["cannot_faint_turns"] = int(mon["cannot_faint_turns"]) - 1
 	if int(mon.get("voluntary_switch_block_turns", 0)) > 0:
 		mon["voluntary_switch_block_turns"] = int(mon["voluntary_switch_block_turns"]) - 1
+	if int(mon.get("charge_turns", 0)) > 0:
+		mon["charge_turns"] = int(mon["charge_turns"]) - 1
+		if int(mon["charge_turns"]) == 0:
+			mon["charged_type"] = ""
+			mon["charge_multiplier"] = 1.0
+	if int(mon.get("condition_immunity_turns", 0)) > 0:
+		mon["condition_immunity_turns"] = int(mon["condition_immunity_turns"]) - 1
+		if int(mon["condition_immunity_turns"]) == 0:
+			mon["condition_immunities"] = []
+	if int(mon.get("reactive_poison_turns", 0)) > 0:
+		mon["reactive_poison_turns"] = int(mon["reactive_poison_turns"]) - 1
+		if int(mon["reactive_poison_turns"]) == 0:
+			mon["reactive_poison_damage_class"] = ""
 	var suppressions: Dictionary = mon.get("weakness_suppressions", {})
 	for suppressed_type: String in suppressions.keys():
 		suppressions[suppressed_type] = int(suppressions[suppressed_type]) - 1
@@ -1068,16 +1255,29 @@ func _tick_temporary_state(mon: Dictionary) -> void:
 func _is_move_selectable(mon: Dictionary, move_id: String) -> bool:
 	if String(mon.get("disabled_move", "")) == move_id and int(mon.get("disabled_turns", 0)) > 0:
 		return false
-	return int(mon.get("move_cooldowns", {}).get(move_id, 0)) <= 0
+	if bool(mon.get("tormented", false)) and String(mon.get("last_successful_move", "")) == move_id:
+		return false
+	return int(mon.get("move_cooldowns", {}).get(move_id, 0)) <= 0 and _move_condition_is_met(mon, battle_data["moves"][move_id])
+
+
+func _move_condition_is_met(mon: Dictionary, move: Dictionary) -> bool:
+	var required := String(move.get("requires_user_condition", ""))
+	return required.is_empty() or String(mon.get("condition", "")) == required
 
 
 func _move_unavailable_reason(mon: Dictionary, move_id: String) -> String:
+	var required := String(battle_data["moves"][move_id].get("requires_user_condition", ""))
+	if not required.is_empty() and String(mon.get("condition", "")) != required:
+		return "This move can only be used while %s. " % required.to_lower()
 	if String(mon.get("disabled_move", "")) == move_id:
 		return "This move is disabled. "
+	if bool(mon.get("tormented", false)) and String(mon.get("last_successful_move", "")) == move_id:
+		return "Torment prevents using the same move twice in a row. "
 	return "This move cannot be used on consecutive turns. "
 
 
 func _record_successful_move(mon: Dictionary, move_id: String) -> void:
+	mon["next_move_priority"] = 0
 	var cooldowns: Dictionary = mon["move_cooldowns"]
 	for cooling_move: String in cooldowns.keys():
 		if cooling_move != move_id:
@@ -1157,8 +1357,11 @@ func _cleanse_party(members: Array) -> void:
 	message_label.text += " The user's party was cleansed. "
 
 
-func _can_use_move(mon: Dictionary) -> bool:
+func _can_use_move(mon: Dictionary, move: Dictionary = {}) -> bool:
 	_resolve_pending_prayer(mon, mon == player)
+	if not _move_condition_is_met(mon, move):
+		message_label.text = "%s cannot use %s right now! " % [mon["name"], move.get("name", "that move")]
+		return false
 	if bool(mon.get("must_recharge", false)):
 		mon["must_recharge"] = false
 		message_label.text = "%s must recover and cannot act! " % mon["name"]
@@ -1176,12 +1379,13 @@ func _can_use_move(mon: Dictionary) -> bool:
 		return false
 	if condition == "Frozen" or condition == "Asleep":
 		mon["condition_turns"] = maxi(0, int(mon["condition_turns"]) - 1)
+		var can_act_asleep := condition == "Asleep" and (String(move.get("requires_user_condition", "")) == "Asleep" or bool(move.get("ignore_sleep_lock", false)))
 		var verb := "frozen solid" if condition == "Frozen" else "asleep"
-		message_label.text = "%s is %s and cannot move! " % [mon["name"], verb]
+		message_label.text = "%s is %s%s " % [mon["name"], verb, " and can still act!" if can_act_asleep else " and cannot move!"]
 		if int(mon["condition_turns"]) == 0:
 			mon["condition"] = ""
 			message_label.text += " It will recover next turn. "
-		return false
+		return can_act_asleep
 	if condition == "Confusion":
 		mon["condition_turns"] = maxi(0, int(mon.get("condition_turns", 1)) - 1)
 		message_label.text = "%s is confused and acts unpredictably! " % mon["name"]
@@ -1201,13 +1405,20 @@ func _try_inflict_condition(target: Dictionary, move: Dictionary, source: Dictio
 	var condition := String(move.get("condition", ""))
 	if condition.is_empty() or randf() >= _move_effect_float(move, "condition_chance", 0.0):
 		return
+	if int(target.get("condition_immunity_turns", 0)) > 0 and target.get("condition_immunities", []).has(condition):
+		message_label.text += " %s resisted %s! " % [target["name"], condition.to_lower()]
+		return
 	if condition == "Flinch":
 		target["flinched"] = true
 		message_label.text += " %s flinched! " % target["name"]
 		return
 	if condition == "Infatuated":
 		var maximum := int(battle_data["conditions"]["Infatuated"]["maximum_stacks"])
-		target["infatuation_stacks"] = mini(maximum, int(target.get("infatuation_stacks", 0)) + 1)
+		var added_stacks := 1
+		if weather == "Fey Gardens" and not bool(source.get("fey_infatuation_bonus_used", false)):
+			added_stacks += int(battle_data["weather"]["Fey Gardens"].get("first_infatuation_bonus_stacks", 1))
+			source["fey_infatuation_bonus_used"] = true
+		target["infatuation_stacks"] = mini(maximum, int(target.get("infatuation_stacks", 0)) + added_stacks)
 		target["infatuation_source_gender"] = String(source.get("gender", "Genderless"))
 		target["infatuation_source_side"] = "player" if source_is_player else "opponent"
 		target["infatuation_source_index"] = active_party_index if source_is_player else -1
@@ -1311,6 +1522,8 @@ func _apply_recoil(mon: Dictionary, player_side: bool, fraction: float) -> void:
 
 func _apply_after_damage_effects(user: Dictionary, target: Dictionary, move: Dictionary, user_is_player: bool, actual_damage: int = 1) -> void:
 	var dealt_damage := actual_damage > 0
+	if dealt_damage and int(target.get("reactive_poison_turns", 0)) > 0 and String(target.get("reactive_poison_damage_class", "")) == String(move.get("damage_class", "")):
+		_try_inflict_condition(user, {"condition": "Poisoned", "condition_chance": 1.0}, target, not user_is_player)
 	if move.has("stat_changes"):
 		_apply_stat_changes(user, move["stat_changes"])
 	if dealt_damage and int(move.get("cannot_faint_turns", 0)) > 0:
@@ -1325,6 +1538,30 @@ func _apply_after_damage_effects(user: Dictionary, target: Dictionary, move: Dic
 	var fixed_heal_fraction := _move_effect_float(move, "fixed_max_hp_heal_fraction", 0.0)
 	if dealt_damage and fixed_heal_fraction > 0.0:
 		_heal_fixed_max_hp(user, fixed_heal_fraction, user_is_player)
+	if dealt_damage and not String(move.get("cure_target_condition_after_damage", "")).is_empty() and String(target.get("condition", "")) == String(move["cure_target_condition_after_damage"]):
+		target["condition"] = ""
+		target["condition_turns"] = 0
+		message_label.text += " %s's poison was removed. " % target["name"]
+	var weather_heal_move: Dictionary = move.get("heal_fraction_during_weather", {})
+	if dealt_damage and weather_heal_move.get("weathers", []).has(weather):
+		_heal_fixed_max_hp(user, float(weather_heal_move.get("fraction", 0.0)), user_is_player)
+	_apply_fey_gardens_healing_bonus(user, move, user_is_player)
+	if dealt_damage and int(move.get("grant_next_move_priority", 0)) != 0:
+		user["next_move_priority"] = int(move["grant_next_move_priority"])
+		message_label.text += " %s is poised to move first next turn! " % user["name"]
+	var replacement: Dictionary = move.get("replace_target_condition_after_damage", {})
+	if dealt_damage and not replacement.is_empty() and String(target.get("condition", "")) == String(replacement.get("from", "")):
+		target["condition"] = String(replacement.get("to", ""))
+		target["condition_turns"] = 0
+		message_label.text += " %s's poison was transformed into a burn! " % target["name"]
+	if dealt_damage and not weather.is_empty():
+		var weather_data: Dictionary = battle_data["weather"].get(weather, {})
+		var weather_heal: Dictionary = weather_data.get("damaging_type_user_heal", {})
+		if String(move.get("type", "")) == String(weather_heal.get("type", "__none__")):
+			_heal_fixed_max_hp(user, float(weather_heal.get("max_hp_fraction", 0.0)), user_is_player)
+		var weather_condition: Dictionary = weather_data.get("damaging_type_condition", {})
+		if String(move.get("type", "")) == String(weather_condition.get("type", "__none__")):
+			_try_inflict_condition(target, {"condition": String(weather_condition.get("condition", "")), "condition_chance": float(weather_condition.get("chance", 0.0))}, user, user_is_player)
 	if dealt_damage and int(move.get("prevent_voluntary_switch_turns", 0)) > 0:
 		target["voluntary_switch_block_turns"] = maxi(int(target.get("voluntary_switch_block_turns", 0)), int(move["prevent_voluntary_switch_turns"]))
 		message_label.text += " %s cannot switch voluntarily. " % target["name"]
@@ -1337,6 +1574,12 @@ func _apply_after_damage_effects(user: Dictionary, target: Dictionary, move: Dic
 	var preserved_weather := String(move.get("preserve_weather", ""))
 	if move.has("preserve_weather") and weather != preserved_weather:
 		_clear_weather()
+	if dealt_damage and bool(move.get("clear_weather_after_damage", false)):
+		_clear_weather()
+	if dealt_damage and bool(move.get("cleanse_both_after_damage", false)):
+		_remove_all_removable_conditions(user)
+		_remove_all_removable_conditions(target)
+		message_label.text += " Both combatants were cleansed. "
 	if bool(user.get("ignore_next_move_self_damage", false)):
 		user["ignore_next_move_self_damage"] = false
 
@@ -1432,7 +1675,14 @@ func _advance_weather() -> void:
 
 
 func _enemy_turn() -> void:
-	_perform_enemy_attack()
+	await _perform_enemy_attack()
+
+
+func _animate_move_to_impact(move: Dictionary, caster: Control, target: Control) -> void:
+	if battle_animator == null:
+		return
+	await battle_animator.play_move(move, caster, target)
+	# Mechanics resolve as the preset reaches its completed impact beat.
 
 
 func _handle_player_faint() -> bool:
@@ -1475,6 +1725,11 @@ func _show_switch_choices() -> void:
 		choice.disabled = index == active_party_index or party_hp[index] <= 0
 		choice.pressed.connect(_select_battle_party_mon.bind(index))
 		switch_list.add_child(choice)
+	if not forced_switch:
+		var cancel := Button.new()
+		cancel.text = "[Esc] Back"
+		cancel.pressed.connect(_cancel_action_selection)
+		switch_list.add_child(cancel)
 	switch_panel.show()
 	action_button.disabled = true
 	capture_button.disabled = true
@@ -1657,8 +1912,16 @@ func _calculate_damage(attacker: Dictionary, defender: Dictionary, move: Diction
 			power = float(raised_stat_power["power"])
 	if move.has("power_if_target_has_condition") and _has_any_special_condition(defender):
 		power = _move_effect_float(move, "power_if_target_has_condition", float(move["power_if_target_has_condition"]))
+	var conditional_multiplier: Dictionary = move.get("power_multiplier_if_target_conditions", {})
+	if not conditional_multiplier.is_empty() and conditional_multiplier.get("conditions", []).has(String(defender.get("condition", ""))):
+		power *= float(conditional_multiplier.get("multiplier", 1.0))
 	if move.has("power_if_user_has_stat_change") and _has_any_stat_change(attacker):
 		power = _move_effect_float(move, "power_if_user_has_stat_change", float(move["power_if_user_has_stat_change"]))
+	var staged_power: Dictionary = move.get("power_per_positive_stage", {})
+	if not staged_power.is_empty():
+		var staged_stat := String(staged_power.get("stat", ""))
+		var positive_stages := maxi(0, int(round((float(attacker.get("stat_modifiers", {}).get(staged_stat, 1.0)) - 1.0) * 10.0)))
+		power *= 1.0 + float(staged_power.get("multiplier", 0.0)) * float(positive_stages)
 	var base_damage := (((2.0 * level / 5.0 + 2.0) * power * attack / defense) / 50.0) + 2.0
 	var stab := 1.5 if _fakemon_types(attacker).has(String(move["type"])) else 1.0
 	var effectiveness := _get_combined_type_effectiveness(String(move["type"]), defender, bool(move.get("ignore_resistance", false)))
@@ -1669,9 +1932,31 @@ func _calculate_damage(attacker: Dictionary, defender: Dictionary, move: Diction
 	var weather_multiplier := 1.0
 	if not weather.is_empty():
 		weather_multiplier = float(battle_data["weather"].get(weather, {}).get("damage_multipliers", {}).get(String(move["type"]), 1.0))
+	var charge_multiplier := 1.0
+	if int(attacker.get("charge_turns", 0)) > 0 and String(attacker.get("charged_type", "")) == String(move["type"]):
+		charge_multiplier = float(attacker.get("charge_multiplier", 1.0))
 	var random_modifier := randf_range(0.85, 1.0)
-	var damage := 0 if effectiveness == 0.0 else maxi(1, int(floor(base_damage * stab * effectiveness * weather_multiplier * random_modifier)))
+	var damage := 0 if effectiveness == 0.0 else maxi(1, int(floor(base_damage * stab * effectiveness * weather_multiplier * charge_multiplier * random_modifier)))
 	return {"damage": damage, "effectiveness": effectiveness, "power": power}
+
+
+func _calculate_move_damage(attacker: Dictionary, defender: Dictionary, move: Dictionary) -> Dictionary:
+	var result := _calculate_damage(attacker, defender, move)
+	var hits := randi_range(int(move.get("min_hits", 1)), int(move.get("max_hits", 1)))
+	if hits > 1:
+		var total := int(result["damage"])
+		for hit_index in range(1, hits):
+			total += int(_calculate_damage(attacker, defender, move)["damage"])
+		result["damage"] = total
+		result["hits"] = hits
+	return result
+
+
+func _apply_move_damage(target: Dictionary, amount: int, target_is_player: bool, move: Dictionary) -> int:
+	if bool(move.get("cannot_faint_target", false)):
+		var current_hp := player_hp if target_is_player else opponent_hp
+		amount = mini(amount, maxi(0, current_hp - 1))
+	return _apply_hp_damage(target, amount, target_is_player)
 
 
 func _get_type_effectiveness(move_type: String, defender_type: String) -> float:
@@ -1717,6 +2002,8 @@ func _type_display(mon: Dictionary) -> String:
 
 func _attack_message(attacker: Dictionary, move: Dictionary, result: Dictionary) -> String:
 	var text := "%s used %s! It dealt %d damage." % [attacker["name"], move["name"], result["damage"]]
+	if int(result.get("hits", 1)) > 1:
+		text += " It hit %d times!" % int(result["hits"])
 	if result["effectiveness"] > 1.0:
 		text += " It's super effective!"
 	elif result["effectiveness"] < 1.0:
@@ -1725,6 +2012,7 @@ func _attack_message(attacker: Dictionary, move: Dictionary, result: Dictionary)
 
 
 func _update_hp_ui() -> void:
+	_cap_battle_log()
 	player_hp_bar.max_value = player["max_hp"]
 	player_hp_bar.value = player_hp
 	var current_exp := int(player.get("experience", int(pow(float(player["level"]), 3.0))))
@@ -1735,6 +2023,16 @@ func _update_hp_ui() -> void:
 	opponent_hp_bar.value = opponent_hp
 	var opponent_status := _condition_display(opponent)
 	opponent_hp_label.text = "%d / %d    %s" % [opponent_hp, opponent["max_hp"], opponent_status]
+
+
+func _cap_battle_log() -> void:
+	if message_label == null or message_label.text.length() <= MAX_BATTLE_LOG_CHARACTERS:
+		return
+	var retained := message_label.text.right(MAX_BATTLE_LOG_CHARACTERS)
+	var first_space := retained.find(" ")
+	if first_space >= 0:
+		retained = retained.substr(first_space + 1)
+	message_label.text = "… " + retained.strip_edges()
 
 
 func _condition_display(mon: Dictionary) -> String:
@@ -1785,6 +2083,10 @@ func _create_fakemon_art(mon: Dictionary, role: String, art_size: Vector2) -> Te
 	placeholder.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	placeholder.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	art.add_child(placeholder)
+	var animator := AnimationPlayer.new()
+	animator.name = "AnimationPlayer"
+	animator.set_script(FAKEMON_ANIMATOR_SCRIPT)
+	art.add_child(animator)
 	_set_fakemon_art(art, mon, role)
 	return art
 
@@ -1827,7 +2129,7 @@ func _input(event: InputEvent) -> void:
 	var key_event := event as InputEventKey
 	var key: Key = key_event.keycode
 	if battle_over:
-		if key == KEY_ENTER or key == KEY_ESCAPE:
+		if key == KEY_ENTER or key == KEY_ESCAPE or key == KEY_5:
 			_on_return_pressed()
 		return
 	var number := _number_from_key(key)
@@ -1835,16 +2137,13 @@ func _input(event: InputEvent) -> void:
 		if number >= 1 and number <= current_move_ids.size():
 			_on_move_selected(current_move_ids[number - 1])
 		elif key == KEY_ESCAPE:
-			move_menu.hide()
-			message_label.show()
-			_set_action_buttons_disabled(false)
+			_cancel_action_selection()
 		return
 	if switch_panel.visible:
 		if number >= 1 and number <= battle_party.size():
 			_select_battle_party_mon(number - 1)
 		elif key == KEY_ESCAPE and not forced_switch:
-			switch_panel.hide()
-			_set_action_buttons_disabled(false)
+			_cancel_action_selection()
 		return
 	if (number == 1 or key == KEY_A) and not action_button.disabled:
 		_on_attack_pressed()
@@ -1854,6 +2153,8 @@ func _input(event: InputEvent) -> void:
 		_on_switch_pressed()
 	elif (number == 4 or key == KEY_R) and not run_button.disabled:
 		_on_run_pressed()
+	elif (number == 5 or key == KEY_ENTER) and not restart_button.disabled:
+		_on_return_pressed()
 
 
 func _number_from_key(key: Key) -> int:

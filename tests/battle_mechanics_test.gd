@@ -25,6 +25,10 @@ func _initialize() -> void:
 	battle._apply_stat_changes(test_mon, battle.battle_data["moves"]["flutter"]["stat_changes"])
 	assert(is_equal_approx(test_mon["stat_modifiers"]["special_attack"], 1.9), "A below-cap stat in a multi-stat move must clamp independently.")
 	assert(is_equal_approx(test_mon["stat_modifiers"]["special_defense"], 1.9), "A capped stat in a multi-stat move must remain capped.")
+	battle.message_label.text = "Old turn. " + "Recent turn. ".repeat(80)
+	battle._cap_battle_log()
+	assert(battle.message_label.text.length() <= battle.MAX_BATTLE_LOG_CHARACTERS + 2 and battle.message_label.text.begins_with("… "), "Battle messages must retain a capped recent log.")
+	assert(battle.message_panel.position.y + battle.message_panel.size.y == 540.0 and battle.message_label.clip_text, "The battle message panel must reach the bottom of the viewport and clip overflow safely.")
 
 	battle._set_weather("Celestial Chorus")
 	assert(battle.weather_turns_remaining == 3, "Weather must begin with three turns.")
@@ -41,6 +45,11 @@ func _initialize() -> void:
 	assert(battle._get_type_effectiveness("Ghost", "Psychic") == 2.0, "Psychic must be weak to Ghost.")
 	assert(battle._get_type_effectiveness("Psychic", "Light") == 0.5 and battle._get_type_effectiveness("Psychic", "Dark") == 0.5 and battle._get_type_effectiveness("Psychic", "Ghost") == 0.5, "Light, Dark, and Ghost must resist Psychic.")
 	assert(battle._get_type_effectiveness("Psychic", "Normal") == 2.0 and battle._get_type_effectiveness("Normal", "Psychic") == 0.5, "Psychic must be strong against and resist Normal.")
+	assert(battle._get_type_effectiveness("Fighting", "Normal") == 2.0 and battle._get_type_effectiveness("Fighting", "Bug") == 2.0, "Fighting must be strong against Normal and Bug.")
+	assert(battle._get_type_effectiveness("Fighting", "Ghost") == 0.5 and battle._get_type_effectiveness("Fighting", "Air") == 0.5 and battle._get_type_effectiveness("Fighting", "Psychic") == 0.5, "Ghost, Air, and Psychic must resist Fighting.")
+	assert(battle._get_type_effectiveness("Air", "Fighting") == 2.0 and battle._get_type_effectiveness("Psychic", "Fighting") == 2.0 and battle._get_type_effectiveness("Ghost", "Fighting") == 1.0, "Fighting must be weak to Air and Psychic but neutral to Ghost.")
+	assert(battle._get_type_effectiveness("Psychic", "Poison") == 2.0 and battle._get_type_effectiveness("Poison", "Psychic") == 0.5, "Poison must be weak to Psychic, while Psychic resists Poison.")
+	assert(battle._get_type_effectiveness("Poison", "Normal") == 2.0 and battle._get_type_effectiveness("Poison", "Water") == 2.0 and battle._get_type_effectiveness("Poison", "Plant") == 2.0, "Poison must be strong against Normal, Water, and Plant.")
 	for move_id: String in ["peck", "flutter", "photon_beam", "flip_turn", "aqua_jet", "dazzle", "brilliant_light", "veil", "disable", "scald", "smite", "aureal_flood", "remembrance", "celestial_chorus", "prayer", "discern", "fin_flash"]:
 		assert(battle.battle_data["moves"].has(move_id), "Requested move '%s' must be defined." % move_id)
 	var sylvafin: Dictionary = battle.battle_data["fakemon"][1]
@@ -425,6 +434,139 @@ func _initialize() -> void:
 	battle._random_switch_player(false)
 	assert(battle.active_party_index == 1, "Vicegrip's voluntary switch lock must not block forced switching.")
 
+	var slumboth: Dictionary = battle.battle_data["fakemon"].filter(func(mon: Dictionary) -> bool: return mon["name"] == "Slumboth")[0]
+	var expected_slumboth_moves := ["doze_off", "sleep_talk", "defense_curl", "scratch", "gnaw", "dream", "punch", "counter", "sleep_off", "bulk_up", "slash", "snore", "hammer_arm", "sleep_swing", "scourge", "kinetic_pummel", "rest"]
+	assert(slumboth["learnset"].map(func(entry: Dictionary) -> String: return String(entry["move"])) == expected_slumboth_moves, "Slumboth must have the complete ordered moveset.")
+	assert(slumboth["moves"] == ["doze_off", "sleep_talk", "defense_curl"], "Level 5 Slumboth must know its three accessible moves.")
+	assert(bool(slumboth["learnset"][6]["evolution_move"]), "Punch must be marked as Slumboth's evolution move.")
+	assert(slumboth["egg_groups"] == ["Mammal", "Mineral"], "Slumboth must be in the Mammal and Mineral egg groups.")
+	for move_id: String in expected_slumboth_moves:
+		assert(battle.battle_data["moves"].has(move_id), "Slumboth move '%s' must be defined." % move_id)
+	var hangrowl: Dictionary = battle.battle_data["fakemon"].filter(func(mon: Dictionary) -> bool: return mon["name"] == "Hangrowl")[0]
+	var swoleth: Dictionary = battle.battle_data["fakemon"].filter(func(mon: Dictionary) -> bool: return mon["name"] == "Swoleth")[0]
+	assert(hangrowl["types"] == ["Normal", "Fighting"] and hangrowl["evolves_from"] == "Slumboth" and int(hangrowl["evolution_level"]) == 15 and hangrowl["moves"] == slumboth["moves"], "Hangrowl must evolve from Slumboth at level 15 with its moveset.")
+	assert(swoleth["types"] == ["Normal", "Fighting"] and swoleth["evolves_from"] == "Hangrowl" and int(swoleth["evolution_level"]) == 35 and swoleth["moves"] == slumboth["moves"], "Swoleth must evolve from Hangrowl at level 35 with its moveset.")
+	assert(hangrowl["egg_groups"] == ["Mammal", "Mineral"] and swoleth["egg_groups"] == ["Mammal", "Mineral"], "The full Slumboth line must retain its egg groups.")
+
+	var skeeter: Dictionary = battle.battle_data["fakemon"].filter(func(mon: Dictionary) -> bool: return mon["name"] == "Skeeter")[0]
+	var expected_gloom_moves := ["gnaw", "buzz", "needle_nip", "bite", "infest", "swoop", "blood_draw", "torment", "evade", "swarm", "gather", "leech_life", "night_dart", "hypnotic_hum", "scourge", "bloodmoon", "plague"]
+	assert(skeeter["learnset"].map(func(entry: Dictionary) -> String: return String(entry["move"])) == expected_gloom_moves, "Skeeter must have its complete ordered moveset.")
+	assert(skeeter["moves"] == ["gnaw", "buzz", "needle_nip"], "Level 5 Skeeter must know its three accessible moves.")
+	for move_id: String in expected_gloom_moves:
+		assert(battle.battle_data["moves"].has(move_id), "Skeeter move '%s' must be defined." % move_id)
+	var gloomquito: Dictionary = battle.battle_data["fakemon"].filter(func(mon: Dictionary) -> bool: return mon["name"] == "Gloomquito")[0]
+	var vamprick: Dictionary = battle.battle_data["fakemon"].filter(func(mon: Dictionary) -> bool: return mon["name"] == "Vamprick")[0]
+	assert(battle._fakemon_types(skeeter) == ["Bug"] and skeeter["egg_groups"] == ["Bug", "Demonic"], "Skeeter must be Bug type with Bug/Demonic egg groups.")
+	assert(gloomquito["types"] == ["Bug", "Dark"] and gloomquito["evolves_from"] == "Skeeter" and int(gloomquito["evolution_level"]) == 15 and gloomquito["moves"] == skeeter["moves"], "Gloomquito must evolve from Skeeter at level 15 and inherit its moveset.")
+	assert(vamprick["types"] == ["Bug", "Dark"] and vamprick["evolves_from"] == "Gloomquito" and int(vamprick["evolution_level"]) == 32 and vamprick["moves"] == skeeter["moves"], "Vamprick must evolve from Gloomquito at level 32 and inherit its moveset.")
+	assert(gloomquito["egg_groups"] == ["Bug", "Demonic"] and vamprick["egg_groups"] == ["Bug", "Demonic"], "The Skeeter line must retain Bug/Demonic egg groups.")
+	assert(int(skeeter["base_exp"]) == int(slumboth["base_exp"]) and int(gloomquito["base_exp"]) == int(hangrowl["base_exp"]) and int(vamprick["base_exp"]) == int(swoleth["base_exp"]), "The Skeeter line must match the Slumboth line's EXP values by stage.")
+	assert(int(battle.battle_data["moves"]["swoop"]["priority"]) == 1 and int(battle.battle_data["moves"]["night_dart"]["priority"]) == 1, "Swoop and Night Dart must share standard move priority so Speed breaks ties.")
+	assert(int(battle.battle_data["weather"]["Blood Moon"]["duration"]) == 5, "Blood Moon must last five turns.")
+	var gloom_user: Dictionary = battle.create_fakemon(skeeter)
+	var gloom_target: Dictionary = battle.create_fakemon(skeeter)
+	battle._ensure_condition_fields(gloom_user)
+	battle._ensure_condition_fields(gloom_target)
+	gloom_target["condition"] = "Asleep"
+	seed(44)
+	var normal_night_dart: Dictionary = battle.battle_data["moves"]["night_dart"].duplicate(true)
+	normal_night_dart.erase("power_multiplier_if_target_conditions")
+	var normal_night_damage := int(battle._calculate_damage(gloom_user, gloom_target, normal_night_dart)["damage"])
+	seed(44)
+	var sleeping_night_damage := int(battle._calculate_damage(gloom_user, gloom_target, battle.battle_data["moves"]["night_dart"])["damage"])
+	assert(sleeping_night_damage > normal_night_damage, "Night Dart must double its power against sleeping or confused targets.")
+	gloom_target["last_successful_move"] = "gnaw"
+	battle._apply_status_move(gloom_user, gloom_target, battle.battle_data["moves"]["torment"], true)
+	assert(not battle._is_move_selectable(gloom_target, "gnaw"), "Torment must prevent repeating the target's last move.")
+	battle._apply_status_move(gloom_user, gloom_target, battle.battle_data["moves"]["swarm"], true)
+	assert(String(gloom_user["charged_type"]) == "Bug" and is_equal_approx(float(gloom_user["charge_multiplier"]), 2.0), "Swarm must double Bug move power on the following turn.")
+	battle._apply_status_move(gloom_user, gloom_target, battle.battle_data["moves"]["gather"], true)
+	assert(gloom_user["condition_immunities"] == ["Confusion", "Flinch"], "Gather must prepare next-turn immunity to confusion and flinching.")
+	battle._set_weather("Blood Moon")
+	assert(battle.weather_turns_remaining == 5, "Blood Moon must initialize its full five-turn duration.")
+
+	var dartlet: Dictionary = battle.battle_data["fakemon"].filter(func(mon: Dictionary) -> bool: return mon["name"] == "Dartlet")[0]
+	var croacoa: Dictionary = battle.battle_data["fakemon"].filter(func(mon: Dictionary) -> bool: return mon["name"] == "Croacoa")[0]
+	var flambian: Dictionary = battle.battle_data["fakemon"].filter(func(mon: Dictionary) -> bool: return mon["name"] == "Flambian")[0]
+	var expected_dartlet_moves := ["poison_bubble", "croak", "leap", "poison_tongue", "dartlet_stare", "drain", "incinerate", "cacophony", "singe", "warning_flare", "coat_toxin", "flashcroak", "puff_up", "flamethrower", "harsh_sunlight", "alkaloid_mist", "sun_chorus", "toxic_flare", "grand_display"]
+	assert(dartlet["learnset"].map(func(entry: Dictionary) -> String: return String(entry["move"])) == expected_dartlet_moves and dartlet["moves"] == ["poison_bubble", "croak", "leap"], "Dartlet must have its complete ordered learnset and level-five moves.")
+	assert(battle._fakemon_types(dartlet) == ["Poison"] and dartlet["egg_groups"] == ["Amphibian", "Cosmic"], "Dartlet must be Poison type with Amphibian/Cosmic egg groups.")
+	assert(croacoa["types"] == ["Poison", "Fire"] and croacoa["evolves_from"] == "Dartlet" and int(croacoa["evolution_level"]) == 15 and croacoa["moves"] == dartlet["moves"], "Croacoa must evolve from Dartlet at level 15 with its moveset.")
+	assert(flambian["types"] == ["Poison", "Fire"] and flambian["evolves_from"] == "Croacoa" and int(flambian["evolution_level"]) == 35 and flambian["moves"] == dartlet["moves"], "Flambian must evolve from Croacoa at level 35 with its moveset.")
+	assert(int(dartlet["base_exp"]) == int(slumboth["base_exp"]) + 5 and int(croacoa["base_exp"]) == int(hangrowl["base_exp"]) + 5 and int(flambian["base_exp"]) == int(swoleth["base_exp"]) + 5, "The Dartlet line must use the requested stage-relative EXP values.")
+	var dartlet_user: Dictionary = battle.create_fakemon(dartlet)
+	var amphibian_target: Dictionary = battle.create_fakemon(dartlet)
+	battle._ensure_condition_fields(dartlet_user)
+	battle._ensure_condition_fields(amphibian_target)
+	battle._apply_status_move(dartlet_user, amphibian_target, battle.battle_data["moves"]["croak"], true)
+	assert(int(amphibian_target["infatuation_stacks"]) == 1 and is_equal_approx(float(amphibian_target["stat_modifiers"]["special_defense"]), 1.0), "Croak must substitute Infatuation for its stat drop against Amphibian targets.")
+	battle._apply_after_damage_effects(dartlet_user, amphibian_target, battle.battle_data["moves"]["leap"], true, 5)
+	assert(int(dartlet_user["next_move_priority"]) == 1, "Leap must grant priority to the user's next move.")
+	battle._apply_status_move(dartlet_user, amphibian_target, battle.battle_data["moves"]["warning_flare"], true)
+	assert(String(dartlet_user["reactive_poison_damage_class"]) == "Physical" and int(dartlet_user["reactive_poison_turns"]) == 2, "Warning Flare must arm two turns of physical retaliation poison.")
+	amphibian_target["condition"] = "Poisoned"
+	seed(72)
+	var ordinary_flare: Dictionary = battle.battle_data["moves"]["toxic_flare"].duplicate(true)
+	ordinary_flare.erase("power_multiplier_if_target_conditions")
+	var ordinary_flare_damage := int(battle._calculate_damage(dartlet_user, amphibian_target, ordinary_flare)["damage"])
+	seed(72)
+	assert(int(battle._calculate_damage(dartlet_user, amphibian_target, battle.battle_data["moves"]["toxic_flare"])["damage"]) > ordinary_flare_damage, "Toxic Flare must gain power against poisoned targets.")
+	var lochirp: Dictionary = battle.battle_data["fakemon"].filter(func(mon: Dictionary) -> bool: return mon["name"] == "Lochirp")[0]
+	var paratweet: Dictionary = battle.battle_data["fakemon"].filter(func(mon: Dictionary) -> bool: return mon["name"] == "Paratweet")[0]
+	var paradisia: Dictionary = battle.battle_data["fakemon"].filter(func(mon: Dictionary) -> bool: return mon["name"] == "Paradisia")[0]
+	var expected_lochirp_moves := ["nectar_drink", "petal_whip", "dazzle", "charm", "remedy", "flutter", "gust", "bloom", "fey_dust", "petalwake", "mist", "lotus_dart", "magic_pulse", "fey_gardens", "solar_ray", "lotus_absolution", "mystic_stream", "paradise_ray", "paradise_bloom"]
+	assert(lochirp["learnset"].map(func(entry: Dictionary) -> String: return String(entry["move"])) == expected_lochirp_moves and lochirp["moves"] == ["nectar_drink", "petal_whip", "dazzle", "charm"], "Lochirp must have its complete ordered learnset and level-five moves.")
+	assert(lochirp["types"] == ["Plant", "Mystic"] and lochirp["egg_groups"] == ["Bird", "Plant"], "Lochirp must use Plant/Mystic typing and Bird/Plant egg groups.")
+	assert(paratweet["evolves_from"] == "Lochirp" and int(paratweet["evolution_level"]) == 16 and paradisia["evolves_from"] == "Paratweet" and int(paradisia["evolution_level"]) == 36, "The Lochirp evolution levels must be data-driven.")
+	assert(int(lochirp["base_exp"]) == int(slumboth["base_exp"]) + 5 and int(paratweet["base_exp"]) == int(hangrowl["base_exp"]) + 5 and int(paradisia["base_exp"]) == int(swoleth["base_exp"]) + 5, "The Lochirp line must use the requested EXP values.")
+	var bloom_user: Dictionary = battle.create_fakemon(lochirp)
+	battle._ensure_condition_fields(bloom_user)
+	bloom_user["stat_modifiers"]["speed"] = 1.3
+	bloom_user["stat_modifiers"]["defense"] = 0.8
+	bloom_user["condition"] = "Poisoned"
+	battle.player = bloom_user
+	battle.player_hp = 1
+	battle.active_party_index = 0
+	battle.party_hp.clear()
+	battle.party_hp.append(1)
+	battle._apply_paradise_bloom(bloom_user, true)
+	assert(battle.player_hp == 35, "Paradise Bloom must heal 15% base, 10% per individual stat stage, and 20% per condition.")
+	battle._set_weather("Fey Gardens")
+	assert(battle.weather_turns_remaining == 3, "Fey Gardens must last three turns.")
+	var fey_target: Dictionary = battle.create_fakemon(lochirp)
+	battle._ensure_condition_fields(fey_target)
+	battle._try_inflict_condition(fey_target, {"condition": "Infatuated", "condition_chance": 1.0}, bloom_user, true)
+	assert(int(fey_target["infatuation_stacks"]) == 2, "The first Infatuation applied by each combatant in Fey Gardens must gain an extra stack.")
+
+	var sleeper := {"name": "Sleeper", "type": "Normal", "gender": "Genderless", "level": 20, "max_hp": 100, "attack": 40, "defense": 40, "special_attack": 40, "special_defense": 40, "speed": 20, "moves": ["sleep_talk"]}
+	var sleep_target := {"name": "Target", "type": "Normal", "gender": "Genderless", "level": 20, "max_hp": 100, "attack": 40, "defense": 40, "special_attack": 40, "special_defense": 40, "speed": 20, "moves": ["scratch"]}
+	battle._ensure_condition_fields(sleeper)
+	battle._ensure_condition_fields(sleep_target)
+	assert(not battle._move_condition_is_met(sleeper, battle.battle_data["moves"]["sleep_talk"]), "Sleep Talk must fail while awake.")
+	sleeper["condition"] = "Asleep"
+	sleeper["condition_turns"] = 2
+	assert(battle._can_use_move(sleeper, battle.battle_data["moves"]["sleep_talk"]), "Sleep-only moves must act through sleep.")
+	var gnaw_result: Dictionary = battle._calculate_move_damage(sleeper, sleep_target, battle.battle_data["moves"]["gnaw"])
+	assert(int(gnaw_result["hits"]) >= 2 and int(gnaw_result["hits"]) <= 5, "Gnaw must hit between two and five times.")
+	battle.player = sleeper
+	battle.opponent = sleep_target
+	battle.player_hp = 100
+	battle.opponent_hp = 100
+	battle.party_hp.clear()
+	battle.party_hp.append(100)
+	battle.opponent_party_hp.clear()
+	battle.opponent_party_hp.append(100)
+	battle._apply_move_damage(sleep_target, 999, false, battle.battle_data["moves"]["scourge"])
+	assert(battle.opponent_hp == 1, "Scourge must never reduce its target below one HP.")
+	sleeper["last_received_damage_class"] = "Physical"
+	sleeper["last_received_damage"] = 12
+	battle.opponent_hp = 100
+	battle._apply_counter(sleeper, sleep_target, true)
+	assert(battle.opponent_hp == 76, "Counter must retaliate for twice the last physical damage received.")
+	sleeper["last_received_damage_class"] = "Special"
+	battle._apply_counter(sleeper, sleep_target, true)
+	assert(battle.opponent_hp == 76, "Counter must fail after a Special move.")
+
 	var trainer_test_party: Array[Dictionary] = []
 	var trainer_test_player := battle.battle_data["fakemon"][3].duplicate(true) as Dictionary
 	trainer_test_player["current_hp"] = int(trainer_test_player["max_hp"])
@@ -441,5 +583,18 @@ func _initialize() -> void:
 	assert(battle.active_opponent_index == 1 and battle.opponent["name"] == "Sylvafin", "A trainer must automatically send out the next conscious party member.")
 	battle.begin_battle_with_opponent_party(trainer_test_party, 0, [0, 1, 2, 3, 4, 5, 0], false)
 	assert(battle.opponent_party.size() == 7 and battle.opponent_party_hp.size() == 7, "Trainer and boss battles must support the full seven-Fakemon party limit.")
+	battle.forced_switch = false
+	battle._show_move_menu()
+	assert(battle.move_menu.visible and battle.move_menu.get_child_count() == battle.current_move_ids.size() + 1, "Attack selection must display a Back control without committing a move.")
+	battle._cancel_action_selection()
+	assert(not battle.move_menu.visible and not battle.switch_panel.visible and not battle.action_button.disabled, "Canceling Attack selection must return to actions without consuming a turn.")
+	battle._show_switch_choices()
+	assert(battle.switch_panel.visible and (battle.switch_list.get_child(-1) as Button).text == "[Esc] Back", "Voluntary Switch selection must display a Back control.")
+	battle._cancel_action_selection()
+	assert(not battle.switch_panel.visible and not battle.action_button.disabled, "Canceling Switch selection must return to actions without selecting a Fakemon.")
+	battle.forced_switch = true
+	battle._show_switch_choices()
+	assert(not (battle.switch_list.get_child(-1) is Button and (battle.switch_list.get_child(-1) as Button).text == "[Esc] Back"), "Forced switch selection must not offer cancellation.")
+	battle.forced_switch = false
 	print("BATTLE_MECHANICS_TEST_PASSED")
 	quit()

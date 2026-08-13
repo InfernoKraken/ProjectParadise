@@ -7,6 +7,12 @@ var current_mon: Dictionary = {}
 var moves_catalog: Dictionary = {}
 var move_details: VBoxContainer
 
+const TYPE_PALETTE := preload("res://data/type_palette.gd")
+const PORTRAIT_PATH_TEMPLATES := [
+	"res://assets/fakemon/battle/%s_Player.png",
+	"res://assets/fakemon/overworld/%s_Follow_Down.png"
+]
+
 
 func _ready() -> void:
 	var dex_theme := Theme.new()
@@ -71,11 +77,10 @@ func _show_overview_page() -> void:
 	portrait.custom_minimum_size = Vector2(145, 145)
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	var art_id := String(current_mon.get("art_id", ""))
-	var portrait_path := "res://assets/fakemon/battle/%s_Player.png" % art_id
-	var has_portrait := not art_id.is_empty() and ResourceLoader.exists(portrait_path)
+	var portrait_texture := _portrait_texture(current_mon)
+	var has_portrait := portrait_texture != null
 	if has_portrait:
-		portrait.texture = load(portrait_path)
+		portrait.texture = portrait_texture
 	header.add_child(portrait)
 	var portrait_text := Label.new()
 	portrait_text.text = "FAKEMON\nPICTURE\nPLACEHOLDER"
@@ -249,7 +254,18 @@ func _add_return_button() -> void:
 
 
 func _type_color(type_name: String) -> Color:
-	return {"Fire": Color("#a72d20"), "Water": Color("#155ca5"), "Plant": Color("#176d32"), "Normal": Color("#544b42"), "Light": Color("#8a6500"), "Dark": Color("#4b3268")}.get(type_name, Color("#18251f"))
+	return TYPE_PALETTE.color_for(type_name)
+
+
+func _portrait_texture(mon: Dictionary) -> Texture2D:
+	var art_id := String(mon.get("art_id", ""))
+	if art_id.is_empty():
+		return null
+	for path_template: String in PORTRAIT_PATH_TEMPLATES:
+		var portrait_path := path_template % art_id
+		if ResourceLoader.exists(portrait_path):
+			return load(portrait_path) as Texture2D
+	return null
 
 
 func _fakemon_types(mon: Dictionary) -> Array[String]:

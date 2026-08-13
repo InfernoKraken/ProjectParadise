@@ -10,6 +10,18 @@
     "Pyravion": ["Bird", "Cosmic"],
     "Sylvafin": ["Fish", "Angellic"],
     "Serafin": ["Fish", "Angellic"],
-    "Celestraal": ["Fish", "Angellic"]
+    "Celestraal": ["Fish", "Angellic"],
+    "Slumboth": ["Mammal", "Mineral"],
+    "Hangrowl": ["Mammal", "Mineral"],
+    "Swoleth": ["Mammal", "Mineral"],
+    "Skeeter": ["Bug", "Demonic"],
+    "Gloomquito": ["Bug", "Demonic"],
+    "Vamprick": ["Bug", "Demonic"],
+    "Dartlet": ["Amphibian", "Cosmic"],
+    "Croacoa": ["Amphibian", "Cosmic"],
+    "Flambian": ["Amphibian", "Cosmic"],
+    "Lochirp": ["Bird", "Plant"],
+    "Paratweet": ["Bird", "Plant"],
+    "Paradisia": ["Bird", "Plant"]
   }
 }

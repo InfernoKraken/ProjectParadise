@@ -152,10 +152,6 @@ func _physics_process(delta: float) -> void:
 		return
 	_set_active_visual_region(_current_location())
 	var input_vector := Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	if Input.is_key_pressed(KEY_LEFT):
-		input_vector.x = -1.0
-	elif Input.is_key_pressed(KEY_RIGHT):
-		input_vector.x = 1.0
 	player.velocity = Vector3(input_vector.x, 0.0, input_vector.y) * MOVE_SPEED
 	var position_before_move := player.position
 	player.move_and_slide()
