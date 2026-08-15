@@ -8,6 +8,18 @@ func _initialize() -> void:
 	root.add_child(battle)
 	await process_frame
 	print("BATTLE_TEST_READY")
+	var battle_returned_early := false
+	battle.battle_finished.connect(func(_won: bool, _escaped: bool, _captured: Dictionary, _exp: int, _recipients: Array, _active_index: int, _hp: Array[int], _conditions: Array[Dictionary]) -> void: battle_returned_early = true)
+	battle.battle_over = false
+	battle.restart_button.hide()
+	battle.restart_button.disabled = false # Simulates the historical hidden-button state.
+	var enter := InputEventKey.new()
+	enter.keycode = KEY_ENTER
+	enter.pressed = true
+	battle._input(enter)
+	assert(not battle_returned_early, "Enter must not return from an active battle while a failed escape is resolving.")
+	assert(battle.visible, "A hidden return button must not close an active battle.")
+	battle.restart_button.disabled = true
 
 	var test_mon := {
 		"name": "Test Fakemon", "type": "Light", "gender": "Genderless", "level": 5,
@@ -47,7 +59,7 @@ func _initialize() -> void:
 	assert(battle._get_type_effectiveness("Psychic", "Normal") == 2.0 and battle._get_type_effectiveness("Normal", "Psychic") == 0.5, "Psychic must be strong against and resist Normal.")
 	assert(battle._get_type_effectiveness("Fighting", "Normal") == 2.0 and battle._get_type_effectiveness("Fighting", "Bug") == 2.0, "Fighting must be strong against Normal and Bug.")
 	assert(battle._get_type_effectiveness("Fighting", "Ghost") == 0.5 and battle._get_type_effectiveness("Fighting", "Air") == 0.5 and battle._get_type_effectiveness("Fighting", "Psychic") == 0.5, "Ghost, Air, and Psychic must resist Fighting.")
-	assert(battle._get_type_effectiveness("Air", "Fighting") == 2.0 and battle._get_type_effectiveness("Psychic", "Fighting") == 2.0 and battle._get_type_effectiveness("Ghost", "Fighting") == 1.0, "Fighting must be weak to Air and Psychic but neutral to Ghost.")
+	assert(battle._get_type_effectiveness("Air", "Fighting") == 2.0 and battle._get_type_effectiveness("Psychic", "Fighting") == 2.0 and battle._get_type_effectiveness("Ghost", "Fighting") == 2.0, "Fighting must be weak to Air, Psychic, and Ghost.")
 	assert(battle._get_type_effectiveness("Psychic", "Poison") == 2.0 and battle._get_type_effectiveness("Poison", "Psychic") == 0.5, "Poison must be weak to Psychic, while Psychic resists Poison.")
 	assert(battle._get_type_effectiveness("Poison", "Normal") == 2.0 and battle._get_type_effectiveness("Poison", "Water") == 2.0 and battle._get_type_effectiveness("Poison", "Plant") == 2.0, "Poison must be strong against Normal, Water, and Plant.")
 	for move_id: String in ["peck", "flutter", "photon_beam", "flip_turn", "aqua_jet", "dazzle", "brilliant_light", "veil", "disable", "scald", "smite", "aureal_flood", "remembrance", "celestial_chorus", "prayer", "discern", "fin_flash"]:
@@ -90,7 +102,7 @@ func _initialize() -> void:
 	var dual_type_mon := {"types": ["Air", "Bug"]}
 	assert(battle._fakemon_types(dual_type_mon) == ["Air", "Bug"], "Dual typings must preserve both unique types.")
 	assert(battle._get_combined_type_effectiveness("Fire", dual_type_mon) == 4.0, "Two defensive weaknesses must combine to 4x damage.")
-	assert(battle._get_combined_type_effectiveness("Bug", dual_type_mon) == 0.5, "A dual type must multiply each defensive matchup.")
+	assert(battle._get_combined_type_effectiveness("Bug", dual_type_mon) == 0.25, "Two defensive resistances must combine to quarter damage.")
 	var mixed_matchup_mon := {"types": ["Psychic", "Bug"]}
 	assert(battle._get_combined_type_effectiveness("Light", mixed_matchup_mon) == 1.0, "A weakness and resistance must combine to neutral damage.")
 	assert(battle._get_combined_type_effectiveness("Light", mixed_matchup_mon, true) == 2.0, "Resistance-ignoring moves must ignore each resisted component while preserving weaknesses.")
@@ -584,6 +596,9 @@ func _initialize() -> void:
 	battle.begin_battle_with_opponent_party(trainer_test_party, 0, [0, 1, 2, 3, 4, 5, 0], false)
 	assert(battle.opponent_party.size() == 7 and battle.opponent_party_hp.size() == 7, "Trainer and boss battles must support the full seven-Fakemon party limit.")
 	battle.forced_switch = false
+	assert(battle._move_effectiveness_indicator({"type": "Fire", "damage_class": "Special"}, {"type": "Fire"}, {"type": "Plant"}) == 1, "Super-effective damaging moves must receive a positive menu indicator.")
+	assert(battle._move_effectiveness_indicator({"type": "Plant", "damage_class": "Physical"}, {"type": "Plant"}, {"type": "Fire"}) == -1, "Resisted damaging moves must receive a negative menu indicator.")
+	assert(battle._move_effectiveness_indicator({"type": "Fire", "damage_class": "Status"}, {"type": "Fire"}, {"type": "Plant"}) == 0, "Status moves must not receive an effectiveness indicator.")
 	battle._show_move_menu()
 	assert(battle.move_menu.visible and battle.move_menu.get_child_count() == battle.current_move_ids.size() + 1, "Attack selection must display a Back control without committing a move.")
 	battle._cancel_action_selection()

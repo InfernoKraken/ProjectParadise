@@ -1,0 +1,127 @@
+﻿{
+    "arrival_points": {"entry":[0,0.65,8.5]},
+    "outdoor_connections": [{"id":"city_to_canopy","warp":"return_warp","destination_map":"canopy_route.json","arrival":"north_return","reverse":"canopy_to_city","facing":"north"}],
+    "origin":  [
+                   170,
+                   0,
+                   0
+               ],
+    "size":  [
+                 26,
+                 22
+             ],
+    "entry":  [
+                  0,
+                  0.65,
+                  8.5
+              ],
+    "return_warp":  [
+                        0,
+                        0.12,
+                        10.45
+                    ],
+    "tall_grass_species":  [
+                               "Slumboth",
+                               "Dartlet",
+                               "Skeeter",
+                               "Lochirp"
+                           ],
+    "trainers": [
+        {"name":"ACE IVO","position":[-7.0,0.65,3.5],"party":[0,1],"dialogue":["Mossvale trainers look after one another by testing one another.","I will lead with my best foot forward!"],"color":"9a5ac8"},
+        {"name":"STUDENT MIRA","position":[7.0,0.65,-3.0],"party":[2],"dialogue":["I am studying how different types battle in the wild.","Would you help with a field observation?"],"color":"5d90cc"}
+    ],
+    "trees":  [
+                  [
+                      -12,
+                      1.5,
+                      -9,
+                      0
+                  ],
+                  [
+                      -5,
+                      1.5,
+                      -10,
+                      1
+                  ],
+                  [
+                      5,
+                      1.5,
+                      -10,
+                      0
+                  ],
+                  [
+                      12,
+                      1.5,
+                      -9,
+                      1
+                  ],
+                  [
+                      -12,
+                      1.5,
+                      0,
+                      1
+                  ],
+                  [
+                      12,
+                      1.5,
+                      0,
+                      0
+                  ],
+                  [
+                      -11,
+                      1.5,
+                      8,
+                      0
+                  ],
+                  [
+                      -6,
+                      1.5,
+                      9,
+                      1
+                  ],
+                  [
+                      6,
+                      1.5,
+                      9,
+                      0
+                  ],
+                  [
+                      11,
+                      1.5,
+                      8,
+                      1
+                  ]
+              ],
+    "flower_beds":  [
+                        [
+                            -4,
+                            0.2,
+                            3
+                        ],
+                        [
+                            -3,
+                            0.2,
+                            3
+                        ],
+                        [
+                            -2,
+                            0.2,
+                            3
+                        ],
+                        [
+                            2,
+                            0.2,
+                            4
+                        ],
+                        [
+                            3,
+                            0.2,
+                            4
+                        ],
+                        [
+                            4,
+                            0.2,
+                            4
+                        ]
+                    ]
+}

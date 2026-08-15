@@ -1,0 +1,126 @@
+{
+	"door": [
+		-7,
+		0.12,
+		-3.4
+	],
+	"entry": [
+		0,
+		0.64999997615814,
+		2.0
+	],
+	"exit_door": [
+		0,
+		0.11999999731779,
+		3.5
+	],
+	"staff": [0.0, 0.65, -1.25],
+	"exterior_return": [
+		-7,
+		0.65,
+		-2.35
+	],
+	"floor_blocks": [
+		[
+			0,
+			-0.1,
+			0,
+			8,
+			0.2,
+			7
+		]
+	],
+	"furnishings": [
+		{
+			"height": 1.75,
+			"position": [
+				0.0,
+				0,
+				0.0
+			],
+			"type": "ward_counter"
+		},
+		{
+			"height": 2.05,
+			"position": [
+				-3,
+				0,
+				-1.7
+			],
+			"type": "ward_shelf"
+		},
+		{
+			"height": 0.95,
+			"position": [
+				0.0,
+				0,
+				-2.0
+			],
+			"type": "ward_table"
+		},
+		{
+			"height": 1.85,
+			"position": [
+				2.95,
+				0,
+				-1
+			],
+			"type": "ward_curtain"
+		},
+		{
+			"height": 1.85,
+			"position": [
+				2.0,
+				0,
+				-2.0
+			],
+			"type": "ward_wash"
+		}
+	],
+	"interior_size": [
+		8,
+		7
+	],
+	"origin": [
+		40,
+		0,
+		0
+	],
+	"position": [
+		-7,
+		1.5,
+		-5
+	],
+	"size": [
+		5,
+		3,
+		4
+	],
+	"tall_grass_species": [],
+	"wall_blocks": [
+		[
+			0,
+			1.2,
+			-3.35,
+			8,
+			2.4,
+			0.3
+		],
+		[
+			-3.85,
+			1.2,
+			0,
+			0.3,
+			2.4,
+			7
+		],
+		[
+			3.85,
+			1.2,
+			0,
+			0.3,
+			2.4,
+			7
+		]
+	]
+}

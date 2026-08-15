@@ -1,0 +1,116 @@
+﻿{
+    "arrival_points": {"entry":[0,0.65,3.2]},
+    "outdoor_connections": [{"id":"cave_to_east","warp":"exit_warp","destination_map":"eastern_rainforest_route.json","arrival":"cave_return","reverse":"east_to_cave","facing":"north"}],
+    "origin":  [
+                   140,
+                   0,
+                   30
+               ],
+    "size":  [
+                 12,
+                 10
+             ],
+    "entry":  [
+                  0,
+                  0.65,
+                  3.2
+              ],
+    "exit_warp":  [
+                      0,
+                      0.12,
+                      4.55
+                  ],
+    "floor_blocks": [[0, -0.1, 0, 12, 0.2, 10]],
+    "tall_grass_species":  [
+                               "Slumboth",
+                               "Dartlet",
+                               "Skeeter",
+                               "Lochirp"
+                           ],
+    "rocks":  [
+                  [
+                      -5.4,
+                      0.8,
+                      0,
+                      0.8,
+                      1.6,
+                      9
+                  ],
+                  [
+                      5.4,
+                      0.8,
+                      0,
+                      0.8,
+                      1.6,
+                      9
+                  ],
+                  [
+                      0,
+                      0.8,
+                      -4.4,
+                      11,
+                      1.6,
+                      0.8
+                  ],
+                  [
+                      -3.5,
+                      0.5,
+                      -1,
+                      1.3,
+                      1,
+                      1.3
+                  ],
+                  [
+                      3,
+                      0.4,
+                      0,
+                      1,
+                      0.8,
+                      1
+                  ]
+              ],
+    "blue_flowers":  [
+                         [
+                             -2.5,
+                             0.2,
+                             2
+                         ],
+                         [
+                             -1.8,
+                             0.2,
+                             2.4
+                         ],
+                         [
+                             2.2,
+                             0.2,
+                             -2
+                         ],
+                         [
+                             2.8,
+                             0.2,
+                             -2.3
+                         ]
+                     ],
+    "vines":  [
+                  [
+                      -4.8,
+                      0.5,
+                      -2.5
+                  ],
+                  [
+                      -4.8,
+                      0.5,
+                      1
+                  ],
+                  [
+                      4.8,
+                      0.5,
+                      -1
+                  ],
+                  [
+                      1.5,
+                      0.15,
+                      -3.8
+                  ]
+              ]
+}

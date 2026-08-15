@@ -1,0 +1,218 @@
+﻿{
+    "arrival_points": {"entry":[7.2,0.65,0]},
+    "outdoor_connections": [{"id":"west_to_canopy","warp":"return_warp","destination_map":"canopy_route.json","arrival":"west_return","reverse":"canopy_to_west","facing":"east"}],
+    "origin":  [
+                   50,
+                   0,
+                   30
+               ],
+    "size":  [
+                 18,
+                 20
+             ],
+    "entry":  [
+                  7.2,
+                  0.65,
+                  0
+              ],
+    "return_warp":  [
+                        8.55,
+                        0.12,
+                        0
+                    ],
+    "tall_grass_species":  [
+                               "Slumboth",
+                               "Dartlet",
+                               "Skeeter",
+                               "Lochirp"
+                           ],
+    "trainers": [
+        {"name":"GARDENER NIA","position":[2.0,0.65,2.0],"party":[2],"dialogue":["The western path has the richest soil in the rainforest.","Let us grow stronger together in battle!"],"color":"b26f78"},
+        {"name":"PICNICKER SOL","position":[-1.5,0.65,-6.5],"party":[0],"dialogue":["A picnic always tastes better after a friendly match.","Ready when you are!"],"color":"d89258"}
+    ],
+    "grass_zones":  [
+                        {
+                            "position":  [
+                                             3,
+                                             0.12,
+                                             4
+                                         ],
+                            "size":  [
+                                         6,
+                                         0.25,
+                                         5
+                                     ],
+                            "encounter_chance":  0.2
+                        },
+                        {
+                            "position":  [
+                                             -3.5,
+                                             0.12,
+                                             -3
+                                         ],
+                            "size":  [
+                                         5,
+                                         0.25,
+                                         6
+                                     ],
+                            "encounter_chance":  0.2
+                        }
+                    ],
+    "sand_blocks": [[5.5,0.05,-7.75,5,0.1,0.5],[5.5,0.05,-3.25,5,0.1,0.5],[3.25,0.05,-5.5,0.5,0.1,4],[7.75,0.05,-5.5,0.5,0.1,4],[-5.5,0.05,3.75,4,0.1,0.5],[-5.5,0.05,7.25,4,0.1,0.5],[-7.25,0.05,5.5,0.5,0.1,3],[-3.75,0.05,5.5,0.5,0.1,3]],
+    "water_blocks":  [
+                         [
+                             5.5,
+                             0.15,
+                             -5.5,
+                             4,
+                             0.3,
+                             4
+                         ],
+                         [
+                             -5.5,
+                             0.15,
+                             5.5,
+                             3,
+                             0.3,
+                             3
+                         ]
+                     ],
+    "tall_flowers":  [
+                         [
+                             -1,
+                             0.35,
+                             7
+                         ],
+                         [
+                             0,
+                             0.35,
+                             7
+                         ],
+                         [
+                             1,
+                             0.35,
+                             7
+                         ],
+                         [
+                             -5,
+                             0.35,
+                             0
+                         ]
+                     ],
+    "trees":  [
+                  [
+                      -8.2,
+                      1.5,
+                      8,
+                      1
+                  ],
+                  [
+                      -5,
+                      1.5,
+                      9,
+                      0
+                  ],
+                  [
+                      -2,
+                      1.5,
+                      9,
+                      1
+                  ],
+                  [
+                      1,
+                      1.5,
+                      9,
+                      0
+                  ],
+                  [
+                      4,
+                      1.5,
+                      9,
+                      1
+                  ],
+                  [
+                      8.2,
+                      1.5,
+                      8,
+                      0
+                  ],
+                  [
+                      -8.2,
+                      1.5,
+                      4,
+                      0
+                  ],
+                  [
+                      8.2,
+                      1.5,
+                      4,
+                      1
+                  ],
+                  [
+                      -8.2,
+                      1.5,
+                      -3,
+                      1
+                  ],
+                  [
+                      8.2,
+                      1.5,
+                      -3,
+                      0
+                  ],
+                  [
+                      -8.2,
+                      1.5,
+                      -8,
+                      0
+                  ],
+                  [
+                      -5,
+                      1.5,
+                      -9,
+                      1
+                  ],
+                  [
+                      -2,
+                      1.5,
+                      -9,
+                      0
+                  ],
+                  [
+                      1,
+                      1.5,
+                      -9,
+                      1
+                  ],
+                  [
+                      4,
+                      1.5,
+                      -9,
+                      0
+                  ],
+                  [
+                      8.2,
+                      1.5,
+                      -9,
+                      1
+                  ],
+                  [
+                      -4,
+                      1.5,
+                      1,
+                      0
+                  ],
+                  [
+                      0,
+                      1.5,
+                      -1,
+                      1
+                  ],
+                  [
+                      4,
+                      1.5,
+                      4,
+                      0
+                  ]
+              ]
+}

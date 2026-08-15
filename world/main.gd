@@ -1,6 +1,7 @@
 extends Node
 
-const MAP_DATA_PATH := "res://data/rainforest_map.json"
+const MAP_DATA_PATH := "res://data/maps/map_index.json"
+const MapDataLoader := preload("res://world/map_data_loader.gd")
 const AUTO_SAVE_PATH := "user://project_paradise_autosave.json"
 const SAVE_SLOT_COUNT := 5
 const SAVE_VERSION := 1
@@ -20,8 +21,21 @@ const TEX_SAND := preload("res://assets/overworld/tile_sand_generic.png")
 const TEX_TALL_GRASS := preload("res://assets/overworld/tile_tallgrass_generic.png")
 const TEX_WALL := preload("res://assets/overworld/tile_wall_interior.png")
 const TEX_WALL_GENERIC := preload("res://assets/overworld/tile_wall_interior_generic.png")
+const TEX_INTERIOR_FLOOR := preload("res://assets/overworld/tile_interior_floor_tiles.png")
 const TEX_WATER := preload("res://assets/overworld/tile_water_generic.png")
 const TEX_WOOD := preload("res://assets/overworld/tile_wood.png")
+const TEX_BED := preload("res://assets/overworld/bed_bedroom_main.png")
+const TEX_DRESSER := preload("res://assets/overworld/dresser_bedroom_main.png")
+const TEX_HUTCH := preload("res://assets/overworld/hutch_familyroom_main.png")
+const TEX_LAMPSTAND := preload("res://assets/overworld/lampstand_bedroom_main.png")
+const TEX_TABLE := preload("res://assets/overworld/table_familyroom_main.png")
+const TEX_HOUSEPLANT_ONE := preload("res://assets/overworld/houseplant_indoor_1.png")
+const TEX_HOUSEPLANT_TWO := preload("res://assets/overworld/houseplant_indoor_2.png")
+const TEX_WARD_COUNTER := preload("res://assets/overworld/medical_ward_counter_entry.png")
+const TEX_WARD_SHELF := preload("res://assets/overworld/medical_ward_shelf.png")
+const TEX_WARD_TABLE := preload("res://assets/overworld/medical_ward_table.png")
+const TEX_WARD_CURTAIN := preload("res://assets/overworld/indoor_changing_curtain.png")
+const TEX_WARD_WASH := preload("res://assets/overworld/indoor_wash_station.png")
 const TEX_TREE_MAIN := preload("res://assets/overworld/tree_main.png")
 const TEX_TREE_PALM := preload("res://assets/overworld/tree_palm.png")
 const TEX_VINES := preload("res://assets/overworld/vines.png")
@@ -31,6 +45,7 @@ const TEX_WARP_GENERIC := preload("res://assets/overworld/warp_outdoor_generic.p
 const TEX_WARP_NORTH := preload("res://assets/overworld/warp_outdoor_facing_north.png")
 const TEX_WARP_WEST := preload("res://assets/overworld/warp_outdoor_facing_west.png")
 const DYNAMIC_VISUAL_LAYER := 20
+const OUTDOOR_BACKGROUND := Color("#17321f")
 const PLAYER_CHOICES := [
 	{"gender": "Male", "color_name": "Dark Blue", "color": "#173f73"},
 	{"gender": "Male", "color_name": "Red", "color": "#b73535"},
@@ -50,11 +65,20 @@ var player: CharacterBody3D
 var player_sprite: Sprite3D
 var follower: Node3D
 var follower_sprite: Sprite3D
+var sort_canvas: CanvasLayer
+var sort_root: Node2D
+var player_sort_root: Node2D
+var follower_sort_root: Node2D
+var tree_sort_entries: Array[Dictionary] = []
+var object_sort_entries: Array[Dictionary] = []
 var follower_target := Vector3.ZERO
 var follower_facing := "Down"
 var opponent: Area3D
 var camera: Camera3D
 var spawn_position: Vector3
+var respawn_position: Vector3
+var respawn_location := "rainforest"
+var respawn_title := "RAINFOREST CLEARING - PLACEHOLDER MAP"
 var opponent_fakemon_index := 2
 var opponent_fakemon_indices: Array[int] = []
 var in_battle := false
@@ -99,6 +123,7 @@ var dialog_speaker: Label
 var dialog_button: Button
 var dialog_page := 0
 var dialog_open := false
+var dialogue_complete_action := Callable()
 var save_status_label: Label
 var startup_panel: PanelContainer
 var player_selection_panel: PanelContainer
@@ -138,13 +163,19 @@ func _ready() -> void:
 	battle.battle_finished.connect(_on_battle_finished)
 	battle.fakemon_selected.connect(_on_fakemon_selected)
 	_build_evolution_screen()
-	world.hide()
+	_set_overworld_visuals_visible(false)
 	map_ui.visible = false
 	battle.hide()
 	_build_player_selection()
 	if FileAccess.file_exists(AUTO_SAVE_PATH):
 		player_selection_panel.hide()
 		_build_startup_save_prompt()
+
+
+func _set_overworld_visuals_visible(is_visible: bool) -> void:
+	world.visible = is_visible
+	if sort_canvas != null:
+		sort_canvas.visible = is_visible
 
 
 func _physics_process(delta: float) -> void:
@@ -162,7 +193,7 @@ func _physics_process(delta: float) -> void:
 		follower.position = follower.position.move_toward(follower_target, MOVE_SPEED * 0.85 * delta)
 	_update_family_children(delta)
 	if inside_medical_ward:
-		var ward_size: Array = map_data["medical_ward"]["size"]
+		var ward_size: Array = map_data["medical_ward"]["interior_size"]
 		player.position.x = clampf(player.position.x, medical_origin.x - float(ward_size[0]) * 0.5 + 0.5, medical_origin.x + float(ward_size[0]) * 0.5 - 0.5)
 		player.position.z = clampf(player.position.z, medical_origin.z - float(ward_size[1]) * 0.5 + 0.5, medical_origin.z + float(ward_size[1]) * 0.5 - 0.5)
 	elif inside_house:
@@ -196,6 +227,7 @@ func _physics_process(delta: float) -> void:
 	var is_inside := inside_medical_ward or inside_house or inside_east_cave or inside_city_ward or inside_orchid_house or inside_family_house
 	camera.position.y = 7.0 if is_inside else 18.0
 	camera.position.z = player.position.z + (7.0 if is_inside else 18.0)
+	_update_sort_canvas()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -217,14 +249,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		_start_burn_dialogue()
 	elif npc_dialogues.has(hit["collider"].get_instance_id()):
 		var dialogue_data: Dictionary = npc_dialogues[hit["collider"].get_instance_id()]
-		_start_dialogue(String(dialogue_data["speaker"]), dialogue_data["pages"])
+		_start_dialogue(String(dialogue_data["speaker"]), dialogue_data["pages"], dialogue_data.get("after_dialogue", Callable()))
 
 
 func build_rainforest() -> void:
 	var environment := WorldEnvironment.new()
 	world_environment = Environment.new()
 	world_environment.background_mode = Environment.BG_COLOR
-	world_environment.background_color = Color("#93c47d")
+	world_environment.background_color = OUTDOOR_BACKGROUND
 	world_environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	world_environment.ambient_light_color = Color.WHITE
 	world_environment.ambient_light_energy = 1.0
@@ -241,6 +273,7 @@ func build_rainforest() -> void:
 	world.add_child(ground)
 
 	spawn_position = _array_to_vector3(map_data["player_spawn"])
+	respawn_position = spawn_position
 	player = CharacterBody3D.new()
 	player.name = "PlayerPlaceholder"
 	player.position = spawn_position
@@ -269,10 +302,13 @@ func build_rainforest() -> void:
 	opponent.add_child(_box_shape(Vector3(1.0, 1.3, 1.0)))
 	world.add_child(opponent)
 
-	var building_data: Dictionary = map_data["building"]
+	# The clearing references the same complete ward-instance schema as Mossvale.
+	# The legacy clearing `building` record remains compatible with old maps.
+	var building_data: Dictionary = map_data.get(String(map_data.get("medical_ward_instance", "")), map_data["building"])
 	var building_size := _array_to_vector3(building_data["size"])
 	var building_position := _array_to_vector3(building_data["position"])
 	var medical_art := _add_world_billboard("MedicalWardExteriorArt", building_position, TEX_MEDICAL_WARD, 5.4, 0.0)
+	_register_sortable_object(medical_art, "MedicalWardExteriorSortRoot", building_position, medical_art.global_position, float(medical_art.texture.get_height()) * medical_art.pixel_size, float(building_data.get("sort_offset_y", 0.0)))
 	var building_body := StaticBody3D.new()
 	building_body.name = "BuildingCollision"
 	building_body.position = building_position
@@ -286,8 +322,11 @@ func build_rainforest() -> void:
 	_build_side_route(map_data["west_route"], "West", false)
 	_build_east_cave(map_data["east_cave"])
 	_build_rainforest_city(map_data["rainforest_city"])
+	_build_trainers(map_data.get("trainers", []), Vector3.ZERO, "Clearing")
 
-	_build_grass_tiles(map_data["wild_zone"])
+	# Clearing terrain uses the same data-driven asset fields as every outdoor route.
+	_build_outdoor_terrain_assets(map_data, Vector3.ZERO, "Clearing")
+	_build_forest_warp("ClearingNorthExit", _array_to_vector3(map_data["north_warp"]), _on_route_entrance_entered, "generic")
 
 	for tree_data: Array in map_data["trees"]:
 		var tree_anchor := Vector3(float(tree_data[0]), float(tree_data[1]), float(tree_data[2]))
@@ -301,6 +340,7 @@ func build_rainforest() -> void:
 	camera.rotation_degrees = Vector3(-45, 0, 0)
 	camera.current = true
 	world.add_child(camera)
+	_build_sort_canvas()
 	_configure_visual_regions()
 	_set_active_visual_region("clearing")
 
@@ -325,7 +365,7 @@ func _start_battle() -> void:
 	_open_battle(opponent_fakemon_index, opponent_fakemon_indices)
 
 
-func _open_battle(enemy_index: int, enemy_party_indices: Array = []) -> void:
+func _open_battle(enemy_index: int, enemy_party_indices: Array = [], enemy_team: Array[Dictionary] = []) -> void:
 	if int(party[active_party_index].get("current_hp", party[active_party_index]["max_hp"])) <= 0:
 		var conscious_index := -1
 		for index in party.size():
@@ -339,10 +379,12 @@ func _open_battle(enemy_index: int, enemy_party_indices: Array = []) -> void:
 		_update_follower_appearance()
 		_refresh_party_menu()
 	in_battle = true
-	world.hide()
+	_set_overworld_visuals_visible(false)
 	map_ui.visible = false
 	if active_battle_is_wild:
 		battle.begin_battle_with_party(party, active_party_index, enemy_index, true)
+	elif not enemy_team.is_empty():
+		battle.begin_battle_with_enemy_party(party, active_party_index, enemy_team, false)
 	else:
 		var trainer_party := enemy_party_indices if not enemy_party_indices.is_empty() else [enemy_index]
 		battle.begin_battle_with_opponent_party(party, active_party_index, trainer_party, false)
@@ -360,7 +402,7 @@ func _on_fakemon_selected(index: int) -> void:
 	_update_follower_appearance()
 	follower.show()
 	in_battle = false
-	world.show()
+	_set_overworld_visuals_visible(true)
 	map_ui.visible = true
 	hint_label.text = "Fakemon chosen! Move with WASD / Arrow Keys. Red: trainer. Green grass: 20% wild encounters."
 	_refresh_party_menu()
@@ -404,11 +446,11 @@ func _on_interior_door_entered(body: Node3D) -> void:
 	if body != player or in_battle or not door_warp_ready:
 		return
 	inside_medical_ward = false
-	player.position = Vector3(-7.0, 0.65, -1.1)
+	player.position = _array_to_vector3(map_data["medical_ward"].get("exterior_return",[-7.0,0.65,-1.1]))
 	_place_follower_behind_player()
 	camera.size = 24.0
 	camera.position = Vector3(player.position.x, 18.0, player.position.z + 18.0)
-	world_environment.background_color = Color("#93c47d")
+	world_environment.background_color = OUTDOOR_BACKGROUND
 	map_title.text = "RAINFOREST CLEARING - PLACEHOLDER MAP"
 	hint_label.text = "Exited the medical ward."
 	_start_door_cooldown()
@@ -437,11 +479,11 @@ func _on_house_interior_door_entered(body: Node3D) -> void:
 	if body != player or in_battle or not door_warp_ready:
 		return
 	inside_house = false
-	player.position = Vector3(8.0, 0.65, -3.25)
+	player.position = _array_to_vector3(map_data["house"].get("exterior_return",[8.0,0.65,-3.25]))
 	_place_follower_behind_player()
 	camera.size = 24.0
 	camera.position = Vector3(player.position.x, 18.0, player.position.z + 18.0)
-	world_environment.background_color = Color("#93c47d")
+	world_environment.background_color = OUTDOOR_BACKGROUND
 	map_title.text = "RAINFOREST CLEARING - PLACEHOLDER MAP"
 	hint_label.text = "Exited the rainforest house."
 	_start_door_cooldown()
@@ -455,10 +497,10 @@ func _on_route_entrance_entered(body: Node3D) -> void:
 	inside_medical_ward = false
 	inside_house = false
 	inside_route = true
-	player.position = route_origin + _array_to_vector3(route_data["entry"])
+	player.position = route_origin + _array_to_vector3(MapDataLoader.arrival_position(map_data, "north_warp", route_data, "entry"))
 	_place_follower_behind_player()
 	camera.size = 24.0
-	world_environment.background_color = Color("#587a43")
+	world_environment.background_color = OUTDOOR_BACKGROUND
 	map_title.text = "CANOPY ROUTE - PLACEHOLDER MAP"
 	hint_label.text = "Dense forest route: water is uncrossable. The trainer waits at the far end."
 	_start_door_cooldown()
@@ -469,10 +511,10 @@ func _on_route_exit_entered(body: Node3D) -> void:
 	if body != player or in_battle or not door_warp_ready:
 		return
 	inside_route = false
-	player.position = _array_to_vector3(map_data["route"]["clearing_return"])
+	player.position = _array_to_vector3(MapDataLoader.arrival_position(map_data["route"], "exit_warp", map_data, "north_return"))
 	_place_follower_behind_player()
 	camera.size = 24.0
-	world_environment.background_color = Color("#93c47d")
+	world_environment.background_color = OUTDOOR_BACKGROUND
 	map_title.text = "RAINFOREST CLEARING - PLACEHOLDER MAP"
 	hint_label.text = "Returned through the dense forest passage."
 	_start_door_cooldown()
@@ -482,64 +524,59 @@ func _on_route_exit_entered(body: Node3D) -> void:
 func _on_east_route_entered(body: Node3D) -> void:
 	if body != player or in_battle or not door_warp_ready:
 		return
-	_set_route_location("east_route", east_route_origin + _array_to_vector3(map_data["east_route"]["entry"]), "EASTERN RAINFOREST ROUTE", "The cave entrance lies deeper along the eastern route.")
+	_set_route_location("east_route", east_route_origin + _array_to_vector3(MapDataLoader.arrival_position(map_data["route"], "east_warp", map_data["east_route"], "entry")), "EASTERN RAINFOREST ROUTE", "The cave entrance lies deeper along the eastern route.")
 
 
 func _on_east_route_exited(body: Node3D) -> void:
 	if body != player or in_battle or not door_warp_ready:
 		return
-	_set_route_location("route", route_origin + _array_to_vector3(map_data["route"]["east_return"]), "CANOPY ROUTE - PLACEHOLDER MAP", "Returned from the eastern rainforest route.")
+	_set_route_location("route", route_origin + _array_to_vector3(MapDataLoader.arrival_position(map_data["east_route"], "return_warp", map_data["route"], "east_return")), "CANOPY ROUTE - PLACEHOLDER MAP", "Returned from the eastern rainforest route.")
 
 
 func _on_west_route_entered(body: Node3D) -> void:
 	if body != player or in_battle or not door_warp_ready:
 		return
-	_set_route_location("west_route", west_route_origin + _array_to_vector3(map_data["west_route"]["entry"]), "WESTERN RAINFOREST ROUTE", "A humid rainforest path stretches westward.")
+	_set_route_location("west_route", west_route_origin + _array_to_vector3(MapDataLoader.arrival_position(map_data["route"], "west_warp", map_data["west_route"], "entry")), "WESTERN RAINFOREST ROUTE", "A humid rainforest path stretches westward.")
 
 
 func _on_west_route_exited(body: Node3D) -> void:
 	if body != player or in_battle or not door_warp_ready:
 		return
-	_set_route_location("route", route_origin + _array_to_vector3(map_data["route"]["west_return"]), "CANOPY ROUTE - PLACEHOLDER MAP", "Returned from the western rainforest route.")
+	_set_route_location("route", route_origin + _array_to_vector3(MapDataLoader.arrival_position(map_data["west_route"], "return_warp", map_data["route"], "west_return")), "CANOPY ROUTE - PLACEHOLDER MAP", "Returned from the western rainforest route.")
 
 
 func _on_east_cave_entered(body: Node3D) -> void:
 	if body != player or in_battle or not door_warp_ready:
 		return
-	_set_route_location("east_cave", east_cave_origin + _array_to_vector3(map_data["east_cave"]["entry"]), "VINESTONE CAVE - PLACEHOLDER MAP", "A small rocky cave dotted with blue flowers and vines.")
+	_set_route_location("east_cave", east_cave_origin + _array_to_vector3(MapDataLoader.arrival_position(map_data["east_route"], "cave_warp", map_data["east_cave"], "entry")), "VINESTONE CAVE - PLACEHOLDER MAP", "A small rocky cave dotted with blue flowers and vines.")
 	camera.size = 12.0
 
 
 func _on_east_cave_exited(body: Node3D) -> void:
 	if body != player or in_battle or not door_warp_ready:
 		return
-	_set_route_location("east_route", east_route_origin + _array_to_vector3(map_data["east_route"]["cave_return"]), "EASTERN RAINFOREST ROUTE", "Exited Vinestone Cave.")
+	_set_route_location("east_route", east_route_origin + _array_to_vector3(MapDataLoader.arrival_position(map_data["east_cave"], "exit_warp", map_data["east_route"], "cave_return")), "EASTERN RAINFOREST ROUTE", "Exited Vinestone Cave.")
 
 
 func _on_city_entered(body: Node3D) -> void:
 	if body != player or in_battle or not door_warp_ready:
 		return
-	_set_route_location("city", city_origin + _array_to_vector3(map_data["rainforest_city"]["entry"]), "MOSSVALE RAINFOREST CITY", "Medical care and two family homes line the rainforest plaza.")
+	_set_route_location("city", city_origin + _array_to_vector3(MapDataLoader.arrival_position(map_data["route"], "north_warp", map_data["rainforest_city"], "entry")), "MOSSVALE RAINFOREST CITY", "Medical care and two family homes line the rainforest plaza.")
 
 
 func _on_city_exited(body: Node3D) -> void:
 	if body != player or in_battle or not door_warp_ready:
 		return
-	_set_route_location("route", route_origin + _array_to_vector3(map_data["route"]["north_return"]), "CANOPY ROUTE - PLACEHOLDER MAP", "Returned from Mossvale City.")
+	_set_route_location("route", route_origin + _array_to_vector3(MapDataLoader.arrival_position(map_data["rainforest_city"], "return_warp", map_data["route"], "north_return")), "CANOPY ROUTE - PLACEHOLDER MAP", "Returned from Mossvale City.")
 
 
 func _on_city_ward_entered(body: Node3D) -> void:
 	if body != player or in_battle or not door_warp_ready:
 		return
 	var ward: Dictionary = map_data["rainforest_city"]["medical_ward"]
+	_set_respawn_checkpoint("city", city_origin + _array_to_vector3(ward["exterior_return"]), "MOSSVALE RAINFOREST CITY")
 	_set_route_location("city_ward", city_ward_origin + _array_to_vector3(ward["entry"]), "MOSSVALE MEDICAL WARD", "Your party was fully restored. Walk onto the door tile to leave.")
 	camera.size = 9.0
-	for mon: Dictionary in party:
-		mon["current_hp"] = int(mon["max_hp"])
-		mon["condition"] = ""
-		mon["condition_turns"] = 0
-	_refresh_party_menu()
-	_auto_save()
 
 
 func _on_city_ward_exited(body: Node3D) -> void:
@@ -595,15 +632,27 @@ func _set_route_location(location: String, destination: Vector3, title: String, 
 	_place_follower_behind_player()
 	camera.size = 24.0
 	var indoors := inside_east_cave or inside_city_ward or inside_orchid_house or inside_family_house
-	world_environment.background_color = Color("#3d453d") if indoors else Color("#587a43")
+	world_environment.background_color = Color("#3d453d") if indoors else OUTDOOR_BACKGROUND
 	map_title.text = title
 	hint_label.text = hint
 	_start_door_cooldown()
 	_auto_save()
 
 
+func _set_respawn_checkpoint(location: String, position: Vector3, title: String) -> void:
+	respawn_location = location
+	respawn_position = position
+	respawn_title = title
+
+
+func _restore_respawn_checkpoint() -> void:
+	_set_route_location(respawn_location, respawn_position, respawn_title, "Defeat! Returned to the most recently visited medical ward.")
+	player.velocity = Vector3.ZERO
+
+
 func _warp_to_medical_ward() -> void:
 	var ward_data: Dictionary = map_data["medical_ward"]
+	_set_respawn_checkpoint("rainforest", _array_to_vector3(ward_data.get("exterior_return", [-7.0, 0.65, -1.1])), "RAINFOREST CLEARING - PLACEHOLDER MAP")
 	medical_origin = _array_to_vector3(ward_data["origin"])
 	inside_medical_ward = true
 	inside_house = false
@@ -613,12 +662,7 @@ func _warp_to_medical_ward() -> void:
 	camera.position = Vector3(player.position.x, 7.0, player.position.z + 7.0)
 	world_environment.background_color = Color("#354b5e")
 	map_title.text = "MEDICAL WARD - PLACEHOLDER INTERIOR"
-	for mon: Dictionary in party:
-		mon["current_hp"] = int(mon["max_hp"])
-		mon["condition"] = ""
-		mon["condition_turns"] = 0
-	hint_label.text = "Medical ward: the party was restored. Walk onto the door tile to leave."
-	_refresh_party_menu()
+	hint_label.text = "Medical ward: speak to the attendant at the counter for care."
 	_start_door_cooldown()
 	_auto_save()
 
@@ -655,31 +699,16 @@ func _on_battle_finished(player_won: bool, escaped: bool, captured_mon: Dictiona
 			capture_added = true
 		else:
 			capture_added = false
-	if not player_won and not escaped:
-		inside_medical_ward = false
-		inside_house = false
-		inside_route = false
-		inside_east_route = false
-		inside_west_route = false
-		inside_east_cave = false
-		inside_city = false
-		inside_city_ward = false
-		inside_orchid_house = false
-		inside_family_house = false
-		player.position = spawn_position
-		player.velocity = Vector3.ZERO
-		_place_follower_behind_player()
-		camera.size = 24.0
-		world_environment.background_color = Color("#93c47d")
-		map_title.text = "RAINFOREST CLEARING - PLACEHOLDER MAP"
 	in_battle = false
-	world.show()
+	if not player_won and not escaped:
+		_restore_respawn_checkpoint()
+	_set_overworld_visuals_visible(true)
 	map_ui.visible = true
 	var battle_kind := "wild encounter" if active_battle_is_wild else "trainer battle"
 	if escaped:
 		hint_label.text = "Escaped from the wild encounter."
 	else:
-		hint_label.text = ("Victory in the %s! You remain where the battle began." % battle_kind if player_won else "Defeat! Returned to the starting point.")
+		hint_label.text = ("Victory in the %s! You remain where the battle began." % battle_kind if player_won else "Defeat! Returned to the most recently visited medical ward.")
 	if capture_added:
 		hint_label.text += " Captured %s." % captured_mon["name"]
 	elif not captured_mon.is_empty():
@@ -986,32 +1015,99 @@ func _build_grass_tiles(wild_data: Dictionary) -> void:
 			world.add_child(tile)
 
 
+func _build_outdoor_terrain_assets(region_data: Dictionary, origin: Vector3, prefix: String) -> void:
+	var grass_zones: Array = region_data.get("grass_zones", [])
+	# Supports legacy data while all current outdoor maps use grass_zones.
+	if grass_zones.is_empty() and region_data.get("wild_zone") is Dictionary:
+		grass_zones = [region_data["wild_zone"]]
+	for grass_data: Variant in grass_zones:
+		if not grass_data is Dictionary:
+			continue
+		var placed_grass: Dictionary = (grass_data as Dictionary).duplicate(true)
+		var local_position := _array_to_vector3(placed_grass.get("position", [0, 0.12, 0]))
+		placed_grass["position"] = [origin.x + local_position.x, origin.y + local_position.y, origin.z + local_position.z]
+		placed_grass["species"] = region_data.get("tall_grass_species", [])
+		_build_grass_tiles(placed_grass)
+	var sand_blocks:Array=region_data.get("sand_blocks",[])
+	for sand_index in sand_blocks.size():
+		var sand_data:Variant=sand_blocks[sand_index]
+		if sand_data is Array and sand_data.size()==6:
+			_add_textured_block(prefix+"SandShore%d"%sand_index,origin+Vector3(float(sand_data[0]),float(sand_data[1]),float(sand_data[2])),Vector3(float(sand_data[3]),float(sand_data[4]),float(sand_data[5])),TEX_SAND,Color("#d7bd72"),false)
+	for water_data: Variant in region_data.get("water_blocks", []):
+		if not water_data is Array or water_data.size() != 6:
+			continue
+		var water_name := "UncrossableWaterBlock" if prefix == "CanopyRoute" else prefix + "WaterBlock"
+		_add_textured_block(water_name, origin + Vector3(float(water_data[0]), float(water_data[1]), float(water_data[2])), Vector3(float(water_data[3]), float(water_data[4]), float(water_data[5])), TEX_WATER, Color("#3188b8"), true)
+	for flower_data: Variant in region_data.get("tall_flowers", []):
+		if flower_data is Array and flower_data.size() >= 3:
+			_add_prop_billboard("TallFlowerBlock" if prefix == "CanopyRoute" else prefix + "TallFlower", origin + _array_to_vector3(flower_data), TEX_FLOWER_RED, 0.9)
+	for flower_data: Variant in region_data.get("rare_torch_ginger", []):
+		if flower_data is Array and flower_data.size() >= 3:
+			_add_prop_billboard("MagnificentTorchGinger" if prefix == "CanopyRoute" else prefix + "TorchGinger", origin + _array_to_vector3(flower_data), TEX_FLOWER_TORCH_GINGER, 1.15)
+	for flower_data: Variant in region_data.get("blue_flowers", region_data.get("flower_beds", [])):
+		if flower_data is Array and flower_data.size() >= 3:
+			_add_prop_billboard(prefix + "BlueFlower", origin + _array_to_vector3(flower_data), TEX_FLOWER_BLUE, 0.45)
+	_build_universal_objects(region_data, origin, prefix)
+
+
+func _build_universal_objects(region_data: Dictionary, origin: Vector3, prefix: String) -> void:
+	for index in region_data.get("objects", []).size():
+		var value: Variant = region_data.get("objects", [])[index]
+		if not value is Dictionary: continue
+		var object: Dictionary = value
+		var type_id := String(object.get("type", ""))
+		var position_data: Variant = object.get("position", [])
+		if not position_data is Array or position_data.size() < 3: continue
+		var position := origin + _array_to_vector3(position_data)
+		var node_name := "%sUniversalObject%d" % [prefix, index]
+		if type_id in ["tree.main", "tree.palm"]:
+			_add_tree(position, 1 if type_id == "tree.palm" else 0, node_name, float(object.get("sort_offset_y", 0.0)))
+		elif type_id in ["block.water", "block.sand", "block.rock"]:
+			var size_data: Variant = object.get("size", [2.0, 0.3, 2.0])
+			if not size_data is Array or size_data.size() < 3: continue
+			var size := _array_to_vector3(size_data)
+			var texture := TEX_WATER if type_id == "block.water" else (TEX_SAND if type_id == "block.sand" else TEX_STONE)
+			var color := Color("#3188b8") if type_id == "block.water" else (Color("#d7bd72") if type_id == "block.sand" else Color("#777970"))
+			_add_textured_block(node_name, position, size, texture, color, type_id != "block.sand")
+		elif type_id in ["building.house", "building.medical_ward"]:
+			var size_data: Variant = object.get("size", [5.0, 3.0, 4.0])
+			if not size_data is Array or size_data.size() < 3: continue
+			var size := _array_to_vector3(size_data)
+			var texture := TEX_MEDICAL_WARD if type_id == "building.medical_ward" else TEX_HOUSE
+			var art := _add_world_billboard(node_name, position, texture, size.x * (1.08 if type_id == "building.medical_ward" else 1.15), 0.0)
+			_register_sortable_object(art, node_name + "SortRoot", position, art.global_position, float(art.texture.get_height()) * art.pixel_size, float(object.get("sort_offset_y", 0.0)))
+			_add_static_collision(node_name + "Collision", position, size)
+		elif type_id in ["npc.generic", "npc.opponent"]:
+			var speaker := String(object.get("name" if type_id == "npc.opponent" else "speaker", "TRAINER" if type_id == "npc.opponent" else "NPC"))
+			var pages: Array = object.get("dialogue", ["Let's battle!"] if type_id == "npc.opponent" else ["Hello, traveler!"])
+			var after_dialogue := _begin_trainer_battle.bind(object.get("team", [])) if type_id == "npc.opponent" else Callable()
+			var npc := _add_talking_npc(node_name, position, Color(String(object.get("color", "df6d5f" if type_id == "npc.opponent" else "e9c35b"))), speaker.to_upper(), pages, after_dialogue)
+			_add_static_collision(node_name + "Collision", npc.position, Vector3(0.8, 1.1, 0.8))
+		else:
+			var texture: Texture2D = TEX_FLOWER_RED
+			var height := 0.9
+			match type_id:
+				"flower.torch_ginger": texture = TEX_FLOWER_TORCH_GINGER; height = 1.15
+				"flower.blue": texture = TEX_FLOWER_BLUE; height = 0.45
+				"flower.orchid": texture = TEX_FLOWER_ORCHID_POT; height = 0.72
+				"cave.vine": texture = TEX_VINES; height = 1.25
+				"flower.red_ginger": pass
+				_: continue
+			_add_prop_billboard(node_name, position, texture, float(object.get("height", height)))
+
+
 func _build_route(route_data: Dictionary) -> void:
 	route_origin = _array_to_vector3(route_data["origin"])
 	var route_size: Array = route_data["size"]
 	_add_textured_block("CanopyRouteGround", route_origin + Vector3(0, -0.1, 0), Vector3(float(route_size[0]), 0.2, float(route_size[1])), TEX_GRASS, Color("#315f3b"), false)
-	_build_forest_warp("CanopyRouteEntrance", _array_to_vector3(route_data["clearing_warp"]), _on_route_entrance_entered, "generic")
 	_build_forest_warp("CanopyRouteExit", route_origin + _array_to_vector3(route_data["exit_warp"]), _on_route_exit_entered, "north")
 	_build_forest_warp("CanopyRouteEastConnection", route_origin + _array_to_vector3(route_data["east_warp"]), _on_east_route_entered, "east")
 	_build_forest_warp("CanopyRouteWestConnection", route_origin + _array_to_vector3(route_data["west_warp"]), _on_west_route_entered, "west")
 	_build_forest_warp("CanopyRouteNorthConnection", route_origin + _array_to_vector3(route_data["north_warp"]), _on_city_entered, "generic")
-	for grass_data: Dictionary in route_data["grass_zones"]:
-		var placed_grass := grass_data.duplicate(true)
-		var local_position := _array_to_vector3(placed_grass["position"])
-		placed_grass["position"] = [route_origin.x + local_position.x, local_position.y, route_origin.z + local_position.z]
-		placed_grass["species"] = route_data.get("tall_grass_species", [])
-		_build_grass_tiles(placed_grass)
-	for water_data: Array in route_data["water_blocks"]:
-		var water_position := route_origin + Vector3(float(water_data[0]), float(water_data[1]), float(water_data[2]))
-		var water_size := Vector3(float(water_data[3]), float(water_data[4]), float(water_data[5]))
-		_add_textured_block("UncrossableWaterBlock", water_position, water_size, TEX_WATER, Color("#3188b8"), true)
-	for flower_data: Array in route_data["tall_flowers"]:
-		var flower_position := route_origin + Vector3(float(flower_data[0]), float(flower_data[1]), float(flower_data[2]))
-		_add_prop_billboard("TallFlowerBlock", flower_position, TEX_FLOWER_RED, 0.9)
-	for flower_data: Array in route_data.get("rare_torch_ginger", []):
-		_add_prop_billboard("MagnificentTorchGinger", route_origin + _array_to_vector3(flower_data), TEX_FLOWER_TORCH_GINGER, 1.15)
+	_build_outdoor_terrain_assets(route_data, route_origin, "CanopyRoute")
 	for tree_data: Array in route_data["trees"]:
 		_add_tree(route_origin + Vector3(float(tree_data[0]), float(tree_data[1]), float(tree_data[2])), int(tree_data[3]), "Route")
+	_build_trainers(route_data.get("trainers", []), route_origin, "CanopyRoute")
 
 
 func _build_side_route(route_data: Dictionary, prefix: String, is_east: bool) -> void:
@@ -1023,20 +1119,10 @@ func _build_side_route(route_data: Dictionary, prefix: String, is_east: bool) ->
 	var route_size: Array = route_data["size"]
 	_add_textured_block(prefix + "RainforestRouteGround", origin + Vector3(0, -0.1, 0), Vector3(float(route_size[0]), 0.2, float(route_size[1])), TEX_GRASS, Color("#376b42"), false)
 	_build_forest_warp(prefix + "RouteReturnWarp", origin + _array_to_vector3(route_data["return_warp"]), _on_east_route_exited if is_east else _on_west_route_exited, "west" if is_east else "east")
-	for grass_data: Dictionary in route_data["grass_zones"]:
-		var placed_grass := grass_data.duplicate(true)
-		var local_position := _array_to_vector3(placed_grass["position"])
-		placed_grass["position"] = [origin.x + local_position.x, local_position.y, origin.z + local_position.z]
-		placed_grass["species"] = route_data.get("tall_grass_species", [])
-		_build_grass_tiles(placed_grass)
-	for water_data: Array in route_data["water_blocks"]:
-		_add_textured_block(prefix + "UncrossableWaterBlock", origin + Vector3(float(water_data[0]), float(water_data[1]), float(water_data[2])), Vector3(float(water_data[3]), float(water_data[4]), float(water_data[5])), TEX_WATER, Color("#3188b8"), true)
-	for flower_data: Array in route_data["tall_flowers"]:
-		_add_prop_billboard(prefix + "TallFlowerBlock", origin + Vector3(float(flower_data[0]), float(flower_data[1]), float(flower_data[2])), TEX_FLOWER_RED, 0.9)
-	for flower_data: Array in route_data.get("rare_torch_ginger", []):
-		_add_prop_billboard(prefix + "MagnificentTorchGinger", origin + _array_to_vector3(flower_data), TEX_FLOWER_TORCH_GINGER, 1.15)
+	_build_outdoor_terrain_assets(route_data, origin, prefix + "Route")
 	for tree_data: Array in route_data["trees"]:
 		_add_tree(origin + Vector3(float(tree_data[0]), float(tree_data[1]), float(tree_data[2])), int(tree_data[3]), prefix + "Route")
+	_build_trainers(route_data.get("trainers", []), origin, prefix + "Route")
 	if is_east:
 		_build_forest_warp("EasternRouteCaveEntrance", origin + _array_to_vector3(route_data["cave_warp"]), _on_east_cave_entered, "east")
 
@@ -1044,7 +1130,8 @@ func _build_side_route(route_data: Dictionary, prefix: String, is_east: bool) ->
 func _build_east_cave(cave_data: Dictionary) -> void:
 	east_cave_origin = _array_to_vector3(cave_data["origin"])
 	var cave_size: Array = cave_data["size"]
-	_add_textured_block("VinestoneCaveRockyGround", east_cave_origin + Vector3(0, -0.1, 0), Vector3(float(cave_size[0]), 0.2, float(cave_size[1])), TEX_STONE, Color("#595b55"), false)
+	var cave_floor_blocks: Array = cave_data.get("floor_blocks", [[0, -0.1, 0, cave_size[0], 0.2, cave_size[1]]])
+	_add_map_blocks(east_cave_origin, cave_floor_blocks, "VinestoneCaveRockyGround", TEX_STONE, Color("#595b55"), false)
 	_build_forest_warp("VinestoneCaveExit", east_cave_origin + _array_to_vector3(cave_data["exit_warp"]), _on_east_cave_exited, "north")
 	for rock_data: Array in cave_data["rocks"]:
 		_add_textured_block("CaveRockBlock", east_cave_origin + Vector3(float(rock_data[0]), float(rock_data[1]), float(rock_data[2])), Vector3(float(rock_data[3]), float(rock_data[4]), float(rock_data[5])), TEX_STONE, Color("#777970"), true)
@@ -1052,6 +1139,8 @@ func _build_east_cave(cave_data: Dictionary) -> void:
 		_add_prop_billboard("SmallBlueFlower", east_cave_origin + Vector3(float(flower_data[0]), float(flower_data[1]), float(flower_data[2])), TEX_FLOWER_BLUE, 0.45)
 	for vine_data: Array in cave_data["vines"]:
 		_add_prop_billboard("CaveVine", east_cave_origin + Vector3(float(vine_data[0]), float(vine_data[1]), float(vine_data[2])), TEX_VINES, 1.25)
+	_build_universal_objects(cave_data, east_cave_origin, "VinestoneCave")
+	_build_trainers(cave_data.get("trainers", []), east_cave_origin, "VinestoneCave")
 
 
 func _build_rainforest_city(city_data: Dictionary) -> void:
@@ -1064,10 +1153,11 @@ func _build_rainforest_city(city_data: Dictionary) -> void:
 		_add_tree(city_origin + Vector3(float(tree_data[0]), float(tree_data[1]), float(tree_data[2])), int(tree_data[3]), "Mossvale")
 	for flower_data: Array in city_data["flower_beds"]:
 		_add_prop_billboard("MossvaleFlowerBed", city_origin + Vector3(float(flower_data[0]), float(flower_data[1]), float(flower_data[2])), TEX_FLOWER_BLUE, 0.45)
+	_build_universal_objects(city_data, city_origin, "Mossvale")
 	_build_city_exterior(city_data["medical_ward"], "MossvaleMedicalWard", Color("#91cdd0"), _on_city_ward_entered)
 	_build_city_exterior(city_data["orchid_house"], "GroundOrchidHouse", Color("#9b7359"), _on_orchid_house_entered)
 	_build_city_exterior(city_data["family_house"], "MossvaleFamilyHouse", Color("#b08359"), _on_family_house_entered)
-	_build_city_room(city_data["medical_ward"], "MossvaleWard", Color("#d8efec"), Color("#70d6d1"), _on_city_ward_exited)
+	_build_medical_ward_instance(city_data["medical_ward"], "MossvaleWard", _on_city_ward_exited)
 	_build_city_room(city_data["orchid_house"], "OrchidHome", Color("#dac9aa"), Color("#e0b45b"), _on_orchid_house_exited)
 	_build_city_room(city_data["family_house"], "FamilyHome", Color("#d7c29c"), Color("#e0b45b"), _on_family_house_exited)
 	city_ward_origin = _array_to_vector3(city_data["medical_ward"]["origin"])
@@ -1084,6 +1174,7 @@ func _build_rainforest_city(city_data: Dictionary) -> void:
 	for index in child_data.size():
 		var child := _add_talking_npc("FamilyChild%d" % (index + 1), family_house_origin + _array_to_vector3(child_data[index]), Color("#e9c35b"), "CHILD", ["We like playing together inside when the rainforest rain gets heavy!"])
 		family_children.append({"node": child, "target": child.position, "timer": randf_range(0.5, 2.0)})
+	_build_trainers(city_data.get("trainers", []), city_origin, "Mossvale")
 
 
 func _build_city_exterior(building_data: Dictionary, building_name: String, color: Color, callback: Callable) -> void:
@@ -1092,6 +1183,7 @@ func _build_city_exterior(building_data: Dictionary, building_name: String, colo
 	var texture := TEX_MEDICAL_WARD if building_name.contains("Medical") else TEX_HOUSE
 	var width := size.x * (1.08 if building_name.contains("Medical") else 1.15)
 	var building_art := _add_world_billboard(building_name, position, texture, width, 0.0)
+	_register_sortable_object(building_art, building_name + "SortRoot", position, building_art.global_position, float(building_art.texture.get_height()) * building_art.pixel_size, float(building_data.get("sort_offset_y", 0.0)))
 	_add_static_collision(building_name + "Collision", position, size)
 	_build_building_door_warp(building_art, building_name + "Door", city_origin + _array_to_vector3(building_data["door"]), callback, Vector3(1.5, 0.3, 0.9))
 
@@ -1099,11 +1191,70 @@ func _build_city_exterior(building_data: Dictionary, building_name: String, colo
 func _build_city_room(room_data: Dictionary, prefix: String, floor_color: Color, door_color: Color, callback: Callable) -> void:
 	var origin := _array_to_vector3(room_data["origin"])
 	var size: Array = room_data["interior_size"]
-	_add_textured_block(prefix + "Floor", origin + Vector3(0, -0.1, 0), Vector3(float(size[0]), 0.2, float(size[1])), TEX_WOOD, floor_color, false)
-	_add_colored_block(prefix + "BackWall", origin + Vector3(0, 1.2, -float(size[1]) * 0.5 + 0.15), Vector3(float(size[0]), 2.4, 0.3), floor_color.darkened(0.15), true)
-	_add_colored_block(prefix + "LeftWall", origin + Vector3(-float(size[0]) * 0.5 + 0.15, 1.2, 0), Vector3(0.3, 2.4, float(size[1])), floor_color.darkened(0.2), true)
-	_add_colored_block(prefix + "RightWall", origin + Vector3(float(size[0]) * 0.5 - 0.15, 1.2, 0), Vector3(0.3, 2.4, float(size[1])), floor_color.darkened(0.2), true)
+	_add_map_blocks(origin, room_data.get("floor_blocks", [[0, -0.1, 0, size[0], 0.2, size[1]]]), prefix + "Floor", TEX_INTERIOR_FLOOR, floor_color, false)
+	_add_map_blocks(origin, room_data.get("wall_blocks", _room_wall_blocks(size)), prefix + "Wall", TEX_WALL_GENERIC, floor_color.darkened(0.18), true)
 	_build_colored_warp(prefix + "ExitDoor", origin + _array_to_vector3(room_data["exit_door"]), callback, door_color)
+	_add_room_furnishings(origin, size, prefix, room_data.get("furnishings", []))
+	_build_universal_objects(room_data, origin, prefix)
+
+
+func _add_room_furnishings(origin: Vector3, room_size: Array, prefix: String, serialized:Array=[]) -> void:
+	if not serialized.is_empty():
+		_add_serialized_furnishings(origin,serialized,prefix);return
+	var half_width := float(room_size[0]) * 0.5
+	var half_depth := float(room_size[1]) * 0.5
+	if prefix == "OrchidHome":
+		_add_serialized_furnishings(origin, [{"type":"hutch","position":[-half_width+0.9,0,-half_depth+0.9],"height":2.0},{"type":"table","position":[1.3,0,0.5],"height":1.3},{"type":"houseplant_1","position":[half_width-0.8,0,-half_depth+0.8],"height":1.05}], prefix)
+	elif prefix == "FamilyHome":
+		_add_serialized_furnishings(origin, [{"type":"bed","position":[-half_width+1.0,0,-half_depth+1.2],"height":2.4},{"type":"dresser","position":[half_width-0.9,0,-half_depth+0.9],"height":2.2},{"type":"lampstand","position":[half_width-0.8,0,1.5],"height":1.0},{"type":"table","position":[0,0,0.4],"height":1.35}], prefix)
+
+func _furnishing_texture(type:String)->Texture2D:
+	match type:
+		"bed":return TEX_BED
+		"dresser":return TEX_DRESSER
+		"hutch":return TEX_HUTCH
+		"lampstand":return TEX_LAMPSTAND
+		"table":return TEX_TABLE
+		"houseplant_1":return TEX_HOUSEPLANT_ONE
+		"houseplant_2":return TEX_HOUSEPLANT_TWO
+		"ward_counter":return TEX_WARD_COUNTER
+		"ward_shelf":return TEX_WARD_SHELF
+		"ward_table":return TEX_WARD_TABLE
+		"ward_curtain":return TEX_WARD_CURTAIN
+		"ward_wash":return TEX_WARD_WASH
+	return null
+
+func _add_serialized_furnishings(origin:Vector3, furnishings:Array, prefix:String)->void:
+	for index in furnishings.size():
+		var item:Variant=furnishings[index];if not item is Dictionary:continue
+		var furnishing_type := String(item.get("type", ""))
+		var texture:=_furnishing_texture(furnishing_type);var position:Variant=item.get("position",[])
+		if texture==null or not position is Array or position.size()<3:continue
+		var furnishing_name := "%sFurnishing%d" % [prefix, index]
+		var furnishing_position := origin + _array_to_vector3(position)
+		_add_prop_billboard(furnishing_name, furnishing_position, texture, float(item.get("height", 1.0)))
+		var footprint := _furnishing_footprint(furnishing_type)
+		var serialized_footprint: Variant = item.get("footprint", [])
+		if serialized_footprint is Array and serialized_footprint.size() >= 2:
+			footprint = Vector2(float(serialized_footprint[0]), float(serialized_footprint[1]))
+		if footprint != Vector2.ZERO:
+			_add_static_collision(furnishing_name + "Collision", furnishing_position + Vector3(0.0, 0.45, 0.0), Vector3(footprint.x, 0.9, footprint.y))
+
+
+func _furnishing_footprint(furnishing_type: String) -> Vector2:
+	match furnishing_type:
+		"bed": return Vector2(1.1, 1.75)
+		"dresser": return Vector2(1.0, 0.75)
+		"hutch": return Vector2(0.9, 0.7)
+		"lampstand": return Vector2(0.45, 0.45)
+		"table": return Vector2(1.45, 0.95)
+		"houseplant_1", "houseplant_2": return Vector2(0.55, 0.55)
+		"ward_counter": return Vector2(2.0, 0.75)
+		"ward_shelf": return Vector2(0.8, 0.65)
+		"ward_table": return Vector2(1.05, 0.8)
+		"ward_curtain": return Vector2(0.8, 0.7)
+		"ward_wash": return Vector2(0.75, 0.65)
+	return Vector2.ZERO
 
 
 func _build_colored_warp(warp_name: String, position: Vector3, callback: Callable, color: Color) -> void:
@@ -1117,15 +1268,58 @@ func _build_colored_warp(warp_name: String, position: Vector3, callback: Callabl
 	world.add_child(warp)
 
 
-func _add_talking_npc(npc_name: String, position: Vector3, color: Color, speaker: String, pages: Array) -> Area3D:
+func _add_talking_npc(npc_name: String, position: Vector3, color: Color, speaker: String, pages: Array, after_dialogue := Callable()) -> Area3D:
 	var npc := Area3D.new()
 	npc.name = npc_name
 	npc.position = position
 	npc.add_child(_square_sprite(color, speaker, Vector2(0.8, 1.05)))
 	npc.add_child(_box_shape(Vector3(0.8, 1.1, 0.8)))
 	world.add_child(npc)
-	npc_dialogues[npc.get_instance_id()] = {"speaker": speaker, "pages": pages}
+	npc_dialogues[npc.get_instance_id()] = {"speaker": speaker, "pages": pages, "after_dialogue": after_dialogue}
 	return npc
+
+
+func _build_trainers(trainers: Array, map_origin: Vector3, prefix: String) -> void:
+	for index in trainers.size():
+		var trainer: Dictionary = trainers[index]
+		var party_indices: Array = trainer.get("party", [int(trainer.get("fakemon_index", 0))])
+		var trainer_name := String(trainer.get("name", "RAIN FOREST TRAINER"))
+		var dialogue: Array = trainer.get("dialogue", ["My Fakemon and I are ready for a friendly battle!"])
+		var npc := _add_talking_npc("%sTrainer%d" % [prefix, index + 1], map_origin + _array_to_vector3(trainer["position"]), Color(String(trainer.get("color", "df6d5f"))), trainer_name.to_upper(), dialogue, _begin_trainer_battle.bind(party_indices))
+		_add_static_collision("%sTrainer%dCollision" % [prefix, index + 1], npc.position, Vector3(0.8, 1.1, 0.8))
+
+
+func _begin_trainer_battle(team: Array) -> void:
+	if team.is_empty() or in_battle:
+		return
+	active_battle_is_wild = false
+	if team[0] is Dictionary:
+		var enemies := _build_trainer_team(team)
+		if not enemies.is_empty():_open_battle(0, [], enemies)
+	else:
+		_open_battle(int(team[0]), team)
+
+func _build_trainer_team(team:Array)->Array[Dictionary]:
+	var enemies:Array[Dictionary]=[]
+	for member:Variant in team:
+		if not member is Dictionary:continue
+		var reference:Variant=member.get("fakemon",0);var species_index:=int(reference) if reference is int or reference is float or String(reference).is_valid_int() else -1
+		if species_index<0:
+			for index in battle.battle_data["fakemon"].size():
+				if String(battle.battle_data["fakemon"][index].get("name","")).to_lower()==String(reference).to_lower():species_index=index;break
+		if species_index<0 or species_index>=battle.battle_data["fakemon"].size():continue
+		var enemy:Dictionary=battle.create_fakemon(battle.battle_data["fakemon"][species_index]);enemy["level"]=clampi(int(member.get("level",enemy.get("level",5))),1,100);enemy["experience"]=int(pow(float(enemy.level),3.0));enemy["current_hp"]=int(enemy["max_hp"]);enemies.append(enemy)
+	return enemies
+
+
+func _heal_party_at_ward() -> void:
+	for mon: Dictionary in party:
+		mon["current_hp"] = int(mon["max_hp"])
+		mon["condition"] = ""
+		mon["condition_turns"] = 0
+	_refresh_party_menu()
+	hint_label.text = "Your party was restored to full health."
+	_auto_save()
 
 
 func _add_small_orchid(position: Vector3) -> void:
@@ -1145,12 +1339,15 @@ func _build_forest_warp(warp_name: String, warp_position: Vector3, callback: Cal
 	warp.add_child(visual)
 	warp.body_entered.connect(callback)
 	world.add_child(warp)
+	_register_sortable_object(visual, warp_name + "SortRoot", warp_position, visual.global_position, visual_height, 0.0)
 
 
-func _add_tree(tree_anchor: Vector3, variant: int, prefix: String) -> void:
+func _add_tree(tree_anchor: Vector3, variant: int, prefix: String, sort_offset_y: float = 0.0) -> void:
 	var texture := TEX_TREE_MAIN if variant == 0 else TEX_TREE_PALM
 	var tree_height := 4.2 if variant == 0 else 3.8
-	var tree := _add_world_billboard("%sCanopyArt" % prefix, tree_anchor, texture, texture.get_width() * tree_height / texture.get_height(), 0.0)
+	var tree := _add_tree_billboard("%sCanopyArt" % prefix, tree_anchor, texture, texture.get_width() * tree_height / texture.get_height())
+	tree.visible = false
+	tree_sort_entries.append({"name": "%sTreeSortRoot_%d" % [prefix, tree.get_instance_id()], "placement": tree_anchor, "texture": texture, "height": tree_height, "sort_offset_y": sort_offset_y})
 	var tree_index := tree.get_instance_id()
 	_add_static_collision("%sTreeTrunkCollision_%d" % [prefix, tree_index], Vector3(tree_anchor.x, 0.75, tree_anchor.z), Vector3(0.9, 1.5, 0.9))
 
@@ -1181,10 +1378,29 @@ func _add_textured_block(block_name: String, block_position: Vector3, block_size
 		_add_static_collision(block_name + "Collision", block_position, block_size)
 
 
+func _add_map_blocks(origin: Vector3, blocks: Array, block_name: String, texture: Texture2D, color: Color, solid: bool) -> void:
+	for index in blocks.size():
+		var block: Array = blocks[index]
+		if block.size() != 6:
+			continue
+		var name := block_name if blocks.size() == 1 else "%s_%d" % [block_name, index]
+		_add_textured_block(name, origin + Vector3(float(block[0]), float(block[1]), float(block[2])), Vector3(float(block[3]), float(block[4]), float(block[5])), texture, color, solid)
+
+
+func _room_wall_blocks(room_size: Array) -> Array:
+	var width := float(room_size[0])
+	var depth := float(room_size[1])
+	return [[0, 1.2, -depth * 0.5 + 0.15, width, 2.4, 0.3], [-width * 0.5 + 0.15, 1.2, 0, 0.3, 2.4, depth], [width * 0.5 - 0.15, 1.2, 0, 0.3, 2.4, depth]]
+
+
 func _add_prop_billboard(prop_name: String, ground_position: Vector3, texture: Texture2D, height: float) -> Sprite3D:
 	var sprite := _billboard_sprite(texture, height, prop_name)
 	sprite.position = Vector3(ground_position.x, height * 0.5, ground_position.z)
 	world.add_child(sprite)
+	# Props share the player's generated Y-sort tree.  Their placement and collision
+	# remain unchanged; the visual root is placed at ground level so furniture can
+	# properly cover a player behind it and uncover one standing in front.
+	_register_sortable_object(sprite, prop_name + "SortRoot", ground_position, sprite.global_position, height)
 	return sprite
 
 
@@ -1194,6 +1410,93 @@ func _add_world_billboard(sprite_name: String, anchor: Vector3, texture: Texture
 	sprite.position = Vector3(anchor.x, height * 0.5, anchor.z + z_offset)
 	world.add_child(sprite)
 	return sprite
+
+
+func _add_tree_billboard(sprite_name: String, trunk_contact: Vector3, texture: Texture2D, width: float) -> Sprite3D:
+	var height := width * float(texture.get_height()) / float(texture.get_width())
+	var sprite := _billboard_sprite(texture, height, sprite_name)
+	sprite.position = Vector3(trunk_contact.x, height * 0.5, trunk_contact.z)
+	world.add_child(sprite)
+	return sprite
+
+
+func _register_sortable_object(source: Sprite3D, node_name: String, placement: Vector3, visual_center: Vector3, visual_height: float, sort_offset_y: float = 0.0) -> void:
+	source.visible = false
+	object_sort_entries.append({"name": node_name, "placement": placement, "visual_center": visual_center, "texture": source.texture, "height": visual_height, "sort_offset_y": sort_offset_y})
+
+
+func _build_sort_canvas() -> void:
+	sort_canvas = CanvasLayer.new()
+	sort_canvas.name = "WorldSortCanvas"
+	sort_canvas.layer = 0
+	add_child(sort_canvas)
+	sort_root = Node2D.new()
+	sort_root.name = "WorldYSortRoot"
+	sort_root.y_sort_enabled = true
+	sort_canvas.add_child(sort_root)
+	player_sort_root = _create_sorted_sprite("PlayerSortRoot", player_sprite.texture)
+	follower_sort_root = _create_sorted_sprite("FollowerSortRoot", follower_sprite.texture)
+	player_sprite.visible = false
+	follower_sprite.visible = false
+	for entry: Dictionary in tree_sort_entries:
+		entry["sort_root"] = _create_sorted_sprite(String(entry["name"]), entry["texture"])
+	for entry: Dictionary in object_sort_entries:
+		entry["sort_root"] = _create_sorted_sprite(String(entry["name"]), entry["texture"])
+	_update_sort_canvas()
+
+
+func _create_sorted_sprite(node_name: String, texture: Texture2D) -> Node2D:
+	var sort_point := Node2D.new()
+	sort_point.name = node_name
+	var art := Sprite2D.new()
+	art.name = "Visual"
+	art.texture = texture
+	art.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	sort_point.add_child(art)
+	sort_root.add_child(sort_point)
+	return sort_point
+
+
+func _update_sort_canvas() -> void:
+	if camera == null or sort_root == null:
+		return
+	var pixels_per_world_unit := get_viewport().get_visible_rect().size.y / camera.size
+	var player_feet := Vector3(player.global_position.x, 0.0, player.global_position.z)
+	_update_sorted_art(player_sort_root, player_feet, player.global_position, 0.96 * player_sprite.scale.y, pixels_per_world_unit)
+	var follower_feet:=Vector3(follower.global_position.x,0.0,follower.global_position.z)
+	follower_sort_root.visible=follower.visible
+	if follower.visible:_update_sorted_art(follower_sort_root,follower_feet,follower.global_position,0.9*follower_sprite.scale.y,pixels_per_world_unit)
+	for entry: Dictionary in tree_sort_entries:
+		var tree_visible := _visual_layer_for_position(entry["placement"]) == _active_visual_layer()
+		(entry.get("sort_root") as CanvasItem).visible = tree_visible
+		if not tree_visible:
+			continue
+		var placement: Vector3 = entry["placement"]
+		# World Z is this 2.5D map's screen-Y movement axis. The sort point may
+		# move independently while the inverse child offset preserves the artwork.
+		var effective_sort_world := Vector3(placement.x, 0.0, placement.z + float(entry.get("sort_offset_y", 0.0)))
+		var visual_center := Vector3(placement.x, float(entry["height"]) * 0.5, placement.z)
+		_update_sorted_art(entry.get("sort_root"), effective_sort_world, visual_center, float(entry["height"]), pixels_per_world_unit)
+	for entry: Dictionary in object_sort_entries:
+		var object_visible := _visual_layer_for_position(entry["placement"]) == _active_visual_layer()
+		(entry.get("sort_root") as CanvasItem).visible = object_visible
+		if not object_visible:
+			continue
+		var placement: Vector3 = entry["placement"]
+		var effective_sort_world := Vector3(placement.x, 0.0, placement.z + float(entry.get("sort_offset_y", 0.0)))
+		_update_sorted_art(entry.get("sort_root"), effective_sort_world, entry["visual_center"], float(entry["height"]), pixels_per_world_unit)
+
+
+func _update_sorted_art(sort_point: Node2D, effective_sort_world: Vector3, visual_center_world: Vector3, visual_height: float, pixels_per_world_unit: float) -> void:
+	if sort_point == null:
+		return
+	var visual := sort_point.get_node("Visual") as Sprite2D
+	var sort_screen := camera.unproject_position(effective_sort_world)
+	var visual_screen := camera.unproject_position(visual_center_world)
+	sort_point.position = sort_screen
+	visual.position = visual_screen - sort_screen
+	var scale := visual_height * pixels_per_world_unit / float(visual.texture.get_height())
+	visual.scale = Vector2(scale, scale)
 
 
 func _build_building_door_warp(building_art: Node3D, warp_name: String, global_position: Vector3, callback: Callable, size: Vector3) -> Area3D:
@@ -1221,26 +1524,27 @@ func _add_warp_rug_visual(parent: Node3D, width: float) -> MeshInstance3D:
 
 func _build_medical_ward(ward_data: Dictionary) -> void:
 	medical_origin = _array_to_vector3(ward_data["origin"])
-	var ward_size: Array = ward_data["size"]
-	var floor := MeshInstance3D.new()
-	floor.name = "MedicalWardFloor"
-	var floor_mesh := BoxMesh.new()
-	floor_mesh.size = Vector3(float(ward_size[0]), 0.2, float(ward_size[1]))
-	floor.mesh = floor_mesh
-	floor.position = medical_origin + Vector3(0, -0.1, 0)
-	floor.material_override = _textured_material(TEX_WALL_GENERIC, Color("#d7f0ec"), Vector3(float(ward_size[0]), float(ward_size[1]), 1.0))
-	world.add_child(floor)
+	_build_medical_ward_instance(ward_data, "MedicalWard", _on_interior_door_entered)
+
+
+func _build_medical_ward_instance(ward_data: Dictionary, prefix: String, exit_callback: Callable) -> void:
+	var ward_origin := _array_to_vector3(ward_data["origin"])
+	var ward_size: Array = ward_data["interior_size"]
+	_add_map_blocks(ward_origin, ward_data.get("floor_blocks", [[0, -0.1, 0, ward_size[0], 0.2, ward_size[1]]]), prefix + "Floor", TEX_INTERIOR_FLOOR, Color("#d7f0ec"), false)
 	var center_tile := MeshInstance3D.new()
-	center_tile.name = "MedicalWardCenterFloorTile"
+	center_tile.name = prefix + "CenterFloorTile"
 	var center_mesh := BoxMesh.new()
 	center_mesh.size = Vector3(4.5, 0.06, 3.2)
 	center_tile.mesh = center_mesh
-	center_tile.position = medical_origin + Vector3(0, 0.04, 0.3)
-	center_tile.material_override = _textured_material(TEX_WALL_GENERIC, Color("#b8ddd9"), Vector3(4.5, 3.2, 1.0))
+	center_tile.position = ward_origin + Vector3(0, 0.04, 0.3)
+	center_tile.material_override = _textured_material(TEX_INTERIOR_FLOOR, Color("#b8ddd9"), Vector3(4.5, 3.2, 1.0))
 	world.add_child(center_tile)
-	_add_ward_block("MedicalWardBackWall", medical_origin + Vector3(0, 1.25, -3.35), Vector3(8.0, 2.5, 0.3), Color("#eef5f3"))
-	_add_ward_block("MedicalWardLeftWall", medical_origin + Vector3(-3.85, 1.25, 0), Vector3(0.3, 2.5, 6.7), Color("#c7dcdf"))
-	_add_ward_block("MedicalWardRightWall", medical_origin + Vector3(3.85, 1.25, 0), Vector3(0.3, 2.5, 6.7), Color("#c7dcdf"))
+	_add_map_blocks(ward_origin, ward_data.get("wall_blocks", _room_wall_blocks(ward_size)), prefix + "Wall", TEX_WALL_GENERIC, Color("#d6e8e8"), true)
+	_add_serialized_furnishings(ward_origin,ward_data.get("furnishings",[{"type":"ward_counter","position":[0,0,-2.2],"height":1.75},{"type":"ward_shelf","position":[-3,0,-1.7],"height":2.05},{"type":"ward_table","position":[2,0,0.8],"height":0.95},{"type":"ward_curtain","position":[2.95,0,-1],"height":1.85},{"type":"ward_wash","position":[-2.9,0,1.5],"height":1.85}]),prefix)
+	_build_universal_objects(ward_data, ward_origin, prefix)
+	var staff_position := ward_origin + _array_to_vector3(ward_data.get("staff", [0.0, 0.65, -1.25]))
+	var staff := _add_talking_npc(prefix + "Attendant", staff_position, Color("#72cbd0"), "WARD ATTENDANT", ["Welcome to the medical ward.", "Leave your Fakemon with me for a moment, and I will restore them to full health."], _heal_party_at_ward)
+	_add_static_collision(prefix + "AttendantCollision", staff.position, Vector3(0.8, 1.1, 0.8))
 	#var reception := MeshInstance3D.new()
 	#reception.name = "MedicalWardCounterPlaceholder"
 	#var counter_mesh := BoxMesh.new()
@@ -1251,12 +1555,12 @@ func _build_medical_ward(ward_data: Dictionary) -> void:
 	#world.add_child(reception)
 	#_add_static_collision("MedicalWardCounterCollision", reception.position, counter_mesh.size)
 	var exit_door := Area3D.new()
-	exit_door.name = "MedicalWardInteriorDoor"
-	exit_door.position = medical_origin + _array_to_vector3(ward_data["exit_door"])
+	exit_door.name = prefix + "InteriorDoor"
+	exit_door.position = ward_origin + _array_to_vector3(ward_data["exit_door"])
 	var door_size := Vector3(1.5, 0.3, 0.9)
 	exit_door.add_child(_box_shape(door_size))
 	_add_warp_rug_visual(exit_door, door_size.x)
-	exit_door.body_entered.connect(_on_interior_door_entered)
+	exit_door.body_entered.connect(exit_callback)
 	world.add_child(exit_door)
 
 
@@ -1264,23 +1568,17 @@ func _build_house(house_data: Dictionary) -> void:
 	var exterior_position := _array_to_vector3(house_data["position"])
 	var exterior_size := _array_to_vector3(house_data["size"])
 	var house_art := _add_world_billboard("HouseExteriorArt", exterior_position, TEX_HOUSE, 4.6, 0.0)
+	_register_sortable_object(house_art, "HouseExteriorSortRoot", exterior_position, house_art.global_position, float(house_art.texture.get_height()) * house_art.pixel_size, float(house_data.get("sort_offset_y", 0.0)))
 	_add_static_collision("HouseExteriorCollision", exterior_position, exterior_size)
 	var door_size := Vector3(1.3, 0.3, 0.9)
 	_build_building_door_warp(house_art, "HouseExteriorDoor", _array_to_vector3(house_data["door"]), _on_house_exterior_door_entered, door_size)
 
 	house_origin = _array_to_vector3(house_data["origin"])
 	var room_size: Array = house_data["interior_size"]
-	var floor := MeshInstance3D.new()
-	floor.name = "HouseInteriorFloor"
-	var floor_mesh := BoxMesh.new()
-	floor_mesh.size = Vector3(float(room_size[0]), 0.2, float(room_size[1]))
-	floor.mesh = floor_mesh
-	floor.position = house_origin + Vector3(0, -0.1, 0)
-	floor.material_override = _textured_material(TEX_WOOD, Color("#d8c6a5"), Vector3(float(room_size[0]), float(room_size[1]), 1.0))
-	world.add_child(floor)
-	_add_ward_block("HouseBackWall", house_origin + Vector3(0, 1.2, -2.85), Vector3(7.0, 2.4, 0.3), Color("#eadcc5"))
-	_add_ward_block("HouseLeftWall", house_origin + Vector3(-3.35, 1.2, 0), Vector3(0.3, 2.4, 5.7), Color("#c9ae87"))
-	_add_ward_block("HouseRightWall", house_origin + Vector3(3.35, 1.2, 0), Vector3(0.3, 2.4, 5.7), Color("#c9ae87"))
+	_add_map_blocks(house_origin, house_data.get("floor_blocks", [[0, -0.1, 0, room_size[0], 0.2, room_size[1]]]), "HouseInteriorFloor", TEX_INTERIOR_FLOOR, Color("#d8c6a5"), false)
+	_add_map_blocks(house_origin, house_data.get("wall_blocks", _room_wall_blocks(room_size)), "HouseInteriorWall", TEX_WALL_GENERIC, Color("#d8c6a5").darkened(0.18), true)
+	_add_serialized_furnishings(house_origin,house_data.get("furnishings",[{"type":"bed","position":[-2.3,0,-1.6],"height":2.35},{"type":"dresser","position":[2.5,0,-1.6],"height":2.05},{"type":"table","position":[0,0,0.4],"height":1.3},{"type":"houseplant_2","position":[2.6,0,1.6],"height":1.0}]),"RainforestHouse")
+	_build_universal_objects(house_data, house_origin, "RainforestHouse")
 	house_npc = Area3D.new()
 	house_npc.name = "BurnTutorNPC"
 	house_npc.position = house_origin + _array_to_vector3(house_data["npc"])
@@ -1418,11 +1716,12 @@ func _start_burn_dialogue() -> void:
 	_start_dialogue("RAINFOREST RESIDENT", burn_dialogue)
 
 
-func _start_dialogue(speaker: String, pages: Array) -> void:
+func _start_dialogue(speaker: String, pages: Array, after_dialogue := Callable()) -> void:
 	active_dialogue.clear()
 	for page: Variant in pages:
 		active_dialogue.append(String(page))
 	active_dialogue_speaker = speaker
+	dialogue_complete_action = after_dialogue
 	dialog_page = 0
 	dialog_open = true
 	dialog_panel.show()
@@ -1434,6 +1733,10 @@ func _advance_dialogue() -> void:
 	if dialog_page >= active_dialogue.size():
 		dialog_open = false
 		dialog_panel.hide()
+		var action := dialogue_complete_action
+		dialogue_complete_action = Callable()
+		if action.is_valid():
+			action.call()
 		return
 	_update_dialogue()
 
@@ -1570,6 +1873,8 @@ func _update_follower_appearance() -> void:
 		follower_sprite.pixel_size = 0.015
 		follower_sprite.scale = Vector3(0.75, 0.9, 1.0)
 		follower.name = "%sFollowerPlaceholder" % leading_mon["name"].replace(" ", "")
+	if follower_sort_root!=null:
+		(follower_sort_root.get_node("Visual") as Sprite2D).texture=follower_sprite.texture
 
 
 func _update_follower_facing(velocity: Vector3) -> void:
@@ -1671,6 +1976,8 @@ func _apply_player_appearance() -> void:
 	if player_sprite == null:
 		return
 	player_sprite.texture = _solid_texture(player_color)
+	if player_sort_root != null:
+		(player_sort_root.get_node("Visual") as Sprite2D).texture = player_sprite.texture
 	player.name = "%s%sPlayerPlaceholder" % [player_color_name.replace(" ", ""), player_gender]
 
 
@@ -1745,6 +2052,9 @@ func _write_save(path: String, show_feedback: bool, success_message: String) -> 
 		"active_party_index": active_party_index,
 		"location": location,
 		"player_position": [player.position.x, player.position.y, player.position.z],
+		"respawn_location": respawn_location,
+		"respawn_position": [respawn_position.x, respawn_position.y, respawn_position.z],
+		"respawn_title": respawn_title,
 		"poison_step_distance": poison_step_distance
 	}
 	var file := FileAccess.open(path, FileAccess.WRITE)
@@ -1792,6 +2102,13 @@ func _load_game(slot: int = -1) -> bool:
 	poison_step_distance = clampf(float(data.get("poison_step_distance", 0.0)), 0.0, 0.999)
 	var saved_position: Variant = data.get("player_position", map_data["player_spawn"])
 	player.position = _array_to_vector3(saved_position as Array) if saved_position is Array and saved_position.size() >= 3 else spawn_position
+	var saved_respawn_position: Variant = data.get("respawn_position", map_data["player_spawn"])
+	respawn_position = _array_to_vector3(saved_respawn_position as Array) if saved_respawn_position is Array and saved_respawn_position.size() >= 3 else spawn_position
+	respawn_location = String(data.get("respawn_location", "rainforest"))
+	if not ["rainforest", "city"].has(respawn_location):
+		respawn_location = "rainforest"
+		respawn_position = spawn_position
+	respawn_title = String(data.get("respawn_title", "MOSSVALE RAINFOREST CITY" if respawn_location == "city" else "RAINFOREST CLEARING - PLACEHOLDER MAP"))
 	var location := String(data.get("location", "rainforest"))
 	inside_medical_ward = location == "medical_ward"
 	inside_house = location == "house"
@@ -1814,7 +2131,7 @@ func _load_game(slot: int = -1) -> bool:
 	adventure_started = true
 	in_battle = false
 	battle.hide()
-	world.show()
+	_set_overworld_visuals_visible(true)
 	map_ui.visible = true
 	_update_follower_appearance()
 	follower.show()
@@ -1838,17 +2155,17 @@ func _apply_loaded_location(location: String) -> void:
 		hint_label.text = "Loaded inside the house. Click the orange resident to talk."
 	elif location == "route":
 		camera.size = 24.0
-		world_environment.background_color = Color("#587a43")
+		world_environment.background_color = OUTDOOR_BACKGROUND
 		map_title.text = "CANOPY ROUTE - PLACEHOLDER MAP"
 		hint_label.text = "Loaded on Canopy Route. Water is uncrossable; the trainer waits at the far end."
 	elif location == "east_route":
 		camera.size = 24.0
-		world_environment.background_color = Color("#587a43")
+		world_environment.background_color = OUTDOOR_BACKGROUND
 		map_title.text = "EASTERN RAINFOREST ROUTE"
 		hint_label.text = "Loaded on the eastern route. The cave lies deeper in the rainforest."
 	elif location == "west_route":
 		camera.size = 24.0
-		world_environment.background_color = Color("#587a43")
+		world_environment.background_color = OUTDOOR_BACKGROUND
 		map_title.text = "WESTERN RAINFOREST ROUTE"
 		hint_label.text = "Loaded on the western rainforest route."
 	elif location == "east_cave":
@@ -1858,7 +2175,7 @@ func _apply_loaded_location(location: String) -> void:
 		hint_label.text = "Loaded in Vinestone Cave. Blue flowers and vines grow among the rocks."
 	elif location == "city":
 		camera.size = 24.0
-		world_environment.background_color = Color("#668a57")
+		world_environment.background_color = OUTDOOR_BACKGROUND
 		map_title.text = "MOSSVALE RAINFOREST CITY"
 		hint_label.text = "Loaded in Mossvale City. Visit the ward or either home."
 	elif location == "city_ward":
@@ -1888,7 +2205,7 @@ func _apply_loaded_location(location: String) -> void:
 		inside_orchid_house = false
 		inside_family_house = false
 		camera.size = 24.0
-		world_environment.background_color = Color("#93c47d")
+		world_environment.background_color = OUTDOOR_BACKGROUND
 		map_title.text = "RAINFOREST CLEARING - PLACEHOLDER MAP"
 		hint_label.text = "Adventure loaded. Move with WASD / Arrow Keys."
 	var is_inside := inside_medical_ward or inside_house or inside_east_cave or inside_city_ward or inside_orchid_house or inside_family_house
@@ -1957,6 +2274,11 @@ func _visual_layer_for_position(position: Vector3) -> int:
 func _set_active_visual_region(location: String) -> void:
 	if camera == null:
 		return
+	var active_layer := _active_visual_layer(location)
+	camera.cull_mask = (1 << (active_layer - 1)) | (1 << (DYNAMIC_VISUAL_LAYER - 1))
+
+
+func _active_visual_layer(location: String = "") -> int:
 	var location_layers := {
 		"rainforest": 1,
 		"medical_ward": 2,
@@ -1970,8 +2292,7 @@ func _set_active_visual_region(location: String) -> void:
 		"orchid_house": 10,
 		"family_house": 11,
 	}
-	var active_layer := int(location_layers.get(location, 1))
-	camera.cull_mask = (1 << (active_layer - 1)) | (1 << (DYNAMIC_VISUAL_LAYER - 1))
+	return int(location_layers.get(_current_location() if location.is_empty() else location, 1))
 
 
 func _clamp_player_to_region(origin: Vector3, region_size: Array) -> void:
@@ -1980,12 +2301,7 @@ func _clamp_player_to_region(origin: Vector3, region_size: Array) -> void:
 
 
 func _load_map_data() -> Dictionary:
-	var file := FileAccess.open(MAP_DATA_PATH, FileAccess.READ)
-	if file == null:
-		push_error("Could not open rainforest map data.")
-		return {}
-	var parsed: Variant = JSON.parse_string(file.get_as_text())
-	return parsed as Dictionary if parsed is Dictionary else {}
+	return MapDataLoader.load_world(MAP_DATA_PATH)
 
 
 func _array_to_vector3(values: Array) -> Vector3:
@@ -2013,6 +2329,9 @@ func _square_sprite(color: Color, label_text: String, size: Vector2) -> Sprite3D
 	sprite.texture = _solid_texture(color)
 	sprite.pixel_size = 0.015
 	sprite.scale = Vector3(size.x, size.y, 1.0)
+	# Actors sort from their feet, while their artwork extends upward from that point.
+	# Positive local Y keeps the pixels above the ground plane.
+	sprite.offset = Vector2(0.0, 32.0)
 	sprite.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	sprite.alpha_cut = SpriteBase3D.ALPHA_CUT_OPAQUE_PREPASS
 	# Names provide readable placeholder identification in the remote scene tree.

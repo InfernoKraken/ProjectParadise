@@ -1,0 +1,20 @@
+{
+  "format_version": 1,
+  "root": "rainforest_clearing.json",
+  "sections": {
+    "medical_ward": "rainforest_medical_ward.json",
+    "house": "rainforest_house.json",
+    "route": "canopy_route.json",
+    "east_route": "eastern_rainforest_route.json",
+    "west_route": "western_rainforest_route.json",
+    "east_cave": "vinestone_cave.json",
+    "rainforest_city": "mossvale_city.json"
+  },
+  "nested_sections": {
+    "rainforest_city": {
+      "medical_ward": "mossvale_medical_ward.json",
+      "orchid_house": "mossvale_orchid_house.json",
+      "family_house": "mossvale_family_house.json"
+    }
+  }
+}

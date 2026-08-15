@@ -8,12 +8,18 @@ func _initialize() -> void:
 	root.add_child(main)
 	await process_frame
 	assert(main.player != null, "Player placeholder must be created.")
+	assert(main.MAP_DATA_PATH == "res://data/maps/map_index.json", "World maps must load through the editable map index.")
+	assert(FileAccess.file_exists("res://data/maps/rainforest_clearing.json"), "The clearing must have its own map data file.")
+	assert(FileAccess.file_exists("res://data/maps/mossvale_family_house.json"), "Map interiors must have their own data files.")
 	assert(InputMap.action_get_events("move_left").any(func(event: InputEvent) -> bool: return event is InputEventKey and (event as InputEventKey).physical_keycode == KEY_LEFT), "move_left must include the Left Arrow key.")
 	assert(InputMap.action_get_events("move_right").any(func(event: InputEvent) -> bool: return event is InputEventKey and (event as InputEventKey).physical_keycode == KEY_RIGHT), "move_right must include the Right Arrow key.")
 	assert(main.opponent != null, "Trainer placeholder must be created.")
 	assert(main.route_origin == Vector3(80, 0, 0), "Canopy Route must be built as a separate map region.")
-	assert(main.world.get_node_or_null("CanopyRouteEntrance") != null, "The clearing must have a forest route warp.")
-	var clearing_warp_art := main.world.get_node("CanopyRouteEntrance/OutdoorWarpArt_Generic") as Sprite3D
+	assert(main.world.get_node_or_null("ClearingNorthExit") != null, "The clearing must own its forest route warp.")
+	assert(main.map_data.has("grass_zones") and not main.map_data.has("wild_zone"), "The clearing must use the standard grass_zones terrain field.")
+	var clearing_grass_tiles: Array = main.world.get_children().filter(func(node: Node) -> bool: return node.name.begins_with("GrassTile_"))
+	assert(not clearing_grass_tiles.is_empty(), "Clearing grass zones must generate standard visible tall-grass tiles.")
+	var clearing_warp_art := main.world.get_node("ClearingNorthExit/OutdoorWarpArt_Generic") as Sprite3D
 	assert(clearing_warp_art.texture.resource_path.ends_with("warp_outdoor_generic.png"), "The clearing's top warp must use the generic arch art.")
 	assert(main.world.get_node_or_null("CanopyRouteExit") != null, "The route must have a return warp.")
 	assert(main.world.get_node_or_null("UncrossableWaterBlock") != null, "The route must contain water blocks.")
@@ -61,8 +67,24 @@ func _initialize() -> void:
 	assert(main.world.get_node_or_null("CaveVine") is Sprite3D, "Cave vines must use the vine sprite art.")
 	var tree_art := main.world.find_child("ClearingCanopyArt", true, false) as Sprite3D
 	var vine_art := main.world.get_node("CaveVine") as Sprite3D
-	assert(tree_art.offset == vine_art.offset and tree_art.billboard == vine_art.billboard and tree_art.alpha_cut == vine_art.alpha_cut, "Trees and vines must use the same normal billboard depth behavior.")
-	assert(main.player_sprite.position == Vector3.ZERO, "Tree rendering must not displace the player sprite.")
+	var first_tree_sort_entry: Dictionary = main.tree_sort_entries.filter(func(entry): return (entry.get("sort_root") as CanvasItem).visible)[0]
+	var first_tree_sort_root := first_tree_sort_entry["sort_root"] as Node2D
+	assert(not tree_art.visible and first_tree_sort_root != null and main.sort_root.y_sort_enabled, "Trees must render through generated Node2D Y-sort roots rather than their 3D collision/placement sprites.")
+	assert(not main.follower_sprite.visible and main.follower_sort_root != null and main.follower_sort_root.get_parent()==main.player_sort_root.get_parent(), "The collision-free follower must share the player's generated occlusion/Y-sort layer.")
+	assert(not main.follower is CollisionObject3D and main.follower.find_children("*", "CollisionShape3D", true, false).is_empty(), "The following Fakemon must not gain collision.")
+	var sand_shore:=main.world.get_node_or_null("ClearingSandShore0") as MeshInstance3D
+	assert(sand_shore!=null and sand_shore.material_override.albedo_texture.resource_path.ends_with("tile_sand_generic.png"), "Serialized sand shore blocks must use the sand texture.")
+	assert(first_tree_sort_root.position.is_equal_approx(main.camera.unproject_position(Vector3(first_tree_sort_entry["placement"].x, 0.0, first_tree_sort_entry["placement"].z + float(first_tree_sort_entry["sort_offset_y"])))), "A tree's Y-sort root must use placement plus sort_offset_y while leaving its visual placement independent.")
+	assert(tree_art.billboard == vine_art.billboard and tree_art.alpha_cut == vine_art.alpha_cut, "Tree source sprites must retain normal billboard material settings for compatibility.")
+	assert(main.world.get_node_or_null("MedicalWardFurnishing0") != null and main.world.get_node_or_null("RainforestHouseFurnishing0") != null and main.world.get_node_or_null("FamilyHomeFurnishing0") != null, "Serialized indoor furniture must be placed in the existing indoor maps.")
+	var house_table_sort := main.sort_root.get_node_or_null("RainforestHouseFurnishing2SortRoot") as Node2D
+	assert(house_table_sort != null and main.world.get_node_or_null("RainforestHouseFurnishing2Collision") != null, "Indoor furniture must use the common Y-sort layer and retain a separate collision footprint.")
+	assert(not main.player_sprite.visible and main.player_sort_root != null, "The player must share the generated Y-sort container so front/back overlap follows feet position.")
+	var building_sort_root := main.sort_root.get_node_or_null("MedicalWardExteriorSortRoot") as Node2D
+	var warp_sort_root := main.sort_root.get_node_or_null("ClearingNorthExitSortRoot") as Node2D
+	assert(building_sort_root != null and warp_sort_root != null, "Buildings and visible outdoor warps must use generated Y-sort roots.")
+	assert(not (main.world.get_node("MedicalWardExteriorArt") as Sprite3D).visible and not (main.world.get_node("ClearingNorthExit/OutdoorWarpArt_Generic") as Sprite3D).visible, "Source building and warp sprites must be hidden after their collision-safe sorted visuals are generated.")
+	assert(not main.sort_canvas.visible, "The world Y-sort canvas must remain hidden behind the start screen.")
 	var house_exit_rug := main.world.get_node("HouseInteriorDoor/WarpRugArt") as MeshInstance3D
 	var rug_size := (house_exit_rug.mesh as PlaneMesh).size
 	assert(is_equal_approx(rug_size.x / rug_size.y, float(main.TEX_WARP_BUILDING.get_width()) / float(main.TEX_WARP_BUILDING.get_height())), "Warp rugs must preserve the source aspect ratio on a flat plane.")
@@ -136,6 +158,7 @@ func _initialize() -> void:
 	main.party[0] = scorchick
 	main._update_follower_appearance()
 	var autosave_position: Vector3 = main.player.position
+	main._auto_save()
 	main.selected_save_slot = 1
 	main.player.position = Vector3(1, 0.65, 1)
 	assert(main._save_game(), "Manual state 1 must save.")
@@ -172,5 +195,10 @@ func _initialize() -> void:
 	main._on_battle_finished(true, false, {}, 40, main.battle.participating_party_indices, 0, final_hp, conditions)
 	assert(int(main.party[0]["experience"]) == first_exp + 20, "The first participant must receive half of 40 EXP.")
 	assert(int(main.party[1]["experience"]) == second_exp + 20, "The second participant must receive half of 40 EXP.")
+	var city_ward: Dictionary = main.map_data["rainforest_city"]["medical_ward"]
+	var city_checkpoint: Vector3 = main.city_origin + main._array_to_vector3(city_ward["exterior_return"])
+	main._set_respawn_checkpoint("city", city_checkpoint, "MOSSVALE RAINFOREST CITY")
+	main._restore_respawn_checkpoint()
+	assert(main._current_location() == "city" and main.player.position == city_checkpoint, "A visited medical ward must become the active cross-map defeat checkpoint.")
 	print("WORLD_SMOKE_TEST_PASSED")
 	quit()

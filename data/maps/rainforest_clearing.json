@@ -1,0 +1,223 @@
+{
+	"arrival_points": {"north_return": [0, 0.65, -9.0]},
+	"outdoor_connections": [{"id":"clearing_to_canopy","warp":"north_warp","destination_map":"canopy_route.json","arrival":"entry","reverse":"canopy_to_clearing","facing":"generic"}],
+	"blue_flowers": [
+		[
+			-2.0,
+			0.2,
+			-5.0
+		],
+		[
+			3.0,
+			0.2,
+			-5.0
+		]
+	],
+	"building": {
+		"door": [
+			-8.0,
+			0.11999999731779,
+			-5.0
+		],
+		"position": [
+			-7,
+			1.5,
+			-5
+		],
+		"size": [
+			5,
+			3,
+			4
+		]
+	},
+	"grass_zones": [
+		{
+			"encounter_chance": 0.2,
+			"position": [
+				7,
+				0.12,
+				3
+			],
+			"size": [
+				5,
+				0.25,
+				5
+			]
+		},
+		{
+			"encounter_chance": 0.2,
+			"position": [
+				-10.0,
+				0.11999999731779,
+				-9.0
+			],
+			"size": [
+				7.0,
+				0.25,
+				4.0
+			]
+		}
+	],
+	"map_size": [
+		26,
+		22
+	],
+	"medical_ward_instance": "medical_ward",
+	"north_return": [
+		0,
+		0.65,
+		-9.0
+	],
+	"north_warp": [
+		0,
+		0.11999999731779,
+		-10.0
+	],
+	"opponent": {
+		"fakemon_index": 2,
+		"fakemon_indices": [
+			2
+		],
+		"position": [
+			80,
+			0.65,
+			-11
+		]
+	},
+	"player_spawn": [
+		0,
+		0.65,
+		7
+	],
+	"rare_torch_ginger": [],
+	"tall_flowers": [
+		[
+			-1.0,
+			0.35,
+			-1.0
+		],
+		[
+			-6.0,
+			0.35,
+			4.0
+		],
+		[
+			-6.0,
+			0.35,
+			8.0
+		]
+	],
+	"tall_grass_species": [
+		"Slumboth",
+		"Dartlet",
+		"Skeeter",
+		"Lochirp"
+	],
+	"trainers": [
+		{"name": "SCOUT LINA", "position": [4.0, 0.65, 6.0], "party": [0], "dialogue": ["The clearing is a great place to learn the rhythm of a Fakemon battle.", "Let us have a quick match!"], "color": "df6d5f"},
+		{"name": "RANGER MOSS", "position": [-2.5, 0.65, -4.0], "party": [2], "dialogue": ["I keep the trails clear and my partner sharp.", "Show me what your team can do!"], "color": "c8794e"}
+	],
+	"trees": [
+		[
+			-11,
+			1.5,
+			-8,
+			0
+		],
+		[
+			-3,
+			1.5,
+			-9,
+			1
+		],
+		[
+			4,
+			1.5,
+			-9,
+			1
+		],
+		[
+			10,
+			1.5,
+			-7,
+			0
+		],
+		[
+			-11,
+			1.5,
+			0,
+			0
+		],
+		[
+			11,
+			1.5,
+			1,
+			0
+		],
+		[
+			-9,
+			1.5,
+			8,
+			1
+		],
+		[
+			-4,
+			1.5,
+			9,
+			0
+		],
+		[
+			5,
+			1.5,
+			9,
+			1
+		],
+		[
+			11,
+			1.5,
+			8,
+			0
+		],
+		[
+			-13.0,
+			1.5,
+			1.0,
+			1
+		],
+		[
+			-13.0,
+			1.5,
+			2.0,
+			1
+		],
+		[
+			-13.0,
+			1.5,
+			3.0,
+			1
+		],
+		[
+			-13.0,
+			1.5,
+			8.0,
+			0
+		],
+		[
+			-13.0,
+			1.5,
+			-4.0,
+			0
+		]
+	],
+	"sand_blocks": [[-4,0.05,9.25,21,0.1,0.5],[-4,0.05,12.75,21,0.1,0.5],[-14.25,0.05,11,0.5,0.1,3],[6.25,0.05,11,0.5,0.1,3]],
+	"water_blocks": [
+		[
+			-4.0,
+			0.15000000596046,
+			11.0,
+			20.0,
+			0.30000001192093,
+			3.0
+		]
+	]
+}

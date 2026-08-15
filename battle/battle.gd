@@ -18,19 +18,25 @@ const NEUTRAL_STAT_MODIFIER := 1.0
 const MAX_BATTLE_LOG_CHARACTERS := 300
 const COMBAT_STATS := ["attack", "defense", "special_attack", "special_defense", "speed"]
 const TYPE_EFFECTIVENESS := {
-	"Fire": {"Plant": 2.0, "Fire": 0.5, "Water": 0.5, "Air": 2.0, "Bug": 2.0},
-	"Water": {"Fire": 2.0, "Water": 0.5, "Plant": 0.5, "Light": 0.5},
-	"Plant": {"Water": 2.0, "Plant": 0.5, "Fire": 0.5, "Light": 2.0, "Air": 2.0, "Bug": 0.5},
-	"Light": {"Dark": 2.0, "Water": 2.0, "Plant": 0.5, "Bug": 0.5, "Ghost": 2.0, "Psychic": 2.0},
-	"Dark": {"Light": 0.5, "Bug": 0.5, "Ghost": 2.0, "Psychic": 2.0},
-	"Normal": {"Bug": 2.0, "Ghost": 0.5, "Psychic": 0.5},
-	"Air": {"Fire": 2.0, "Plant": 0.5, "Bug": 2.0, "Fighting": 2.0},
-	"Bug": {"Fire": 0.5, "Plant": 2.0, "Normal": 0.5, "Light": 2.0, "Dark": 2.0, "Air": 0.5},
-	"Mystic": {},
-	"Ghost": {"Normal": 0.5, "Light": 0.5, "Dark": 0.5, "Psychic": 2.0},
-	"Psychic": {"Normal": 2.0, "Light": 0.5, "Dark": 0.5, "Ghost": 0.5, "Fighting": 2.0, "Poison": 2.0},
-	"Fighting": {"Normal": 2.0, "Bug": 2.0, "Ghost": 0.5, "Air": 0.5, "Psychic": 0.5},
-	"Poison": {"Normal": 2.0, "Water": 2.0, "Plant": 2.0, "Psychic": 0.5}
+	"Fire": {"Ancient": 2.0, "Plant": 2.0, "Fire": 0.5, "Water": 0.5, "Air": 2.0, "Bug": 2.0, "Steel": 2.0, "Ice": 2.0, "Rock": 0.5},
+	"Water": {"Fire": 2.0, "Water": 0.5, "Plant": 0.5, "Light": 0.5, "Ancient": 2.0, "Rock": 2.0, "Steel": 2.0, "Poison": 0.5, "Normal": 0.5},
+	"Plant": {"Water": 2.0, "Plant": 0.5, "Fire": 0.5, "Light": 2.0, "Air": 2.0, "Bug": 0.5, "Rock": 2.0, "Ancient": 2.0, "Poison": 0.5},
+	"Light": {"Dark": 2.0, "Water": 2.0, "Plant": 0.5, "Bug": 0.5, "Ghost": 2.0, "Psychic": 2.0, "Ancient": 2.0, "Rock": 0.5, "Light": 0.5},
+	"Dark": {"Light": 0.5, "Bug": 0.5, "Ghost": 2.0, "Psychic": 2.0, "Mystic": 2.0, "Ancient": 2.0, "Dark": 0.5, "Fighting": 2.0},
+	"Normal": {"Bug": 2.0, "Ghost": 0.5, "Psychic": 0.5, "Mystic": 2.0, "Steel": 0.5, "Ancient": 0.5, "Rock": 0.5, "Plant":2.0, "Fighting": 0.5},
+	"Air": {"Fire": 2.0, "Plant": 0.5, "Bug": 2.0, "Fighting": 2.0, "Electric": 0.5, "Ice": 0.5, "Rock": 2.0, "Normal": 0.5, "Air": 0.5},
+	"Bug": {"Fire": 0.5, "Plant": 2.0, "Normal": 0.5, "Light": 2.0, "Dark": 2.0, "Air": 0.5, "Steel": 0.5, "Mystic": 2.0, "Dragon": 0.5, "Ice": 0.5, "Bug": 0.5, "Psychic": 2.0, "Fighting": 0.5},
+	"Mystic": {"Normal": 0.5, "Dark": 0.5, "Mystic": 0.5, "Fighting": 0.5, "Ghost": 2.0, "Ancient": 2.0, "Dragon": 2.0, "Bug": 0.5},
+	"Ghost": {"Ancient": 0.5, "Light": 0.5, "Psychic": 2.0, "Mystic": 0.5, "Fighting": 2.0, "Ghost": 0.5, "Steel": 2.0},
+	"Psychic": {"Normal": 2.0, "Light": 0.5, "Dark": 0.5, "Ghost": 0.5, "Fighting": 2.0, "Poison": 2.0, "Steel": 2.0, "Ancient": 0.5, "Bug": 0.5},
+	"Fighting": {"Normal": 2.0, "Bug": 2.0, "Ghost": 0.5, "Air": 0.5, "Psychic": 0.5, "Mystic": 2.0, "Steel": 0.5, "Rock": 2.0, "Dark": 2.0},
+	"Poison": {"Normal": 2.0, "Water": 2.0, "Plant": 2.0, "Psychic": 0.5, "Steel": 0.5, "Rock": 0.5, "Air": 0.5, "Ice": 0.5},
+	"Steel": {"Fire": 0.5, "Water": 0.5, "Psychic": 0.5, "Electric": 0.5, "Fighting": 2.0, "Bug": 2.0, "Rock": 2.0, "Ice":2.0, "Dragon": 2.0, "Steel": 0.5},
+	"Ancient": {"Water": 0.5, "Plant": 0.5, "Light": 0.5, "Ghost": 2.0, "Electric": 2.0, "Normal": 2.0, "Psychic": 2.0, "Ice": 2.0},
+	"Electric": {"Ancient": 0.5, "Steel": 2.0, "Water": 2.0, "Plant": 0.5, "Rock": 0.5, "Air": 2.0, "Electric": 0.5, "Fighting": 2.0},
+	"Rock": {"Fire": 2.0, "Plant": 0.5, "Steel": 0.5, "Bug": 2.0, "Ice": 2.0, "Fighting": 0.5, "Light": 2.0, "Ancient": 0.5, "Rock": 0.5, "Electric": 2.0},
+	"Ice": {"Fire": 0.5, "Steel": 0.5, "Rock": 0.5, "Plant": 2.0, "Bug": 2.0, "Dragon": 2.0, "Air": 2.0, "Ancient": 0.5, "Ice": 0.5},
+	"Dragon": {"Steel": 0.5, "Mystic": 0.5, "Fighting": 2.0, "Normal": 2.0, "Electric": 2.0}
 }
 
 var battle_data: Dictionary
@@ -447,7 +453,9 @@ func _build_battle_screen() -> void:
 	restart_button.position = Vector2(12, 35)
 	restart_button.size = Vector2(255, 50)
 	restart_button.pressed.connect(_on_return_pressed)
+	restart_button.disabled = true
 	restart_button.hide()
+	restart_button.disabled = true
 	switch_panel.hide()
 	action_panel.add_child(restart_button)
 
@@ -580,6 +588,7 @@ func _show_move_menu() -> void:
 		choice.disabled = not _is_move_selectable(player, move_id)
 		if choice.disabled:
 			choice.tooltip_text = _move_unavailable_reason(player, move_id)
+		_add_move_effectiveness_indicator(choice, move)
 		move_menu.add_child(choice)
 	_add_move_menu_cancel_button()
 	message_label.hide()
@@ -1976,6 +1985,33 @@ func _get_combined_type_effectiveness(move_type: String, defender: Dictionary, i
 	return combined
 
 
+func _move_effectiveness_indicator(move: Dictionary, _attacker: Dictionary = player, defender: Dictionary = opponent) -> int:
+	if String(move.get("damage_class", "")) == "Status":
+		return 0
+	var effectiveness := _get_combined_type_effectiveness(String(move.get("type", "")), defender, bool(move.get("ignore_resistance", false)))
+	if String(move.get("type", "")) == "Light" and bool(defender.get("light_exposed", false)):
+		effectiveness *= 2.0
+	if String(move.get("type", "")) == "Dark" and bool(defender.get("dark_exposed", false)):
+		effectiveness *= 2.0
+	return 1 if effectiveness > 1.0 else -1 if effectiveness < 1.0 else 0
+
+
+func _add_move_effectiveness_indicator(choice: Button, move: Dictionary) -> void:
+	var indicator := _move_effectiveness_indicator(move)
+	if indicator == 0:
+		return
+	var icon := Label.new()
+	icon.name = "EffectivenessIndicator"
+	icon.text = "▲" if indicator > 0 else "▼"
+	icon.position = Vector2(7, 3)
+	icon.size = Vector2(18, 22)
+	icon.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	icon.add_theme_font_size_override("font_size", 18)
+	icon.add_theme_color_override("font_color", Color("4ee44e") if indicator > 0 else Color("ef4a4a"))
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	choice.add_child(icon)
+
+
 func _fakemon_types(mon: Dictionary) -> Array[String]:
 	var result: Array[String] = []
 	if not mon.get("battle_types_override", []).is_empty():
@@ -2153,7 +2189,7 @@ func _input(event: InputEvent) -> void:
 		_on_switch_pressed()
 	elif (number == 4 or key == KEY_R) and not run_button.disabled:
 		_on_run_pressed()
-	elif (number == 5 or key == KEY_ENTER) and not restart_button.disabled:
+	elif battle_over and restart_button.visible and (number == 5 or key == KEY_ENTER) and not restart_button.disabled:
 		_on_return_pressed()
 
 
@@ -2183,10 +2219,13 @@ func _end_battle(result: String) -> void:
 	message_label.show()
 	switch_panel.hide()
 	restart_button.show()
+	restart_button.disabled = false
 	message_label.text += "\n" + result
 
 
 func _on_return_pressed() -> void:
+	if not battle_over or not restart_button.visible or restart_button.disabled:
+		return
 	hide()
 	var final_conditions: Array[Dictionary] = []
 	for mon: Dictionary in battle_party:

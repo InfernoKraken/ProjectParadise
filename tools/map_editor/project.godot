@@ -1,0 +1,20 @@
+; Standalone Project Paradise map editor. This project is intentionally separate
+; from the gameplay project so editor-only scripts are never imported/exported.
+config_version=5
+
+[application]
+config/name="Project Paradise Map Editor"
+run/main_scene="res://map_editor.tscn"
+config/features=PackedStringArray("4.7")
+
+[display]
+window/size/viewport_width=1440
+window/size/viewport_height=900
+window/size/window_width_override=1440
+window/size/window_height_override=900
+window/stretch/mode="canvas_items"
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+
