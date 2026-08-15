@@ -79,4 +79,3 @@ The Warp Graph pairs reverse links and reports missing destinations/arrivals, on
 links, duplicate IDs, and duplicate warp endpoints. Selecting a warp exposes its
 destination map, arrival name, reverse-link ID, and facing in the inspector. Legacy
 coordinate fields remain runtime and editor fallbacks during incremental migration.
-```
