@@ -1,0 +1,68 @@
+{
+  "duration": 2.0,
+  "events": [
+    {
+      "battler": "user",
+      "direction": "toward_target",
+      "distance": 130.0,
+      "duration": 0.2,
+      "time": 0.8,
+      "type": "move_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Projectile_Bug_Needle.png",
+      "duration": 0.5,
+      "from": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "instance_id": "beam",
+      "layer": "above_battlers",
+      "opacity": 1.0,
+      "time": 1.0,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "type": "beam",
+      "width": 60.01
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact.png",
+      "duration": 0.3,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 0.5,
+      "sprite_sheet": null,
+      "time": 1.1,
+      "type": "impact_sprite"
+    },
+    {
+      "battler": "target",
+      "duration": 0.2,
+      "magnitude": 8.0,
+      "time": 1.2,
+      "type": "shake_battler"
+    }
+  ],
+  "format_version": 1,
+  "id": "needle_nip"
+}

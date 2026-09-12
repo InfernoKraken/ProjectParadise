@@ -1,0 +1,50 @@
+{
+  "duration": 1.4,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Orb_Cosmic.png",
+      "distance": 120.0,
+      "duration": 0.5,
+      "instance_id": "vertical_effect",
+      "is_behind": false,
+      "mode": "fall_to_anchor",
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "time": 0.5,
+      "tint": "#FFFFFF",
+      "type": "vertical_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Heal.png",
+      "duration": 0.3,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.0,
+      "tint": "#FFFFFF",
+      "type": "impact_sprite"
+    }
+  ],
+  "format_version": 1,
+  "id": "absolve"
+}

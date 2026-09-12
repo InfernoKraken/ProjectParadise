@@ -1,0 +1,106 @@
+{
+  "duration": 1.1,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Trail_Poison.png",
+      "instance_id": "effect",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": -15.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.5,
+      "type": "spawn_sprite"
+    },
+    {
+      "duration": 0.3,
+      "easing": "linear",
+      "instance_id": "effect",
+      "time": 0.5,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "instance_id": "effect",
+      "time": 0.8,
+      "type": "destroy_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Poison_Bubble.png",
+      "duration": 0.3,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          15.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.8,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Poison_Bubble.png",
+      "duration": 0.3,
+      "instance_id": "impact1",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          50.0,
+          10.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.8,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Poison_Bubble.png",
+      "duration": 0.3,
+      "instance_id": "impact2",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          -50.0,
+          -20.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.8,
+      "type": "impact_sprite"
+    }
+  ],
+  "format_version": 1,
+  "id": "poison_bubble"
+}

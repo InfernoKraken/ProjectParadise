@@ -1,0 +1,53 @@
+{
+  "duration": 1.3,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Base_Light_Halo.png",
+      "instance_id": "effect",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "head",
+        "battler": "user",
+        "offset": [
+          0.0,
+          -10.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 0.7,
+      "sprite_sheet": null,
+      "time": 0.5,
+      "type": "spawn_sprite"
+    },
+    {
+      "color": "d0d0cc",
+      "duration": 0.15,
+      "opacity": 0.4,
+      "time": 0.5,
+      "type": "background_tint"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Sparkles.png",
+      "duration": 0.5,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          20.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.8,
+      "type": "impact_sprite"
+    }
+  ],
+  "format_version": 1,
+  "id": "remembrance"
+}

@@ -1,0 +1,120 @@
+{
+  "duration": 4.2,
+  "events": [
+    {
+      "battler": "user",
+      "duration": 0.2,
+      "magnitude": 8.0,
+      "time": 0.5,
+      "type": "shake_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Base_Fire.png",
+      "duration": 2.0,
+      "instance_id": "impact",
+      "is_behind": true,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          50.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.5,
+      "sprite_sheet": null,
+      "time": 0.51,
+      "type": "impact_sprite"
+    },
+    {
+      "color": "9d0606",
+      "duration": 0.15,
+      "opacity": 1.0,
+      "time": 0.55,
+      "type": "background_tint"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Inferno.png",
+      "duration": 1.0,
+      "instance_id": "impact1",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 2.5,
+      "sprite_sheet": null,
+      "time": 0.7,
+      "type": "impact_sprite"
+    },
+    {
+      "battler": "target",
+      "duration": 0.8,
+      "magnitude": 13.0,
+      "time": 0.71,
+      "type": "shake_battler"
+    },
+    {
+      "battler": "target",
+      "duration": 0.8,
+      "magnitude": 13.0,
+      "time": 0.91,
+      "type": "shake_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Dying_Flame.png",
+      "duration": 1.2,
+      "instance_id": "impact2",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 2.5,
+      "sprite_sheet": null,
+      "time": 1.7,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Smoldered_Out.png",
+      "duration": 1.0,
+      "instance_id": "impact3",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 2.5,
+      "sprite_sheet": null,
+      "time": 2.0,
+      "type": "impact_sprite"
+    },
+    {
+      "duration": 0.2,
+      "time": 2.15,
+      "type": "restore_background"
+    }
+  ],
+  "format_version": 1,
+  "id": "inferno"
+}

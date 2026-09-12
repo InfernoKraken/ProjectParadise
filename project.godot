@@ -15,6 +15,11 @@ run/main_scene="res://world/main.tscn"
 config/features=PackedStringArray("4.7", "Mobile")
 config/icon="res://icon.svg"
 
+[debug]
+
+settings/stdout/verbose_stdout=true
+terrain/show_canonical_grid=false
+
 [display]
 
 window/size/viewport_width=960

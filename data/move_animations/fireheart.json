@@ -1,0 +1,27 @@
+{
+  "duration": 2.5,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Fire_Heart.png",
+      "duration": 1.5,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.5,
+      "sprite_sheet": null,
+      "time": 0.5,
+      "type": "impact_sprite"
+    }
+  ],
+  "format_version": 1,
+  "id": "fireheart"
+}

@@ -1,20 +1,529 @@
 {
-  "format_version": 1,
-  "root": "rainforest_clearing.json",
-  "sections": {
-    "medical_ward": "rainforest_medical_ward.json",
-    "house": "rainforest_house.json",
-    "route": "canopy_route.json",
-    "east_route": "eastern_rainforest_route.json",
-    "west_route": "western_rainforest_route.json",
-    "east_cave": "vinestone_cave.json",
-    "rainforest_city": "mossvale_city.json"
-  },
-  "nested_sections": {
-    "rainforest_city": {
-      "medical_ward": "mossvale_medical_ward.json",
-      "orchid_house": "mossvale_orchid_house.json",
-      "family_house": "mossvale_family_house.json"
-    }
-  }
+	"arrival_points": {
+		"entry": [
+			0,
+			0.65,
+			8.5
+		]
+	},
+	"entry": [
+		0,
+		0.65,
+		8.5
+	],
+	"format_version": 1,
+	"index_metadata": {
+		"display_name": "Western Forests",
+		"id": "project_paradise_world"
+	},
+	"nested_sections": {
+		"rainforest_city": {
+			"family_house": "mossvale_family_house.json",
+			"medical_ward": "mossvale_medical_ward.json",
+			"orchid_house": "mossvale_orchid_house.json"
+		}
+	},
+	"objects": [
+		{
+			"position": [
+				-9.0,
+				1.5,
+				-5.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"position": [
+				-7.0,
+				1.5,
+				-9.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"position": [
+				-9.0,
+				1.5,
+				-10.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"position": [
+				-9.0,
+				1.5,
+				-2.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"position": [
+				-10.0,
+				1.5,
+				-3.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"position": [
+				-10.0,
+				1.5,
+				-9.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"position": [
+				-5.0,
+				1.5,
+				-10.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"position": [
+				-4.0,
+				1.5,
+				-10.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"position": [
+				-3.0,
+				0.15000000596046,
+				-7.0
+			],
+			"size": [
+				4.0,
+				0.30000001192093,
+				2.0
+			],
+			"type": "block.water"
+		},
+		{
+			"position": [
+				-5.0,
+				0.15000000596046,
+				-4.0
+			],
+			"size": [
+				1.0,
+				0.30000001192093,
+				5.0
+			],
+			"type": "block.water"
+		},
+		{
+			"position": [
+				-1.0,
+				0.15000000596046,
+				-5.0
+			],
+			"size": [
+				3.0,
+				0.30000001192093,
+				6.0
+			],
+			"type": "block.water"
+		},
+		{
+			"position": [
+				-10.0,
+				1.5,
+				-7.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"position": [
+				-9.0,
+				1.5,
+				-6.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"position": [
+				-8.0,
+				1.5,
+				-5.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"position": [
+				-10.0,
+				1.5,
+				-4.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"position": [
+				-10.0,
+				1.5,
+				-1.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"position": [
+				-10.0,
+				1.5,
+				0.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"position": [
+				-8.0,
+				1.5,
+				-1.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"position": [
+				-9.0,
+				1.5,
+				-1.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"position": [
+				-2.0,
+				1.5,
+				-10.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"position": [
+				-1.0,
+				1.5,
+				-9.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"position": [
+				-6.0,
+				1.5,
+				-10.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"position": [
+				-10.0,
+				1.5,
+				-6.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"position": [
+				-9.0,
+				0.34999999403954,
+				-8.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.red_ginger"
+		},
+		{
+			"position": [
+				-8.0,
+				0.34999999403954,
+				-7.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.red_ginger"
+		},
+		{
+			"position": [
+				-3.0,
+				0.34999999403954,
+				-9.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.red_ginger"
+		},
+		{
+			"position": [
+				-9.0,
+				0.34999999403954,
+				-4.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.red_ginger"
+		},
+		{
+			"position": [
+				-9.0,
+				0.20000000298023,
+				0.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.blue"
+		},
+		{
+			"position": [
+				-8.0,
+				0.20000000298023,
+				1.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.blue"
+		},
+		{
+			"position": [
+				-8.0,
+				0.20000000298023,
+				-9.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.blue"
+		},
+		{
+			"position": [
+				-7.0,
+				0.0,
+				-2.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.torch_ginger"
+		},
+		{
+			"position": [
+				0.0,
+				0.0,
+				-10.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.torch_ginger"
+		},
+		{
+			"dialogue": [
+				"Hello, traveler!"
+			],
+			"position": [
+				-6.0,
+				0.65,
+				0.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"speaker": "NPC",
+			"type": "npc.generic"
+		},
+		{
+			"dialogue": [
+				"Let's battle!"
+			],
+			"name": "TRAINER",
+			"position": [
+				-3.0,
+				0.65,
+				-5.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"team": [
+				{
+					"fakemon": 0,
+					"level": 5
+				}
+			],
+			"type": "npc.opponent"
+		}
+	],
+	"origin": [
+		170,
+		0,
+		0
+	],
+	"outdoor_connections": [
+		{
+			"arrival": "north_return",
+			"destination_map": "canopy_route.json",
+			"facing": "north",
+			"id": "city_to_canopy",
+			"reverse": "canopy_to_city",
+			"warp": "return_warp"
+		}
+	],
+	"return_warp": [
+		0,
+		0.12,
+		10.45,
+		[
+			-4.0,
+			0.12,
+			0.0
+		]
+	],
+	"root": "rainforest_clearing.json",
+	"sections": {
+		"east_cave": "vinestone_cave.json",
+		"east_route": "eastern_rainforest_route.json",
+		"house": "rainforest_house.json",
+		"medical_ward": "rainforest_medical_ward.json",
+		"rainforest_city": "mossvale_city.json",
+		"route": "canopy_route.json",
+		"west_route": "western_rainforest_route.json"
+	},
+	"size": [
+		26,
+		22
+	],
+	"tall_grass_species": [
+		"Slumboth",
+		"Dartlet",
+		"Skeeter",
+		"Lochirp"
+	]
 }

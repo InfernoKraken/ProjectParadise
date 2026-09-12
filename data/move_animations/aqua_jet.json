@@ -1,0 +1,78 @@
+{
+  "duration": 3.3,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Beam_Water.png",
+      "duration": 1.0,
+      "from": {
+        "anchor": "mouth",
+        "battler": "user",
+        "offset": [
+          0.0,
+          -3.0
+        ]
+      },
+      "instance_id": "beam",
+      "layer": "below_user_above_target",
+      "opacity": 1.0,
+      "time": 0.5,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "type": "beam",
+      "width": 75.01
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Water_Drops.png",
+      "duration": 0.3,
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.5,
+      "sprite_sheet": null,
+      "time": 1.5,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Base_Water.png",
+      "instance_id": "effect",
+      "is_behind": true,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          -15.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 2.0,
+      "sprite_sheet": null,
+      "time": 1.95,
+      "type": "spawn_sprite"
+    },
+    {
+      "duration": 0.25,
+      "instance_id": "effect",
+      "opacity": 0.0,
+      "time": 3.05,
+      "type": "fade_sprite"
+    }
+  ],
+  "format_version": 1.0,
+  "id": "aqua_jet"
+}

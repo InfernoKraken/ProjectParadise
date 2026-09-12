@@ -1,0 +1,124 @@
+{
+  "duration": 2.0,
+  "events": [
+    {
+      "color": "2b5abc",
+      "duration": 0.15,
+      "opacity": 0.4,
+      "time": 0.4,
+      "type": "background_tint"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Trail_Psychic.png",
+      "instance_id": "effectTrail",
+      "is_behind": true,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": -15.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.5,
+      "type": "spawn_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Orb_Psychic.png",
+      "instance_id": "effectOrb",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.65,
+      "type": "spawn_sprite"
+    },
+    {
+      "duration": 0.3,
+      "easing": "linear",
+      "instance_id": "effectOrb",
+      "time": 0.68,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "duration": 0.3,
+      "easing": "linear",
+      "instance_id": "effectTrail",
+      "time": 0.7,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "instance_id": "effectOrb",
+      "time": 1.0,
+      "type": "destroy_sprite"
+    },
+    {
+      "instance_id": "effectTrail",
+      "time": 1.05,
+      "type": "destroy_sprite"
+    },
+    {
+      "battler": "target",
+      "direction": "vertical",
+      "distance": -10.0,
+      "duration": 0.2,
+      "time": 1.2,
+      "type": "move_battler"
+    },
+    {
+      "battler": "target",
+      "direction": "vertical",
+      "distance": 10.0,
+      "duration": 0.2,
+      "time": 1.4,
+      "type": "move_battler"
+    },
+    {
+      "battler": "target",
+      "direction": "vertical",
+      "distance": -10.0,
+      "duration": 0.2,
+      "time": 1.6,
+      "type": "move_battler"
+    },
+    {
+      "battler": "target",
+      "direction": "vertical",
+      "distance": 10.0,
+      "duration": 0.2,
+      "time": 1.8,
+      "type": "move_battler"
+    }
+  ],
+  "format_version": 1,
+  "id": "mind_bolt"
+}

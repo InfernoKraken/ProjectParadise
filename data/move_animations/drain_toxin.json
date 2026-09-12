@@ -1,0 +1,170 @@
+{
+  "duration": 1.85,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Projectile_Leaf.png",
+      "instance_id": "effect",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 0.5,
+      "sprite_sheet": null,
+      "time": 0.5,
+      "type": "spawn_sprite"
+    },
+    {
+      "duration": 0.3,
+      "easing": "linear",
+      "instance_id": "effect",
+      "time": 0.5,
+      "to": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Projectile_Leaf.png",
+      "instance_id": "effect1",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 0.5,
+      "sprite_sheet": null,
+      "time": 0.55,
+      "type": "spawn_sprite"
+    },
+    {
+      "duration": 0.3,
+      "easing": "linear",
+      "instance_id": "effect1",
+      "time": 0.56,
+      "to": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Projectile_Leaf.png",
+      "instance_id": "effect2",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 0.5,
+      "sprite_sheet": null,
+      "time": 0.6,
+      "type": "spawn_sprite"
+    },
+    {
+      "duration": 0.3,
+      "easing": "linear",
+      "instance_id": "effect2",
+      "time": 0.61,
+      "to": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "instance_id": "effect1",
+      "time": 0.9,
+      "type": "destroy_sprite"
+    },
+    {
+      "instance_id": "effect2",
+      "time": 0.9,
+      "type": "destroy_sprite"
+    },
+    {
+      "instance_id": "effect",
+      "time": 0.9,
+      "type": "destroy_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Projectile_Swirl.png",
+      "instance_id": "effect3",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.91,
+      "type": "spawn_sprite"
+    },
+    {
+      "duration": 0.25,
+      "instance_id": "effect3",
+      "opacity": 0.0,
+      "time": 1.3,
+      "type": "fade_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Heal.png",
+      "duration": 0.5,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.35,
+      "type": "impact_sprite"
+    }
+  ],
+  "format_version": 1.0,
+  "id": "drain_toxin"
+}

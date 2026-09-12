@@ -1,27 +1,106 @@
 {
-  "groups": ["Bird", "Fish", "Reptile", "Mammal", "Amphibian", "Mollusk", "Angellic", "Demonic", "Mineral", "Cosmic", "Plant", "Bug"],
-  "default_groups": ["Mineral", "Mineral"],
   "assignments": {
-    "Keklid": ["Plant", "Cosmic"],
-    "Phaloa": ["Plant", "Cosmic"],
-    "Junrift": ["Plant", "Cosmic"],
-    "Scorchick": ["Bird", "Cosmic"],
-    "Scorcaw": ["Bird", "Cosmic"],
-    "Pyravion": ["Bird", "Cosmic"],
-    "Sylvafin": ["Fish", "Angellic"],
-    "Serafin": ["Fish", "Angellic"],
-    "Celestraal": ["Fish", "Angellic"],
-    "Slumboth": ["Mammal", "Mineral"],
-    "Hangrowl": ["Mammal", "Mineral"],
-    "Swoleth": ["Mammal", "Mineral"],
-    "Skeeter": ["Bug", "Demonic"],
-    "Gloomquito": ["Bug", "Demonic"],
-    "Vamprick": ["Bug", "Demonic"],
-    "Dartlet": ["Amphibian", "Cosmic"],
-    "Croacoa": ["Amphibian", "Cosmic"],
-    "Flambian": ["Amphibian", "Cosmic"],
-    "Lochirp": ["Bird", "Plant"],
-    "Paratweet": ["Bird", "Plant"],
-    "Paradisia": ["Bird", "Plant"]
-  }
+    "Celestraal": [
+      "Fish",
+      "Angellic"
+    ],
+    "Croacoa": [
+      "Amphibian",
+      "Cosmic"
+    ],
+    "Dartlet": [
+      "Amphibian",
+      "Cosmic"
+    ],
+    "Flambian": [
+      "Amphibian",
+      "Cosmic"
+    ],
+    "Gloomquito": [
+      "Bug",
+      "Demonic"
+    ],
+    "Hangrowl": [
+      "Mammal",
+      "Mineral"
+    ],
+    "Junrift": [
+      "Plant",
+      "Cosmic"
+    ],
+    "Keklid": [
+      "Plant",
+      "Cosmic"
+    ],
+    "Lochirp": [
+      "Bird",
+      "Plant"
+    ],
+    "Paradisia": [
+      "Bird",
+      "Plant"
+    ],
+    "Paratweet": [
+      "Bird",
+      "Plant"
+    ],
+    "Phaloa": [
+      "Plant",
+      "Cosmic"
+    ],
+    "Pyravion": [
+      "Bird",
+      "Cosmic"
+    ],
+    "Scorcaw": [
+      "Bird",
+      "Cosmic"
+    ],
+    "Scorchick": [
+      "Bird",
+      "Cosmic"
+    ],
+    "Serafin": [
+      "Fish",
+      "Angellic"
+    ],
+    "Skeeter": [
+      "Bug",
+      "Demonic"
+    ],
+    "Slumboth": [
+      "Mammal",
+      "Mineral"
+    ],
+    "Swoleth": [
+      "Mammal",
+      "Mineral"
+    ],
+    "Sylvafin": [
+      "Fish",
+      "Angellic"
+    ],
+    "Vamprick": [
+      "Bug",
+      "Demonic"
+    ]
+  },
+  "default_groups": [
+    "Mineral",
+    "Mineral"
+  ],
+  "groups": [
+    "Bird",
+    "Fish",
+    "Reptile",
+    "Mammal",
+    "Amphibian",
+    "Mollusk",
+    "Angellic",
+    "Demonic",
+    "Mineral",
+    "Cosmic",
+    "Plant",
+    "Bug"
+  ]
 }

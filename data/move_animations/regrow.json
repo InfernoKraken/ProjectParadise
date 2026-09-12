@@ -1,0 +1,80 @@
+{
+  "duration": 2.1,
+  "events": [
+    {
+      "battler": "user",
+      "loop_duration": 0.4,
+      "loops": 1,
+      "mode": "stretch",
+      "scale_delta_percent": 50.0,
+      "time": 0.5,
+      "type": "scale_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Leaf_Fall.png",
+      "distance": 60.01,
+      "duration": 0.6,
+      "instance_id": "vertical_effect",
+      "is_behind": false,
+      "mode": "fall_to_anchor",
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "time": 0.9,
+      "tint": "#FFFFFF",
+      "type": "vertical_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Leaf.png",
+      "duration": 0.3,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.5,
+      "tint": "#FFFFFF",
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Heal.png",
+      "duration": 0.3,
+      "instance_id": "impact1",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.8,
+      "tint": "#FFFFFF",
+      "type": "impact_sprite"
+    }
+  ],
+  "format_version": 1,
+  "id": "regrow"
+}

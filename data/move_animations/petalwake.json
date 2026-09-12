@@ -1,0 +1,171 @@
+{
+  "duration": 3.2,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Base_Mystic.png",
+      "duration": 1.4,
+      "instance_id": "base",
+      "is_behind": true,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          50.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.5,
+      "sprite_sheet": null,
+      "time": 0.6,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Petals.png",
+      "instance_id": "effect",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": -15.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.65,
+      "type": "spawn_sprite"
+    },
+    {
+      "duration": 0.3,
+      "easing": "linear",
+      "instance_id": "effect",
+      "time": 0.66,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Petals.png",
+      "instance_id": "effect2",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": -15.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.72,
+      "type": "spawn_sprite"
+    },
+    {
+      "duration": 0.3,
+      "easing": "linear",
+      "instance_id": "effect2",
+      "time": 0.73,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Petals.png",
+      "instance_id": "effect1",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": -15.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.75,
+      "type": "spawn_sprite"
+    },
+    {
+      "duration": 0.3,
+      "easing": "linear",
+      "instance_id": "effect1",
+      "time": 0.76,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "instance_id": "effect2",
+      "time": 1.0,
+      "type": "destroy_sprite"
+    },
+    {
+      "instance_id": "effect1",
+      "time": 1.0,
+      "type": "destroy_sprite"
+    },
+    {
+      "instance_id": "effect",
+      "time": 1.0,
+      "type": "destroy_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Flowers.png",
+      "duration": 0.7,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.5,
+      "sprite_sheet": null,
+      "time": 1.05,
+      "type": "impact_sprite"
+    },
+    {
+      "battler": "target",
+      "duration": 0.2,
+      "magnitude": 8.0,
+      "time": 1.1,
+      "type": "shake_battler"
+    }
+  ],
+  "format_version": 1.0,
+  "id": "petalwake"
+}

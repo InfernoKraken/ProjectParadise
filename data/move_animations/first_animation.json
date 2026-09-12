@@ -1,0 +1,45 @@
+{
+  "duration": 3.65,
+  "events": [
+    {
+      "battler": "user",
+      "duration": 0.41,
+      "magnitude": 8.0,
+      "time": 0.5,
+      "type": "shake_battler"
+    },
+    {
+      "color": "40057b",
+      "duration": 1.0,
+      "opacity": 0.41,
+      "time": 1.0,
+      "type": "background_tint"
+    },
+    {
+      "asset": "res://assets/move_effects/TestFlame.png",
+      "instance_id": "effect",
+      "is_behind": true,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "right_wing",
+        "battler": "user",
+        "offset": [
+          100.0,
+          0.0
+        ]
+      },
+      "rotation": -15.0,
+      "scale": 1.51,
+      "sprite_sheet": null,
+      "time": 2.0,
+      "type": "spawn_sprite"
+    },
+    {
+      "duration": 0.5,
+      "time": 3.15,
+      "type": "restore_background"
+    }
+  ],
+  "format_version": 1.0,
+  "id": "first_animation"
+}

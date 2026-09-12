@@ -1,4 +1,17 @@
 {
+	"arrival_points": {
+		"cave_return": [
+			7,
+			0.64999997615814,
+			-4
+		],
+		"entry": [
+			-8,
+			0.64999997615814,
+			-1
+		]
+	},
+	"base_terrain_type": "forest_floor",
 	"cave_return": [
 		7.0,
 		0.64999997615814,
@@ -55,10 +68,57 @@
 			]
 		}
 	],
+	"objects": [
+		{
+			"elevation": 1.0,
+			"entrance_length": 1.0,
+			"length": 5,
+			"orientation": "vertical",
+			"position": [-4.0, 0.0, -6.0],
+			"traversal_layer": 1,
+			"type": "structure.bridge",
+			"width": 1.0
+		},
+		{
+			"dialogue": [
+				"Hello, traveler!"
+			],
+			"position": [
+				1.0,
+				0.65,
+				-6.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"speaker": "NPC",
+			"type": "npc.generic"
+		}
+	],
 	"origin": [
 		110,
 		0,
 		30
+	],
+	"outdoor_connections": [
+		{
+			"arrival": "east_return",
+			"destination_map": "canopy_route.json",
+			"facing": "west",
+			"id": "east_to_canopy",
+			"reverse": "canopy_to_east",
+			"warp": "return_warp"
+		},
+		{
+			"arrival": "entry",
+			"destination_map": "vinestone_cave.json",
+			"facing": "east",
+			"id": "east_to_cave",
+			"reverse": "cave_to_east",
+			"warp": "cave_warp"
+		}
 	],
 	"rare_torch_ginger": [
 		[
@@ -71,6 +131,114 @@
 		-9.0,
 		0.11999999731779,
 		-1.0
+	],
+	"terrain_tiles": [
+		{
+			"terrain_type": "sand",
+			"positions": [[-8,-9],[-6,-9],[-8,-8],[-6,-8],[-5,-8],[-4,-8],[-3,-8],[-3,-7],[-3,-6],[-3,-5],[-8,-4],[-7,-4],[-6,-4],[-5,-4],[-4,-4],[-3,-4],[-8,9],[-7,9],[-6,9],[-5,9]]
+		},
+		{
+			"terrain_type": "water",
+			"positions": [[-7,-9],[-7,-8],[-8,-7],[-7,-7],[-6,-7],[-5,-7],[-4,-7],[-8,-6],[-7,-6],[-6,-6],[-5,-6],[-4,-6],[-8,-5],[-7,-5],[-6,-5],[-5,-5],[-4,-5]]
+		}
+	],
+	"sand_blocks": [
+		[
+			-6,
+			0.05,
+			-8.25,
+			7,
+			0.1,
+			0.5
+		],
+		[
+			-6,
+			0.05,
+			-3.75,
+			7,
+			0.1,
+			0.5
+		],
+		[
+			-9.25,
+			0.05,
+			-6,
+			0.5,
+			0.1,
+			4
+		],
+		[
+			-2.75,
+			0.05,
+			-6,
+			0.5,
+			0.1,
+			4
+		],
+		[
+			-7,
+			0.05,
+			-10.25,
+			3,
+			0.1,
+			0.5
+		],
+		[
+			-7,
+			0.05,
+			-5.75,
+			3,
+			0.1,
+			0.5
+		],
+		[
+			-8.25,
+			0.05,
+			-8,
+			0.5,
+			0.1,
+			4
+		],
+		[
+			-5.75,
+			0.05,
+			-8,
+			0.5,
+			0.1,
+			4
+		],
+		[
+			-7,
+			0.05,
+			9.25,
+			5,
+			0.1,
+			0.5
+		],
+		[
+			-7,
+			0.05,
+			10.75,
+			5,
+			0.1,
+			0.5
+		],
+		[
+			-9.25,
+			0.05,
+			10,
+			0.5,
+			0.1,
+			1
+		],
+		[
+			-4.75,
+			0.05,
+			10,
+			0.5,
+			0.1,
+			1
+		]
 	],
 	"size": [
 		18,
@@ -118,6 +286,42 @@
 		"Dartlet",
 		"Skeeter",
 		"Lochirp"
+	],
+	"trainers": [
+		{
+			"color": "d05f72",
+			"dialogue": [
+				"I run messages between Mossvale and the cave.",
+				"A quick battle keeps me quick on my feet!"
+			],
+			"name": "COURIER RHEA",
+			"party": [
+				1
+			],
+			"position": [
+				-1.0,
+				0.65,
+				5.5
+			],
+			"trainer_id": "courier_rhea"
+		},
+		{
+			"color": "8a6a4d",
+			"dialogue": [
+				"The cave ahead is no place for an untested partner.",
+				"Let us see if you are prepared."
+			],
+			"name": "CAVER BEX",
+			"party": [
+				2
+			],
+			"position": [
+				5.0,
+				0.64999997615814,
+				-5.0
+			],
+			"trainer_id": "caver_bex"
+		}
 	],
 	"trees": [
 		[

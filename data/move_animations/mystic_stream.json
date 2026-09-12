@@ -1,0 +1,65 @@
+{
+  "duration": 2.15,
+  "events": [
+    {
+      "color": "50e868",
+      "duration": 0.15,
+      "opacity": 0.4,
+      "time": 0.5,
+      "type": "background_tint"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Beam_Mystic.png",
+      "duration": 1.0,
+      "from": {
+        "anchor": "head",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "instance_id": "beam",
+      "layer": "below_user_above_target",
+      "opacity": 1.0,
+      "time": 0.65,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "type": "beam",
+      "width": 125.01
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Flower_Large.png",
+      "duration": 0.5,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.35,
+      "type": "impact_sprite"
+    },
+    {
+      "duration": 0.2,
+      "time": 1.7,
+      "type": "restore_background"
+    }
+  ],
+  "format_version": 1.0,
+  "id": "mystic_stream"
+}

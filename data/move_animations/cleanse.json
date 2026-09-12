@@ -1,0 +1,70 @@
+{
+  "duration": 1.5,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Base_Water.png",
+      "instance_id": "effect",
+      "is_behind": false,
+      "opacity": 0.7,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          -8.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 2.0,
+      "sprite_sheet": null,
+      "time": 0.5,
+      "type": "spawn_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Water_Drops.png",
+      "instance_id": "effect1",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.55,
+      "type": "spawn_sprite"
+    },
+    {
+      "instance_id": "effect1",
+      "time": 0.95,
+      "type": "destroy_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Buff.png",
+      "duration": 0.5,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.0,
+      "type": "impact_sprite"
+    }
+  ],
+  "format_version": 1,
+  "id": "cleanse"
+}

@@ -1,0 +1,54 @@
+{
+  "duration": 1.3,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Vice_Grip_Open.png",
+      "duration": 0.4,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.5,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Vice_Grip_Closed.png",
+      "duration": 0.4,
+      "instance_id": "impact1",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.9,
+      "type": "impact_sprite"
+    },
+    {
+      "battler": "target",
+      "duration": 0.2,
+      "magnitude": 8.0,
+      "time": 0.91,
+      "type": "shake_battler"
+    }
+  ],
+  "format_version": 1.0,
+  "id": "vicegrip"
+}

@@ -1,0 +1,1 @@
+Projectiles and Beams need to be flipped horizontally for use by the player. Particles should remain unchanged.

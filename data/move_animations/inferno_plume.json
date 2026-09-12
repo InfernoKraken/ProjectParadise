@@ -1,0 +1,113 @@
+{
+  "duration": 3.46,
+  "events": [
+    {
+      "color": "bdc213",
+      "duration": 0.15,
+      "opacity": 0.4,
+      "time": 0.5,
+      "type": "background_tint"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Base_Fire.png",
+      "duration": 2.0,
+      "instance_id": "impact",
+      "is_behind": true,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          50.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.5,
+      "sprite_sheet": null,
+      "time": 0.51,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Projectile_Fire_Feather.png",
+      "instance_id": "effect",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "tail",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": -15.0,
+      "scale": 1.4,
+      "sprite_sheet": null,
+      "time": 0.55,
+      "type": "spawn_sprite"
+    },
+    {
+      "duration": 0.3,
+      "easing": "linear",
+      "instance_id": "effect",
+      "time": 0.56,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Inferno.png",
+      "duration": 1.0,
+      "instance_id": "impact1",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.5,
+      "sprite_sheet": null,
+      "time": 0.7,
+      "type": "impact_sprite"
+    },
+    {
+      "instance_id": "effect",
+      "time": 0.73,
+      "type": "destroy_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Dying_Flame.png",
+      "duration": 1.0,
+      "instance_id": "impact2",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.5,
+      "sprite_sheet": null,
+      "time": 1.7,
+      "type": "impact_sprite"
+    }
+  ],
+  "format_version": 1.0,
+  "id": "inferno_plume"
+}

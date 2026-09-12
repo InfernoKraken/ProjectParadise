@@ -1,0 +1,45 @@
+{
+  "default_scene": "rainforest_default",
+  "format_version": 1.0,
+  "scenes": {
+    "rainforest_default": {
+      "anchors": {
+        "ALLY_FIELD": [
+          330,
+          363
+        ],
+        "BACKGROUND_CENTER": [
+          439,
+          238
+        ],
+        "ENEMY_FIELD": [
+          678,
+          210
+        ],
+        "FIELD_CENTER": [
+          483,
+          288
+        ]
+      },
+      "background": "res://assets/battle/battle_background.png",
+      "reference_size": [
+        960.0,
+        540.0
+      ],
+      "regions": {
+        "RANDOM_GROUND": {
+          "height": 368,
+          "width": 960,
+          "x": 0,
+          "y": 172
+        },
+        "RANDOM_SCREEN": {
+          "height": 473,
+          "width": 960,
+          "x": 0,
+          "y": 67
+        }
+      }
+    }
+  }
+}

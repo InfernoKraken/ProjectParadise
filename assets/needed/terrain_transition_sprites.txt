@@ -1,0 +1,12 @@
+Terrain transition artwork still needed for authored, non-geometric borders:
+
+- Supplied globally reusable masks now cover horizontal edges, vertical edges, and concave corners.
+- Supplied corner masks now include concave, convex-large, A-dominant, B-dominant, and even variants.
+- No combined or multi-edge mask is currently required. Opposing edges and junctions
+  are composed from multiple existing masks in terrain-priority order. Add a new
+  authored mask only after recording an exact neighbor configuration that cannot be
+  represented by this composition.
+- Optional later layers: wet sand, shoreline foam animation, moss, leaves, and rock foam.
+
+The runtime currently uses the higher-priority terrain's base texture on small overlay
+planes. Recipes already support multiple layers and can point at these sprites later.

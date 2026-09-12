@@ -1,0 +1,151 @@
+{
+  "duration": 1.38,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_ZZ.png",
+      "duration": 0.45,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "head",
+        "battler": "user",
+        "offset": [
+          0,
+          -15.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.2,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Music_Notes.png",
+      "instance_id": "effect",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.65,
+      "type": "spawn_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Music_Notes.png",
+      "instance_id": "effect1",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.65,
+      "type": "spawn_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Music_Notes.png",
+      "instance_id": "effect2",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.65,
+      "type": "spawn_sprite"
+    },
+    {
+      "duration": 0.3,
+      "easing": "linear",
+      "instance_id": "effect",
+      "time": 0.66,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "duration": 0.3,
+      "easing": "linear",
+      "instance_id": "effect1",
+      "time": 0.77,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "duration": 0.3,
+      "easing": "linear",
+      "instance_id": "effect2",
+      "time": 0.88,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "instance_id": "effect",
+      "time": 1.18,
+      "type": "destroy_sprite"
+    },
+    {
+      "instance_id": "effect1",
+      "time": 1.18,
+      "type": "destroy_sprite"
+    },
+    {
+      "instance_id": "effect2",
+      "time": 1.18,
+      "type": "destroy_sprite"
+    },
+    {
+      "battler": "target",
+      "duration": 0.2,
+      "magnitude": 8.0,
+      "time": 1.18,
+      "type": "shake_battler"
+    }
+  ],
+  "format_version": 1,
+  "id": "sleep_talk"
+}

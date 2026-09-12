@@ -1,0 +1,55 @@
+{
+  "duration": 1.58,
+  "events": [
+    {
+      "battler": "user",
+      "direction": "away_from_target",
+      "distance": 21.0,
+      "duration": 0.45,
+      "time": 0.5,
+      "type": "move_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Body_Slam.png",
+      "duration": 0.3,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.6,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Buff.png",
+      "duration": 0.3,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.98,
+      "type": "impact_sprite"
+    }
+  ],
+  "format_version": 1,
+  "id": "defense_curl"
+}

@@ -1,0 +1,43 @@
+{
+  "duration": 1.8,
+  "events": [
+    {
+      "battler": "user",
+      "direction": "vertical",
+      "distance": 40.0,
+      "duration": 0.5,
+      "time": 0.5,
+      "type": "move_battler"
+    },
+    {
+      "battler": "user",
+      "direction": "vertical",
+      "distance": -40.0,
+      "duration": 0.5,
+      "time": 1.0,
+      "type": "move_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Buff.png",
+      "duration": 0.3,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.5,
+      "type": "impact_sprite"
+    }
+  ],
+  "format_version": 1,
+  "id": "gather"
+}

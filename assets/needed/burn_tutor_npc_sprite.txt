@@ -1,3 +1,2 @@
 PLACEHOLDER IN USE: orange square resident inside the rainforest house.
 Needed later: transparent overworld NPC sprite and optional dialogue portrait for the Burn tutorial resident.
-

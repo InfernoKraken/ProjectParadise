@@ -1,0 +1,24 @@
+{
+  "duration": 1.9,
+  "events": [
+    {
+      "battler": "user",
+      "direction": "vertical",
+      "distance": -90.0,
+      "duration": 0.2,
+      "time": 0.5,
+      "type": "move_battler"
+    },
+    {
+      "battler": "user",
+      "loop_duration": 0.6,
+      "loops": 2,
+      "mode": "stretch",
+      "scale_delta_percent": 50.0,
+      "time": 0.7,
+      "type": "scale_battler"
+    }
+  ],
+  "format_version": 1,
+  "id": "puff_up"
+}

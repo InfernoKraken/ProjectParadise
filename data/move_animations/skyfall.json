@@ -1,0 +1,122 @@
+{
+  "duration": 2.1,
+  "events": [
+    {
+      "battler": "user",
+      "direction": "toward_target",
+      "distance": 110.0,
+      "duration": 0.2,
+      "time": 0.5,
+      "type": "move_battler"
+    },
+    {
+      "battler": "user",
+      "direction": "away_from_target",
+      "distance": 60.0,
+      "duration": 0.2,
+      "time": 0.7,
+      "type": "move_battler"
+    },
+    {
+      "battler": "target",
+      "direction": "toward_target",
+      "distance": 150.0,
+      "duration": 0.2,
+      "time": 0.7,
+      "type": "move_battler"
+    },
+    {
+      "battler": "user",
+      "direction": "vertical",
+      "distance": -110.0,
+      "duration": 0.2,
+      "time": 1.2,
+      "type": "move_battler"
+    },
+    {
+      "battler": "target",
+      "direction": "vertical",
+      "distance": -110.0,
+      "duration": 0.2,
+      "time": 1.2,
+      "type": "move_battler"
+    },
+    {
+      "battler": "target",
+      "direction": "vertical",
+      "distance": 60.0,
+      "duration": 0.2,
+      "time": 1.4,
+      "type": "move_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Air_Slash.png",
+      "duration": 0.3,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.6,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Generic_Clouds.png",
+      "duration": 0.5,
+      "instance_id": "impact1",
+      "is_behind": false,
+      "opacity": 0.5,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.5,
+      "sprite_sheet": null,
+      "time": 1.6,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Shock.png",
+      "duration": 0.5,
+      "instance_id": "impact2",
+      "is_behind": true,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 2.0,
+      "sprite_sheet": null,
+      "time": 1.6,
+      "type": "impact_sprite"
+    },
+    {
+      "battler": "target",
+      "duration": 0.2,
+      "magnitude": 41.0,
+      "time": 1.65,
+      "type": "shake_battler"
+    }
+  ],
+  "format_version": 1,
+  "id": "skyfall"
+}

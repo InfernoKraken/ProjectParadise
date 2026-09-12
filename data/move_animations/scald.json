@@ -1,0 +1,100 @@
+{
+  "duration": 1.7,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Beam_Water.png",
+      "duration": 0.5,
+      "from": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "instance_id": "beam",
+      "layer": "above_battlers",
+      "opacity": 1.0,
+      "time": 0.5,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "type": "beam",
+      "width": 125.01
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Generic_Clouds.png",
+      "duration": 0.5,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 0.5,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          10.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.5,
+      "sprite_sheet": null,
+      "time": 0.7,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Generic_Clouds.png",
+      "duration": 0.5,
+      "instance_id": "impact1",
+      "is_behind": false,
+      "opacity": 0.5,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          -15.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.5,
+      "sprite_sheet": null,
+      "time": 0.9,
+      "type": "impact_sprite"
+    },
+    {
+      "battler": "target",
+      "duration": 0.2,
+      "magnitude": 8.0,
+      "time": 1.0,
+      "type": "shake_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Generic_Clouds.png",
+      "duration": 0.5,
+      "instance_id": "impact2",
+      "is_behind": false,
+      "opacity": 0.5,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          -39.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.2,
+      "type": "impact_sprite"
+    }
+  ],
+  "format_version": 1,
+  "id": "scald"
+}

@@ -5,6 +5,9 @@ signal object_selected(object_id: String)
 signal object_activated(object_id: String)
 signal object_moved(object_id: String, old_position: Vector3, new_position: Vector3)
 signal object_resized(object_id: String, old_size: Vector3, new_size: Vector3)
+signal terrain_stroke_started()
+signal terrain_cell_changed(cell: Vector2i, erase: bool)
+signal terrain_stroke_finished()
 
 var objects: Array[Dictionary] = []
 var selected_id := ""
@@ -22,6 +25,10 @@ var panning := false
 var drag_start_mouse := Vector2.ZERO
 var drag_start_position := Vector3.ZERO
 var drag_start_size := Vector3.ZERO
+var terrain_brush_mode := "select"
+var terrain_error_cells: Dictionary = {}
+var validation_error_ids: Dictionary = {}
+var last_brush_cell := Vector2i(999999,999999)
 
 func _ready() -> void:
 	clip_contents = true
@@ -55,7 +62,11 @@ func _draw() -> void:
 	var draw_objects:=objects.duplicate()
 	draw_objects.sort_custom(func(a,b):return _draw_rank(a)<_draw_rank(b))
 	for object in draw_objects: _draw_object(object)
+	for cell in terrain_error_cells:
+		var center:=world_to_screen(Vector2(cell));var rect:=Rect2(center-Vector2.ONE*pixels_per_unit*zoom*0.5,Vector2.ONE*pixels_per_unit*zoom)
+		draw_rect(rect,Color("#ff334466"),true);draw_rect(rect,Color("#ff3344"),false,3.0)
 	draw_string(get_theme_default_font(), Vector2(size.x * 0.5 - 24, 20), "N  (-Z)", HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("#b8c9d8"))
+	if terrain_brush_mode!="select":draw_string(get_theme_default_font(),Vector2(14,size.y-16),"Terrain %s · 1×1 snapped cells"%terrain_brush_mode.capitalize(),HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("#ffe16b"))
 
 func _draw_grid() -> void:
 	var spacing := grid_size * pixels_per_unit * zoom
@@ -75,9 +86,10 @@ func _draw_object(object: Dictionary) -> void:
 	var center := world_to_screen(Vector2(position.x, position.z))
 	var footprint: Vector2 = object.get("footprint", Vector2(0.8, 0.8))
 	if object.get("shape", "point") == "rectangle": footprint = Vector2(object.size.x, object.size.z)
-	var rect := Rect2(center - footprint * pixels_per_unit * zoom * 0.5, footprint * pixels_per_unit * zoom)
+	var footprint_offset:Vector2=object.get("footprint_offset",Vector2.ZERO)
+	var rect := Rect2(center+footprint_offset*pixels_per_unit*zoom-footprint*pixels_per_unit*zoom*0.5,footprint*pixels_per_unit*zoom)
 	var color: Color = object.get("color", Color("#dce6ee"))
-	if object.get("shape", "point") == "rectangle":
+	if object.get("shape", "point") in ["rectangle","terrain"]:
 		var texture := _texture_for(String(object.get("texture", "")))
 		if texture != null:
 			# Gameplay repeats block textures across the serialized X/Z dimensions.
@@ -109,6 +121,7 @@ func _draw_object(object: Dictionary) -> void:
 	if String(object.id) == selected_id:
 		draw_rect(rect.grow(3), Color("#ffe16b"), false, 3.0)
 		if object.get("shape", "point") == "rectangle": draw_rect(Rect2(rect.end - Vector2(10,10), Vector2(10,10)), Color("#ffe16b"), true)
+	if validation_error_ids.has(String(object.id)):draw_rect(rect.grow(2),Color("#ff3344"),false,3.0)
 	var label := String(object.get("label", object.get("field", "object")))
 	draw_string(get_theme_default_font(), center + Vector2(7, -7), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color.WHITE)
 
@@ -135,6 +148,11 @@ func _gui_input(event: InputEvent) -> void:
 		if event.button_index in [MOUSE_BUTTON_MIDDLE, MOUSE_BUTTON_RIGHT]:
 			panning = event.pressed; drag_start_mouse = event.position; accept_event(); return
 		if event.button_index == MOUSE_BUTTON_LEFT:
+			if terrain_brush_mode!="select":
+				if event.pressed:
+					last_brush_cell=Vector2i(999999,999999);terrain_stroke_started.emit();_emit_brush_cell(event.position)
+				else:terrain_stroke_finished.emit();last_brush_cell=Vector2i(999999,999999)
+				accept_event();return
 			if event.pressed:
 				var hit := _hit_test(event.position)
 				if hit.is_empty(): select_object(""); return
@@ -171,6 +189,12 @@ func _gui_input(event: InputEvent) -> void:
 				var new_size := Vector3(maxf(grid_size, drag_start_size.x + delta.x * 2.0), drag_start_size.y, maxf(grid_size, drag_start_size.z + delta.y * 2.0))
 				if snapping: new_size = Vector3(snappedf(new_size.x, grid_size), new_size.y, snappedf(new_size.z, grid_size))
 				object.size = new_size; queue_redraw()
+		elif terrain_brush_mode!="select" and (event.button_mask&MOUSE_BUTTON_MASK_LEFT)!=0:_emit_brush_cell(event.position)
+
+func _emit_brush_cell(screen_position:Vector2)->void:
+	var world:=screen_to_world(screen_position);var cell:=Vector2i(roundi(world.x),roundi(world.y))
+	if cell==last_brush_cell:return
+	last_brush_cell=cell;terrain_cell_changed.emit(cell,terrain_brush_mode=="erase")
 
 func _zoom_at(screen_position: Vector2, factor: float) -> void:
 	var before := screen_to_world(screen_position)
@@ -191,7 +215,8 @@ func screen_to_world(screen: Vector2) -> Vector2:
 func _screen_rect(object: Dictionary) -> Rect2:
 	var fp: Vector2 = object.get("footprint", Vector2(0.8,0.8))
 	if object.get("shape", "point") == "rectangle": fp = Vector2(object.size.x, object.size.z)
-	return Rect2(world_to_screen(Vector2(object.position.x, object.position.z)) - fp * pixels_per_unit * zoom * 0.5, fp * pixels_per_unit * zoom)
+	var offset:Vector2=object.get("footprint_offset",Vector2.ZERO)
+	return Rect2(world_to_screen(Vector2(object.position.x,object.position.z))+offset*pixels_per_unit*zoom-fp*pixels_per_unit*zoom*0.5,fp*pixels_per_unit*zoom)
 
 func _hit_test(screen_position: Vector2) -> Dictionary:
 	var hit_objects:=objects.duplicate()

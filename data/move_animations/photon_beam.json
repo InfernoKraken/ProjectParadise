@@ -1,0 +1,73 @@
+{
+  "duration": 1.85,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Base_Light_Halo.png",
+      "duration": 0.7,
+      "instance_id": "impact",
+      "is_behind": true,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          100.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.5,
+      "sprite_sheet": null,
+      "time": 0.5,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Beam_Light.png",
+      "duration": 0.5,
+      "from": {
+        "anchor": "head",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "instance_id": "beam",
+      "layer": "above_battlers",
+      "opacity": 1.0,
+      "time": 0.55,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "type": "beam",
+      "width": 125.01
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Light.png",
+      "duration": 0.3,
+      "instance_id": "impact1",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.0,
+      "type": "impact_sprite"
+    }
+  ],
+  "format_version": 1.0,
+  "id": "photon_beam"
+}

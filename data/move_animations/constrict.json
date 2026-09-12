@@ -1,0 +1,55 @@
+{
+  "duration": 1.1,
+  "events": [
+    {
+      "battler": "user",
+      "direction": "toward_target",
+      "distance": 60.0,
+      "duration": 0.2,
+      "time": 0.5,
+      "type": "move_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Ensnare.png",
+      "duration": 0.4,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 3.0,
+      "sprite_sheet": null,
+      "time": 0.7,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Ensnare.png",
+      "duration": 0.4,
+      "instance_id": "impact1",
+      "is_behind": true,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 90.0,
+      "scale": 3.0,
+      "sprite_sheet": null,
+      "time": 0.7,
+      "type": "impact_sprite"
+    }
+  ],
+  "format_version": 1,
+  "id": "constrict"
+}

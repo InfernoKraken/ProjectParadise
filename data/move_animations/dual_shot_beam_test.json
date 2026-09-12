@@ -1,0 +1,56 @@
+{
+  "duration": 3.85,
+  "events": [
+    {
+      "name": "impact",
+      "time": 0.5,
+      "type": "marker"
+    },
+    {
+      "asset": "res://assets/move_effects/TestFlame.png",
+      "instance_id": "effect",
+      "is_behind": true,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "right_wing",
+        "battler": "user",
+        "offset": [
+          100.0,
+          0.0
+        ]
+      },
+      "rotation": -15.0,
+      "scale": 1.51,
+      "sprite_sheet": null,
+      "time": 2.0,
+      "type": "spawn_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/TestPoisonGunk.png",
+      "instance_id": "effect1",
+      "opacity": 1.0,
+      "position": {
+        "anchor": "left_wing",
+        "battler": "user",
+        "offset": [
+          100.0,
+          0.0
+        ]
+      },
+      "rotation": -15.0,
+      "scale": 1.51,
+      "sprite_sheet": null,
+      "time": 2.0,
+      "type": "spawn_sprite"
+    },
+    {
+      "battler": "target",
+      "duration": 1.0,
+      "magnitude": 8.0,
+      "time": 2.1,
+      "type": "shake_battler"
+    }
+  ],
+  "format_version": 1.0,
+  "id": "dual_shot_beam_test"
+}

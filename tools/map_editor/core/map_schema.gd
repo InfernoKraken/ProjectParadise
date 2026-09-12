@@ -23,8 +23,16 @@ const REGION_FILES := {
 static func kind_for_file(path: String) -> String:
 	return String(REGION_FILES.get(path.get_file(), "unknown"))
 
+static func kind_for_data(data:Dictionary, fallback:String="unknown")->String:
+	var metadata:Variant=data.get("map_metadata",{})
+	if metadata is Dictionary:
+		var declared:=String(metadata.get("map_type",""))
+		if declared in ["outdoor","interior","cave"]:return declared
+	return fallback
+
 static func expected_fields(kind: String) -> Dictionary:
 	match kind:
+		"outdoor": return {"format_version":"number", "map_metadata":"object", "origin":"position3", "size":"size2", "entry":"position3", "return_warp":"position3", "arrival_points":"object", "outdoor_connections":"connections", "tall_grass_species":"strings", "objects":"objects", "grass_zones":"zones", "water_blocks":"blocks", "sand_blocks":"blocks"}
 		"clearing": return {"map_size":"size2", "player_spawn":"position3", "opponent":"object", "building":"object", "medical_ward_instance":"string", "north_warp":"position3", "north_return":"position3", "tall_grass_species":"strings", "trainers":"trainers", "grass_zones":"zones", "water_blocks":"blocks", "sand_blocks":"blocks", "tall_flowers":"points", "rare_torch_ginger":"points", "blue_flowers":"points", "trees":"trees"}
 		"clearing_ward": return {"position":"position3", "size":"size3", "door":"position3", "exterior_return":"position3", "origin":"position3", "interior_size":"size2", "entry":"position3", "exit_door":"position3", "staff":"position3", "floor_blocks":"blocks", "wall_blocks":"blocks", "furnishings":"furnishings", "tall_grass_species":"strings"}
 		"clearing_house": return {"position":"position3", "size":"size3", "door":"position3", "exterior_return":"position3", "origin":"position3", "interior_size":"size2", "entry":"position3", "exit_door":"position3", "npc":"position3", "floor_blocks":"blocks", "wall_blocks":"blocks", "furnishings":"furnishings", "tall_grass_species":"strings"}

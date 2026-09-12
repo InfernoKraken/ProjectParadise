@@ -1,0 +1,49 @@
+{
+  "duration": 1.7,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Projectile_Whirlwind.png",
+      "instance_id": "effect",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.5,
+      "type": "spawn_sprite"
+    },
+    {
+      "duration": 0.7,
+      "easing": "linear",
+      "instance_id": "effect",
+      "time": 0.5,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "battler": "target",
+      "direction": "away_from_target",
+      "distance": 500.0,
+      "duration": 0.2,
+      "time": 1.5,
+      "type": "move_battler"
+    }
+  ],
+  "format_version": 1,
+  "id": "whirlwind"
+}

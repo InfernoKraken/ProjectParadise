@@ -1,0 +1,81 @@
+{
+  "duration": 2.61,
+  "events": [
+    {
+      "color": "6420a9",
+      "duration": 0.15,
+      "opacity": 0.4,
+      "time": 0.5,
+      "type": "background_tint"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Trail_Poison.png",
+      "instance_id": "effectThrow",
+      "is_behind": true,
+      "opacity": 0.5,
+      "position": {
+        "anchor": "head",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": -15.0,
+      "scale": 0.65,
+      "sprite_sheet": null,
+      "time": 0.6,
+      "type": "spawn_sprite"
+    },
+    {
+      "duration": 0.8,
+      "easing": "ease_in",
+      "instance_id": "effectThrow",
+      "time": 0.61,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Poison_Flower.png",
+      "instance_id": "effect",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.3,
+      "type": "spawn_sprite"
+    },
+    {
+      "battler": "target",
+      "duration": 0.5,
+      "magnitude": 8.0,
+      "time": 1.4,
+      "type": "shake_battler"
+    },
+    {
+      "duration": 0.25,
+      "instance_id": "effect",
+      "opacity": 0.0,
+      "time": 2.06,
+      "type": "fade_sprite"
+    }
+  ],
+  "format_version": 1,
+  "id": "alkaloid_mist"
+}

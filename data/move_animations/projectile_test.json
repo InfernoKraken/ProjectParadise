@@ -1,0 +1,15 @@
+{
+  "format_version": 1,
+  "id": "projectile_test",
+  "duration": 0.85,
+  "events": [
+    {"time": 0.0, "type": "spawn_sprite", "instance_id": "projectile", "asset": "res://assets/move_effects/TestAirBlast.png", "sprite_sheet": null, "position": {"battler": "user", "anchor": "mouth", "offset": [0, 0]}, "scale": 0.35, "rotation": 0, "opacity": 1},
+    {"time": 0.05, "type": "move_sprite", "instance_id": "projectile", "to": {"battler": "target", "anchor": "origin", "offset": [0, 0]}, "duration": 0.35, "easing": "ease_in"},
+    {"time": 0.4, "type": "marker", "name": "impact"},
+    {"time": 0.4, "type": "shake_battler", "battler": "target", "duration": 0.2, "magnitude": 8},
+    {"time": 0.41, "type": "destroy_sprite", "instance_id": "projectile"},
+    {"time": 0.41, "type": "spawn_sprite", "instance_id": "impact", "asset": "res://assets/move_effects/TestFlame.png", "sprite_sheet": null, "position": {"battler": "target", "anchor": "origin", "offset": [0, 0]}, "scale": 0.45, "rotation": 0, "opacity": 1},
+    {"time": 0.55, "type": "fade_sprite", "instance_id": "impact", "opacity": 0, "duration": 0.25},
+    {"time": 0.82, "type": "destroy_sprite", "instance_id": "impact"}
+  ]
+}

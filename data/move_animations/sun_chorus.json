@@ -1,0 +1,134 @@
+{
+  "duration": 2.95,
+  "events": [
+    {
+      "color": "ffe156",
+      "duration": 0.15,
+      "opacity": 0.4,
+      "time": 0.5,
+      "type": "background_tint"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Sun_Chorus.png",
+      "duration": 1.7,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.65,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Sun_Chorus.png",
+      "instance_id": "effect",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.7,
+      "type": "spawn_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Sun_Chorus.png",
+      "distance": 120.0,
+      "duration": 0.6,
+      "instance_id": "vertical_effect",
+      "is_behind": false,
+      "mode": "rise_from_anchor",
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "time": 0.7,
+      "tint": "#FFFFFF",
+      "type": "vertical_sprite"
+    },
+    {
+      "duration": 0.3,
+      "easing": "linear",
+      "instance_id": "effect",
+      "time": 0.71,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Sun_Chorus.png",
+      "distance": 120.0,
+      "duration": 0.6,
+      "instance_id": "vertical_effect1",
+      "is_behind": false,
+      "mode": "rise_from_anchor",
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "time": 1.0,
+      "tint": "#FFFFFF",
+      "type": "vertical_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Sun_Chorus.png",
+      "distance": 120.0,
+      "duration": 0.6,
+      "instance_id": "vertical_effect2",
+      "is_behind": false,
+      "mode": "rise_from_anchor",
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "time": 1.3,
+      "tint": "#FFFFFF",
+      "type": "vertical_sprite"
+    }
+  ],
+  "format_version": 1.0,
+  "id": "sun_chorus"
+}

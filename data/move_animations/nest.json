@@ -1,0 +1,89 @@
+{
+  "duration": 3.5,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Feather.png",
+      "distance": 120.0,
+      "duration": 0.6,
+      "instance_id": "vertical_effect",
+      "is_behind": false,
+      "mode": "fall_to_anchor",
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "time": 0.5,
+      "tint": "#FFFFFF",
+      "type": "vertical_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Nest_Start.png",
+      "duration": 0.3,
+      "instance_id": "impact1",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          50.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.0,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Nest.png",
+      "duration": 1.0,
+      "instance_id": "impact2",
+      "is_behind": true,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          80.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.5,
+      "sprite_sheet": null,
+      "time": 1.3,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Heal.png",
+      "duration": 1.0,
+      "instance_id": "impact3",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.9,
+      "type": "impact_sprite"
+    }
+  ],
+  "format_version": 1.0,
+  "id": "nest"
+}

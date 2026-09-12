@@ -1,0 +1,23 @@
+{
+  "duration": 1.2,
+  "events": [
+    {
+      "battler": "user",
+      "direction": "vertical",
+      "distance": -60.0,
+      "duration": 0.2,
+      "time": 0.5,
+      "type": "move_battler"
+    },
+    {
+      "battler": "user",
+      "direction": "vertical",
+      "distance": 20.0,
+      "duration": 0.2,
+      "time": 0.8,
+      "type": "move_battler"
+    }
+  ],
+  "format_version": 1,
+  "id": "leap"
+}

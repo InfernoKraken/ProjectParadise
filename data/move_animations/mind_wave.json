@@ -1,0 +1,55 @@
+{
+  "duration": 1.35,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Trail_Psychic.png",
+      "instance_id": "effectTrail",
+      "is_behind": true,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": -15.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.5,
+      "type": "spawn_sprite"
+    },
+    {
+      "duration": 0.3,
+      "easing": "linear",
+      "instance_id": "effectTrail",
+      "time": 0.5,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "color": "3f96ea",
+      "duration": 0.15,
+      "opacity": 0.4,
+      "time": 0.5,
+      "type": "background_tint"
+    },
+    {
+      "battler": "target",
+      "duration": 0.2,
+      "magnitude": 8.0,
+      "time": 0.85,
+      "type": "shake_battler"
+    }
+  ],
+  "format_version": 1,
+  "id": "mind_wave"
+}

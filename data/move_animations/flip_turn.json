@@ -1,0 +1,23 @@
+{
+  "duration": 1.75,
+  "events": [
+    {
+      "battler": "user",
+      "direction": "toward_target",
+      "distance": 90.0,
+      "duration": 0.4,
+      "time": 0.5,
+      "type": "move_battler"
+    },
+    {
+      "battler": "user",
+      "direction": "away_from_target",
+      "distance": 120.0,
+      "duration": 0.75,
+      "time": 1.0,
+      "type": "move_battler"
+    }
+  ],
+  "format_version": 1,
+  "id": "flip_turn"
+}

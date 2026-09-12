@@ -1,0 +1,65 @@
+{
+  "duration": 2.6,
+  "events": [
+    {
+      "color": "e52d28",
+      "duration": 0.15,
+      "opacity": 0.4,
+      "time": 0.5,
+      "type": "background_tint"
+    },
+    {
+      "battler": "user",
+      "direction": "toward_target",
+      "distance": 110.0,
+      "duration": 0.2,
+      "time": 0.56,
+      "type": "move_battler"
+    },
+    {
+      "battler": "target",
+      "direction": "away_from_target",
+      "distance": 60.0,
+      "duration": 0.2,
+      "time": 0.76,
+      "type": "move_battler"
+    },
+    {
+      "battler": "user",
+      "direction": "away_from_target",
+      "distance": 0.0,
+      "duration": 0.2,
+      "time": 0.79,
+      "type": "move_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Big_Blaze.png",
+      "duration": 0.5,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.9,
+      "type": "impact_sprite"
+    },
+    {
+      "battler": "target",
+      "duration": 0.5,
+      "magnitude": 8.0,
+      "time": 1.3,
+      "type": "shake_battler"
+    }
+  ],
+  "format_version": 1,
+  "id": "fire_charge"
+}

@@ -1,0 +1,49 @@
+{
+  "duration": 2.1,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Prayer.png",
+      "duration": 1.5,
+      "instance_id": "heal",
+      "is_behind": true,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          30.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 2.0,
+      "sprite_sheet": null,
+      "time": 0.0,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Holy_Star.png",
+      "distance": 120.0,
+      "duration": 0.6,
+      "instance_id": "vertical_effect",
+      "is_behind": false,
+      "mode": "rise_from_anchor",
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "time": 0.5,
+      "tint": "#FFFFFF",
+      "type": "vertical_sprite"
+    }
+  ],
+  "format_version": 1.0,
+  "id": "prayer_heal"
+}

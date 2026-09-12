@@ -1,0 +1,45 @@
+{
+  "duration": 1.7,
+  "events": [
+    {
+      "battler": "user",
+      "loop_duration": 0.4,
+      "loops": 2,
+      "mode": "stretch",
+      "scale_delta_percent": 20.01,
+      "time": 0.5,
+      "type": "scale_battler"
+    },
+    {
+      "color": "df3508",
+      "duration": 0.15,
+      "opacity": 0.4,
+      "time": 0.5,
+      "type": "background_tint"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Poison_Bubble.png",
+      "distance": 120.0,
+      "duration": 0.6,
+      "instance_id": "vertical_effect",
+      "is_behind": false,
+      "mode": "rise_from_anchor",
+      "opacity": 0.8,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.5,
+      "time": 0.7,
+      "tint": "#FFFFFF",
+      "type": "vertical_sprite"
+    }
+  ],
+  "format_version": 1,
+  "id": "warning_flare"
+}

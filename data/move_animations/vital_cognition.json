@@ -1,0 +1,66 @@
+{
+  "duration": 2.55,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Psychic_General.png",
+      "duration": 1.0,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          -30.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.5,
+      "type": "impact_sprite"
+    },
+    {
+      "color": "fca6f5",
+      "duration": 0.15,
+      "opacity": 0.4,
+      "time": 0.55,
+      "type": "background_tint"
+    },
+    {
+      "battler": "user",
+      "duration": 0.2,
+      "magnitude": 8.0,
+      "time": 0.7,
+      "type": "shake_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Buff.png",
+      "duration": 0.5,
+      "instance_id": "impact1",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          30.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.9,
+      "type": "impact_sprite"
+    },
+    {
+      "duration": 0.5,
+      "time": 1.0,
+      "type": "restore_background"
+    }
+  ],
+  "format_version": 1,
+  "id": "vital_cognition"
+}

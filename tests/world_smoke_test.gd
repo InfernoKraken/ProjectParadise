@@ -22,7 +22,25 @@ func _initialize() -> void:
 	var clearing_warp_art := main.world.get_node("ClearingNorthExit/OutdoorWarpArt_Generic") as Sprite3D
 	assert(clearing_warp_art.texture.resource_path.ends_with("warp_outdoor_generic.png"), "The clearing's top warp must use the generic arch art.")
 	assert(main.world.get_node_or_null("CanopyRouteExit") != null, "The route must have a return warp.")
-	assert(main.world.get_node_or_null("UncrossableWaterBlock") != null, "The route must contain water blocks.")
+	assert(main.world.find_child("CanopyRouteCanonicalBase_*_water",false,false) != null, "The route must render canonical water terrain.")
+	var clearing_water_collisions:Array[Node]=main.world.find_children("ClearingCanonicalWaterCollision*","StaticBody3D",false,false)
+	assert(not clearing_water_collisions.is_empty() and clearing_water_collisions.any(func(body:StaticBody3D):return is_equal_approx(body.position.z,9.0)),"The clearing must derive water collision from its canonical z=9 water row.")
+	var clearing_water_shape:BoxShape3D=(clearing_water_collisions[0].get_child(0) as CollisionShape3D).shape as BoxShape3D
+	assert(clearing_water_shape.size.y>=2.0 and is_equal_approx((clearing_water_collisions[0] as StaticBody3D).position.y,1.0),"Canonical water must be a blocking wall rather than a low surface the player can stand upon.")
+	var transition_water_collision:=main.world.find_child("CanopyRouteWaterTransitionCollision*",false,false) as StaticBody3D
+	assert(transition_water_collision!=null and ((transition_water_collision.get_child(0) as CollisionShape3D).shape as BoxShape3D).size.y>=2.0,"Rendered water transition fringes must have matching terrain collision.")
+	var canopy_water:=main.world.find_child("CanopyRouteCanonicalWaterCollision*",false,false) as StaticBody3D
+	var player_position_before_water_probe:Vector3=main.player.position
+	main.player.position=Vector3(canopy_water.position.x,0.65,canopy_water.position.z-2.0)
+	for step in 20:main.player.velocity=main._terrain_constrained_velocity(Vector3(0,0,4),1.0/60.0);main.player.move_and_slide();await physics_frame
+	assert(main.player.position.z<=canopy_water.position.z-1.19,"A north approach must stop before the rendered water-transition fringe.")
+	assert(main.TERRAIN_FOOTPRINT_SIZE.x<0.8 and main.TERRAIN_FOOTPRINT_SIZE.z<0.8,"Terrain collision must use a compact foot-level footprint rather than the full player body.")
+	var horizontal_aprons:Array[Node]=main.world.find_children("CanopyRouteWaterTransitionCollision*","StaticBody3D",false,false).filter(func(body:StaticBody3D):return is_equal_approx((((body.get_child(0) as CollisionShape3D).shape as BoxShape3D).size.z),0.5))
+	horizontal_aprons.sort_custom(func(a:StaticBody3D,b:StaticBody3D):return a.position.z<b.position.z)
+	var south_apron:StaticBody3D=horizontal_aprons[-1] as StaticBody3D
+	assert(not main._terrain_foot_blocked(Vector3(south_apron.position.x,0.65,south_apron.position.z+0.65)),"The compact terrain footprint must allow the player's feet onto the beach from the south.")
+	assert(main._terrain_foot_blocked(Vector3(south_apron.position.x,0.65,south_apron.position.z+0.35)),"The foot-level terrain query must still stop the player before visible water.")
+	main.player.position=player_position_before_water_probe;main.player.velocity=Vector3.ZERO
 	assert(main.world.get_node_or_null("TallFlowerBlock") != null, "The route must contain tall flower variation.")
 	assert(main.east_route_origin == Vector3(110, 0, 30), "The eastern rainforest route must be built separately.")
 	assert(main.west_route_origin == Vector3(50, 0, 30), "The western rainforest route must be built separately.")
@@ -72,14 +90,22 @@ func _initialize() -> void:
 	assert(not tree_art.visible and first_tree_sort_root != null and main.sort_root.y_sort_enabled, "Trees must render through generated Node2D Y-sort roots rather than their 3D collision/placement sprites.")
 	assert(not main.follower_sprite.visible and main.follower_sort_root != null and main.follower_sort_root.get_parent()==main.player_sort_root.get_parent(), "The collision-free follower must share the player's generated occlusion/Y-sort layer.")
 	assert(not main.follower is CollisionObject3D and main.follower.find_children("*", "CollisionShape3D", true, false).is_empty(), "The following Fakemon must not gain collision.")
-	var sand_shore:=main.world.get_node_or_null("ClearingSandShore0") as MeshInstance3D
-	assert(sand_shore!=null and sand_shore.material_override.albedo_texture.resource_path.ends_with("tile_sand_generic.png"), "Serialized sand shore blocks must use the sand texture.")
+	var sand_shore:=main.world.find_child("ClearingCanonicalBase_*_sand",false,false) as MeshInstance3D
+	assert(sand_shore!=null and sand_shore.material_override.albedo_texture!=null, "Canonical clearing shoreline tiles must use the generated sand texture.")
 	assert(first_tree_sort_root.position.is_equal_approx(main.camera.unproject_position(Vector3(first_tree_sort_entry["placement"].x, 0.0, first_tree_sort_entry["placement"].z + float(first_tree_sort_entry["sort_offset_y"])))), "A tree's Y-sort root must use placement plus sort_offset_y while leaving its visual placement independent.")
 	assert(tree_art.billboard == vine_art.billboard and tree_art.alpha_cut == vine_art.alpha_cut, "Tree source sprites must retain normal billboard material settings for compatibility.")
 	assert(main.world.get_node_or_null("MedicalWardFurnishing0") != null and main.world.get_node_or_null("RainforestHouseFurnishing0") != null and main.world.get_node_or_null("FamilyHomeFurnishing0") != null, "Serialized indoor furniture must be placed in the existing indoor maps.")
 	var house_table_sort := main.sort_root.get_node_or_null("RainforestHouseFurnishing2SortRoot") as Node2D
 	assert(house_table_sort != null and main.world.get_node_or_null("RainforestHouseFurnishing2Collision") != null, "Indoor furniture must use the common Y-sort layer and retain a separate collision footprint.")
 	assert(not main.player_sprite.visible and main.player_sort_root != null, "The player must share the generated Y-sort container so front/back overlap follows feet position.")
+	assert(main.map_ui.get_node_or_null("SettingsButton") is Button, "Exploration UI must provide a settings button in the former reset-button position.")
+	assert(main.settings_panel.find_child("ResetAdventureButton", true, false) is Button, "Reset Adventure must be contained in the settings panel.")
+	assert(main.settings_panel.find_child("SaveSlotSelector", true, false) == main.save_slot_selector, "The save slot selector must be contained in the settings panel.")
+	assert(main.map_ui.get_node_or_null("BagButton") is Button and main.bag_panel != null, "Exploration UI must provide a Bag button and panel.")
+	var ward_collision:=main.world.get_node("BuildingCollision") as StaticBody3D;var ward_shape:=((ward_collision.get_child(0) as CollisionShape3D).shape as BoxShape3D)
+	assert(is_equal_approx(ward_shape.size.z,4.6) and is_equal_approx(ward_collision.position.z,-4.7),"Medical ward collision must preserve its rear edge and extend only toward the sprite's front.")
+	var house_collision:=main.world.get_node("HouseExteriorCollision") as StaticBody3D;var house_shape:=((house_collision.get_child(0) as CollisionShape3D).shape as BoxShape3D)
+	assert(is_equal_approx(house_shape.size.z,3.8) and is_equal_approx(house_collision.position.z,-5.6),"House collision must preserve its rear edge and use the reusable front extension.")
 	var building_sort_root := main.sort_root.get_node_or_null("MedicalWardExteriorSortRoot") as Node2D
 	var warp_sort_root := main.sort_root.get_node_or_null("ClearingNorthExitSortRoot") as Node2D
 	assert(building_sort_root != null and warp_sort_root != null, "Buildings and visible outdoor warps must use generated Y-sort roots.")
@@ -97,14 +123,28 @@ func _initialize() -> void:
 	assert(main.world.get_node_or_null("DespairParent") != null, "The family needs a Despair parent.")
 	assert(main.family_children.size() == 3, "The family must include three wandering children.")
 	assert(main.save_slot_selector.item_count == 5, "The manual save UI must expose five states.")
-	assert(main.save_slot_selector.anchor_left == 1.0 and main.save_slot_selector.anchor_top == 1.0 and main.save_slot_selector.offset_top < 0.0, "Save controls must stay anchored to the bottom-right corner.")
+	assert(main.save_slot_selector.get_parent().get_parent().get_parent() == main.settings_panel, "Save controls must stay grouped inside Settings.")
 	assert(main._manual_save_path(1) != main._manual_save_path(5), "Manual save states must use independent files.")
 	assert(main.world.visible == false, "Player selection must appear before the map.")
 	assert(main.battle.visible == false, "Starter selection must wait for player selection.")
 	assert(main.player_selection_panel.visible, "Player selection must be the first new-adventure screen.")
-	assert(main.PLAYER_CHOICES.size() == 8, "Player selection must offer four colors for each gender.")
+	assert(main.PLAYER_CHOICES.size() == 8, "Player selection must offer four appearance palettes for each gender.")
+	var first_choice := main.player_selection_panel.find_child("PlayerChoice0", true, false) as Button
+	var first_preview := first_choice.get_node("Preview") as TextureRect
+	assert(first_choice.clip_contents and first_preview != null and first_preview.stretch_mode == TextureRect.STRETCH_KEEP, "Character-choice previews must scale uniformly inside their fixed card bounds.")
+	assert(first_choice.get_node_or_null("ChoiceLabel") == null, "Character-choice cards must not show textual appearance labels.")
+	var scaled_preview_size := first_preview.size * first_preview.scale
+	assert(first_preview.position.y >= 0.0 and first_preview.position.y + scaled_preview_size.y <= first_choice.size.y, "Preview art must remain inside its card bounds.")
+	assert(first_preview.position.x >= 0.0 and first_preview.position.x + scaled_preview_size.x <= first_choice.size.x, "Preview art must remain inside its card bounds.")
 	main._on_player_choice_selected(5)
-	assert(main.player_gender == "Female" and main.player_color_name == "Pink", "The selected player gender and color must be retained.")
+	assert(main.player_gender == "Female" and main.player_style == "Light / Blonde" and main.player_palette_preset == "light_blonde", "The selected player gender and style must be retained.")
+	var female_right_frames: Array[AtlasTexture] = main._player_animation_frames("walk_right")
+	var female_left_frames: Array[AtlasTexture] = main._player_animation_frames("walk_left")
+	assert(female_right_frames.size() == 4 and female_left_frames.size() == 4, "Side walking must alternate each authored stride with the new directional neutral frame.")
+	assert(female_left_frames[0].region.position.x < 195 and female_right_frames[0].region.position.x >= 195, "Female left and right animations must use their distinct authored atlas regions.")
+	assert(female_left_frames[0].region != female_left_frames[2].region and female_right_frames[0].region != female_right_frames[2].region, "Each female side animation must contain two distinct stride regions.")
+	assert(female_left_frames[1].region == female_left_frames[3].region and female_right_frames[1].region == female_right_frames[3].region, "Each side stride must return through its matching neutral region.")
+	assert(female_left_frames[0].region != female_left_frames[1].region and female_right_frames[0].region != female_right_frames[1].region, "Directional neutral regions must be distinct from stride artwork.")
 	assert(main.battle.visible, "Starter selection must open after choosing a player.")
 	assert(main.battle.battle_data["fakemon"][0]["name"] == "Scorchick", "Scorchick must replace Ember Square in the roster.")
 	var keklid: Dictionary = main.battle.battle_data["fakemon"][2]

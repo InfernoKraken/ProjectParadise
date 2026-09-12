@@ -1,0 +1,41 @@
+{
+  "duration": 2.2,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Bugs.png",
+      "duration": 1.2,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 2.0,
+      "sprite_sheet": null,
+      "time": 0.5,
+      "type": "impact_sprite"
+    },
+    {
+      "battler": "user",
+      "duration": 0.4,
+      "magnitude": 8.0,
+      "time": 0.5,
+      "type": "shake_battler"
+    },
+    {
+      "battler": "user",
+      "duration": 0.4,
+      "magnitude": 8.0,
+      "time": 1.0,
+      "type": "shake_battler"
+    }
+  ],
+  "format_version": 1.0,
+  "id": "swarm"
+}

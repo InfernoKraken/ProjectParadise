@@ -1,0 +1,79 @@
+{
+  "duration": 2.15,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Poof.png",
+      "duration": 1.0,
+      "instance_id": "impact",
+      "is_behind": true,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 6.0,
+      "scale": 1.5,
+      "sprite_sheet": null,
+      "time": 0.5,
+      "type": "impact_sprite"
+    },
+    {
+      "color": "52495c",
+      "duration": 0.15,
+      "opacity": 0.8,
+      "time": 0.5,
+      "type": "background_tint"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Generic_Clouds.png",
+      "duration": 1.0,
+      "instance_id": "impact1",
+      "is_behind": false,
+      "opacity": 0.5,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.5,
+      "sprite_sheet": null,
+      "time": 0.6,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Generic_Clouds.png",
+      "duration": 1.0,
+      "instance_id": "impact2",
+      "is_behind": false,
+      "opacity": 0.5,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          -35.0,
+          0.0
+        ]
+      },
+      "rotation": 90.0,
+      "scale": 1.5,
+      "sprite_sheet": null,
+      "time": 0.65,
+      "type": "impact_sprite"
+    },
+    {
+      "duration": 0.5,
+      "time": 1.0,
+      "type": "restore_background"
+    }
+  ],
+  "format_version": 1,
+  "id": "veil"
+}

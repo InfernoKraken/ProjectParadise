@@ -27,8 +27,8 @@
                                "Lochirp"
                            ],
     "trainers": [
-        {"name":"ACE IVO","position":[-7.0,0.65,3.5],"party":[0,1],"dialogue":["Mossvale trainers look after one another by testing one another.","I will lead with my best foot forward!"],"color":"9a5ac8"},
-        {"name":"STUDENT MIRA","position":[7.0,0.65,-3.0],"party":[2],"dialogue":["I am studying how different types battle in the wild.","Would you help with a field observation?"],"color":"5d90cc"}
+        {"trainer_id":"ace_ivo","name":"ACE IVO","position":[-7.0,0.65,3.5],"party":[0,1],"dialogue":["Mossvale trainers look after one another by testing one another.","I will lead with my best foot forward!"],"color":"9a5ac8"},
+        {"trainer_id":"student_mira","name":"STUDENT MIRA","position":[7.0,0.65,-3.0],"party":[2],"dialogue":["I am studying how different types battle in the wild.","Would you help with a field observation?"],"color":"5d90cc"}
     ],
     "trees":  [
                   [

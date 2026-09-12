@@ -1,0 +1,153 @@
+{
+	"format_version": 1,
+	"trainers": {
+		"ace_ivo": {
+			"color": "9a5ac8",
+			"dialogue": [
+				"Mossvale trainers look after one another by testing one another.",
+				"I will lead with my best foot forward!"
+			],
+			"name": "ACE IVO",
+			"team": [
+				{
+					"fakemon": "Scorchick",
+					"level": 5
+				},
+				{
+					"fakemon": "Sylvafin",
+					"level": 5
+				}
+			]
+		},
+		"caver_bex": {
+			"color": "8a6a4d",
+			"dialogue": [
+				"The cave ahead is no place for an untested partner.",
+				"Let us see if you are prepared."
+			],
+			"name": "CAVER BEX",
+			"team": [
+				{
+					"fakemon": "Slumboth",
+					"level": 5
+				},
+				{
+					"fakemon": "Skeeter",
+					"level": 5
+				}
+			]
+		},
+		"courier_rhea": {
+			"color": "d05f72",
+			"dialogue": [
+				"I run messages between Mossvale and the cave.",
+				"A quick battle keeps me quick on my feet!"
+			],
+			"name": "COURIER RHEA",
+			"team": [
+				{
+					"fakemon": "Sylvafin",
+					"level": 5
+				}
+			]
+		},
+		"gardener_nia": {
+			"color": "b26f78",
+			"dialogue": [
+				"The western path has the richest soil in the rainforest.",
+				"Let us grow stronger together in battle!"
+			],
+			"name": "GARDENER NIA",
+			"team": [
+				{
+					"fakemon": "Keklid",
+					"level": 5
+				}
+			]
+		},
+		"hiker_vera": {
+			"color": "d58955",
+			"dialogue": [
+				"Every turn on this route teaches a new lesson.",
+				"Care for a trail battle?"
+			],
+			"name": "HIKER VERA",
+			"team": [
+				{
+					"fakemon": "Scorchick",
+					"level": 5
+				}
+			]
+		},
+		"naturalist_orin": {
+			"color": "a96f43",
+			"dialogue": [
+				"The canopy is alive with unusual Fakemon.",
+				"Mine is eager to meet yours."
+			],
+			"name": "NATURALIST ORIN",
+			"team": [
+				{
+					"fakemon": "Sylvafin",
+					"level": 5
+				}
+			]
+		},
+		"picnicker_sol": {
+			"color": "d89258",
+			"dialogue": [
+				"A picnic always tastes better after a friendly match.",
+				"Ready when you are!"
+			],
+			"name": "PICNICKER SOL",
+			"team": [
+				{
+					"fakemon": "Scorchick",
+					"level": 5
+				}
+			]
+		},
+		"ranger_moss": {
+			"color": "c8794e",
+			"dialogue": [
+				"I keep the trails clear and my partner sharp.",
+				"Show me what your team can do!"
+			],
+			"name": "RANGER MOSS",
+			"team": [
+				{
+					"fakemon": "Keklid",
+					"level": 5
+				}
+			]
+		},
+		"scout_lina": {
+			"color": "df6d5f",
+			"dialogue": [
+				"The clearing is a great place to learn the rhythm of a Fakemon battle.",
+				"Let us have a quick match!"
+			],
+			"name": "SCOUT LINA",
+			"team": [
+				{
+					"fakemon": "Scorchick",
+					"level": 5
+				}
+			]
+		},
+		"student_mira": {
+			"color": "5d90cc",
+			"dialogue": [
+				"I am studying how different types battle in the wild.",
+				"Would you help with a field observation?"
+			],
+			"name": "STUDENT MIRA",
+			"team": [
+				{
+					"fakemon": "Keklid",
+					"level": 5
+				}
+			]
+		}
+	}
+}

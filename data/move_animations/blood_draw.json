@@ -1,0 +1,64 @@
+{
+  "duration": 1.71,
+  "events": [
+    {
+      "battler": "user",
+      "direction": "toward_target",
+      "distance": 120.0,
+      "duration": 0.2,
+      "time": 0.5,
+      "type": "move_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Green_Needle.png",
+      "instance_id": "effect",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "mouth",
+        "battler": "user",
+        "offset": [
+          30.0,
+          19.0
+        ]
+      },
+      "rotation": 130.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.9,
+      "type": "spawn_sprite"
+    },
+    {
+      "instance_id": "effect",
+      "time": 1.15,
+      "type": "destroy_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Blood_Drops.png",
+      "duration": 0.3,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.21,
+      "type": "impact_sprite"
+    },
+    {
+      "duration": 0.2,
+      "time": 1.51,
+      "type": "restore_background"
+    }
+  ],
+  "format_version": 1.0,
+  "id": "blood_draw"
+}

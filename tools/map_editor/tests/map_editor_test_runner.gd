@@ -15,6 +15,7 @@ func _initialize() -> void:
 	_test_malformed_json()
 	_test_unknown_and_numeric_preservation()
 	_test_validation()
+	_test_bridge_validation()
 	_test_coordinates()
 	_test_graph(maps)
 	_test_eastern_route(maps, editor_root)
@@ -58,6 +59,16 @@ func _test_validation() -> void:
 	_check(issues.any(func(i): return i.message.contains("Duplicate connection id")), "Validation must reject duplicate connection ids.")
 	_check(issues.any(func(i): return i.message.contains("Duplicate link")), "Validation must reject duplicate warp links.")
 
+func _test_bridge_validation() -> void:
+	var prefix:='{"format_version":1,"map_metadata":{},"origin":[0,0,0],"size":[10,10],"entry":[0,0,0],"return_warp":[0,0,0],"arrival_points":{},"outdoor_connections":[],"tall_grass_species":[],"grass_zones":[],"water_blocks":[],"sand_blocks":[],"objects":['
+	var valid:=MapDocumentRef.from_text(prefix+'{"type":"structure.bridge","position":[0,0,0],"orientation":"horizontal","length":5,"width":1.5,"elevation":1.0,"entrance_length":0.5,"traversal_layer":2,"future_bridge_field":{"kept":true}}]}',"bridge.json")
+	_check(MapValidatorRef.validate(valid).filter(func(i):return i.severity=="error").is_empty(),"A complete bridge record must validate.")
+	var round_trip:=MapDocumentRef.from_text(valid.deterministic_json(),"bridge.json")
+	_check(valid.semantic_equivalent(round_trip) and round_trip.data.objects[0].has("future_bridge_field"),"Bridge round trips must preserve known and unknown fields.")
+	var invalid:=MapDocumentRef.from_text(prefix+'{"type":"structure.bridge","position":[0,0,0],"orientation":"diagonal","length":2.5,"width":0.5,"elevation":0.25,"entrance_length":0.25,"traversal_layer":0}]}',"bridge.json")
+	var issues:=MapValidatorRef.validate(invalid)
+	for field in ["orientation","length","width","elevation","entrance_length","traversal_layer"]:_check(issues.any(func(i):return String(i.path).ends_with("."+field)),"Invalid bridge %s must be reported at its field."%field)
+
 func _test_coordinates() -> void:
 	var origin := Vector3(110, 0, 30)
 	var local := Vector3(-7.2, 0.65, 0)
@@ -77,6 +88,8 @@ func _test_graph(maps: String) -> void:
 func _test_eastern_route(maps: String, editor_root: String) -> void:
 	var source_path := maps.path_join("eastern_rainforest_route.json")
 	var original := MapDocumentRef.load_file(source_path)
+	var bridge:Dictionary=original.data.objects.filter(func(value):return value is Dictionary and value.get("type")=="structure.bridge")[0]
+	_check(MapValidatorRef.validate(original).filter(func(i):return i.severity=="error").is_empty(),"Eastern route bridge must load without false validation errors.")
 	_check(original.data.get("trees", []) is Array, "Eastern route tree data must remain readable after user edits.")
 	var original_flower_count: int = original.data.get("tall_flowers", []).size()
 	_check(original_flower_count >= 0, "Eastern route tall-flower data must be readable after user edits.")
@@ -92,6 +105,11 @@ func _test_eastern_route(maps: String, editor_root: String) -> void:
 	var no_edit := MapDocumentRef.load_file(no_edit_path)
 	_check(original.semantic_equivalent(no_edit), "No-edit save must be semantically equivalent.")
 	var edited := MapDocumentRef.load_file(source_path)
+	var legacy_water_snapshot:Variant=edited.data.water_blocks.duplicate(true)
+	edited.data.terrain_tiles[0]["future_terrain_metadata"]={"preserved":true}
+	edited.data.terrain_tiles[0].positions.append([8,8])
+	var edited_bridge:Dictionary=edited.data.objects.filter(func(value):return value is Dictionary and value.get("type")=="structure.bridge")[0]
+	edited_bridge["width"]=float(edited_bridge.width)+0.5;edited_bridge["future_editor_field"]="preserved"
 	var old_x := float(edited.data.trees[0][0])
 	edited.set_value("$.trees[0][0]", old_x + 0.5)
 	edited.data.tall_flowers.append([3.0, 0.35, 7.0])
@@ -105,5 +123,9 @@ func _test_eastern_route(maps: String, editor_root: String) -> void:
 	if reloaded.parse_error.is_empty():
 		_check(is_equal_approx(float(reloaded.data.trees[0][0]), old_x + 0.5), "Moved tree must persist after reload.")
 		_check(reloaded.data.tall_flowers.size() == original_flower_count + 1 and reloaded.data.tall_flowers[-1] == [3.0,0.35,7.0], "Added flower must persist after reload.")
+		var reloaded_bridge:Dictionary=reloaded.data.objects.filter(func(value):return value is Dictionary and value.get("type")=="structure.bridge")[0]
+		_check(is_equal_approx(float(reloaded_bridge.width),float(bridge.width)+0.5) and reloaded_bridge.future_editor_field=="preserved","Modified bridge fields and unknown data must persist after atomic save and reload.")
+		_check(reloaded.data.terrain_tiles[0].positions.any(func(position):return int(position[0])==8 and int(position[1])==8),"A painted canonical terrain cell must persist after save and reload.")
+		_check(reloaded.data.terrain_tiles[0].future_terrain_metadata.preserved and reloaded.data.water_blocks==legacy_water_snapshot,"Canonical terrain edits must preserve unknown fields and legacy terrain blocks.")
 	else:
 		_check(false, "Edited route must reload: " + reloaded.parse_error)

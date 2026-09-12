@@ -1,0 +1,41 @@
+{
+  "duration": 2.05,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Projectile_Speed_Lines.png",
+      "instance_id": "effect",
+      "is_behind": true,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": -25.0,
+      "scale": 2.0,
+      "sprite_sheet": null,
+      "time": 0.8,
+      "type": "spawn_sprite"
+    },
+    {
+      "battler": "user",
+      "direction": "away_from_target",
+      "distance": 60.0,
+      "duration": 0.1,
+      "time": 0.8,
+      "type": "move_battler"
+    },
+    {
+      "duration": 0.25,
+      "instance_id": "effect",
+      "opacity": 0.0,
+      "time": 0.9,
+      "type": "fade_sprite"
+    }
+  ],
+  "format_version": 1,
+  "id": "evade"
+}

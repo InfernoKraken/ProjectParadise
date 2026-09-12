@@ -10,6 +10,7 @@
                  12,
                  10
              ],
+    "base_terrain_type": "rock",
     "entry":  [
                   0,
                   0.65,

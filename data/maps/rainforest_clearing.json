@@ -1,6 +1,12 @@
 {
-	"arrival_points": {"north_return": [0, 0.65, -9.0]},
-	"outdoor_connections": [{"id":"clearing_to_canopy","warp":"north_warp","destination_map":"canopy_route.json","arrival":"entry","reverse":"canopy_to_clearing","facing":"generic"}],
+	"arrival_points": {
+		"north_return": [
+			0,
+			0.65,
+			-9.0
+		]
+	},
+	"base_terrain_type": "forest_floor",
 	"blue_flowers": [
 		[
 			-2.0,
@@ -15,9 +21,9 @@
 	],
 	"building": {
 		"door": [
-			-8.0,
+			-7.5,
 			0.11999999731779,
-			-5.0
+			-5.5
 		],
 		"position": [
 			-7,
@@ -84,12 +90,56 @@
 			-11
 		]
 	},
+	"outdoor_connections": [
+		{
+			"arrival": "entry",
+			"destination_map": "canopy_route.json",
+			"facing": "generic",
+			"id": "clearing_to_canopy",
+			"reverse": "canopy_to_clearing",
+			"warp": "north_warp"
+		}
+	],
 	"player_spawn": [
 		0,
 		0.65,
 		7
 	],
 	"rare_torch_ginger": [],
+	"sand_blocks": [
+		[
+			-4,
+			0.05,
+			9.25,
+			21,
+			0.1,
+			0.5
+		],
+		[
+			-4,
+			0.05,
+			12.75,
+			21,
+			0.1,
+			0.5
+		],
+		[
+			-14.25,
+			0.05,
+			11,
+			0.5,
+			0.1,
+			3
+		],
+		[
+			6.25,
+			0.05,
+			11,
+			0.5,
+			0.1,
+			3
+		]
+	],
 	"tall_flowers": [
 		[
 			-1.0,
@@ -113,9 +163,281 @@
 		"Skeeter",
 		"Lochirp"
 	],
+	"terrain_tiles": [
+		{
+			"positions": [
+				[
+					-12,
+					8
+				],
+				[
+					-11,
+					8
+				],
+				[
+					-10,
+					8
+				],
+				[
+					-9,
+					8
+				],
+				[
+					-8,
+					8
+				],
+				[
+					-7,
+					8
+				],
+				[
+					-6,
+					8
+				],
+				[
+					-5,
+					8
+				],
+				[
+					-4,
+					8
+				],
+				[
+					-3,
+					8
+				],
+				[
+					-2,
+					8
+				],
+				[
+					-1,
+					8
+				],
+				[
+					0,
+					8
+				],
+				[
+					1,
+					8
+				],
+				[
+					2,
+					8
+				],
+				[
+					3,
+					8
+				],
+				[
+					4,
+					8
+				],
+				[
+					5,
+					8
+				],
+				[
+					6,
+					8
+				],
+				[
+					-12,
+					9
+				],
+				[
+					6,
+					9
+				],
+				[
+					-12,
+					10
+				],
+				[
+					-11,
+					10
+				],
+				[
+					-10,
+					10
+				],
+				[
+					-9,
+					10
+				],
+				[
+					-8,
+					10
+				],
+				[
+					-7,
+					10
+				],
+				[
+					-6,
+					10
+				],
+				[
+					-5,
+					10
+				],
+				[
+					-4,
+					10
+				],
+				[
+					-3,
+					10
+				],
+				[
+					-2,
+					10
+				],
+				[
+					-1,
+					10
+				],
+				[
+					0,
+					10
+				],
+				[
+					1,
+					10
+				],
+				[
+					2,
+					10
+				],
+				[
+					3,
+					10
+				],
+				[
+					4,
+					10
+				],
+				[
+					5,
+					10
+				],
+				[
+					6,
+					10
+				]
+			],
+			"terrain_type": "sand"
+		},
+		{
+			"positions": [
+				[
+					-11,
+					9
+				],
+				[
+					-10,
+					9
+				],
+				[
+					-9,
+					9
+				],
+				[
+					-8,
+					9
+				],
+				[
+					-7,
+					9
+				],
+				[
+					-6,
+					9
+				],
+				[
+					-5,
+					9
+				],
+				[
+					-4,
+					9
+				],
+				[
+					-3,
+					9
+				],
+				[
+					-2,
+					9
+				],
+				[
+					-1,
+					9
+				],
+				[
+					0,
+					9
+				],
+				[
+					1,
+					9
+				],
+				[
+					2,
+					9
+				],
+				[
+					3,
+					9
+				],
+				[
+					4,
+					9
+				],
+				[
+					5,
+					9
+				]
+			],
+			"terrain_type": "water"
+		}
+	],
 	"trainers": [
-		{"name": "SCOUT LINA", "position": [4.0, 0.65, 6.0], "party": [0], "dialogue": ["The clearing is a great place to learn the rhythm of a Fakemon battle.", "Let us have a quick match!"], "color": "df6d5f"},
-		{"name": "RANGER MOSS", "position": [-2.5, 0.65, -4.0], "party": [2], "dialogue": ["I keep the trails clear and my partner sharp.", "Show me what your team can do!"], "color": "c8794e"}
+		{
+			"color": "df6d5f",
+			"dialogue": [
+				"The clearing is a great place to learn the rhythm of a Fakemon battle.",
+				"Let us have a quick match!"
+			],
+			"name": "SCOUT LINA",
+			"party": [
+				0
+			],
+			"position": [
+				4.0,
+				0.65,
+				6.0
+			],
+			"trainer_id": "scout_lina"
+		},
+		{
+			"color": "c8794e",
+			"dialogue": [
+				"I keep the trails clear and my partner sharp.",
+				"Show me what your team can do!"
+			],
+			"name": "RANGER MOSS",
+			"party": [
+				2
+			],
+			"position": [
+				-2.5,
+				0.65,
+				-4.0
+			],
+			"trainer_id": "ranger_moss"
+		}
 	],
 	"trees": [
 		[
@@ -179,37 +501,36 @@
 			0
 		],
 		[
-			-13.0,
+			-12.0,
 			1.5,
 			1.0,
 			1
 		],
 		[
-			-13.0,
+			-12.0,
 			1.5,
 			2.0,
 			1
 		],
 		[
-			-13.0,
+			-12.0,
 			1.5,
 			3.0,
 			1
 		],
 		[
-			-13.0,
+			-12.0,
 			1.5,
 			8.0,
 			0
 		],
 		[
-			-13.0,
+			-12.0,
 			1.5,
 			-4.0,
 			0
 		]
 	],
-	"sand_blocks": [[-4,0.05,9.25,21,0.1,0.5],[-4,0.05,12.75,21,0.1,0.5],[-14.25,0.05,11,0.5,0.1,3],[6.25,0.05,11,0.5,0.1,3]],
 	"water_blocks": [
 		[
 			-4.0,

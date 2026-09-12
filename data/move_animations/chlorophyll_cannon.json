@@ -1,0 +1,81 @@
+{
+  "duration": 1.9,
+  "events": [
+    {
+      "battler": "user",
+      "direction": "away_from_target",
+      "distance": 60.0,
+      "duration": 0.2,
+      "time": 0.5,
+      "type": "move_battler"
+    },
+    {
+      "color": "9be34b",
+      "duration": 0.15,
+      "opacity": 0.4,
+      "time": 0.65,
+      "type": "background_tint"
+    },
+    {
+      "asset": "res://assets/move_effects/Orb_Plant.png",
+      "instance_id": "effect",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.7,
+      "type": "spawn_sprite"
+    },
+    {
+      "duration": 0.5,
+      "easing": "linear",
+      "instance_id": "effect",
+      "time": 0.7,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "instance_id": "effect",
+      "time": 1.15,
+      "type": "destroy_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Fire_Embers.png",
+      "duration": 0.5,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 2.0,
+      "sprite_sheet": null,
+      "time": 1.25,
+      "type": "impact_sprite"
+    }
+  ],
+  "format_version": 1,
+  "id": "chlorophyll_cannon"
+}

@@ -12,11 +12,27 @@ negative world Z is shown upward/north. Middle- or right-drag pans, the mouse wh
 zooms, and left-drag moves objects. Drag the yellow lower-right handle of a selected
 water or grass rectangle to resize it.
 
+Canonical `terrain_tiles` have a dedicated toolbar palette. Choose a terrain type,
+then Paint or Erase and drag across the canvas; cells always snap to the 1×1 terrain
+grid. Select returns to ordinary object editing, and Escape exits either brush.
+Grouped `positions` records are displayed as individual cells but remain grouped in
+JSON, so legacy terrain blocks and unknown record fields are not rewritten. The map
+metadata panel exposes `base_terrain_type`. Each brush stroke is one undo/redo step,
+and invalid or overlapping terrain cells receive a red canvas outline linked to the
+Validation tab.
+
 Drag an entry from the Object Palette and release it over the map to place it at
 the cursor. The drop position follows the current grid/snap settings and the asset
 catalog supplies its default Y, footprint, size, and variant. The new object is
 selected immediately. "Add at Origin" remains available as a keyboard-friendly
 fallback.
+
+New Map creates a format-version 2 universal document with explicit `map_metadata`
+(`id`, display name, map type, group, and tags), connection/arrival collections,
+universal objects, terrain arrays, and optional cave/interior collections. Its
+capabilities no longer depend on a temporary filename. Saving registers the map in
+`map_index.json` under `maps` and `map_groups`, and the runtime loader reads that
+authored-map catalog alongside the legacy prototype sections.
 
 Buildings, trees, flowers, vines, water, sand, and rocks are universal. When the
 current map has a legacy typed array, the editor continues writing that array. On
@@ -52,6 +68,13 @@ use `|`. Trainers additionally expose a comma-separated team such as
 may contain one to seven members, and levels are constrained to 1–100. Clicking an
 NPC shows its text, while closing a trainer's final text page begins the configured
 battle.
+Legacy `trainers` records use the same inspector: their old index-only `party` values
+are displayed as level-5 members and become named/indexed Fakemon-and-level records
+when edited.
+
+Universal sprite objects serialize an explicit visual `height`. The canvas and
+runtime consume that same number; building-only width scaling is never applied to
+trees or other sprites. The selected-object inspector can change visual height.
 
 Interior furnishings are serialized as `furnishings` records containing a stable
 `type`, local `position` (`[x,y,z]`), and display `height`. The editor draws floors
@@ -73,6 +96,12 @@ Saving is deterministic and atomic. Existing destinations receive a `.bak` copy,
 and validation errors prevent replacement. Untouched numeric tokens retain their
 original spelling, including trailing precision and exponent notation. Unknown JSON
 fields remain in the document and serialized output.
+
+Rename changes a saved map's filename, updates its metadata ID, recursively updates
+world-index and connection references, and retains the old file as a `.bak`. The
+The runtime keeps the physical `map_index.json` filename fixed. The editor's Rename action edits its `index_metadata.display_name`, so the world/index can be named without breaking the runtime bootstrap path.
+
+Trainer placements store a stable `trainer_id`; reusable names, dialogue, colors, and explicit Fakemon/level team rows live in `data/trainers.json`. Saving a map also atomically saves any edited trainer definitions. Legacy inline trainer records remain readable during migration.
 
 Outdoor maps serialize named `arrival_points` and directed `outdoor_connections`.
 The Warp Graph pairs reverse links and reports missing destinations/arrivals, one-way

@@ -1,0 +1,113 @@
+{
+  "duration": 2.75,
+  "events": [
+    {
+      "color": "#663399",
+      "duration": 0.15,
+      "opacity": 0.4,
+      "time": 0.4,
+      "type": "background_tint"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Base_Fire.png",
+      "instance_id": "effect",
+      "is_behind": true,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          -10.0,
+          5.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.75,
+      "sprite_sheet": null,
+      "time": 0.5,
+      "type": "spawn_sprite"
+    },
+    {
+      "battler": "user",
+      "duration": 0.75,
+      "magnitude": 18.0,
+      "time": 0.65,
+      "type": "shake_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Fire_Embers.png",
+      "duration": 0.3,
+      "instance_id": "impact",
+      "is_behind": true,
+      "opacity": 0.75,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": -15.0,
+      "scale": 3.0,
+      "sprite_sheet": null,
+      "time": 0.75,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Fire_Embers.png",
+      "duration": 0.3,
+      "instance_id": "impact1",
+      "is_behind": false,
+      "opacity": 0.7,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 15.0,
+      "scale": 2.0,
+      "sprite_sheet": null,
+      "time": 0.85,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Orb_Fire.png",
+      "instance_id": "effect1",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "head",
+        "battler": "user",
+        "offset": [
+          0,
+          -90.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.5,
+      "sprite_sheet": null,
+      "time": 0.9,
+      "type": "spawn_sprite"
+    },
+    {
+      "duration": 0.75,
+      "instance_id": "effect",
+      "opacity": 0.0,
+      "time": 1.8,
+      "type": "fade_sprite"
+    },
+    {
+      "duration": 0.25,
+      "instance_id": "effect1",
+      "opacity": 0.0,
+      "time": 1.85,
+      "type": "fade_sprite"
+    }
+  ],
+  "format_version": 1,
+  "id": "grand_display"
+}

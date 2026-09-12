@@ -1,6 +1,8 @@
 class_name MapDataLoader
 extends RefCounted
 
+const TerrainTransitionResolver := preload("res://world/terrain_transition_resolver.gd")
+
 
 static func load_world(index_path: String) -> Dictionary:
 	var index := _load_json_object(index_path)
@@ -32,7 +34,27 @@ static func load_world(index_path: String) -> Dictionary:
 			if section.is_empty():
 				return {}
 			parent[section_name] = section
+	var authored_maps:={}
+	for map_id in Dictionary(index.get("maps",{})):
+		var authored:=_load_json_object(base_directory.path_join(String(index.maps[map_id])))
+		if authored.is_empty():return {}
+		authored_maps[String(map_id)]=authored
+	world["authored_maps"]=authored_maps
+	_prepare_terrain_recursive(world,"world")
 	return world
+
+
+static func _prepare_terrain_recursive(value: Dictionary,map_seed:String) -> void:
+	if value.has("terrain_tiles") or value.has("water_blocks") or value.has("sand_blocks") or value.has("objects"):
+		var prepared := TerrainTransitionResolver.prepare_map(value,map_seed)
+		value["_terrain_grid"] = prepared["_terrain_grid"]
+		value["_terrain_issues"] = prepared["_terrain_issues"]
+		value["_terrain_transitions"] = prepared["_terrain_transitions"]
+	for key: Variant in value.keys():
+		if String(key).begins_with("_"): continue
+		var child: Variant = value[key]
+		if child is Dictionary:
+			_prepare_terrain_recursive(child,map_seed+"/"+String(key))
 
 
 static func _load_json_object(path: String) -> Dictionary:

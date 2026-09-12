@@ -1,0 +1,120 @@
+{
+  "duration": 1.5,
+  "events": [
+    {
+      "battler": "user",
+      "direction": "away_from_target",
+      "distance": 60.0,
+      "duration": 0.2,
+      "time": 0.5,
+      "type": "move_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Projectile_Air_Gust.png",
+      "instance_id": "effectr",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "right_wing",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.7,
+      "type": "spawn_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Projectile_Air_Gust.png",
+      "instance_id": "effectl",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "left_wing",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.7,
+      "type": "spawn_sprite"
+    },
+    {
+      "duration": 0.3,
+      "easing": "linear",
+      "instance_id": "effectr",
+      "time": 0.7,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "duration": 0.3,
+      "easing": "linear",
+      "instance_id": "effectl",
+      "time": 0.7,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Air_Slash.png",
+      "duration": 0.3,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.0,
+      "type": "impact_sprite"
+    },
+    {
+      "instance_id": "effectr",
+      "time": 1.0,
+      "type": "destroy_sprite"
+    },
+    {
+      "instance_id": "effectl",
+      "time": 1.0,
+      "type": "destroy_sprite"
+    },
+    {
+      "battler": "target",
+      "duration": 0.2,
+      "magnitude": 8.0,
+      "time": 1.1,
+      "type": "shake_battler"
+    }
+  ],
+  "format_version": 1,
+  "id": "gust"
+}

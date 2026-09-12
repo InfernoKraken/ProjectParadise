@@ -1,0 +1,125 @@
+{
+  "duration": 2.15,
+  "events": [
+    {
+      "color": "ecf314",
+      "duration": 0.15,
+      "opacity": 0.4,
+      "time": 0.5,
+      "type": "background_tint"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Beam_Plant.png",
+      "duration": 0.85,
+      "from": {
+        "anchor": "left_wing",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "instance_id": "beaml",
+      "layer": "above_battlers",
+      "opacity": 1.0,
+      "time": 0.65,
+      "to": {
+        "anchor": "left_wing",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "type": "beam",
+      "width": 125.01
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Beam_Plant.png",
+      "duration": 0.85,
+      "from": {
+        "anchor": "right_wing",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "instance_id": "beamr",
+      "layer": "above_battlers",
+      "opacity": 1.0,
+      "time": 0.65,
+      "to": {
+        "anchor": "right_wing",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "type": "beam",
+      "width": 125.01
+    },
+    {
+      "battler": "target",
+      "duration": 0.2,
+      "magnitude": 8.0,
+      "time": 0.8,
+      "type": "shake_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Burn.png",
+      "duration": 0.59,
+      "instance_id": "impactl",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "left_wing",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.2,
+      "sprite_sheet": null,
+      "time": 0.9,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Burn.png",
+      "duration": 0.59,
+      "instance_id": "impactr",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "right_wing",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.2,
+      "sprite_sheet": null,
+      "time": 0.9,
+      "type": "impact_sprite"
+    },
+    {
+      "battler": "target",
+      "duration": 0.2,
+      "magnitude": 8.0,
+      "time": 1.0,
+      "type": "shake_battler"
+    },
+    {
+      "duration": 0.2,
+      "time": 1.95,
+      "type": "restore_background"
+    }
+  ],
+  "format_version": 1.0,
+  "id": "solar_ray"
+}

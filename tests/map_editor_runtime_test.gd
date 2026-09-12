@@ -1,6 +1,7 @@
 extends SceneTree
 
 const MapDataLoader := preload("res://world/map_data_loader.gd")
+const TerrainTransitionResolver := preload("res://world/terrain_transition_resolver.gd")
 
 func _initialize() -> void:
 	var saved_path := "res://tools/map_editor/tests/generated/eastern_edited.json"
@@ -9,6 +10,7 @@ func _initialize() -> void:
 	assert(not saved.is_empty(), "The unchanged game MapDataLoader must load the editor-saved map.")
 	var authored := MapDataLoader._load_json_object("res://data/maps/eastern_rainforest_route.json")
 	assert(saved["trees"].size() == authored["trees"].size() and saved["tall_flowers"].size() == authored["tall_flowers"].size() + 1, "Saved edited objects must reach the runtime loader without relying on stale fixture counts.")
+	assert(saved.terrain_tiles[0].positions.any(func(position):return int(position[0])==8 and int(position[1])==8) and not TerrainTransitionResolver.resolve(TerrainTransitionResolver.terrain_grid(saved),"editor_saved_eastern").is_empty(),"The runtime transition resolver must consume the editor-painted cell after reload.")
 	var scene := load("res://world/main.tscn") as PackedScene
 	var main := scene.instantiate()
 	root.add_child(main)
@@ -16,9 +18,11 @@ func _initialize() -> void:
 	assert(main.player != null and main.east_route_origin == Vector3(110,0,30), "Gameplay world must still instantiate successfully.")
 	# Focused fixture instantiation through the same runtime construction method.
 	var prior_origin: Vector3 = main.east_route_origin
-	main._build_side_route(saved, "EditorFixture", true)
+	var prepared_saved:=TerrainTransitionResolver.prepare_map(saved,"editor_saved_eastern")
+	main._build_side_route(prepared_saved, "EditorFixture", true)
 	assert(main.east_route_origin == Vector3(110,0,30), "Editor-saved route must instantiate through the unchanged side-route builder.")
 	assert(main.world.find_child("EditorFixtureRainforestRouteGround", true, false) != null, "Saved fixture ground must be instantiated.")
+	assert(main.world.find_child("EditorFixtureRouteCanonicalBase_*_sand",false,false)!=null and main.world.find_child("EditorFixtureRouteCanonicalBase_*_water",false,false)!=null,"The editor-saved route must still render canonical terrain and its transition-ready shoreline in-game.")
 	var universal_fixture := {"objects":[
 		{"type":"building.house","position":[0,1.5,0],"size":[5,3,4]},
 		{"type":"building.medical_ward","position":[7,1.5,0],"size":[5,3,4]},
@@ -37,6 +41,10 @@ func _initialize() -> void:
 	assert((main.npc_dialogues[trainer.get_instance_id()].after_dialogue as Callable).is_valid(),"Trainer dialogue must chain to its configured battle team.")
 	var authored_team:Array[Dictionary]=main._build_trainer_team([{"fakemon":"Scorchick","level":9},{"fakemon":1,"level":12}])
 	assert(authored_team.size()==2 and authored_team[0].name=="Scorchick" and authored_team[0].level==9 and authored_team[1].level==12,"Trainer team records must resolve Fakemon names/indices and preserve authored levels.")
+	var catalog_trainer:Dictionary=main._resolved_trainer({"trainer_id":"caver_bex","position":[5,0.65,-5]})
+	assert(catalog_trainer.name=="CAVER BEX" and catalog_trainer.team[0].fakemon=="Keklid","Runtime trainer placement references must resolve reusable definitions and explicit team rows from data/trainers.json.")
+	main._build_universal_objects({"objects":[{"type":"tree.main","position":[0,1.5,0],"height":6.5}]},Vector3(260,0,260),"ScaleFixture")
+	assert(is_equal_approx(float(main.tree_sort_entries[-1].height),6.5),"The runtime must consume the same authored tree height shown by the editor preview.")
 	main.east_route_origin = prior_origin
 	print("MAP_EDITOR_RUNTIME_TEST_PASSED")
 	quit()

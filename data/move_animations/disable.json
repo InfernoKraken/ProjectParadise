@@ -1,0 +1,47 @@
+{
+  "duration": 1.65,
+  "events": [
+    {
+      "color": "564765",
+      "duration": 0.15,
+      "opacity": 0.4,
+      "time": 0.5,
+      "type": "background_tint"
+    },
+    {
+      "battler": "user",
+      "direction": "vertical",
+      "distance": -60.0,
+      "duration": 0.5,
+      "time": 0.65,
+      "type": "move_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Eye.png",
+      "duration": 0.3,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "head",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.15,
+      "type": "impact_sprite"
+    },
+    {
+      "duration": 0.2,
+      "time": 1.45,
+      "type": "restore_background"
+    }
+  ],
+  "format_version": 1,
+  "id": "disable"
+}

@@ -1,0 +1,80 @@
+{
+  "duration": 2.0,
+  "events": [
+    {
+      "color": "32dfdf",
+      "duration": 0.15,
+      "opacity": 0.4,
+      "time": 0.5,
+      "type": "background_tint"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Base_Plant.png",
+      "duration": 1.4,
+      "instance_id": "base",
+      "is_behind": true,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          50.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.5,
+      "sprite_sheet": null,
+      "time": 0.6,
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Beam_Paradise.png",
+      "duration": 1.0,
+      "from": {
+        "anchor": "head",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "instance_id": "beam",
+      "layer": "above_battlers",
+      "opacity": 1.0,
+      "time": 0.7,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "type": "beam",
+      "width": 125.01
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Shield1.png",
+      "duration": 0.3,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.4,
+      "type": "impact_sprite"
+    }
+  ],
+  "format_version": 1,
+  "id": "paradise_ray"
+}

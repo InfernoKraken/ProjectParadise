@@ -42,6 +42,7 @@ func _parse() -> void:
 		parse_error = "Map root must be a JSON object."
 		return
 	data = json.data
+	kind = MapSchemaRef.kind_for_data(data, kind)
 	original_data = data.duplicate(true)
 	number_tokens = _scan_number_tokens(source_text)
 

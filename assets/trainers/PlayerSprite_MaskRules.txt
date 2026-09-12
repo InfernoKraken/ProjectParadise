@@ -1,0 +1,68 @@
+When inferring hair and skin color, use the mask file: PlayerSprite_Mask_Aligned.
+The mask is an exact pixel match of the sprite sheet used by the player in PlayerSprite.
+
+mask == RED
+    → this source pixel belongs to hair
+    → resolve the source RGB to a semantic shade role for that material, then obtain that role's color from the selected destination palette
+
+mask == GREEN
+    → this source pixel belongs to skin
+    → esolve the source RGB to a semantic shade role for that material, then obtain that role's color from the selected destination palette
+
+anything else
+    → preserve source RGB
+
+Treat the mask as authoritative for material identity. Do not attempt to infer whether an RGB value is hair or skin globally. The same source RGB may legitimately appear under both RED and GREEN mask pixels.
+
+Build source-color inventories separately for RED hair pixels and GREEN skin pixels. Low-frequency or unexpected source colors should remain unchanged unless deliberately assigned to a semantic shade role.
+
+Multiple source RGB values may map to the same semantic shade role for normalization.
+
+Do not treat the source sprite colors as the player’s default runtime palette.
+
+For example, multiple source hair RGB values may normalize into the same semantic destination shade if they serve equivalent visual roles. This is intentional and should be used to make hair brightness and contrast consistent across frames.
+
+Do not preserve an original “source appearance” option for the player. The initial/default player appearance should instead use a normalized Medium skin palette and Medium Brown hair palette.
+
+The blonde test palette should use the exact same semantic shade roles, changing only the destination colors.
+
+This allows for various expansions of skin and hair colors with a mere palette swap of the same sprite.
+
+Acceptance criteria:
+
+1. PlayerSprite.png and PlayerSprite_Mask_Aligned.png must remain unmodified.
+
+2. Verify that sprite and mask dimensions match before processing.
+   Fail loudly if they do not.
+
+3. Only exact mask colors have semantic meaning:
+   #FF0000 = hair
+   #00FF00 = skin
+   everything else = preserve
+
+4. Mask classification happens before source-RGB interpretation.
+
+5. A source RGB appearing in both hair and skin is not an error.
+   Its meaning depends on the mask pixel.
+
+6. Every runtime appearance uses an explicit palette.
+   There is no raw-source/default bypass.
+
+7. Implement at least:
+   - Medium skin + Medium Brown hair as the default normalized appearance.
+   - Light skin + Blonde hair as the test appearance.
+
+8. Multiple source RGB values may normalize to the same destination shade.
+
+9. Eyes, clothing, backpack, sandals, jewelry, and other non-masked pixels must remain unchanged.
+
+10. Verify both appearances across male and female frames and all currently used movement directions.
+
+11. Do not create duplicate recolored sprite sheets on disk.
+    Generate/cache palette-swapped textures from the canonical sprite and mask.
+
+12. Do not modify unrelated gameplay or UI code.
+
+If the existing implementation can be extended cleanly, extend it. Do not introduce shaders, external dependencies, new asset formats, or a generalized character-customization framework unless the current architecture genuinely requires one.
+
+Do not spend time redesigning this system beyond the requirements above. First inspect the existing implementation, then make the smallest change that satisfies the acceptance criteria. If an ambiguity prevents safe implementation, report the ambiguity rather than inventing new asset conventions.

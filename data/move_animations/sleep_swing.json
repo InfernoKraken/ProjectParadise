@@ -1,0 +1,63 @@
+{
+  "duration": 2.0,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_ZZ.png",
+      "duration": 0.3,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "head",
+        "battler": "user",
+        "offset": [
+          0,
+          -15.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.5,
+      "type": "impact_sprite"
+    },
+    {
+      "battler": "user",
+      "direction": "toward_target",
+      "distance": 20.0,
+      "duration": 0.2,
+      "time": 0.8,
+      "type": "move_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Headbutt.png",
+      "duration": 0.3,
+      "instance_id": "impact1",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.0,
+      "type": "impact_sprite"
+    },
+    {
+      "battler": "target",
+      "direction": "away_from_target",
+      "distance": 100.0,
+      "duration": 0.2,
+      "time": 1.2,
+      "type": "move_battler"
+    }
+  ],
+  "format_version": 1,
+  "id": "sleep_swing"
+}

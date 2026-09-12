@@ -1,166 +1,2384 @@
 {
-  "moves": {
-	"pounce": { "name": "Pounce", "power": 40, "type": "Normal", "damage_class": "Physical", "animation_kind": "caster_lunge" },
-	"quick_bump": { "name": "Quick Bump", "power": 30, "type": "Normal", "damage_class": "Physical", "condition": "Flinch", "condition_chance": 0.3, "animation_kind": "target_hit" },
-	"ignite": { "name": "Ignite", "power": 40, "type": "Fire", "damage_class": "Special", "condition": "Burned", "condition_chance": 0.2, "animation_kind": "target_burst" },
-	"cinder_flick": { "name": "Cinder Flick", "power": 30, "type": "Fire", "damage_class": "Special", "condition": "Burned", "condition_chance": 0.15 },
-	"soak": { "name": "Soak", "power": 40, "type": "Water", "damage_class": "Special", "condition": "Frozen", "condition_chance": 0.15 },
-	"bubble_bop": { "name": "Bubble Bop", "power": 30, "type": "Water", "damage_class": "Special" },
-	"petal_whip": { "name": "Petal Whip", "power": 40, "type": "Plant", "damage_class": "Physical", "condition": "Poisoned", "condition_chance": 0.2, "weather_overrides": {"Rootmind": {"power": 45, "condition_chance": 0.3}} },
-	"seed_tap": { "name": "Seed Tap", "power": 30, "type": "Plant", "damage_class": "Physical", "condition": "Poisoned", "condition_chance": 0.3 },
-	"radiant_jolt": { "name": "Radiant Jolt", "power": 40, "type": "Light", "damage_class": "Special", "condition": "Paralyzed", "condition_chance": 0.25 },
-	"sunbeam": { "name": "Sunbeam", "power": 35, "type": "Light", "damage_class": "Special" },
-	"nightmare_nudge": { "name": "Nightmare Nudge", "power": 35, "type": "Dark", "damage_class": "Special", "condition": "Asleep", "condition_chance": 0.25 },
-	"shadow_snap": { "name": "Shadow Snap", "power": 40, "type": "Dark", "damage_class": "Physical" }
-	,"restore": { "name": "Restore", "power": 0, "type": "Normal", "damage_class": "Status", "cures_conditions": true, "description": "Removes all special conditions from the user." }
-	,"burn_off": { "name": "Burn Off", "power": 0, "type": "Fire", "damage_class": "Status", "cures_conditions": true, "description": "Burns away all special conditions from the user." }
-	,"cleanse": { "name": "Cleanse", "power": 0, "type": "Water", "damage_class": "Status", "cures_conditions": true, "description": "Washes away all special conditions from the user." }
-	,"remedy": { "name": "Remedy", "power": 0, "type": "Plant", "damage_class": "Status", "cures_conditions": true, "description": "Uses restorative growth to remove all special conditions.", "weather_overrides": {"Rootmind": {"fixed_max_hp_heal_fraction": 0.125}} }
-	,"purify": { "name": "Cleanse", "power": 0, "type": "Light", "damage_class": "Status", "cures_conditions": true, "description": "Purifies the user of all special conditions." }
-	,"absolve": { "name": "Absolve", "power": 0, "type": "Dark", "damage_class": "Status", "cures_conditions": true, "description": "Releases the user from all special conditions." }
-	,"sentence": { "name": "Sentence", "power": 0, "type": "Dark", "damage_class": "Status", "condition": "Condemned", "condition_chance": 1.0, "description": "Condemns the target." }
-	,"dread_glare": { "name": "Dread Glare", "power": 0, "type": "Dark", "damage_class": "Status", "condition": "Despairing", "condition_chance": 1.0, "description": "Fills the target with despair." }
-	,"charm_ray": { "name": "Charm Ray", "power": 0, "type": "Light", "damage_class": "Status", "condition": "Infatuated", "condition_chance": 1.0, "description": "Adds one Infatuation stack, up to five." }
-	,"peck": { "name": "Peck", "power": 40, "type": "Air", "damage_class": "Physical" }
-	,"flutter": { "name": "Flutter", "power": 0, "type": "Bug", "damage_class": "Status", "stat_changes": [{"stat": "special_attack", "amount": 0.1}, {"stat": "special_defense", "amount": 0.1}], "animation_kind": "buff_swirl" }
-	,"photon_beam": { "name": "Photon Beam", "power": 40, "type": "Light", "damage_class": "Special" }
-	,"aqua_jet": { "name": "Aqua Jet", "power": 55, "type": "Water", "damage_class": "Special", "condition": "Slowed", "condition_chance": 0.3 }
-	,"dazzle": { "name": "Dazzle", "power": 15, "type": "Mystic", "damage_class": "Special", "condition": "Flinch", "condition_chance": 1.0, "target_stat_changes": [{"stat": "special_defense", "amount": -0.1}], "reuse_delay": 1 }
-	,"brilliant_light": { "name": "Brilliant Light", "power": 50, "type": "Light", "damage_class": "Special", "ignore_resistance": true }
-	,"veil": { "name": "Veil", "power": 0, "type": "Ghost", "damage_class": "Status", "protect": true }
-	,"disable": { "name": "Disable", "power": 0, "type": "Psychic", "damage_class": "Status", "disable_last_move_turns": 4 }
-	,"scald": { "name": "Scald", "power": 80, "type": "Water", "damage_class": "Special", "condition": "Burned", "condition_chance": 0.2 }
-	,"smite": { "name": "Smite", "power": 80, "type": "Light", "damage_class": "Special", "condition": "Condemned", "condition_chance": 0.2 }
-	,"aureal_flood": { "name": "Aureal Flood", "power": 90, "type": "Water", "damage_class": "Special", "cleanse_user_party": true }
-	,"remembrance": { "name": "Remembrance", "power": 0, "type": "Light", "damage_class": "Status", "calls_another_move": true }
-	,"celestial_chorus": { "name": "Celestial Chorus", "power": 0, "type": "Light", "damage_class": "Status", "sets_weather": "Celestial Chorus" }
-	,"prayer": { "name": "Prayer", "power": 0, "type": "Light", "damage_class": "Status", "delayed_heal_fraction": 0.33 }
-	,"discern": { "name": "Discern", "power": 0, "type": "Light", "damage_class": "Status", "stat_changes": [{"stat": "special_defense", "amount": 0.3}] }
-	,"fin_flash": { "name": "Fin Flash", "power": 40, "type": "Water", "damage_class": "Special", "raised_stat_power": {"stat": "special_defense", "power": 60} }
-	,"flip_turn": { "name": "Flip Turn", "power": 40, "type": "Water", "damage_class": "Physical", "random_party_switch": true, "passes_stat_modifiers": true }
-	,"squawk": { "name": "Squawk", "power": 0, "type": "Air", "damage_class": "Status", "target_stat_changes": [{"stat": "defense", "amount": -0.1}] }
-	,"mimic": { "name": "Mimic", "power": 0, "type": "Air", "damage_class": "Status", "copies_opponent_last_move": true, "calls_another_move": true }
-	,"scratch": { "name": "Scratch", "power": 40, "type": "Normal", "damage_class": "Physical" }
-	,"heat_up": { "name": "Heat Up", "power": 10, "type": "Fire", "damage_class": "Special", "stat_changes": [{"stat": "speed", "amount": 0.3}, {"stat": "special_attack", "amount": 0.1}] }
-	,"singe": { "name": "Singe", "power": 0, "type": "Fire", "damage_class": "Status", "condition": "Burned", "condition_chance": 1.0, "animation_kind": "floating_icon" }
-	,"intercept": { "name": "Intercept", "power": 50, "type": "Air", "damage_class": "Physical", "priority": 1, "condition": "Flinch", "condition_chance": 0.05 }
-	,"fire_charge": { "name": "Fire Charge", "power": 80, "type": "Fire", "damage_class": "Physical", "condition": "Burned", "condition_chance": 0.1, "recoil_current_hp_fraction": 0.25 }
-	,"nest": { "name": "Nest", "power": 0, "type": "Air", "damage_class": "Status", "nest": true }
-	,"fireheart": { "name": "Fireheart", "power": 0, "type": "Fire", "damage_class": "Status", "cannot_faint_turns": 2, "reuse_delay": 1 }
-	,"whirlwind": { "name": "Whirlwind", "power": 0, "type": "Air", "damage_class": "Status", "force_random_opponent_switch": true }
-	,"wingbeat": { "name": "Wingbeat", "power": 85, "type": "Air", "damage_class": "Physical", "target_stat_changes": [{"stat": "defense", "amount": -0.1}], "target_stat_change_chance": 0.2 }
-	,"skyfall": { "name": "Skyfall", "power": 65, "type": "Air", "damage_class": "Physical", "uses_target_defense_as_attack": true }
-	,"phoenix_charge": { "name": "Phoenix Charge", "power": 120, "type": "Fire", "damage_class": "Physical", "condition": "Burned", "condition_chance": 0.2, "recoil_current_hp_fraction": 0.25, "cannot_faint_turns": 2, "reuse_delay": 1 }
-	,"challenging_call": { "name": "Challenging Call", "power": 0, "type": "Air", "damage_class": "Status", "stat_changes": [{"stat": "attack", "amount": 0.1}], "condition": "Despairing", "condition_chance": 0.8, "condition_chance_if_target_type": {"type": "Dragon", "chance": 1.0} }
-	,"harsh_sunlight": { "name": "Harsh Sunlight", "power": 0, "type": "Fire", "damage_class": "Status", "sets_weather": "Harsh Sunlight" }
-	,"inferno_plume": { "name": "Inferno Plume", "power": 180, "type": "Fire", "damage_class": "Physical", "condition": "Burned", "condition_chance": 0.4, "must_recharge": true }
-	,"inner_focus": { "name": "Inner Focus", "power": 0, "type": "Psychic", "damage_class": "Status", "reset_all_stat_changes": true, "ignore_next_move_self_damage": true }
-	,"inferno": { "name": "Inferno", "power": 300, "type": "Fire", "damage_class": "Special", "burn_user_party": true, "preserve_weather": "Harsh Sunlight", "recoil_current_hp_fraction": 0.8 }
-	,"charm": { "name": "Charm", "power": 0, "type": "Mystic", "damage_class": "Status", "condition": "Infatuated", "condition_chance": 1.0 }
-	,"stare": { "name": "Stare", "power": 0, "type": "Psychic", "damage_class": "Status", "target_stat_changes": [{"stat": "defense", "amount": -0.1}] }
-	,"mind_wave": { "name": "Mind Wave", "power": 40, "type": "Psychic", "damage_class": "Special", "condition": "Confusion", "condition_chance": 0.2, "weather_overrides": {"Rootmind": {"condition_chance": 0.3}} }
-	,"constrict": { "name": "Constrict", "power": 45, "type": "Plant", "damage_class": "Physical", "condition": "Paralyzed", "condition_chance": 0.2, "weather_overrides": {"Rootmind": {"power": 50, "condition_chance": 0.3}} }
-	,"drain": { "name": "Drain", "power": 45, "type": "Plant", "damage_class": "Special", "drain_damage_fraction": 0.5, "weather_overrides": {"Rootmind": {"power": 45}} }
-	,"vicegrip": { "name": "Vicegrip", "power": 80, "type": "Plant", "damage_class": "Physical", "prevent_voluntary_switch_turns": 2 }
-	,"mind_bolt": { "name": "Mind Bolt", "power": 50, "type": "Psychic", "damage_class": "Special", "random_secondary_conditions": ["Flinch", "Confusion"], "random_secondary_chance": 0.2, "weather_overrides": {"Rootmind": {"random_secondary_chance": 0.3}} }
-	,"bloom": { "name": "Bloom", "power": 0, "type": "Plant", "damage_class": "Status", "stat_changes": [{"stat": "special_attack", "amount": 0.1}, {"stat": "special_defense", "amount": 0.1}], "bloom_healing": true, "weather_overrides": {"Rootmind": {"bloom_heal_percent_bonus": 5}} }
-	,"seed": { "name": "Seed", "power": 0, "type": "Plant", "damage_class": "Status", "seed_target": true, "weather_overrides": {"Rootmind": {"seed_drain_multiplier": 1.2}} }
-	,"regrow": { "name": "Regrow", "power": 0, "type": "Plant", "damage_class": "Status", "regrow": true, "weather_overrides": {"Rootmind": {"regrow_heal_fraction": 0.125}} }
-	,"mycelial_hunt": { "name": "Mycelial Hunt", "power": 75, "type": "Plant", "damage_class": "Special", "power_if_target_has_condition": 90, "weather_overrides": {"Rootmind": {"power": 90, "power_if_target_has_condition": 120}} }
-	,"drain_toxin": { "name": "Drain Toxin", "power": 45, "type": "Plant", "damage_class": "Special", "fixed_max_hp_heal_fraction": 0.15, "suppress_weakness_type": "Poison", "suppress_weakness_turns": 3, "weather_overrides": {"Rootmind": {"power": 55, "fixed_max_hp_heal_fraction": 0.2, "suppress_weakness_turns": 5}} }
-	,"synaptic_bloom": { "name": "Synaptic Bloom", "power": 80, "type": "Psychic", "damage_class": "Special", "power_if_user_has_stat_change": 100, "weather_overrides": {"Rootmind": {"power": 90, "power_if_user_has_stat_change": 110}} }
-	,"hysteria": { "name": "Hysteria", "power": 80, "type": "Psychic", "damage_class": "Physical", "condition": "Paralyzed", "condition_chance": 0.2, "weather_overrides": {"Rootmind": {"condition_chance": 0.3}} }
-	,"chlorophyll_cannon": { "name": "Chlorophyll Cannon", "power": 100, "type": "Plant", "damage_class": "Special", "condition": "Burned", "condition_chance": 0.2, "weather_overrides": {"Rootmind": {"power": 110, "condition_chance": 0.3}} }
-	,"vital_cognition": { "name": "Vital Cognition", "power": 0, "type": "Psychic", "damage_class": "Status", "fixed_max_hp_heal_fraction": 0.25, "cure_or_stat_change": [{"stat": "special_attack", "amount": 0.2}], "weather_overrides": {"Rootmind": {"fixed_max_hp_heal_fraction": 0.3333333333}} }
-	,"rootmind": { "name": "Rootmind", "power": 0, "type": "Plant", "damage_class": "Status", "sets_weather": "Rootmind", "animation_kind": "field_overlay" }
-	,"doze_off": { "name": "Doze Off", "power": 0, "type": "Normal", "damage_class": "Status", "fixed_max_hp_heal_fraction": 0.3333333333, "self_condition": "Asleep", "description": "Heals one third of the user's maximum HP, then puts the user to sleep." }
-	,"sleep_talk": { "name": "Sleep Talk", "power": 20, "type": "Normal", "damage_class": "Special", "requires_user_condition": "Asleep" }
-	,"defense_curl": { "name": "Defense Curl", "power": 0, "type": "Normal", "damage_class": "Status", "stat_changes": [{"stat": "defense", "amount": 0.1}] }
-	,"gnaw": { "name": "Gnaw", "power": 15, "type": "Bug", "damage_class": "Physical", "min_hits": 2, "max_hits": 5 }
-	,"dream": { "name": "Dream", "power": 0, "type": "Mystic", "damage_class": "Status", "requires_user_condition": "Asleep", "calls_random_move": true, "calls_another_move": true }
-	,"punch": { "name": "Punch", "power": 40, "type": "Fighting", "damage_class": "Physical" }
-	,"counter": { "name": "Counter", "power": 0, "type": "Fighting", "damage_class": "Status", "counter_last_physical_damage": true }
-	,"sleep_off": { "name": "Sleep Off", "power": 0, "type": "Normal", "damage_class": "Status", "cures_conditions": true, "self_condition": "Asleep" }
-	,"bulk_up": { "name": "Bulk Up", "power": 0, "type": "Fighting", "damage_class": "Status", "stat_changes": [{"stat": "attack", "amount": 0.1}, {"stat": "defense", "amount": 0.1}] }
-	,"slash": { "name": "Slash", "power": 70, "type": "Normal", "damage_class": "Physical" }
-	,"snore": { "name": "Snore", "power": 50, "type": "Normal", "damage_class": "Special", "requires_user_condition": "Asleep", "condition": "Flinch", "condition_chance": 0.2 }
-	,"hammer_arm": { "name": "Hammer Arm", "power": 70, "type": "Fighting", "damage_class": "Physical" }
-	,"sleep_swing": { "name": "Sleep Swing", "power": 75, "type": "Normal", "damage_class": "Physical", "requires_user_condition": "Asleep", "target_stat_changes": [{"stat": "defense", "amount": -0.1}], "target_stat_change_chance": 0.2 }
-	,"scourge": { "name": "Scourge", "power": 120, "type": "Bug", "damage_class": "Physical", "cannot_faint_target": true }
-	,"kinetic_pummel": { "name": "Kinetic Pummel", "power": 90, "type": "Fighting", "damage_class": "Physical", "target_stat_changes": [{"stat": "defense", "amount": -0.1}], "target_stat_change_chance": 0.2 }
-	,"rest": { "name": "Rest", "power": 0, "type": "Normal", "damage_class": "Status", "cures_conditions": true, "fixed_max_hp_heal_fraction": 0.5, "self_condition": "Asleep" }
-	,"buzz": { "name": "Buzz", "power": 15, "type": "Bug", "damage_class": "Special", "target_stat_changes": [{"stat": "special_defense", "amount": -0.1}] }
-	,"needle_nip": { "name": "Needle Nip", "power": 35, "type": "Dark", "damage_class": "Physical", "drain_damage_fraction": 0.5 }
-	,"bite": { "name": "Bite", "power": 40, "type": "Normal", "damage_class": "Physical", "condition": "Flinch", "condition_chance": 0.1 }
-	,"infest": { "name": "Infest", "power": 0, "type": "Bug", "damage_class": "Status", "condition": "Poisoned", "condition_chance": 1.0 }
-	,"swoop": { "name": "Swoop", "power": 40, "type": "Air", "damage_class": "Physical", "priority": 1 }
-	,"blood_draw": { "name": "Blood Draw", "power": 50, "type": "Dark", "damage_class": "Physical", "drain_damage_fraction": 0.5 }
-	,"torment": { "name": "Torment", "power": 0, "type": "Dark", "damage_class": "Status", "torment_target": true }
-	,"evade": { "name": "Evade", "power": 0, "type": "Air", "damage_class": "Status", "protect": true, "protect_success_base": 0.95, "protect_success_decrement": 0.25, "priority": 4 }
-	,"swarm": { "name": "Swarm", "power": 0, "type": "Bug", "damage_class": "Status", "charge_type": "Bug", "charge_multiplier": 2.0 }
-	,"gather": { "name": "Gather", "power": 0, "type": "Bug", "damage_class": "Status", "fixed_max_hp_heal_fraction": 0.3333333333, "next_turn_condition_immunities": ["Confusion", "Flinch"] }
-	,"leech_life": { "name": "Leech Life", "power": 70, "type": "Bug", "damage_class": "Physical", "drain_damage_fraction": 0.5 }
-	,"night_dart": { "name": "Night Dart", "power": 60, "type": "Dark", "damage_class": "Physical", "priority": 1, "power_multiplier_if_target_conditions": {"conditions": ["Asleep", "Confusion"], "multiplier": 2.0} }
-	,"hypnotic_hum": { "name": "Hypnotic Hum", "power": 0, "type": "Bug", "damage_class": "Status", "target_stat_changes": [{"stat": "speed", "amount": -0.1}], "condition": "Asleep", "condition_chance": 0.5 }
-	,"bloodmoon": { "name": "Bloodmoon", "power": 0, "type": "Dark", "damage_class": "Status", "sets_weather": "Blood Moon", "animation_kind": "field_overlay" }
-	,"plague": { "name": "Plague", "power": 50, "type": "Bug", "damage_class": "Special", "condition": "Poisoned", "condition_chance": 1.0 }
-	,"poison_bubble": { "name": "Poison Bubble", "power": 30, "type": "Poison", "damage_class": "Special", "condition": "Poisoned", "condition_chance": 0.2 }
-	,"croak": { "name": "Croak", "power": 0, "type": "Normal", "damage_class": "Status", "target_stat_changes": [{"stat": "special_defense", "amount": -0.1}], "target_egg_group_condition": {"egg_group": "Amphibian", "condition": "Infatuated", "condition_chance": 1.0, "replaces_target_stat_changes": true} }
-	,"leap": { "name": "Leap", "power": 30, "type": "Normal", "damage_class": "Physical", "grant_next_move_priority": 1 }
-	,"poison_tongue": { "name": "Poison Tongue", "power": 40, "type": "Poison", "damage_class": "Physical", "condition": "Poisoned", "condition_chance": 0.3 }
-	,"dartlet_stare": { "name": "Stare", "power": 0, "type": "Normal", "damage_class": "Status", "target_stat_changes": [{"stat": "special_defense", "amount": -0.1}] }
-	,"incinerate": { "name": "Incinerate", "power": 40, "type": "Fire", "damage_class": "Special", "condition": "Burned", "condition_chance": 0.2 }
-	,"cacophony": { "name": "Cacophony", "power": 0, "type": "Psychic", "damage_class": "Status", "target_stat_changes": [{"stat": "special_defense", "amount": -0.3}] }
-	,"warning_flare": { "name": "Warning Flare", "power": 0, "type": "Poison", "damage_class": "Status", "stat_changes": [{"stat": "special_attack", "amount": 0.1}, {"stat": "speed", "amount": 0.1}], "reactive_poison_damage_class": "Physical", "reactive_poison_turns": 2 }
-	,"coat_toxin": { "name": "Coat Toxin", "power": 70, "type": "Poison", "damage_class": "Special", "condition": "Poisoned", "condition_chance": 0.2 }
-	,"flashcroak": { "name": "Flashcroak", "power": 65, "type": "Fire", "damage_class": "Special", "condition": "Confusion", "condition_chance": 0.3 }
-	,"puff_up": { "name": "Puff Up", "power": 0, "type": "Dark", "damage_class": "Status", "stat_changes": [{"stat": "special_attack", "amount": 0.2}, {"stat": "defense", "amount": 0.2}, {"stat": "special_defense", "amount": -0.2}] }
-	,"flamethrower": { "name": "Flamethrower", "power": 95, "type": "Fire", "damage_class": "Special", "condition": "Burned", "condition_chance": 0.2 }
-	,"alkaloid_mist": { "name": "Alkaloid Mist", "power": 85, "type": "Poison", "damage_class": "Special", "condition": "Poisoned", "condition_chance": 0.3, "weather_overrides": {"Harsh Sunlight": {"condition_chance": 0.6}} }
-	,"sun_chorus": { "name": "Sun Chorus", "power": 0, "type": "Fire", "damage_class": "Status", "target_stat_changes": [{"stat": "special_defense", "amount": -0.3}], "weather_target_condition": {"weather": "Harsh Sunlight", "condition": "Infatuated", "condition_chance": 1.0} }
-	,"toxic_flare": { "name": "Toxic Flare", "power": 85, "type": "Fire", "damage_class": "Special", "power_multiplier_if_target_conditions": {"conditions": ["Poisoned"], "multiplier": 1.5}, "replace_target_condition_after_damage": {"from": "Poisoned", "to": "Burned"} }
-	,"grand_display": { "name": "Grand Display", "power": 0, "type": "Poison", "damage_class": "Status", "stat_changes": [{"stat": "special_attack", "amount": 0.2}, {"stat": "speed", "amount": 0.2}], "reactive_poison_damage_class": "Special", "reactive_poison_turns": 2 }
-	,"nectar_drink": { "name": "Nectar Drink", "power": 0, "type": "Bug", "damage_class": "Status", "fixed_max_hp_heal_fraction": 0.1, "cures_one_condition": true }
-	,"gust": { "name": "Gust", "power": 40, "type": "Air", "damage_class": "Special", "condition": "Slowed", "condition_chance": 0.2 }
-	,"fey_dust": { "name": "Fey Dust", "power": 0, "type": "Mystic", "damage_class": "Status", "stat_changes": [{"stat": "special_defense", "amount": 0.2}], "condition": "Infatuated", "condition_chance": 1.0 }
-	,"petalwake": { "name": "Petalwake", "power": 50, "type": "Mystic", "damage_class": "Special", "stat_changes": [{"stat": "speed", "amount": 0.1}] }
-	,"mist": { "name": "Mist", "power": 0, "type": "Water", "damage_class": "Status", "reset_all_stat_changes": true }
-	,"lotus_dart": { "name": "Lotus Dart", "power": 75, "type": "Plant", "damage_class": "Physical", "condition": "Poisoned", "condition_chance": 0.3 }
-	,"magic_pulse": { "name": "Magic Pulse", "power": 70, "type": "Mystic", "damage_class": "Special", "random_secondary_conditions": ["Burned", "Poisoned", "Paralyzed", "Condemned", "Despairing", "Infatuated", "Slowed", "Confusion"], "random_secondary_chance": 1.0 }
-	,"fey_gardens": { "name": "Fey Gardens", "power": 0, "type": "Mystic", "damage_class": "Status", "sets_weather": "Fey Gardens", "animation_kind": "field_overlay" }
-	,"solar_ray": { "name": "Solar Ray", "power": 80, "type": "Plant", "damage_class": "Special", "condition": "Burned", "condition_chance": 0.2 }
-	,"lotus_absolution": { "name": "Lotus Absolution", "power": 75, "type": "Light", "damage_class": "Special", "power_multiplier_if_target_conditions": {"conditions": ["Poisoned"], "multiplier": 2.0}, "cure_target_condition_after_damage": "Poisoned", "heal_fraction_during_weather": {"weathers": ["Harsh Sunlight", "Fey Gardens"], "fraction": 0.3333333333} }
-	,"mystic_stream": { "name": "Mystic Stream", "power": 90, "type": "Mystic", "damage_class": "Special", "power_per_positive_stage": {"stat": "speed", "multiplier": 0.1} }
-	,"paradise_ray": { "name": "Paradise Ray", "power": 120, "type": "Plant", "damage_class": "Special", "clear_weather_after_damage": true, "cleanse_both_after_damage": true, "must_recharge": true }
-	,"paradise_bloom": { "name": "Paradise Bloom", "power": 0, "type": "Plant", "damage_class": "Status", "paradise_bloom": true }
-  },
   "conditions": {
-	"Burned": { "persistent": true, "post_move_hp_fraction": 0.125, "attack_multiplier": 0.75, "defense_multiplier": 0.75 },
-	"Poisoned": { "persistent": true, "end_turn_hp_fraction": 0.0625, "overworld_damage_per_step": 1 },
-	"Paralyzed": { "persistent": true, "move_failure_chance": 0.15, "prevents_switch": true, "prevents_flee": true },
-	"Frozen": { "persistent": true, "minimum_turns": 1, "maximum_turns": 4 },
-	"Asleep": { "persistent": true, "minimum_turns": 1, "maximum_turns": 4 },
-	"Flinch": { "persistent": false, "turns": 1 },
-	"Condemned": { "persistent": true, "special_defense_multiplier": 0.8, "backlash_power": 30, "removed_weakness": "Light" },
-	"Despairing": { "persistent": true, "move_failure_chance": 0.2, "removed_weakness": "Dark" },
-	"Infatuated": { "persistent": false, "maximum_stacks": 5, "failure_chance_per_stack": 0.1, "genderless_attack_multiplier_per_stack": 0.1 },
-	"Slowed": { "persistent": true, "speed_multiplier": 0.75 },
-	"Confusion": { "persistent": false, "minimum_turns": 2, "maximum_turns": 5 }
-  },
-  "weather": {
-	"Celestial Chorus": { "duration": 3, "damage_multipliers": { "Light": 1.5, "Dark": 0.5, "Ghost": 0.5 }, "prayer_healing_multiplier": 1.5 },
-	"Harsh Sunlight": { "duration": 3, "damage_multipliers": { "Fire": 1.5, "Plant": 1.5, "Water": 0.5 } },
-	"Rootmind": { "duration": 3, "plant_end_turn_heal_fraction": 0.0625 }
-	,"Blood Moon": { "duration": 5, "damage_multipliers": {"Dark": 1.25, "Light": 0.75, "Mystic": 0.75, "Normal": 0.75}, "damaging_type_user_heal": {"type": "Dark", "max_hp_fraction": 0.1}, "damaging_type_condition": {"type": "Ghost", "condition": "Burned", "chance": 0.2} }
-	,"Fey Gardens": { "duration": 3, "damage_multipliers": {"Mystic": 1.25}, "typed_healing_bonus_fraction": 0.1, "healing_types": ["Plant", "Mystic"], "first_infatuation_bonus_stacks": 1, "protected_stats": ["special_attack", "special_defense"], "protected_types": ["Plant", "Mystic"] }
+	"Asleep": {
+	  "maximum_turns": 4.0,
+	  "minimum_turns": 1.0,
+	  "persistent": true
+	},
+	"Burned": {
+	  "attack_multiplier": 0.75,
+	  "defense_multiplier": 0.75,
+	  "persistent": true,
+	  "post_move_hp_fraction": 0.125
+	},
+	"Condemned": {
+	  "backlash_power": 30.0,
+	  "persistent": true,
+	  "removed_weakness": "Light",
+	  "special_defense_multiplier": 0.8
+	},
+	"Confusion": {
+	  "maximum_turns": 5.0,
+	  "minimum_turns": 2.0,
+	  "persistent": false
+	},
+	"Despairing": {
+	  "move_failure_chance": 0.2,
+	  "persistent": true,
+	  "removed_weakness": "Dark"
+	},
+	"Flinch": {
+	  "persistent": false,
+	  "turns": 1.0
+	},
+	"Frozen": {
+	  "maximum_turns": 4.0,
+	  "minimum_turns": 1.0,
+	  "persistent": true
+	},
+	"Infatuated": {
+	  "failure_chance_per_stack": 0.1,
+	  "genderless_attack_multiplier_per_stack": 0.1,
+	  "maximum_stacks": 5.0,
+	  "persistent": false
+	},
+	"Paralyzed": {
+	  "move_failure_chance": 0.15,
+	  "persistent": true,
+	  "prevents_flee": true,
+	  "prevents_switch": true
+	},
+	"Poisoned": {
+	  "end_turn_hp_fraction": 0.0625,
+	  "overworld_damage_per_step": 1.0,
+	  "persistent": true
+	},
+	"Slowed": {
+	  "persistent": true,
+	  "speed_multiplier": 0.75
+	}
   },
   "fakemon": [
-	{ "name": "Scorchick", "art_id": "Scorchick", "male_ratio": 0.5, "type": "Fire", "moves": ["squawk", "ignite", "peck", "mimic"], "learnset": [{"move": "squawk", "level": 1}, {"move": "ignite", "level": 2}, {"move": "peck", "level": 3}, {"move": "mimic", "level": 5}, {"move": "scratch", "level": 7}, {"move": "heat_up", "level": 12}, {"move": "singe", "level": 17}, {"move": "intercept", "level": 20}, {"move": "fire_charge", "level": 22}, {"move": "nest", "level": 25}, {"move": "fireheart", "level": 27}, {"move": "whirlwind", "level": 30}, {"move": "wingbeat", "level": 33}, {"move": "burn_off", "level": 36}, {"move": "skyfall", "level": 38}, {"move": "phoenix_charge", "level": 40}, {"move": "challenging_call", "level": 42}, {"move": "harsh_sunlight", "level": 45}, {"move": "inferno_plume", "level": 50}, {"move": "inner_focus", "level": 55}, {"move": "inferno", "level": 60}], "level": 5, "max_hp": 55, "attack": 70, "defense": 50, "special_attack": 40, "special_defense": 45, "speed": 50, "color": "e45b5b", "size": "0.6 m", "description": "A cheery rainforest Fakemon, Scorchick's feathers glow with heat. Their sweet natured personalities and strong verbal communication skills help them form close bonds with parents, trainers and other nest mates. Scorchick love spicy peppers, and can be a pest to growers that specialize in these fruits. It's thought that the capsaicin is related to the chemical reaction required to power their flames, which ignite the wings, tail and tuft of the Fakemon without harming the chick itself. Don't be deceived by the cute Fakemon however, the fires ignited are hot enough to melt iron.", "catch_rate": 75, "base_exp": 64 },
-	{ "name": "Sylvafin", "art_id": "Sylvafin", "male_ratio": 0.5, "type": "Water", "moves": ["peck", "soak", "flutter", "photon_beam"], "learnset": [{"move": "peck", "level": 1}, {"move": "soak", "level": 2}, {"move": "flutter", "level": 3}, {"move": "photon_beam", "level": 5}, {"move": "flip_turn", "level": 7}, {"move": "discern", "level": 9}, {"move": "purify", "level": 13}, {"move": "fin_flash", "level": 15}, {"move": "aqua_jet", "level": 20}, {"move": "dazzle", "level": 23}, {"move": "brilliant_light", "level": 25}, {"move": "veil", "level": 27}, {"move": "disable", "level": 30}, {"move": "prayer", "level": 32}, {"move": "scald", "level": 35}, {"move": "smite", "level": 40}, {"move": "aureal_flood", "level": 45}, {"move": "remembrance", "level": 50}, {"move": "celestial_chorus", "level": 55}], "level": 5, "max_hp": 55, "attack": 35, "defense": 50, "special_attack": 65, "special_defense": 65, "speed": 40, "color": "5596e6", "size": "0.7 m", "description": "These rare and graceful Fakemon inhabit the warmest and most heavily planted bodies of water in the rainforest. Sylvafin carry themselves with a sense of dignity and grace - until it is feeding time. In this instance, they become quite the little beggars, forgetting to act the part of an elitist. Their scales reflect sunlight, and perhaps something deeper, causing the Fakemon to glow. It's methods baffle scientists, who have recently discovered that the source of the glow has nothing to do with bioluminescence, as if the source of the glow cannot be explained by the natural world alone. The trusting disposition and rarity of these Fakemon makes conducting any studies extremely unpopular with most people.", "catch_rate": 75, "base_exp": 64 },
-	{ "name": "Keklid", "art_id": "Keklid", "male_ratio": null, "type": "Plant", "moves": ["petal_whip", "charm", "stare", "mind_wave"], "learnset": [{"move": "petal_whip", "level": 1}, {"move": "charm", "level": 2}, {"move": "stare", "level": 3}, {"move": "mind_wave", "level": 5}, {"move": "constrict", "level": 7}, {"move": "flutter", "level": 11}, {"move": "drain", "level": 13}, {"move": "remedy", "level": 15}, {"move": "vicegrip", "level": 17}, {"move": "mind_bolt", "level": 20}, {"move": "bloom", "level": 22}, {"move": "seed", "level": 25}, {"move": "regrow", "level": 28}, {"move": "mycelial_hunt", "level": 32}, {"move": "drain_toxin", "level": 35}, {"move": "rootmind", "level": 37}, {"move": "synaptic_bloom", "level": 40}, {"move": "hysteria", "level": 42}, {"move": "chlorophyll_cannon", "level": 45}, {"move": "vital_cognition", "level": 50}], "level": 5, "max_hp": 55, "attack": 35, "defense": 50, "special_attack": 70, "special_defense": 60, "speed": 40, "color": "55c878", "size": "0.5 m", "description": "A rare and wild wonder, Keklid require extremely precise temperatures, humidity and fungal conditions to germinate from tiny seeds. Such conditions can only exist in the deep lowland rainforests and only under a seed's exposure to a specific fungal host. Upon hatching however, they voraciously seek out fungal colonies to feast on mycelium. It's thought that the fungal networks not only power the flower's own metabolism, but that it also has the unusual effect of granting the Fakemon a type of non-animal cognition as well. These Fakemon are generally described as joyous, but fail to thrive in cooler or drier conditions.", "catch_rate": 75, "base_exp": 64 },
-	{ "name": "Slumboth", "art_id": "Slumboth", "male_ratio": 0.5, "type": "Normal", "moves": ["doze_off", "sleep_talk", "defense_curl"], "learnset": [{"move": "doze_off", "level": 1}, {"move": "sleep_talk", "level": 2}, {"move": "defense_curl", "level": 5}, {"move": "scratch", "level": 7}, {"move": "gnaw", "level": 11}, {"move": "dream", "level": 13}, {"move": "punch", "level": 15, "evolution_move": true}, {"move": "counter", "level": 19}, {"move": "sleep_off", "level": 23}, {"move": "bulk_up", "level": 25}, {"move": "slash", "level": 27}, {"move": "snore", "level": 30}, {"move": "hammer_arm", "level": 35}, {"move": "sleep_swing", "level": 40}, {"move": "scourge", "level": 45}, {"move": "kinetic_pummel", "level": 50}, {"move": "rest", "level": 55}], "level": 5, "max_hp": 55, "attack": 45, "defense": 55, "special_attack": 25, "special_defense": 45, "speed": 20, "color": "9d8668", "size": "1.0 m", "description": "A lazy forest Fakemon that hangs in the canopy, waking only long enough to eat leaves. Its cushioned, insulated body protects it when it falls, though it would rather eat rotting leaves on the muddy floor than climb back up. Its warm, contented reputation is difficult to verify: official observations question whether Slumboth displays any recognizable personality.", "catch_rate": 200, "base_exp": 55 },
-	{ "name": "Dartlet", "art_id": "Dartlet", "male_ratio": 0.5, "type": "Poison", "moves": ["poison_bubble", "croak", "leap"], "learnset": [{"move": "poison_bubble", "level": 1}, {"move": "croak", "level": 2}, {"move": "leap", "level": 5}, {"move": "poison_tongue", "level": 9}, {"move": "dartlet_stare", "level": 11}, {"move": "drain", "level": 13}, {"move": "incinerate", "level": 15, "evolution_move": true}, {"move": "cacophony", "level": 17}, {"move": "singe", "level": 19}, {"move": "warning_flare", "level": 23}, {"move": "coat_toxin", "level": 25}, {"move": "flashcroak", "level": 28}, {"move": "puff_up", "level": 30}, {"move": "flamethrower", "level": 35, "evolution_move": true}, {"move": "harsh_sunlight", "level": 40}, {"move": "alkaloid_mist", "level": 45}, {"move": "sun_chorus", "level": 50}, {"move": "toxic_flare", "level": 55}, {"move": "grand_display", "level": 60}], "level": 5, "max_hp": 50, "attack": 10, "defense": 35, "special_attack": 80, "special_defense": 35, "speed": 60, "color": "e45b8f", "size": "0.1 m", "description": "Dartlet are most often seen croaking contentedly after heavy rain. Their brilliant colors flash as they hop, warning other creatures of the toxins secreted through their skin. Their beauty and enormous eyes have made them popular with people—usually from a respectful distance. Dartlet are unusually well-tempered and readily approach patient Trainers, to the limited extent that they understand what training is. Even incidental contact with their poison remains hazardous, however. Healthy Dartlet constantly burn excess metabolic energy as heat, and become noticeably warm when excited. Their seemingly impossible metabolism continues to bewilder endocrinologists.", "catch_rate": 200, "base_exp": 60 },
-	{ "name": "Skeeter", "art_id": "Skeeter", "male_ratio": 0.5, "type": "Bug", "moves": ["gnaw", "buzz", "needle_nip"], "learnset": [{"move": "gnaw", "level": 1}, {"move": "buzz", "level": 2}, {"move": "needle_nip", "level": 5}, {"move": "bite", "level": 7}, {"move": "infest", "level": 11}, {"move": "swoop", "level": 13}, {"move": "blood_draw", "level": 15}, {"move": "torment", "level": 17}, {"move": "evade", "level": 19}, {"move": "swarm", "level": 22}, {"move": "gather", "level": 25}, {"move": "leech_life", "level": 28}, {"move": "night_dart", "level": 32}, {"move": "hypnotic_hum", "level": 35}, {"move": "scourge", "level": 37}, {"move": "bloodmoon", "level": 41}, {"move": "plague", "level": 47}], "level": 5, "max_hp": 35, "attack": 40, "defense": 30, "special_attack": 45, "special_defense": 30, "speed": 60, "color": "57456f", "size": "0.01 m", "description": "Small flying Fakemon commonly found in huge numbers near still bodies of water. Its wings are weak, so it avoids winds stronger than a gentle breeze. When it bites larger Fakemon or people, it leaves behind an itchy bump. Skeeter seems to take particular delight in annoying larger beings and grows noticeably more aggressive after sunset. Its bites are often close together, and people or Fakemon bitten once are more likely to be bitten again. Surely this is only survival pressure and not malice. After all, a bug like this cannot willingly choose evil.", "catch_rate": 200, "base_exp": 55 }
-	,{ "name": "Lochirp", "art_id": "Lochirp", "male_ratio": 0.5, "types": ["Plant", "Mystic"], "moves": ["nectar_drink", "petal_whip", "dazzle", "charm"], "learnset": [{"move": "nectar_drink", "level": 1}, {"move": "petal_whip", "level": 2}, {"move": "dazzle", "level": 3}, {"move": "charm", "level": 5}, {"move": "remedy", "level": 9}, {"move": "flutter", "level": 11}, {"move": "gust", "level": 14}, {"move": "bloom", "level": 16, "evolution_move": true}, {"move": "fey_dust", "level": 18}, {"move": "petalwake", "level": 21}, {"move": "mist", "level": 23}, {"move": "lotus_dart", "level": 26}, {"move": "magic_pulse", "level": 30}, {"move": "fey_gardens", "level": 33}, {"move": "solar_ray", "level": 36}, {"move": "lotus_absolution", "level": 40}, {"move": "mystic_stream", "level": 45}, {"move": "paradise_ray", "level": 50}, {"move": "paradise_bloom", "level": 55}], "level": 5, "max_hp": 40, "attack": 20, "defense": 30, "special_attack": 55, "special_defense": 50, "speed": 65, "color": "db7fc7", "size": "0.1 m", "description": "The presence of elusive Lochirp indicates a rainforest rich in healthy flowering plants. These tiny nectar-feeders scatter dust that stimulates new buds and sleep inside large flowers wrapped in petal-like plumage. Though widely imagined as gentle moon-blossom spirits, they are active by day and aggressively defend productive flowers, becoming fiercely loyal only to a small circle of trusted companions.", "catch_rate": 120, "base_exp": 60 }
-  ]
+	{
+	  "art_id": "Scorchick",
+	  "attack": 70.0,
+	  "base_exp": 64.0,
+	  "catch_rate": 75.0,
+	  "color": "e45b5b",
+	  "defense": 50.0,
+	  "description": "A cheery rainforest Fakemon, Scorchick's feathers glow with heat. Their sweet natured personalities and strong verbal communication skills help them form close bonds with parents, trainers and other nest mates. Scorchick love spicy peppers, and can be a pest to growers that specialize in these fruits. It's thought that the capsaicin is related to the chemical reaction required to power their flames, which ignite the wings, tail and tuft of the Fakemon without harming the chick itself. Don't be deceived by the cute Fakemon however, the fires ignited are hot enough to melt iron.",
+	  "learnset": [
+		{
+		  "level": 1.0,
+		  "move": "squawk"
+		},
+		{
+		  "level": 2.0,
+		  "move": "ignite"
+		},
+		{
+		  "level": 3.0,
+		  "move": "peck"
+		},
+		{
+		  "level": 5.0,
+		  "move": "mimic"
+		},
+		{
+		  "level": 7.0,
+		  "move": "scratch"
+		},
+		{
+		  "level": 12.0,
+		  "move": "heat_up"
+		},
+		{
+		  "level": 17.0,
+		  "move": "singe"
+		},
+		{
+		  "level": 20.0,
+		  "move": "intercept"
+		},
+		{
+		  "level": 22.0,
+		  "move": "fire_charge"
+		},
+		{
+		  "level": 25.0,
+		  "move": "nest"
+		},
+		{
+		  "level": 27.0,
+		  "move": "fireheart"
+		},
+		{
+		  "level": 30.0,
+		  "move": "whirlwind"
+		},
+		{
+		  "level": 33.0,
+		  "move": "wingbeat"
+		},
+		{
+		  "level": 36.0,
+		  "move": "burn_off"
+		},
+		{
+		  "level": 38.0,
+		  "move": "skyfall"
+		},
+		{
+		  "level": 40.0,
+		  "move": "phoenix_charge"
+		},
+		{
+		  "level": 42.0,
+		  "move": "challenging_call"
+		},
+		{
+		  "level": 45.0,
+		  "move": "harsh_sunlight"
+		},
+		{
+		  "level": 50.0,
+		  "move": "inferno_plume"
+		},
+		{
+		  "level": 55.0,
+		  "move": "inner_focus"
+		},
+		{
+		  "level": 60.0,
+		  "move": "inferno"
+		}
+	  ],
+	  "level": 5.0,
+	  "male_ratio": 0.5,
+	  "max_hp": 55.0,
+	  "moves": [
+		"squawk",
+		"ignite",
+		"peck",
+        "mimic"
+	  ],
+	  "name": "Scorchick",
+	  "size": "0.6 m",
+	  "special_attack": 40.0,
+	  "special_defense": 45.0,
+	  "speed": 50.0,
+	  "type": "Fire"
+	},
+	{
+	  "art_id": "Sylvafin",
+	  "attack": 35.0,
+	  "base_exp": 64.0,
+	  "catch_rate": 75.0,
+	  "color": "5596e6",
+	  "defense": 50.0,
+	  "description": "These rare and graceful Fakemon inhabit the warmest and most heavily planted bodies of water in the rainforest. Sylvafin carry themselves with a sense of dignity and grace - until it is feeding time. In this instance, they become quite the little beggars, forgetting to act the part of an elitist. Their scales reflect sunlight, and perhaps something deeper, causing the Fakemon to glow. It's methods baffle scientists, who have recently discovered that the source of the glow has nothing to do with bioluminescence, as if the source of the glow cannot be explained by the natural world alone. The trusting disposition and rarity of these Fakemon makes conducting any studies extremely unpopular with most people.",
+	  "learnset": [
+		{
+		  "level": 1.0,
+		  "move": "peck"
+		},
+		{
+		  "level": 2.0,
+		  "move": "soak"
+		},
+		{
+		  "level": 3.0,
+		  "move": "flutter"
+		},
+		{
+		  "level": 5.0,
+		  "move": "photon_beam"
+		},
+		{
+		  "level": 7.0,
+		  "move": "flip_turn"
+		},
+		{
+		  "level": 9.0,
+		  "move": "discern"
+		},
+		{
+		  "level": 13.0,
+		  "move": "purify"
+		},
+		{
+		  "level": 15.0,
+		  "move": "fin_flash"
+		},
+		{
+		  "level": 20.0,
+		  "move": "aqua_jet"
+		},
+		{
+		  "level": 23.0,
+		  "move": "dazzle"
+		},
+		{
+		  "level": 25.0,
+		  "move": "brilliant_light"
+		},
+		{
+		  "level": 27.0,
+		  "move": "veil"
+		},
+		{
+		  "level": 30.0,
+		  "move": "disable"
+		},
+		{
+		  "level": 32.0,
+		  "move": "prayer"
+		},
+		{
+		  "level": 35.0,
+		  "move": "scald"
+		},
+		{
+		  "level": 40.0,
+		  "move": "smite"
+		},
+		{
+		  "level": 45.0,
+		  "move": "aureal_flood"
+		},
+		{
+		  "level": 50.0,
+		  "move": "remembrance"
+		},
+		{
+		  "level": 55.0,
+		  "move": "celestial_chorus"
+		}
+	  ],
+	  "level": 5.0,
+	  "male_ratio": 0.5,
+	  "max_hp": 55.0,
+	  "moves": [
+		"peck",
+		"soak",
+		"flutter",
+        "photon_beam"
+	  ],
+	  "name": "Sylvafin",
+	  "size": "0.7 m",
+	  "special_attack": 65.0,
+	  "special_defense": 65.0,
+	  "speed": 40.0,
+	  "type": "Water"
+	},
+	{
+	  "art_id": "Keklid",
+	  "attack": 35.0,
+	  "base_exp": 64.0,
+	  "catch_rate": 75.0,
+	  "color": "55c878",
+	  "defense": 50.0,
+	  "description": "A rare and wild wonder, Keklid require extremely precise temperatures, humidity and fungal conditions to germinate from tiny seeds. Such conditions can only exist in the deep lowland rainforests and only under a seed's exposure to a specific fungal host. Upon hatching however, they voraciously seek out fungal colonies to feast on mycelium. It's thought that the fungal networks not only power the flower's own metabolism, but that it also has the unusual effect of granting the Fakemon a type of non-animal cognition as well. These Fakemon are generally described as joyous, but fail to thrive in cooler or drier conditions.",
+	  "flowerType": "orchid",
+	  "learnset": [
+		{
+		  "level": 1.0,
+		  "move": "petal_whip"
+		},
+		{
+		  "level": 2.0,
+		  "move": "charm"
+		},
+		{
+		  "level": 3.0,
+		  "move": "stare"
+		},
+		{
+		  "level": 5.0,
+		  "move": "mind_wave"
+		},
+		{
+		  "level": 7.0,
+		  "move": "constrict"
+		},
+		{
+		  "level": 11.0,
+		  "move": "flutter"
+		},
+		{
+		  "level": 13.0,
+		  "move": "drain"
+		},
+		{
+		  "level": 15.0,
+		  "move": "remedy"
+		},
+		{
+		  "level": 17.0,
+		  "move": "vicegrip"
+		},
+		{
+		  "level": 20.0,
+		  "move": "mind_bolt"
+		},
+		{
+		  "level": 22.0,
+		  "move": "bloom"
+		},
+		{
+		  "level": 25.0,
+		  "move": "seed"
+		},
+		{
+		  "level": 28.0,
+		  "move": "regrow"
+		},
+		{
+		  "level": 32.0,
+		  "move": "mycelial_hunt"
+		},
+		{
+		  "level": 35.0,
+		  "move": "drain_toxin"
+		},
+		{
+		  "level": 37.0,
+		  "move": "rootmind"
+		},
+		{
+		  "level": 40.0,
+		  "move": "synaptic_bloom"
+		},
+		{
+		  "level": 42.0,
+		  "move": "hysteria"
+		},
+		{
+		  "level": 45.0,
+		  "move": "chlorophyll_cannon"
+		},
+		{
+		  "level": 50.0,
+		  "move": "vital_cognition"
+		}
+	  ],
+	  "level": 5.0,
+	  "male_ratio": null,
+	  "max_hp": 55.0,
+	  "moves": [
+		"petal_whip",
+		"charm",
+		"stare",
+        "mind_wave"
+	  ],
+	  "name": "Keklid",
+	  "size": "0.5 m",
+	  "special_attack": 70.0,
+	  "special_defense": 60.0,
+	  "speed": 40.0,
+	  "type": "Plant"
+	},
+	{
+	  "art_id": "Slumboth",
+	  "attack": 45.0,
+	  "base_exp": 55.0,
+	  "catch_rate": 200.0,
+	  "color": "9d8668",
+	  "defense": 55.0,
+	  "description": "A lazy forest Fakemon that hangs in the canopy, waking only long enough to eat leaves. Its cushioned, insulated body protects it when it falls, though it would rather eat rotting leaves on the muddy floor than climb back up. Its warm, contented reputation is difficult to verify: official observations question whether Slumboth displays any recognizable personality.",
+	  "learnset": [
+		{
+		  "level": 1.0,
+		  "move": "doze_off"
+		},
+		{
+		  "level": 2.0,
+		  "move": "sleep_talk"
+		},
+		{
+		  "level": 5.0,
+		  "move": "defense_curl"
+		},
+		{
+		  "level": 7.0,
+		  "move": "scratch"
+		},
+		{
+		  "level": 11.0,
+		  "move": "gnaw"
+		},
+		{
+		  "level": 13.0,
+		  "move": "dream"
+		},
+		{
+		  "evolution_move": true,
+		  "level": 15.0,
+		  "move": "punch"
+		},
+		{
+		  "level": 19.0,
+		  "move": "counter"
+		},
+		{
+		  "level": 23.0,
+		  "move": "sleep_off"
+		},
+		{
+		  "level": 25.0,
+		  "move": "bulk_up"
+		},
+		{
+		  "level": 27.0,
+		  "move": "slash"
+		},
+		{
+		  "level": 30.0,
+		  "move": "snore"
+		},
+		{
+		  "level": 35.0,
+		  "move": "hammer_arm"
+		},
+		{
+		  "level": 40.0,
+		  "move": "sleep_swing"
+		},
+		{
+		  "level": 45.0,
+		  "move": "scourge"
+		},
+		{
+		  "level": 50.0,
+		  "move": "kinetic_pummel"
+		},
+		{
+		  "level": 55.0,
+		  "move": "rest"
+		}
+	  ],
+	  "level": 5.0,
+	  "male_ratio": 0.5,
+	  "max_hp": 55.0,
+	  "moves": [
+		"doze_off",
+		"sleep_talk",
+        "defense_curl"
+	  ],
+	  "name": "Slumboth",
+	  "size": "1.0 m",
+	  "special_attack": 25.0,
+	  "special_defense": 45.0,
+	  "speed": 20.0,
+	  "type": "Normal"
+	},
+	{
+	  "art_id": "Dartlet",
+	  "attack": 10.0,
+	  "base_exp": 60.0,
+	  "catch_rate": 200.0,
+	  "color": "e45b8f",
+	  "defense": 35.0,
+	  "description": "Dartlet are most often seen croaking contentedly after heavy rain. Their brilliant colors flash as they hop, warning other creatures of the toxins secreted through their skin. Their beauty and enormous eyes have made them popular with people—usually from a respectful distance. Dartlet are unusually well-tempered and readily approach patient Trainers, to the limited extent that they understand what training is. Even incidental contact with their poison remains hazardous, however. Healthy Dartlet constantly burn excess metabolic energy as heat, and become noticeably warm when excited. Their seemingly impossible metabolism continues to bewilder endocrinologists.",
+	  "learnset": [
+		{
+		  "level": 1.0,
+		  "move": "poison_bubble"
+		},
+		{
+		  "level": 2.0,
+		  "move": "croak"
+		},
+		{
+		  "level": 5.0,
+		  "move": "leap"
+		},
+		{
+		  "level": 9.0,
+		  "move": "poison_tongue"
+		},
+		{
+		  "level": 11.0,
+		  "move": "dartlet_stare"
+		},
+		{
+		  "level": 13.0,
+		  "move": "drain"
+		},
+		{
+		  "evolution_move": true,
+		  "level": 15.0,
+		  "move": "incinerate"
+		},
+		{
+		  "level": 17.0,
+		  "move": "cacophony"
+		},
+		{
+		  "level": 19.0,
+		  "move": "singe"
+		},
+		{
+		  "level": 23.0,
+		  "move": "warning_flare"
+		},
+		{
+		  "level": 25.0,
+		  "move": "coat_toxin"
+		},
+		{
+		  "level": 28.0,
+		  "move": "flashcroak"
+		},
+		{
+		  "level": 30.0,
+		  "move": "puff_up"
+		},
+		{
+		  "evolution_move": true,
+		  "level": 35.0,
+		  "move": "flamethrower"
+		},
+		{
+		  "level": 40.0,
+		  "move": "harsh_sunlight"
+		},
+		{
+		  "level": 45.0,
+		  "move": "alkaloid_mist"
+		},
+		{
+		  "level": 50.0,
+		  "move": "sun_chorus"
+		},
+		{
+		  "level": 55.0,
+		  "move": "toxic_flare"
+		},
+		{
+		  "level": 60.0,
+		  "move": "grand_display"
+		}
+	  ],
+	  "level": 5.0,
+	  "male_ratio": 0.5,
+	  "max_hp": 50.0,
+	  "moves": [
+		"poison_bubble",
+		"croak",
+        "leap"
+	  ],
+	  "name": "Dartlet",
+	  "size": "0.1 m",
+	  "special_attack": 80.0,
+	  "special_defense": 35.0,
+	  "speed": 60.0,
+	  "type": "Poison"
+	},
+	{
+	  "art_id": "Skeeter",
+	  "attack": 40.0,
+	  "base_exp": 55.0,
+	  "catch_rate": 200.0,
+	  "color": "57456f",
+	  "defense": 30.0,
+	  "description": "Small flying Fakemon commonly found in huge numbers near still bodies of water. Its wings are weak, so it avoids winds stronger than a gentle breeze. When it bites larger Fakemon or people, it leaves behind an itchy bump. Skeeter seems to take particular delight in annoying larger beings and grows noticeably more aggressive after sunset. Its bites are often close together, and people or Fakemon bitten once are more likely to be bitten again. Surely this is only survival pressure and not malice. After all, a bug like this cannot willingly choose evil.",
+	  "learnset": [
+		{
+		  "level": 1.0,
+		  "move": "gnaw"
+		},
+		{
+		  "level": 2.0,
+		  "move": "buzz"
+		},
+		{
+		  "level": 5.0,
+		  "move": "needle_nip"
+		},
+		{
+		  "level": 7.0,
+		  "move": "bite"
+		},
+		{
+		  "level": 11.0,
+		  "move": "infest"
+		},
+		{
+		  "level": 13.0,
+		  "move": "swoop"
+		},
+		{
+		  "level": 15.0,
+		  "move": "blood_draw"
+		},
+		{
+		  "level": 17.0,
+		  "move": "torment"
+		},
+		{
+		  "level": 19.0,
+		  "move": "evade"
+		},
+		{
+		  "level": 22.0,
+		  "move": "swarm"
+		},
+		{
+		  "level": 25.0,
+		  "move": "gather"
+		},
+		{
+		  "level": 28.0,
+		  "move": "leech_life"
+		},
+		{
+		  "level": 32.0,
+		  "move": "night_dart"
+		},
+		{
+		  "level": 35.0,
+		  "move": "hypnotic_hum"
+		},
+		{
+		  "level": 37.0,
+		  "move": "scourge"
+		},
+		{
+		  "level": 41.0,
+		  "move": "bloodmoon"
+		},
+		{
+		  "level": 47.0,
+		  "move": "plague"
+		}
+	  ],
+	  "level": 5.0,
+	  "male_ratio": 0.5,
+	  "max_hp": 35.0,
+	  "moves": [
+		"gnaw",
+		"buzz",
+        "needle_nip"
+	  ],
+	  "name": "Skeeter",
+	  "size": "0.01 m",
+	  "special_attack": 45.0,
+	  "special_defense": 30.0,
+	  "speed": 60.0,
+	  "type": "Bug"
+	},
+	{
+	  "art_id": "Lochirp",
+	  "attack": 20.0,
+	  "base_exp": 60.0,
+	  "catch_rate": 120.0,
+	  "color": "db7fc7",
+	  "defense": 30.0,
+	  "description": "The presence of elusive Lochirp indicates a rainforest rich in healthy flowering plants. These tiny nectar-feeders scatter dust that stimulates new buds and sleep inside large flowers wrapped in petal-like plumage. Though widely imagined as gentle moon-blossom spirits, they are active by day and aggressively defend productive flowers, becoming fiercely loyal only to a small circle of trusted companions.",
+	  "flowerType": "birdofparadise",
+	  "learnset": [
+		{
+		  "level": 1.0,
+		  "move": "nectar_drink"
+		},
+		{
+		  "level": 2.0,
+		  "move": "petal_whip"
+		},
+		{
+		  "level": 3.0,
+		  "move": "dazzle"
+		},
+		{
+		  "level": 5.0,
+		  "move": "charm"
+		},
+		{
+		  "level": 9.0,
+		  "move": "remedy"
+		},
+		{
+		  "level": 11.0,
+		  "move": "flutter"
+		},
+		{
+		  "level": 14.0,
+		  "move": "gust"
+		},
+		{
+		  "evolution_move": true,
+		  "level": 16.0,
+		  "move": "bloom"
+		},
+		{
+		  "level": 18.0,
+		  "move": "fey_dust"
+		},
+		{
+		  "level": 21.0,
+		  "move": "petalwake"
+		},
+		{
+		  "level": 23.0,
+		  "move": "mist"
+		},
+		{
+		  "level": 26.0,
+		  "move": "lotus_dart"
+		},
+		{
+		  "level": 30.0,
+		  "move": "magic_pulse"
+		},
+		{
+		  "level": 33.0,
+		  "move": "fey_gardens"
+		},
+		{
+		  "level": 36.0,
+		  "move": "solar_ray"
+		},
+		{
+		  "level": 40.0,
+		  "move": "lotus_absolution"
+		},
+		{
+		  "level": 45.0,
+		  "move": "mystic_stream"
+		},
+		{
+		  "level": 50.0,
+		  "move": "paradise_ray"
+		},
+		{
+		  "level": 55.0,
+		  "move": "paradise_bloom"
+		}
+	  ],
+	  "level": 5.0,
+	  "male_ratio": 0.5,
+	  "max_hp": 40.0,
+	  "moves": [
+		"nectar_drink",
+		"petal_whip",
+		"dazzle",
+        "charm"
+	  ],
+	  "name": "Lochirp",
+	  "size": "0.1 m",
+	  "special_attack": 55.0,
+	  "special_defense": 50.0,
+	  "speed": 65.0,
+	  "types": [
+		"Plant",
+        "Mystic"
+	  ]
+	}
+  ],
+  "moves": {
+	"absolve": {
+	  "animation_id": "absolve",
+	  "cures_conditions": true,
+	  "damage_class": "Status",
+	  "description": "Releases the user from all special conditions.",
+	  "fallback_animation": "buff_swirl",
+	  "name": "Absolve",
+	  "power": 0.0,
+	  "type": "Dark"
+	},
+	"alkaloid_mist": {
+	  "animation_id": "alkaloid_mist",
+	  "condition": "Poisoned",
+	  "condition_chance": 0.3,
+	  "damage_class": "Special",
+	  "description": "A powerful poison attack with a 30% chance of poisoning a foe. If Harsh Sunlight is active, that chance increases to 60%.",
+	  "fallback_animation": "field_overlay",
+	  "name": "Alkaloid Mist",
+	  "power": 85.0,
+	  "type": "Poison",
+	  "weather_overrides": {
+		"Harsh Sunlight": {
+		  "condition_chance": 0.6
+		}
+	  }
+	},
+	"aqua_jet": {
+	  "animation_id": "aqua_jet",
+	  "condition": "Slowed",
+	  "condition_chance": 0.3,
+	  "damage_class": "Special",
+	  "description": "Hits the foe with a blast of water. Has a 30% chance to slow a target.",
+	  "fallback_animation": "projectile",
+	  "name": "Aqua Jet",
+	  "power": 55.0,
+	  "type": "Water"
+	},
+	"aureal_flood": {
+	  "animation_id": "aureal_flood",
+	  "cleanse_user_party": true,
+	  "damage_class": "Special",
+	  "description": "A majestic blast of purified water that deals high damage and removes all status conditions from the user's party.",
+	  "fallback_animation": "projectile",
+	  "name": "Aureal Flood",
+	  "power": 90.0,
+	  "type": "Water"
+	},
+	"bite": {
+	  "animation_id": "bite",
+	  "condition": "Flinch",
+	  "condition_chance": 0.1,
+	  "damage_class": "Physical",
+	  "description": "A weak physical attack that has a 10% chance to make a foe flinch.",
+	  "name": "Bite",
+	  "power": 40.0,
+	  "type": "Normal"
+	},
+	"blood_draw": {
+	  "animation_id": "blood_draw",
+	  "damage_class": "Physical",
+	  "description": "Leeching attack that heals the user for 50% of the damage done.",
+	  "drain_damage_fraction": 0.5,
+	  "name": "Blood Draw",
+	  "power": 50.0,
+	  "type": "Dark"
+	},
+	"bloodmoon": {
+	  "damage_class": "Status",
+	  "description": "Sets up the Bloodmoon weather for 3 turns. While active, the power of Dark type attacks is increased by 25%. Dark type attacks also heal the user for 10% of the damage dealt. Ghost type attacks have a 20% chance to burn a foe. Lastly, Light, Mystic and Normal type attacks deal -25% damage while Bloodmoon is active.",
+	  "fallback_animation": "field_overlay",
+	  "name": "Bloodmoon",
+	  "power": 0.0,
+	  "sets_weather": "Blood Moon",
+	  "type": "Dark"
+	},
+	"bloom": {
+	  "animation_id": "bloom",
+	  "bloom_healing": true,
+	  "damage_class": "Status",
+	  "description": "Opens an enormous flower, increasing Special Attack and Special Defense by 1 stage and healing the user for 33% of their maximum health. ",
+	  "fallback_animation": "buff_swirl",
+	  "name": "Bloom",
+	  "power": 0.0,
+	  "stat_changes": [
+		{
+		  "amount": 0.1,
+		  "stat": "special_attack"
+		},
+		{
+		  "amount": 0.1,
+		  "stat": "special_defense"
+		}
+	  ],
+	  "type": "Plant",
+	  "weather_overrides": {
+		"Rootmind": {
+		  "bloom_heal_percent_bonus": 5.0
+		}
+	  }
+	},
+	"brilliant_light": {
+	  "animation_id": "brilliant_light",
+	  "damage_class": "Special",
+	  "description": "A corrective blast of light that isn't affected by type resistance.",
+	  "ignore_resistance": true,
+	  "name": "Brilliant Light",
+	  "power": 50.0,
+	  "type": "Light"
+	},
+	"bulk_up": {
+	  "animation_id": "bulk_up",
+	  "damage_class": "Status",
+	  "description": "Raises the user's Special Attack and Special Defense by 1 stage.",
+	  "fallback_animation": "buff_swirl",
+	  "name": "Bulk Up",
+	  "power": 0.0,
+	  "stat_changes": [
+		{
+		  "amount": 0.1,
+		  "stat": "attack"
+		},
+		{
+		  "amount": 0.1,
+		  "stat": "defense"
+		}
+	  ],
+	  "type": "Fighting"
+	},
+	"burn_off": {
+	  "cures_conditions": true,
+	  "damage_class": "Status",
+	  "description": "Burns away all special conditions from the user.",
+	  "name": "Burn Off",
+	  "power": 0.0,
+	  "type": "Fire"
+	},
+	"buzz": {
+	  "animation_id": "buzz",
+	  "damage_class": "Special",
+	  "description": "A weak bug attack that lowers a foe's Special Defense by 1 stage.",
+	  "name": "Buzz",
+	  "power": 15.0,
+	  "target_stat_changes": [
+		{
+		  "amount": -0.1,
+		  "stat": "special_defense"
+		}
+	  ],
+	  "type": "Bug"
+	},
+	"cacophony": {
+	  "animation_id": "cacophony",
+	  "damage_class": "Status",
+	  "description": "Stirs up a bombardment of mental noise, reducing a foe's Special Defense by 3 stages.",
+	  "name": "Cacophony",
+	  "power": 0.0,
+	  "target_stat_changes": [
+		{
+		  "amount": -0.3,
+		  "stat": "special_defense"
+		}
+	  ],
+	  "type": "Psychic"
+	},
+	"celestial_chorus": {
+	  "damage_class": "Status",
+	  "description": "Sets up the Celesital Chorus weather for 3 turns. While active, the power of Light type attacks is increased by 50%. Prayer heals 50% more damage, and Dark and Ghost type attacks also deal -50% damage while Celestial Chorus is active.",
+	  "name": "Celestial Chorus",
+	  "power": 0.0,
+	  "sets_weather": "Celestial Chorus",
+	  "type": "Light"
+	},
+	"challenging_call": {
+	  "animation_id": "challenging_call",
+	  "condition": "Despairing",
+	  "condition_chance": 0.8,
+	  "condition_chance_if_target_type": {
+		"chance": 1.0,
+		"type": "Dragon"
+	  },
+	  "damage_class": "Status",
+	  "description": "Calls the foe to a challenge, lowering their attack by 1 stage, and adds a 80% chance for them to despair. If the foe is a Dragon type, it will always dispair.",
+	  "name": "Challenging Call",
+	  "power": 0.0,
+	  "stat_changes": [
+		{
+		  "amount": 0.1,
+		  "stat": "attack"
+		}
+	  ],
+	  "type": "Air"
+	},
+	"charm": {
+	  "animation_id": "charm",
+	  "condition": "Infatuated",
+	  "condition_chance": 1.0,
+	  "damage_class": "Status",
+	  "description": "Attracts a target, infatuating them.",
+	  "name": "Charm",
+	  "power": 0.0,
+	  "type": "Mystic"
+	},
+	"chlorophyll_cannon": {
+	  "animation_id": "chlorophyll_cannon",
+	  "condition": "Burned",
+	  "condition_chance": 0.2,
+	  "damage_class": "Special",
+	  "description": "Fires off a superheated ball of chlorophyll, dealing heavy damage. Has a 20% chance to burn a foe.",
+	  "name": "Chlorophyll Cannon",
+	  "power": 100.0,
+	  "type": "Plant",
+	  "weather_overrides": {
+		"Rootmind": {
+		  "condition_chance": 0.3,
+		  "power": 110.0
+		}
+	  }
+	},
+	"cinder_flick": {
+	  "condition": "Burned",
+	  "condition_chance": 0.15,
+	  "damage_class": "Special",
+	  "description": "A weak fire attack that has a 30% chance to burn a foe.",
+	  "name": "Cinder Flick",
+	  "power": 30.0,
+	  "type": "Fire"
+	},
+	"cleanse": {
+	  "animation_id": "cleanse",
+	  "cures_conditions": true,
+	  "damage_class": "Status",
+	  "description": "Washes away all special conditions from the user.",
+	  "name": "Cleanse",
+	  "power": 0.0,
+	  "type": "Water"
+	},
+	"coat_toxin": {
+	  "animation_id": "coat_toxin",
+	  "condition": "Poisoned",
+	  "condition_chance": 0.2,
+	  "damage_class": "Special",
+	  "description": "Sprays poisonous gunk at a foe, dealing high damage. Has a 20% chance to poison a foe.",
+	  "name": "Coat Toxin",
+	  "power": 70.0,
+	  "type": "Poison"
+	},
+	"constrict": {
+	  "animation_id": "constrict",
+	  "condition": "Paralyzed",
+	  "condition_chance": 0.2,
+	  "damage_class": "Physical",
+	  "description": "Plant attack that has a 20% chance to paralyze a foe.",
+	  "name": "Constrict",
+	  "power": 45.0,
+	  "type": "Plant",
+	  "weather_overrides": {
+		"Rootmind": {
+		  "condition_chance": 0.3,
+		  "power": 50.0
+		}
+	  }
+	},
+	"counter": {
+	  "animation_id": "counter",
+	  "counter_last_physical_damage": true,
+	  "damage_class": "Status",
+	  "description": "Retaliates a physical attack, dealing twice the damage the user sustained.",
+	  "name": "Counter",
+	  "power": 0.0,
+	  "type": "Fighting"
+	},
+	"croak": {
+	  "animation_id": "croak",
+	  "damage_class": "Status",
+	  "description": "Lets out a Croak, reducing a foe's Special Defense by 1 stage. If the egg group of a foe is an Amphibian, it also applies a stack of infatuation. ",
+	  "name": "Croak",
+	  "power": 0.0,
+	  "target_egg_group_condition": {
+		"condition": "Infatuated",
+		"condition_chance": 1.0,
+		"egg_group": "Amphibian",
+		"replaces_target_stat_changes": true
+	  },
+	  "target_stat_changes": [
+		{
+		  "amount": -0.1,
+		  "stat": "special_defense"
+		}
+	  ],
+	  "type": "Normal"
+	},
+	"dartlet_stare": {
+	  "animation_id": "stare",
+	  "damage_class": "Status",
+	  "description": "Fixes the foe with an intense stare, lowering their Special Defense by 1 stage.",
+	  "name": "Stare",
+	  "power": 0.0,
+	  "target_stat_changes": [
+		{
+		  "amount": -0.1,
+		  "stat": "special_defense"
+		}
+	  ],
+	  "type": "Normal"
+	},
+	"dazzle": {
+	  "animation_id": "dazzle",
+	  "condition": "Flinch",
+	  "condition_chance": 1.0,
+	  "damage_class": "Special",
+	  "description": "A weak Mystic attack that needs a turn to recharge. Flinches a foe, and reduces their Special Defense by 1 stage.",
+	  "name": "Dazzle",
+	  "power": 15.0,
+	  "reuse_delay": 1.0,
+	  "target_stat_changes": [
+		{
+		  "amount": -0.1,
+		  "stat": "special_defense"
+		}
+	  ],
+	  "type": "Mystic"
+	},
+	"defense_curl": {
+	  "animation_id": "defense_curl",
+	  "damage_class": "Status",
+	  "description": "Tightens the body, increasing the user's Defense by 1 stage.",
+	  "name": "Defense Curl",
+	  "power": 0.0,
+	  "stat_changes": [
+		{
+		  "amount": 0.1,
+		  "stat": "defense"
+		}
+	  ],
+	  "type": "Normal"
+	},
+	"disable": {
+	  "animation_id": "disable",
+	  "damage_class": "Status",
+	  "description": "Prevents the foe's last used move for 4 turns.",
+	  "disable_last_move_turns": 4.0,
+	  "name": "Disable",
+	  "power": 0.0,
+	  "type": "Psychic"
+	},
+	"discern": {
+	  "animation_id": "discern",
+	  "damage_class": "Status",
+	  "description": "Correctly judges a situation, increasing the user's Special Defense by 3 stages.",
+	  "name": "Discern",
+	  "power": 0.0,
+	  "stat_changes": [
+		{
+		  "amount": 0.3,
+		  "stat": "special_defense"
+		}
+	  ],
+	  "type": "Light"
+	},
+	"doze_off": {
+	  "animation_id": "doze_off",
+	  "damage_class": "Status",
+	  "description": "Heals one third of the user's maximum HP, then puts the user to sleep.",
+	  "fixed_max_hp_heal_fraction": 0.3333333333,
+	  "name": "Doze Off",
+	  "power": 0.0,
+	  "self_condition": "Asleep",
+	  "type": "Normal"
+	},
+	"drain": {
+	  "animation_id": "drain",
+	  "damage_class": "Special",
+	  "description": "A weak plant attack that heals half of the damage dealt.",
+	  "drain_damage_fraction": 0.5,
+	  "name": "Drain",
+	  "power": 45.0,
+	  "type": "Plant",
+	  "weather_overrides": {
+		"Rootmind": {
+		  "power": 45.0
+		}
+	  }
+	},
+	"drain_toxin": {
+	  "animation_id": "drain_toxin",
+	  "damage_class": "Special",
+	  "description": "A weak plant attack that heals the user 15% of it's maximum HP. Any Poison weakness the user may have is removed for 3 turns after use.",
+	  "fixed_max_hp_heal_fraction": 0.15,
+	  "name": "Drain Toxin",
+	  "power": 45.0,
+	  "suppress_weakness_turns": 3.0,
+	  "suppress_weakness_type": "Poison",
+	  "type": "Plant",
+	  "weather_overrides": {
+		"Rootmind": {
+		  "fixed_max_hp_heal_fraction": 0.2,
+		  "power": 55.0,
+		  "suppress_weakness_turns": 5.0
+		}
+	  }
+	},
+	"dream": {
+	  "animation_id": "dream",
+	  "calls_another_move": true,
+	  "calls_random_move": true,
+	  "damage_class": "Status",
+	  "description": "Uses another move at random. Can only be used when the user is sleeping.",
+	  "name": "Dream",
+	  "power": 0.0,
+	  "requires_user_condition": "Asleep",
+	  "type": "Mystic"
+	},
+	"evade": {
+	  "animation_id": "evade",
+	  "damage_class": "Status",
+	  "description": "Becomes immune to an attack this turn, but becomes less effective the more it is used.",
+	  "name": "Evade",
+	  "power": 0.0,
+	  "priority": 4.0,
+	  "protect": true,
+	  "protect_success_base": 0.95,
+	  "protect_success_decrement": 0.25,
+	  "type": "Air"
+	},
+	"fey_dust": {
+	  "animation_id": "fey_dust",
+	  "condition": "Infatuated",
+	  "condition_chance": 1.0,
+	  "damage_class": "Status",
+	  "description": "Scatters mystical dust on a foe, adding a stack of infatuation, and reducing their Special Defense by 2 stages.",
+	  "name": "Fey Dust",
+	  "power": 0.0,
+	  "stat_changes": [
+		{
+		  "amount": 0.2,
+		  "stat": "special_defense"
+		}
+	  ],
+	  "type": "Mystic"
+	},
+	"fey_gardens": {
+	  "animation_kind": "field_overlay",
+	  "damage_class": "Status",
+	  "description": "Creates Fey Gardens weather for 3 turns. Mystic attacks deal 25% more damage; Plant and Mystic Fakemon gain 10% more maximum HP from healing moves, cannot have their Special Attack or Special Defense lowered, and gain an extra infatuation stack the first time they infatuate a foe.",
+	  "name": "Fey Gardens",
+	  "power": 0.0,
+	  "sets_weather": "Fey Gardens",
+	  "type": "Mystic"
+	},
+	"fin_flash": {
+	  "animation_id": "fin_flash",
+	  "damage_class": "Special",
+	  "description": "Strikes the foe with a flash of water. Its power increases from 40 to 60 if the user's Special Defense is raised.",
+	  "name": "Fin Flash",
+	  "power": 40.0,
+	  "raised_stat_power": {
+		"power": 60.0,
+		"stat": "special_defense"
+	  },
+	  "type": "Water"
+	},
+	"fire_charge": {
+	  "animation_id": "fire_charge",
+	  "condition": "Burned",
+	  "condition_chance": 0.1,
+	  "damage_class": "Physical",
+	  "description": "A fiery physical charge with a 10% chance to burn the foe. The user loses 25% of their current HP as recoil.",
+	  "name": "Fire Charge",
+	  "power": 80.0,
+	  "recoil_current_hp_fraction": 0.25,
+	  "type": "Fire"
+	},
+	"fireheart": {
+	  "animation_id": "fireheart",
+	  "cannot_faint_turns": 2.0,
+	  "damage_class": "Status",
+	  "description": "Kindles the user's inner flame, preventing them from fainting for 2 turns. This move has a 1-turn reuse delay.",
+	  "name": "Fireheart",
+	  "power": 0.0,
+	  "reuse_delay": 1.0,
+	  "type": "Fire"
+	},
+	"flamethrower": {
+	  "animation_id": "flamethrower",
+	  "condition": "Burned",
+	  "condition_chance": 0.2,
+	  "damage_class": "Special",
+	  "description": "Scorches the foe with an intense stream of flame. Has a 20% chance to burn the foe.",
+	  "name": "Flamethrower",
+	  "power": 95.0,
+	  "type": "Fire"
+	},
+	"flashcroak": {
+	  "animation_id": "flashcroak",
+	  "condition": "Confusion",
+	  "condition_chance": 0.3,
+	  "damage_class": "Special",
+	  "description": "Unleashes a fiery croak that has a 30% chance to confuse the foe.",
+	  "name": "Flashcroak",
+	  "power": 65.0,
+	  "type": "Fire"
+	},
+	"flip_turn": {
+	  "animation_id": "flip_turn",
+	  "damage_class": "Physical",
+	  "description": "Attacks the foe, then switches the user with a random party member and passes along the user's stat changes.",
+	  "name": "Flip Turn",
+	  "passes_stat_modifiers": true,
+	  "power": 40.0,
+	  "random_party_switch": true,
+	  "type": "Water"
+	},
+	"flutter": {
+	  "animation_id": "flutter",
+	  "damage_class": "Status",
+	  "description": "Flutters gracefully, raising the user's Special Attack and Special Defense by 1 stage.",
+	  "fallback_animation": "buff_swirl",
+	  "name": "Flutter",
+	  "power": 0.0,
+	  "stat_changes": [
+		{
+		  "amount": 0.1,
+		  "stat": "special_attack"
+		},
+		{
+		  "amount": 0.1,
+		  "stat": "special_defense"
+		}
+	  ],
+	  "type": "Bug"
+	},
+	"gather": {
+	  "animation_id": "gather",
+	  "damage_class": "Status",
+	  "description": "Gathers strength to heal one third of the user's maximum HP and grants immunity to Confusion and Flinch on the next turn.",
+	  "fixed_max_hp_heal_fraction": 0.3333333333,
+	  "name": "Gather",
+	  "next_turn_condition_immunities": [
+		"Confusion",
+        "Flinch"
+	  ],
+	  "power": 0.0,
+	  "type": "Bug"
+	},
+	"gnaw": {
+	  "animation_id": "gnaw",
+	  "damage_class": "Physical",
+	  "description": "Gnaws at the foe 2 to 5 times in succession.",
+	  "max_hits": 5.0,
+	  "min_hits": 2.0,
+	  "name": "Gnaw",
+	  "power": 15.0,
+	  "type": "Bug"
+	},
+	"grand_display": {
+	  "animation_id": "grand_display",
+	  "damage_class": "Status",
+	  "description": "Stages a grand display, raising the user's Special Attack and Speed by 2 stages. For 2 turns, special attacks against the user poison the attacker.",
+	  "name": "Grand Display",
+	  "power": 0.0,
+	  "reactive_poison_damage_class": "Special",
+	  "reactive_poison_turns": 2.0,
+	  "stat_changes": [
+		{
+		  "amount": 0.2,
+		  "stat": "special_attack"
+		},
+		{
+		  "amount": 0.2,
+		  "stat": "speed"
+		}
+	  ],
+	  "type": "Poison"
+	},
+	"gust": {
+	  "animation_id": "gust",
+	  "condition": "Slowed",
+	  "condition_chance": 0.2,
+	  "damage_class": "Special",
+	  "description": "Blasts the foe with a gust of air. Has a 20% chance to slow the foe.",
+	  "name": "Gust",
+	  "power": 40.0,
+	  "type": "Air"
+	},
+	"hammer_arm": {
+	  "animation_id": "hammer_arm",
+	  "damage_class": "Physical",
+	  "description": "Strikes the foe with a powerful arm.",
+	  "name": "Hammer Arm",
+	  "power": 70.0,
+	  "type": "Fighting"
+	},
+	"harsh_sunlight": {
+	  "damage_class": "Status",
+	  "description": "Creates Harsh Sunlight weather for 3 turns. Fire and Plant attacks deal 50% more damage, while Water and Ice attacks deal 50% less damage.",
+	  "name": "Harsh Sunlight",
+	  "power": 0.0,
+	  "sets_weather": "Harsh Sunlight",
+	  "type": "Fire"
+	},
+	"heat_up": {
+	  "animation_id": "heat_up",
+	  "damage_class": "Special",
+	  "description": "Builds momentum with a burst of heat, dealing light damage while raising the user's Speed by 3 stages and Special Attack by 1 stage.",
+	  "name": "Heat Up",
+	  "power": 10.0,
+	  "stat_changes": [
+		{
+		  "amount": 0.3,
+		  "stat": "speed"
+		},
+		{
+		  "amount": 0.1,
+		  "stat": "special_attack"
+		}
+	  ],
+	  "type": "Fire"
+	},
+	"hypnotic_hum": {
+	  "animation_id": "new_animation",
+	  "condition": "Asleep",
+	  "condition_chance": 0.5,
+	  "damage_class": "Status",
+	  "description": "Hums a hypnotic tune, lowering the foe's Speed by 1 stage and giving them a 50% chance to fall asleep.",
+	  "name": "Hypnotic Hum",
+	  "power": 0.0,
+	  "target_stat_changes": [
+		{
+		  "amount": -0.1,
+		  "stat": "speed"
+		}
+	  ],
+	  "type": "Bug"
+	},
+	"hysteria": {
+	  "animation_id": "hysteria",
+	  "condition": "Paralyzed",
+	  "condition_chance": 0.2,
+	  "damage_class": "Physical",
+	  "description": "Assaults the foe in a frenzy. Has a 20% chance to paralyze the foe, increased to 30% during Rootmind.",
+	  "name": "Hysteria",
+	  "power": 80.0,
+	  "type": "Psychic",
+	  "weather_overrides": {
+		"Rootmind": {
+		  "condition_chance": 0.3
+		}
+	  }
+	},
+	"ignite": {
+	  "animation_id": "ignite",
+	  "condition": "Burned",
+	  "condition_chance": 0.2,
+	  "damage_class": "Special",
+	  "description": "Ignites a small flame around the foe. Has a 20% chance to burn the foe.",
+	  "fallback_animation": "target_burst",
+	  "name": "Ignite",
+	  "power": 40.0,
+	  "type": "Fire"
+	},
+	"incinerate": {
+	  "animation_id": "incinerate",
+	  "condition": "Burned",
+	  "condition_chance": 0.2,
+	  "damage_class": "Special",
+	  "description": "Engulfs the foe in flame. Has a 20% chance to burn the foe.",
+	  "name": "Incinerate",
+	  "power": 40.0,
+	  "type": "Fire"
+	},
+	"inferno": {
+	  "animation_id": "inferno",
+	  "burn_user_party": true,
+	  "damage_class": "Special",
+	  "description": "Unleashes a devastating inferno that burns the user's entire party and costs the user 80% of their current HP. Harsh Sunlight remains active.",
+	  "name": "Inferno",
+	  "power": 300.0,
+	  "preserve_weather": "Harsh Sunlight",
+	  "recoil_current_hp_fraction": 0.8,
+	  "type": "Fire"
+	},
+	"inferno_plume": {
+	  "animation_id": "inferno_plume",
+	  "condition": "Burned",
+	  "condition_chance": 0.4,
+	  "damage_class": "Physical",
+	  "description": "Strikes with an overwhelming plume of fire. Has a 40% chance to burn the foe, but the user must recharge next turn.",
+	  "must_recharge": true,
+	  "name": "Inferno Plume",
+	  "power": 180.0,
+	  "type": "Fire"
+	},
+	"infest": {
+	  "animation_id": "infest",
+	  "condition": "Poisoned",
+	  "condition_chance": 1.0,
+	  "damage_class": "Status",
+	  "description": "Infests the foe, poisoning them.",
+	  "name": "Infest",
+	  "power": 0.0,
+	  "type": "Bug"
+	},
+	"inner_focus": {
+	  "animation_id": "inner_focus",
+	  "damage_class": "Status",
+	  "description": "Clears all stat changes from the user and prevents their next move from causing self-damage.",
+	  "ignore_next_move_self_damage": true,
+	  "name": "Inner Focus",
+	  "power": 0.0,
+	  "reset_all_stat_changes": true,
+	  "type": "Psychic"
+	},
+	"intercept": {
+	  "animation_id": "intercept",
+	  "condition": "Flinch",
+	  "condition_chance": 0.05,
+	  "damage_class": "Physical",
+	  "description": "A swift aerial strike that acts with increased priority and has a 5% chance to make the foe flinch.",
+	  "name": "Intercept",
+	  "power": 50.0,
+	  "priority": 1.0,
+	  "type": "Air"
+	},
+	"kinetic_pummel": {
+	  "animation_id": "kinetic_pummel",
+	  "damage_class": "Physical",
+	  "description": "Pummels the foe with kinetic force. Has a 20% chance to lower the foe's Defense by 1 stage.",
+	  "name": "Kinetic Pummel",
+	  "power": 90.0,
+	  "target_stat_change_chance": 0.2,
+	  "target_stat_changes": [
+		{
+		  "amount": -0.1,
+		  "stat": "defense"
+		}
+	  ],
+	  "type": "Fighting"
+	},
+	"leap": {
+	  "animation_id": "leap",
+	  "damage_class": "Physical",
+	  "description": "Leaps into the foe and grants the user's next move increased priority.",
+	  "grant_next_move_priority": 1.0,
+	  "name": "Leap",
+	  "power": 30.0,
+	  "type": "Normal"
+	},
+	"leech_life": {
+	  "animation_id": "leech_life",
+	  "damage_class": "Physical",
+	  "description": "Drains the foe's vitality, healing the user for 50% of the damage dealt.",
+	  "drain_damage_fraction": 0.5,
+	  "name": "Leech Life",
+	  "power": 70.0,
+	  "type": "Bug"
+	},
+	"lotus_absolution": {
+	  "animation_id": "lotus_absolution",
+	  "cure_target_condition_after_damage": "Poisoned",
+	  "damage_class": "Special",
+	  "description": "A purifying light attack that doubles in power against a poisoned foe, then cures their poison. During Harsh Sunlight or Fey Gardens, it also heals one third of the user's maximum HP.",
+	  "heal_fraction_during_weather": {
+		"fraction": 0.3333333333,
+		"weathers": [
+		  "Harsh Sunlight",
+          "Fey Gardens"
+		]
+	  },
+	  "name": "Lotus Absolution",
+	  "power": 75.0,
+	  "power_multiplier_if_target_conditions": {
+		"conditions": [
+          "Poisoned"
+		],
+		"multiplier": 2.0
+	  },
+	  "type": "Light"
+	},
+	"lotus_dart": {
+	  "animation_id": "lotus_dart",
+	  "condition": "Poisoned",
+	  "condition_chance": 0.3,
+	  "damage_class": "Physical",
+	  "description": "Launches a sharpened lotus at the foe. Has a 30% chance to poison the foe.",
+	  "name": "Lotus Dart",
+	  "power": 75.0,
+	  "type": "Plant"
+	},
+	"magic_pulse": {
+	  "animation_id": "new_animation",
+	  "damage_class": "Special",
+	  "description": "Fires a pulse of unstable magic with a 40% chance to randomly burn, poison, paralyze, condemn, despair, infatuate, slow, or confuse the foe.",
+	  "name": "Magic Pulse",
+	  "power": 70.0,
+	  "random_secondary_chance": 0.4,
+	  "random_secondary_conditions": [
+		"Burned",
+		"Poisoned",
+		"Paralyzed",
+		"Condemned",
+		"Despairing",
+		"Infatuated",
+		"Slowed",
+        "Confusion"
+	  ],
+	  "type": "Mystic"
+	},
+	"mimic": {
+	  "animation_id": "mimic",
+	  "calls_another_move": true,
+	  "copies_opponent_last_move": true,
+	  "damage_class": "Status",
+	  "description": "Copies and uses the foe's last move.",
+	  "name": "Mimic",
+	  "power": 0.0,
+	  "type": "Air"
+	},
+	"mind_bolt": {
+	  "animation_id": "mind_bolt",
+	  "damage_class": "Special",
+	  "description": "Strikes with psychic force and has a 20% chance to make the foe flinch or become confused. The chance increases to 30% during Rootmind.",
+	  "name": "Mind Bolt",
+	  "power": 50.0,
+	  "random_secondary_chance": 0.2,
+	  "random_secondary_conditions": [
+		"Flinch",
+        "Confusion"
+	  ],
+	  "type": "Psychic",
+	  "weather_overrides": {
+		"Rootmind": {
+		  "random_secondary_chance": 0.3
+		}
+	  }
+	},
+	"mind_wave": {
+	  "animation_id": "mind_wave",
+	  "condition": "Confusion",
+	  "condition_chance": 0.2,
+	  "damage_class": "Special",
+	  "description": "Washes over the foe with psychic energy. Has a 20% chance to confuse the foe, increased to 30% during Rootmind.",
+	  "name": "Mind Wave",
+	  "power": 40.0,
+	  "type": "Psychic",
+	  "weather_overrides": {
+		"Rootmind": {
+		  "condition_chance": 0.3
+		}
+	  }
+	},
+	"mist": {
+	  "animation_id": "mist",
+	  "damage_class": "Status",
+	  "description": "Envelops the field in mist, clearing all stat changes from the user and foe.",
+	  "name": "Mist",
+	  "power": 0.0,
+	  "reset_all_stat_changes": true,
+	  "type": "Water"
+	},
+	"mycelial_hunt": {
+	  "animation_id": "mycelial_hunt",
+	  "damage_class": "Special",
+	  "description": "Hunts the foe through a mycelial network, increasing in power from 75 to 90 if the foe has a condition. During Rootmind, its power is 90, or 120 against a foe with a condition.",
+	  "name": "Mycelial Hunt",
+	  "power": 75.0,
+	  "power_if_target_has_condition": 90.0,
+	  "type": "Plant",
+	  "weather_overrides": {
+		"Rootmind": {
+		  "power": 90.0,
+		  "power_if_target_has_condition": 120.0
+		}
+	  }
+	},
+	"mystic_stream": {
+	  "animation_id": "mystic_stream",
+	  "damage_class": "Special",
+	  "description": "Channels a stream of mystic energy. Its power increases by 10% for each positive Speed stage the user has.",
+	  "name": "Mystic Stream",
+	  "power": 90.0,
+	  "power_per_positive_stage": {
+		"multiplier": 0.1,
+		"stat": "speed"
+	  },
+	  "type": "Mystic"
+	},
+	"nectar_drink": {
+	  "animation_id": "nectar_drink",
+	  "cures_one_condition": true,
+	  "damage_class": "Status",
+	  "description": "Drinks restorative nectar, healing 10% of the user's maximum HP and curing one condition.",
+	  "fixed_max_hp_heal_fraction": 0.1,
+	  "name": "Nectar Drink",
+	  "power": 0.0,
+	  "type": "Bug"
+	},
+	"needle_nip": {
+	  "animation_id": "needle_nip",
+	  "damage_class": "Physical",
+	  "description": "Nips the foe with a draining needle, healing the user for 50% of the damage dealt.",
+	  "drain_damage_fraction": 0.5,
+	  "name": "Needle Nip",
+	  "power": 35.0,
+	  "type": "Dark"
+	},
+	"nest": {
+	  "animation_id": "nest",
+	  "damage_class": "Status",
+	  "description": "Restores 15% of the user's maximum HP. If the user is an Air type, it instead restores 33% and removes their Air typing for 2 turns.",
+	  "name": "Nest",
+	  "nest": true,
+	  "power": 0.0,
+	  "type": "Air"
+	},
+	"night_dart": {
+	  "animation_id": "night_dart",
+	  "damage_class": "Physical",
+	  "description": "A swift dark strike with increased priority. Its power doubles if the foe is asleep or confused.",
+	  "name": "Night Dart",
+	  "power": 60.0,
+	  "power_multiplier_if_target_conditions": {
+		"conditions": [
+		  "Asleep",
+          "Confusion"
+		],
+		"multiplier": 2.0
+	  },
+	  "priority": 1.0,
+	  "type": "Dark"
+	},
+	"paradise_bloom": {
+	  "animation_id": "paradise_bloom",
+	  "damage_class": "Status",
+	  "description": "Clears all of the user's stat changes and removable conditions, then heals 15% of their maximum HP plus 10% for each stat stage cleared and 20% for each condition cleared.",
+	  "name": "Paradise Bloom",
+	  "paradise_bloom": true,
+	  "power": 0.0,
+	  "type": "Plant"
+	},
+	"paradise_ray": {
+	  "animation_id": "paradise_ray",
+	  "cleanse_both_after_damage": true,
+	  "clear_weather_after_damage": true,
+	  "damage_class": "Special",
+	  "description": "Fires an immense ray that clears the weather and removes all conditions from both battlers after dealing damage. The user must recharge next turn.",
+	  "must_recharge": true,
+	  "name": "Paradise Ray",
+	  "power": 120.0,
+	  "type": "Plant"
+	},
+	"peck": {
+	  "animation_id": "peck",
+	  "damage_class": "Physical",
+	  "description": "Pecks the foe with a sharp beak.",
+	  "name": "Peck",
+	  "power": 40.0,
+	  "type": "Air"
+	},
+	"petal_whip": {
+	  "animation_id": "petal_whip",
+	  "condition": "Poisoned",
+	  "condition_chance": 0.2,
+	  "damage_class": "Physical",
+	  "description": "Strikes the foe with a whipping petal. Has a 20% chance to poison the foe; during Rootmind, its power rises from 40 to 45 and the chance becomes 30%.",
+	  "name": "Petal Whip",
+	  "power": 40.0,
+	  "type": "Plant",
+	  "weather_overrides": {
+		"Rootmind": {
+		  "condition_chance": 0.3,
+		  "power": 45.0
+		}
+	  }
+	},
+	"petalwake": {
+	  "animation_id": "petalwake",
+	  "damage_class": "Special",
+	  "description": "Surges through the foe in a wake of petals, raising the user's Speed by 1 stage.",
+	  "name": "Petalwake",
+	  "power": 50.0,
+	  "stat_changes": [
+		{
+		  "amount": 0.1,
+		  "stat": "speed"
+		}
+	  ],
+	  "type": "Mystic"
+	},
+	"phoenix_charge": {
+	  "animation_id": "phoenix_charge",
+	  "cannot_faint_turns": 2.0,
+	  "condition": "Burned",
+	  "condition_chance": 0.2,
+	  "damage_class": "Physical",
+	  "description": "A blazing charge with a 20% chance to burn the foe. The user loses 25% of their current HP as recoil but cannot faint for 2 turns. This move has a 1-turn reuse delay.",
+	  "name": "Phoenix Charge",
+	  "power": 120.0,
+	  "recoil_current_hp_fraction": 0.25,
+	  "reuse_delay": 1.0,
+	  "type": "Fire"
+	},
+	"photon_beam": {
+	  "animation_id": "photon_beam",
+	  "damage_class": "Special",
+	  "description": "Fires a concentrated beam of light at the foe.",
+	  "name": "Photon Beam",
+	  "power": 40.0,
+	  "type": "Light"
+	},
+	"plague": {
+	  "animation_id": "plague",
+	  "condition": "Poisoned",
+	  "condition_chance": 1.0,
+	  "damage_class": "Special",
+	  "description": "Afflicts the foe with a virulent attack that always poisons them.",
+	  "name": "Plague",
+	  "power": 50.0,
+	  "type": "Bug"
+	},
+	"poison_bubble": {
+	  "animation_id": "poison_bubble",
+	  "condition": "Poisoned",
+	  "condition_chance": 0.2,
+	  "damage_class": "Special",
+	  "description": "Blasts the foe with a toxic bubble. Has a 20% chance to poison the foe.",
+	  "name": "Poison Bubble",
+	  "power": 30.0,
+	  "type": "Poison"
+	},
+	"poison_tongue": {
+	  "animation_id": "poison_tongue",
+	  "condition": "Poisoned",
+	  "condition_chance": 0.3,
+	  "damage_class": "Physical",
+	  "description": "Lashes the foe with a poisonous tongue. Has a 30% chance to poison the foe.",
+	  "name": "Poison Tongue",
+	  "power": 40.0,
+	  "type": "Poison"
+	},
+	"pounce": {
+	  "animation_id": "pounce",
+	  "damage_class": "Physical",
+	  "description": "Pounces on the foe with a physical attack.",
+	  "fallback_animation": "caster_lunge",
+	  "name": "Pounce",
+	  "power": 40.0,
+	  "type": "Normal"
+	},
+	"prayer": {
+	  "animation_id": "prayer",
+	  "damage_class": "Status",
+	  "description": "Offers a prayer that heals the user for 33% of their maximum HP at the start of the next turn.",
+	  "name": "Prayer",
+	  "power": 0.0,
+	  "scheduled_effect": {
+		"animation_id": "prayer_heal",
+		"delay_turns": 0.0,
+		"effect_group": "after_move_effect",
+		"effect_id": "prayer",
+		"owner": "user_battler",
+		"payload": {
+		  "amount": 0.33,
+		  "kind": "heal"
+		},
+		"repeat_count": 1.0,
+		"stacking": "replace_group",
+		"trigger": "start_of_turn"
+	  },
+	  "type": "Light"
+	},
+	"puff_up": {
+	  "animation_id": "puff_up",
+	  "damage_class": "Status",
+	  "description": "Puffs up menacingly, raising the user's Special Attack and Defense by 2 stages but lowering their Special Defense by 2 stages.",
+	  "name": "Puff Up",
+	  "power": 0.0,
+	  "stat_changes": [
+		{
+		  "amount": 0.2,
+		  "stat": "special_attack"
+		},
+		{
+		  "amount": 0.2,
+		  "stat": "defense"
+		},
+		{
+		  "amount": -0.2,
+		  "stat": "special_defense"
+		}
+	  ],
+	  "type": "Dark"
+	},
+	"punch": {
+	  "animation_id": "punch",
+	  "damage_class": "Physical",
+	  "description": "Strikes the foe with a punch.",
+	  "name": "Punch",
+	  "power": 40.0,
+	  "type": "Fighting"
+	},
+	"purify": {
+	  "animation_id": "purify",
+	  "cures_conditions": true,
+	  "damage_class": "Status",
+	  "description": "Purifies the user of all special conditions.",
+	  "name": "Cleanse",
+	  "power": 0.0,
+	  "type": "Light"
+	},
+	"quick_bump": {
+	  "animation_id": "quick_bump",
+	  "condition": "Flinch",
+	  "condition_chance": 0.3,
+	  "damage_class": "Physical",
+	  "description": "Quickly bumps into the foe. Has a 30% chance to make the foe flinch.",
+	  "fallback_animation": "target_hit",
+	  "name": "Quick Bump",
+	  "power": 30.0,
+	  "type": "Normal"
+	},
+	"regrow": {
+	  "animation_id": "regrow",
+	  "damage_class": "Status",
+	  "description": "Clears all of the user's stat changes and removable conditions, healing 10% of maximum HP for each effect cleared. During Rootmind, it heals 12.5% per effect instead.",
+	  "name": "Regrow",
+	  "power": 0.0,
+	  "regrow": true,
+	  "type": "Plant",
+	  "weather_overrides": {
+		"Rootmind": {
+		  "regrow_heal_fraction": 0.125
+		}
+	  }
+	},
+	"remedy": {
+	  "animation_id": "remedy",
+	  "cures_conditions": true,
+	  "damage_class": "Status",
+	  "description": "Uses restorative growth to remove all special conditions.",
+	  "name": "Remedy",
+	  "power": 0.0,
+	  "type": "Plant",
+	  "weather_overrides": {
+		"Rootmind": {
+		  "fixed_max_hp_heal_fraction": 0.125
+		}
+	  }
+	},
+	"remembrance": {
+	  "animation_id": "remembrance",
+	  "calls_another_move": true,
+	  "damage_class": "Status",
+	  "description": "Recalls and uses another eligible move from the user's learnset that they do not currently know.",
+	  "name": "Remembrance",
+	  "power": 0.0,
+	  "type": "Light"
+	},
+	"rest": {
+	  "animation_id": "rest",
+	  "cures_conditions": true,
+	  "damage_class": "Status",
+	  "description": "Heals 50% of the user's maximum HP and cures all conditions, then puts the user to sleep.",
+	  "fixed_max_hp_heal_fraction": 0.5,
+	  "name": "Rest",
+	  "power": 0.0,
+	  "self_condition": "Asleep",
+	  "type": "Normal"
+	},
+	"restore": {
+	  "animation_id": "restore",
+	  "cures_conditions": true,
+	  "damage_class": "Status",
+	  "description": "Removes all special conditions from the user.",
+	  "name": "Restore",
+	  "power": 0.0,
+	  "type": "Normal"
+	},
+	"rootmind": {
+	  "animation_kind": "field_overlay",
+	  "damage_class": "Status",
+	  "description": "Creates Rootmind weather for 3 turns. Plant Fakemon heal 6.25% of their maximum HP at the end of each turn, and certain moves gain additional effects.",
+	  "name": "Rootmind",
+	  "power": 0.0,
+	  "sets_weather": "Rootmind",
+	  "type": "Plant"
+	},
+	"scald": {
+	  "animation_id": "scald",
+	  "condition": "Burned",
+	  "condition_chance": 0.2,
+	  "damage_class": "Special",
+	  "description": "Blasts the foe with scalding water. Has a 20% chance to burn the foe.",
+	  "name": "Scald",
+	  "power": 80.0,
+	  "type": "Water"
+	},
+	"scourge": {
+	  "animation_id": "scourge",
+	  "cannot_faint_target": true,
+	  "damage_class": "Physical",
+	  "description": "Savages the foe with a brutal attack, but cannot make the target faint.",
+	  "name": "Scourge",
+	  "power": 120.0,
+	  "type": "Bug"
+	},
+	"scratch": {
+	  "animation_id": "scratch",
+	  "damage_class": "Physical",
+	  "description": "Scratches the foe with sharp claws.",
+	  "name": "Scratch",
+	  "power": 40.0,
+	  "type": "Normal"
+	},
+	"seed": {
+	  "animation_id": "seed",
+	  "damage_class": "Status",
+	  "description": "Plants a restorative seed on the target. Starting after 1 turn, it heals 15% of the target's maximum HP at the end of each turn for 3 turns.",
+	  "name": "Seed",
+	  "power": 0.0,
+	  "scheduled_effect": {
+		"animation_id": "seed_heal",
+		"delay_turns": 1.0,
+		"effect_group": "after_move_effect",
+		"effect_id": "seed",
+		"owner": "target_battler",
+		"payload": {
+		  "amount": 0.15,
+		  "kind": "heal"
+		},
+		"repeat_count": 3.0,
+		"stacking": "replace_group",
+		"trigger": "end_of_turn"
+	  },
+	  "type": "Plant",
+	  "weather_overrides": {
+		"Rootmind": {
+		  "seed_drain_multiplier": 1.2
+		}
+	  }
+	},
+	"shadow_snap": {
+	  "animation_id": "shadow_snap",
+	  "damage_class": "Physical",
+	  "description": "Snaps at the foe with a dark physical attack.",
+	  "name": "Shadow Snap",
+	  "power": 40.0,
+	  "type": "Dark"
+	},
+	"singe": {
+	  "animation_id": "singe",
+	  "condition": "Burned",
+	  "condition_chance": 1.0,
+	  "damage_class": "Status",
+	  "description": "Singes the foe, burning them.",
+	  "fallback_animation": "floating_icon",
+	  "name": "Singe",
+	  "power": 0.0,
+	  "type": "Fire"
+	},
+	"skyfall": {
+	  "animation_id": "skyfall",
+	  "damage_class": "Physical",
+	  "description": "Drops onto the foe from above, using the foe's Defense in place of the user's Attack when calculating damage.",
+	  "name": "Skyfall",
+	  "power": 65.0,
+	  "type": "Air",
+	  "uses_target_defense_as_attack": true
+	},
+	"slash": {
+	  "animation_id": "slash",
+	  "damage_class": "Physical",
+	  "description": "Slashes the foe with a sharp attack.",
+	  "name": "Slash",
+	  "power": 70.0,
+	  "type": "Normal"
+	},
+	"sleep_off": {
+	  "animation_id": "sleep_off",
+	  "cures_conditions": true,
+	  "damage_class": "Status",
+	  "description": "Cures all of the user's conditions, then puts the user to sleep.",
+	  "name": "Sleep Off",
+	  "power": 0.0,
+	  "self_condition": "Asleep",
+	  "type": "Normal"
+	},
+	"sleep_swing": {
+	  "animation_id": "sleep_swing",
+	  "damage_class": "Physical",
+	  "description": "A wild sleeping attack that can only be used while asleep. Has a 20% chance to lower the foe's Defense by 1 stage.",
+	  "name": "Sleep Swing",
+	  "power": 75.0,
+	  "requires_user_condition": "Asleep",
+	  "target_stat_change_chance": 0.2,
+	  "target_stat_changes": [
+		{
+		  "amount": -0.1,
+		  "stat": "defense"
+		}
+	  ],
+	  "type": "Normal"
+	},
+	"sleep_talk": {
+	  "animation_id": "sleep_talk",
+	  "damage_class": "Special",
+	  "description": "Attacks through sleep with a weak burst of energy. Can only be used while the user is asleep.",
+	  "name": "Sleep Talk",
+	  "power": 20.0,
+	  "requires_user_condition": "Asleep",
+	  "type": "Normal"
+	},
+	"smite": {
+	  "animation_id": "smite",
+	  "condition": "Condemned",
+	  "condition_chance": 0.2,
+	  "damage_class": "Special",
+	  "description": "Smites the foe with radiant power. Has a 20% chance to condemn the foe.",
+	  "name": "Smite",
+	  "power": 80.0,
+	  "type": "Light"
+	},
+	"snore": {
+	  "animation_id": "sleep_talk",
+	  "condition": "Flinch",
+	  "condition_chance": 0.2,
+	  "damage_class": "Special",
+	  "description": "A noisy attack that can only be used while asleep. Has a 20% chance to make the foe flinch.",
+	  "name": "Snore",
+	  "power": 50.0,
+	  "requires_user_condition": "Asleep",
+	  "type": "Normal"
+	},
+	"soak": {
+	  "animation_id": "soak",
+	  "condition": "Frozen",
+	  "condition_chance": 0.15,
+	  "damage_class": "Special",
+	  "description": "Soaks the foe with chilling water. Has a 15% chance to freeze the foe.",
+	  "name": "Soak",
+	  "power": 40.0,
+	  "type": "Water"
+	},
+	"solar_ray": {
+	  "animation_id": "solar_ray",
+	  "condition": "Burned",
+	  "condition_chance": 0.2,
+	  "damage_class": "Special",
+	  "description": "Focuses sunlight into a powerful ray. Has a 20% chance to burn the foe.",
+	  "name": "Solar Ray",
+	  "power": 80.0,
+	  "type": "Plant"
+	},
+	"squawk": {
+	  "animation_id": "squawk",
+	  "damage_class": "Status",
+	  "description": "Startles the foe with a piercing squawk, lowering their Defense by 1 stage.",
+	  "name": "Squawk",
+	  "power": 0.0,
+	  "target_stat_changes": [
+		{
+		  "amount": -0.1,
+		  "stat": "defense"
+		}
+	  ],
+	  "type": "Air"
+	},
+	"stare": {
+	  "animation_id": "stare",
+	  "damage_class": "Status",
+	  "description": "Fixes the foe with a psychic stare, lowering their Defense by 1 stage.",
+	  "name": "Stare",
+	  "power": 0.0,
+	  "target_stat_changes": [
+		{
+		  "amount": -0.1,
+		  "stat": "defense"
+		}
+	  ],
+	  "type": "Psychic"
+	},
+	"sun_chorus": {
+	  "animation_id": "sun_chorus",
+	  "damage_class": "Status",
+	  "description": "Sings a scorching chorus that lowers the foe's Special Defense by 3 stages. During Harsh Sunlight, it also infatuates the foe.",
+	  "name": "Sun Chorus",
+	  "power": 0.0,
+	  "target_stat_changes": [
+		{
+		  "amount": -0.3,
+		  "stat": "special_defense"
+		}
+	  ],
+	  "type": "Fire",
+	  "weather_target_condition": {
+		"condition": "Infatuated",
+		"condition_chance": 1.0,
+		"weather": "Harsh Sunlight"
+	  }
+	},
+	"swarm": {
+	  "animation_id": "swarm",
+	  "charge_multiplier": 2.0,
+	  "charge_type": "Bug",
+	  "damage_class": "Status",
+	  "description": "Gathers a swarm around the user, doubling the power of their next Bug-type attack.",
+	  "name": "Swarm",
+	  "power": 0.0,
+	  "type": "Bug"
+	},
+	"swoop": {
+	  "animation_id": "swoop",
+	  "damage_class": "Physical",
+	  "description": "Swoops down on the foe with increased priority.",
+	  "name": "Swoop",
+	  "power": 40.0,
+	  "priority": 1.0,
+	  "type": "Air"
+	},
+	"synaptic_bloom": {
+	  "animation_id": "synaptic_bloom",
+	  "damage_class": "Special",
+	  "description": "Triggers a bloom of psychic energy, increasing in power from 80 to 100 if the user has any stat change. During Rootmind, its power is 90, or 110 if the user has a stat change.",
+	  "name": "Synaptic Bloom",
+	  "power": 80.0,
+	  "power_if_user_has_stat_change": 100.0,
+	  "type": "Psychic",
+	  "weather_overrides": {
+		"Rootmind": {
+		  "power": 90.0,
+		  "power_if_user_has_stat_change": 110.0
+		}
+	  }
+	},
+	"torment": {
+	  "animation_id": "torment",
+	  "damage_class": "Status",
+	  "description": "Torments the foe, preventing them from using the same move twice in a row.",
+	  "name": "Torment",
+	  "power": 0.0,
+	  "torment_target": true,
+	  "type": "Dark"
+	},
+	"toxic_flare": {
+	  "damage_class": "Special",
+	  "description": "Ignites a toxic flare. Its power is increased by 50% against a poisoned foe, whose poison is then replaced with a burn.",
+	  "name": "Toxic Flare",
+	  "power": 85.0,
+	  "power_multiplier_if_target_conditions": {
+		"conditions": [
+          "Poisoned"
+		],
+		"multiplier": 1.5
+	  },
+	  "replace_target_condition_after_damage": {
+		"from": "Poisoned",
+		"to": "Burned"
+	  },
+	  "type": "Fire"
+	},
+	"veil": {
+	  "animation_id": "veil",
+	  "damage_class": "Status",
+	  "description": "Raises a ghostly veil that protects the user from attacks this turn. Repeated use is less likely to succeed.",
+	  "name": "Veil",
+	  "power": 0.0,
+	  "protect": true,
+	  "type": "Ghost"
+	},
+	"vicegrip": {
+	  "animation_id": "vicegrip",
+	  "damage_class": "Physical",
+	  "description": "Crushes the foe in a powerful grip and prevents them from voluntarily switching out for 2 turns.",
+	  "name": "Vicegrip",
+	  "power": 80.0,
+	  "prevent_voluntary_switch_turns": 2.0,
+	  "type": "Plant"
+	},
+	"vital_cognition": {
+	  "animation_id": "vital_cognition",
+	  "cure_or_stat_change": [
+		{
+		  "amount": 0.2,
+		  "stat": "special_attack"
+		}
+	  ],
+	  "damage_class": "Status",
+	  "description": "Heals 25% of the user's maximum HP. If the user has a condition, it cures all removable conditions; otherwise, it raises Special Attack by 2 stages. During Rootmind, the healing increases to one third of maximum HP.",
+	  "fixed_max_hp_heal_fraction": 0.25,
+	  "name": "Vital Cognition",
+	  "power": 0.0,
+	  "type": "Psychic",
+	  "weather_overrides": {
+		"Rootmind": {
+		  "fixed_max_hp_heal_fraction": 0.3333333333
+		}
+	  }
+	},
+	"warning_flare": {
+	  "animation_id": "warning_flare",
+	  "damage_class": "Status",
+	  "description": "Displays a toxic warning, raising the user's Special Attack and Speed by 1 stage. For 2 turns, physical attacks against the user poison the attacker.",
+	  "name": "Warning Flare",
+	  "power": 0.0,
+	  "reactive_poison_damage_class": "Physical",
+	  "reactive_poison_turns": 2.0,
+	  "stat_changes": [
+		{
+		  "amount": 0.1,
+		  "stat": "special_attack"
+		},
+		{
+		  "amount": 0.1,
+		  "stat": "speed"
+		}
+	  ],
+	  "type": "Poison"
+	},
+	"whirlwind": {
+	  "animation_id": "whirlwind",
+	  "damage_class": "Status",
+	  "description": "Whips up a whirlwind that forces the foe to switch with a random party member.",
+	  "force_random_opponent_switch": true,
+	  "name": "Whirlwind",
+	  "power": 0.0,
+	  "type": "Air"
+	},
+	"wingbeat": {
+	  "animation_id": "wingbeat",
+	  "damage_class": "Physical",
+	  "description": "Batters the foe with powerful wings. Has a 20% chance to lower the foe's Defense by 1 stage.",
+	  "name": "Wingbeat",
+	  "power": 85.0,
+	  "target_stat_change_chance": 0.2,
+	  "target_stat_changes": [
+		{
+		  "amount": -0.1,
+		  "stat": "defense"
+		}
+	  ],
+	  "type": "Air"
+	}
+  },
+  "weather": {
+	"Blood Moon": {
+	  "damage_multipliers": {
+		"Dark": 1.25,
+		"Light": 0.75,
+		"Mystic": 0.75,
+		"Normal": 0.75
+	  },
+	  "damaging_type_condition": {
+		"chance": 0.2,
+		"condition": "Burned",
+		"type": "Ghost"
+	  },
+	  "damaging_type_user_heal": {
+		"max_hp_fraction": 0.1,
+		"type": "Dark"
+	  },
+	  "duration": 3.0
+	},
+	"Celestial Chorus": {
+	  "damage_multipliers": {
+		"Dark": 0.5,
+		"Ghost": 0.5,
+		"Light": 1.5
+	  },
+	  "duration": 3.0,
+	  "prayer_healing_multiplier": 1.5
+	},
+	"Fey Gardens": {
+	  "damage_multipliers": {
+		"Mystic": 1.25
+	  },
+	  "duration": 3.0,
+	  "first_infatuation_bonus_stacks": 1.0,
+	  "healing_types": [
+		"Plant",
+        "Mystic"
+	  ],
+	  "protected_stats": [
+		"special_attack",
+        "special_defense"
+	  ],
+	  "protected_types": [
+		"Plant",
+        "Mystic"
+	  ],
+	  "typed_healing_bonus_fraction": 0.1
+	},
+	"Harsh Sunlight": {
+	  "damage_multipliers": {
+		"Fire": 1.5,
+		"Ice": 0.5,
+		"Plant": 1.5,
+		"Water": 0.5
+	  },
+	  "duration": 3.0
+	},
+	"Rootmind": {
+	  "duration": 3.0,
+	  "plant_end_turn_heal_fraction": 0.0625
+	}
+  }
 }

@@ -1,0 +1,33 @@
+{
+  "duration": 1.0,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Music_Notes.png",
+      "instance_id": "effect",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "head",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.5,
+      "type": "spawn_sprite"
+    },
+    {
+      "battler": "user",
+      "duration": 0.5,
+      "magnitude": 8.0,
+      "time": 0.5,
+      "type": "shake_battler"
+    }
+  ],
+  "format_version": 1,
+  "id": "croak"
+}

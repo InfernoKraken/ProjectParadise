@@ -474,7 +474,7 @@ func _initialize() -> void:
 	assert(gloomquito["egg_groups"] == ["Bug", "Demonic"] and vamprick["egg_groups"] == ["Bug", "Demonic"], "The Skeeter line must retain Bug/Demonic egg groups.")
 	assert(int(skeeter["base_exp"]) == int(slumboth["base_exp"]) and int(gloomquito["base_exp"]) == int(hangrowl["base_exp"]) and int(vamprick["base_exp"]) == int(swoleth["base_exp"]), "The Skeeter line must match the Slumboth line's EXP values by stage.")
 	assert(int(battle.battle_data["moves"]["swoop"]["priority"]) == 1 and int(battle.battle_data["moves"]["night_dart"]["priority"]) == 1, "Swoop and Night Dart must share standard move priority so Speed breaks ties.")
-	assert(int(battle.battle_data["weather"]["Blood Moon"]["duration"]) == 5, "Blood Moon must last five turns.")
+	assert(int(battle.battle_data["weather"]["Blood Moon"]["duration"]) == 3, "Blood Moon must last three turns.")
 	var gloom_user: Dictionary = battle.create_fakemon(skeeter)
 	var gloom_target: Dictionary = battle.create_fakemon(skeeter)
 	battle._ensure_condition_fields(gloom_user)
@@ -495,7 +495,7 @@ func _initialize() -> void:
 	battle._apply_status_move(gloom_user, gloom_target, battle.battle_data["moves"]["gather"], true)
 	assert(gloom_user["condition_immunities"] == ["Confusion", "Flinch"], "Gather must prepare next-turn immunity to confusion and flinching.")
 	battle._set_weather("Blood Moon")
-	assert(battle.weather_turns_remaining == 5, "Blood Moon must initialize its full five-turn duration.")
+	assert(battle.weather_turns_remaining == 3, "Blood Moon must initialize its full three-turn duration.")
 
 	var dartlet: Dictionary = battle.battle_data["fakemon"].filter(func(mon: Dictionary) -> bool: return mon["name"] == "Dartlet")[0]
 	var croacoa: Dictionary = battle.battle_data["fakemon"].filter(func(mon: Dictionary) -> bool: return mon["name"] == "Croacoa")[0]
@@ -560,6 +560,25 @@ func _initialize() -> void:
 	assert(battle._can_use_move(sleeper, battle.battle_data["moves"]["sleep_talk"]), "Sleep-only moves must act through sleep.")
 	var gnaw_result: Dictionary = battle._calculate_move_damage(sleeper, sleep_target, battle.battle_data["moves"]["gnaw"])
 	assert(int(gnaw_result["hits"]) >= 2 and int(gnaw_result["hits"]) <= 5, "Gnaw must hit between two and five times.")
+	var hit_markers: Array[String] = []
+	battle.battle_animator.animations_enabled = false
+	battle.battle_animator.move_animation_marker.connect(func(marker_name: String) -> void: hit_markers.append(marker_name))
+	var three_hit_move: Dictionary = battle.battle_data["moves"]["gnaw"].duplicate(true)
+	three_hit_move["min_hits"] = 3
+	three_hit_move["max_hits"] = 3
+	three_hit_move["hit_chance"] = 1.0
+	battle.player = sleeper
+	battle.opponent = sleep_target
+	battle.player_hp = 100
+	battle.opponent_hp = 100
+	battle.party_hp.clear()
+	battle.party_hp.append(100)
+	battle.opponent_party_hp.clear()
+	battle.opponent_party_hp.append(100)
+	var multi_hit_result: Dictionary = await battle._resolve_damage_hits(sleeper, sleep_target, three_hit_move, false, battle.player_square, battle.opponent_square)
+	assert(int(multi_hit_result["hits"]) == 3 and hit_markers == ["hit_1", "hit_2", "hit_3"], "Each multi-hit strike must resolve and emit a separate ordered hit marker.")
+	assert(battle.opponent_hp == 100 - int(multi_hit_result["damage"]), "Multi-hit damage must be applied one hit at a time to the target HP state.")
+	battle.battle_animator.animations_enabled = true
 	battle.player = sleeper
 	battle.opponent = sleep_target
 	battle.player_hp = 100

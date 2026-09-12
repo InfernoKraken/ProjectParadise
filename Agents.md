@@ -8,3 +8,5 @@ Rules:
 - This is a 2d game, but the map should be 3d where the sprites are rendered for layer and movement purposes only. A 2.5d game in terminology.
 - Use Pokemon calculations for the battle system, unless otherwise specified.
 - Godot is now available on PATH as godot. When making changes, use Godot's command-line tools where appropriate to validate the project for parse, import, scene, or runtime errors rather than relying exclusively on static inspection.
+- For new features, try to use existing systems when applicable. It's better to not have to re-invent extra mechanics if not needed. Use a conservative approach to managing complexity. It's easier to build upon a strong foundation then refactor a weak one.
+- To address the Windows user:// logging crash in Godot before loading a project, try launching Godot with the command line option --rendering-driver opengl3, as this may help bypass issues related to Vulkan compatibility.

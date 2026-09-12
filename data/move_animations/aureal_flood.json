@@ -1,0 +1,90 @@
+{
+  "duration": 2.75,
+  "events": [
+    {
+      "color": "e8df8c",
+      "duration": 0.15,
+      "opacity": 0.4,
+      "time": 0.5,
+      "type": "background_tint"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Base_Light.png",
+      "instance_id": "effect",
+      "is_behind": true,
+      "opacity": 0.75,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          -20.0,
+          10.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 2.0,
+      "sprite_sheet": null,
+      "time": 0.55,
+      "type": "spawn_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Beam_Water.png",
+      "duration": 0.8,
+      "from": {
+        "anchor": "mouth",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "instance_id": "beam",
+      "layer": "above_battlers",
+      "opacity": 1.0,
+      "time": 0.68,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "type": "beam",
+      "width": 90.01
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Water.png",
+      "duration": 0.3,
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.7,
+      "type": "impact_sprite"
+    },
+    {
+      "duration": 0.25,
+      "instance_id": "effect",
+      "opacity": 0.0,
+      "time": 1.75,
+      "type": "fade_sprite"
+    },
+    {
+      "duration": 0.2,
+      "time": 2.55,
+      "type": "restore_background"
+    }
+  ],
+  "format_version": 1.0,
+  "id": "aureal_flood"
+}

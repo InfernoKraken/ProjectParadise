@@ -1,0 +1,49 @@
+{
+  "duration": 2.65,
+  "events": [
+    {
+      "color": "eeeec2",
+      "duration": 0.15,
+      "opacity": 0.4,
+      "time": 0.5,
+      "type": "background_tint"
+    },
+    {
+      "battler": "user",
+      "direction": "vertical",
+      "distance": -60.0,
+      "duration": 1.0,
+      "time": 0.65,
+      "type": "move_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Base_Light_Halo.png",
+      "duration": 0.5,
+      "instance_id": "impact",
+      "is_behind": true,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          60.0
+        ]
+      },
+      "rotation": 3.0,
+      "scale": 2.0,
+      "sprite_sheet": null,
+      "time": 1.65,
+      "type": "impact_sprite"
+    },
+    {
+      "battler": "target",
+      "duration": 0.5,
+      "magnitude": 8.0,
+      "time": 2.15,
+      "type": "shake_battler"
+    }
+  ],
+  "format_version": 1,
+  "id": "brilliant_light"
+}

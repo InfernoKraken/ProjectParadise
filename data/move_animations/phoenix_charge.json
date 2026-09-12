@@ -1,0 +1,85 @@
+{
+  "duration": 1.85,
+  "events": [
+    {
+      "color": "23100c",
+      "duration": 0.15,
+      "opacity": 0.4,
+      "time": 0.5,
+      "type": "background_tint"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Projectile_Phoenix.png",
+      "instance_id": "effect",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.65,
+      "type": "spawn_sprite"
+    },
+    {
+      "duration": 0.5,
+      "easing": "linear",
+      "instance_id": "effect",
+      "time": 0.65,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "instance_id": "effect",
+      "time": 1.15,
+      "type": "destroy_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Big_Blaze.png",
+      "duration": 0.3,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.15,
+      "type": "impact_sprite"
+    },
+    {
+      "battler": "target",
+      "duration": 0.2,
+      "magnitude": 8.0,
+      "time": 1.2,
+      "type": "shake_battler"
+    },
+    {
+      "duration": 0.5,
+      "time": 1.25,
+      "type": "restore_background"
+    }
+  ],
+  "format_version": 1,
+  "id": "phoenix_charge"
+}

@@ -1,0 +1,33 @@
+{
+  "duration": 1.25,
+  "events": [
+    {
+      "color": "ffffff",
+      "duration": 0.15,
+      "opacity": 0.7,
+      "time": 0.5,
+      "type": "background_tint"
+    },
+    {
+      "battler": "target",
+      "duration": 0.2,
+      "magnitude": 8.0,
+      "time": 0.65,
+      "type": "shake_battler"
+    },
+    {
+      "battler": "user",
+      "duration": 0.2,
+      "magnitude": 8.0,
+      "time": 0.65,
+      "type": "shake_battler"
+    },
+    {
+      "duration": 0.2,
+      "time": 1.05,
+      "type": "restore_background"
+    }
+  ],
+  "format_version": 1,
+  "id": "cacophony"
+}

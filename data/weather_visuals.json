@@ -1,0 +1,1037 @@
+{
+  "format_version": 2,
+  "weathers": {
+    "Blood Moon": {
+      "background_overlay": {
+        "asset": "res://assets/battle/weather/bloodmoon_object_massive.png",
+        "mirror_x": false,
+        "mirror_y": false,
+        "modulate": "#ffffff",
+        "opacity": 1.0,
+        "scale": 0.31,
+        "turns": "all",
+        "x_offset": 0.0,
+        "y_offset": -376.0
+      },
+      "lighting_effects": [
+        {
+          "anchor": "SCREEN_CENTER",
+          "color": "#3a0924",
+          "flicker_enabled": true,
+          "mode": "persistent",
+          "opacity": 0.5,
+          "type": "wash"
+        },
+        {
+          "anchor": "SCREEN_TOP",
+          "color": "#ff496a",
+          "count": 1.0,
+          "mode": "persistent",
+          "opacity": 0.42,
+          "size": 840.0,
+          "type": "orb"
+        },
+        {
+          "anchor": "RANDOM_SCREEN",
+          "color": "#ef0101",
+          "count": 25.0,
+          "edge_softness": 0.8,
+          "flicker_enabled": true,
+          "flicker_interval": 1.0,
+          "flicker_max_alpha": 0.3,
+          "flicker_min_alpha": 0.0,
+          "opacity": 0.1,
+          "size": 50.0,
+          "turns": "all",
+          "type": "orb"
+        },
+        {
+          "anchor": "SCREEN_CENTER",
+          "color": "#3a0924",
+          "mode": "persistent",
+          "opacity": 0.5,
+          "turns": [
+            2,
+            3
+          ],
+          "type": "wash"
+        },
+        {
+          "anchor": "SCREEN_TOP",
+          "color": "#992943",
+          "count": 1.0,
+          "end_anchor": "ALLY_FIELD",
+          "end_width": 308.0,
+          "end_x_offset": 44.0,
+          "end_y_offset": 39.0,
+          "flicker_enabled": true,
+          "opacity": 0.2,
+          "start_x_offset": -14.0,
+          "start_y_offset": 183.0,
+          "turns": 3,
+          "type": "beam"
+        },
+        {
+          "anchor": "SCREEN_TOP",
+          "color": "#992943",
+          "count": 1.0,
+          "end_anchor": "ENEMY_FIELD",
+          "end_width": 76.0,
+          "end_x_offset": -24.0,
+          "flicker_enabled": true,
+          "flicker_interval": 2.0,
+          "opacity": 0.2,
+          "start_x_offset": 34.0,
+          "start_y_offset": 176.0,
+          "turns": 3,
+          "type": "beam"
+        }
+      ],
+      "particle_effects": [
+        {
+          "emit_max_count": 90,
+          "emit_rate": 2.0,
+          "emitter_anchor": "RANDOM_SCREEN",
+          "emitter_height": 0.0,
+          "emitter_mode": "screen",
+          "emitter_offset_x": 0.0,
+          "emitter_offset_y": 0.0,
+          "emitter_width": 0.0,
+          "flicker_enabled": true,
+          "flicker_min_alpha": 0.9,
+          "flicker_type": "individual",
+          "horizontal_drift": 0.0,
+          "movement_mode": "fall",
+          "offscreen_margin": 32.0,
+          "opacity_max": 1.0,
+          "opacity_min": 1.0,
+          "particle_lifetime": 45.01,
+          "particle_sprite": "bloodmoon_particle_ash",
+          "rotation": 0.0,
+          "rotation_mode": "random",
+          "rotation_speed": 6.0,
+          "scale_max": 0.51,
+          "scale_min": 0.01,
+          "speed": 20.0,
+          "turns": "all",
+          "type": "particle"
+        },
+        {
+          "emit_max_count": 9.0,
+          "emit_rate": 1.5,
+          "emitter_anchor": "RANDOM_SCREEN",
+          "emitter_height": 0.0,
+          "emitter_mode": "screen",
+          "emitter_offset_x": 0.0,
+          "emitter_offset_y": 0.0,
+          "emitter_width": 0.0,
+          "flicker_enabled": true,
+          "flicker_interval": 0.5,
+          "flicker_min_alpha": 0.3,
+          "flicker_type": "individual",
+          "horizontal_drift": 0.0,
+          "movement_mode": "rise",
+          "offscreen_margin": 32.0,
+          "opacity_max": 1.0,
+          "opacity_min": 1.0,
+          "particle_lifetime": 45.01,
+          "particle_sprite": "bloodmoon_particle_red",
+          "rotation": 0.0,
+          "rotation_mode": "fixed",
+          "rotation_speed": 6.0,
+          "scale_max": 0.51,
+          "scale_min": 0.01,
+          "speed": 25.0,
+          "turns": "all",
+          "type": "particle"
+        }
+      ],
+      "sprite_effects": [],
+      "turn_effects": [
+        {
+          "color": "#303030",
+          "duration": 3.0,
+          "loop": true,
+          "opacity": 0.15,
+          "type": "pulse"
+        }
+      ]
+    },
+    "Celestial Chorus": {
+      "background_overlay": {
+        "asset": "res://assets/battle/weather/celestial_chorus_object_massive.png",
+        "mirror_x": false,
+        "mirror_y": true,
+        "modulate": "#ffffff",
+        "opacity": 1.0,
+        "turns": 3,
+        "x_offset": 0.0,
+        "y_offset": -560.0
+      },
+      "lighting_effects": [
+        {
+          "color": "#ebeda5",
+          "count": 1.0,
+          "opacity": 0.2,
+          "turns": "all",
+          "type": "wash"
+        },
+        {
+          "anchor": "SCREEN_TOP",
+          "color": "#ffffff",
+          "count": 1.0,
+          "end_width": 331.0,
+          "end_y_offset": 0.0,
+          "opacity": 0.2,
+          "turns": "all",
+          "type": "beam",
+          "y_offset": -42.0
+        },
+        {
+          "anchor": "SCREEN_TOP",
+          "color": "#ffffff",
+          "count": 1.0,
+          "end_anchor": "ENEMY_FIELD",
+          "end_width": 170.0,
+          "flicker_enabled": true,
+          "opacity": 0.2,
+          "turns": "all",
+          "type": "beam",
+          "y_offset": -75.0
+        },
+        {
+          "anchor": "SCREEN_TOP",
+          "color": "#ffffff",
+          "count": 1.0,
+          "end_anchor": "ALLY_FIELD",
+          "end_width": 245.0,
+          "flicker_enabled": true,
+          "opacity": 0.2,
+          "turns": "all",
+          "type": "beam",
+          "y_offset": -116.0
+        },
+        {
+          "anchor": "SCREEN_TOP",
+          "color": "#ffffff",
+          "count": 1.0,
+          "end_anchor": "ALLY_FIELD",
+          "end_width": 668.0,
+          "flicker_enabled": true,
+          "opacity": 0.2,
+          "start_width": 127.0,
+          "turns": "all",
+          "type": "beam",
+          "y_offset": -116.0
+        },
+        {
+          "color": "#ebeda5",
+          "count": 1.0,
+          "opacity": 0.1,
+          "turns": 2,
+          "type": "wash"
+        }
+      ],
+      "particle_effects": [
+        {
+          "emit_max_count": 57.0,
+          "emit_rate": 0.9,
+          "emitter_anchor": "RANDOM_SCREEN",
+          "emitter_height": 0.0,
+          "emitter_mode": "screen",
+          "emitter_offset_x": 0.0,
+          "emitter_offset_y": 0.0,
+          "emitter_width": 0.0,
+          "flicker_enabled": true,
+          "flicker_interval": 1.5,
+          "flicker_min_alpha": 0.5,
+          "horizontal_drift": 2.0,
+          "movement_mode": "rise",
+          "offscreen_margin": 15.0,
+          "opacity_max": 1.0,
+          "opacity_min": 0.5,
+          "particle_lifetime": 7.01,
+          "particle_sprite": "celestial_chorus_particle",
+          "rotation": 0.0,
+          "rotation_mode": "fixed",
+          "rotation_speed": 0.0,
+          "scale_max": 1.0,
+          "scale_min": 0.41,
+          "speed": 100.0,
+          "turns": "all",
+          "type": "particle"
+        }
+      ],
+      "sprite_effects": [
+        {
+          "anchor": "SCREEN_TOP",
+          "asset_family": "celestial_chorus_clouds",
+          "lifetime": 3.0,
+          "mode": "ambient_spawn",
+          "scale": 2.11,
+          "scroll_speed": 25.0,
+          "spawn_count": 1.0,
+          "spawn_interval": 3.0,
+          "sprite_mode": "scrolling",
+          "turns": "all",
+          "variant_mode": "random",
+          "x_offset": 0.0,
+          "y_offset": -198.0
+        }
+      ],
+      "turn_effects": []
+    },
+    "Fey Gardens": {
+      "lighting_effects": [
+        {
+          "color": "#18406c",
+          "count": 1.0,
+          "opacity": 0.41,
+          "turns": "all",
+          "type": "wash"
+        },
+        {
+          "anchor": "SCREEN_TOP",
+          "color": "#b6deff",
+          "count": 1.0,
+          "edge_softness": 0.1,
+          "end_width": 3575.0,
+          "end_x_offset": 0.0,
+          "end_y_offset": 416.0,
+          "flicker_enabled": true,
+          "flicker_interval": 1.0,
+          "flicker_max_alpha": 0.1,
+          "flicker_min_alpha": 0.02,
+          "opacity": 0.1,
+          "start_y_offset": -87.0,
+          "turns": 3,
+          "type": "beam"
+        }
+      ],
+      "particle_effects": [
+        {
+          "emit_max_count": 50.0,
+          "emit_rate": 1.0,
+          "emitter_anchor": "SCREEN_CENTER",
+          "emitter_height": 0.0,
+          "emitter_mode": "screen",
+          "emitter_offset_x": 0.0,
+          "emitter_offset_y": 0.0,
+          "emitter_width": 0.0,
+          "flicker_enabled": true,
+          "flicker_interval": 0.5,
+          "flicker_min_alpha": 0.2,
+          "horizontal_drift": 43.0,
+          "movement_mode": "right",
+          "offscreen_margin": 32.0,
+          "opacity_max": 1.0,
+          "opacity_min": 1.0,
+          "particle_lifetime": 16.36,
+          "particle_sprite": "fey_gardens_particle",
+          "rotation": 0.0,
+          "rotation_mode": "random",
+          "rotation_speed": 4.0,
+          "scale_max": 1.0,
+          "scale_min": 0.31,
+          "speed": 100.0,
+          "turns": "all",
+          "type": "particle"
+        },
+        {
+          "emit_max_count": 50.0,
+          "emit_rate": 1.0,
+          "emitter_anchor": "SCREEN_CENTER",
+          "emitter_height": 0.0,
+          "emitter_mode": "screen",
+          "emitter_offset_x": 0.0,
+          "emitter_offset_y": 0.0,
+          "emitter_width": 0.0,
+          "flicker_enabled": true,
+          "flicker_interval": 0.5,
+          "flicker_min_alpha": 0.2,
+          "horizontal_drift": 43.0,
+          "movement_mode": "rise",
+          "offscreen_margin": 32.0,
+          "opacity_max": 1.0,
+          "opacity_min": 1.0,
+          "particle_lifetime": 16.36,
+          "particle_sprite": "fey_gardens_particle",
+          "rotation": 0.0,
+          "rotation_mode": "random",
+          "rotation_speed": 4.0,
+          "scale_max": 1.0,
+          "scale_min": 0.31,
+          "speed": 100.0,
+          "turns": "all",
+          "type": "particle"
+        }
+      ],
+      "sprite_effects": [
+        {
+          "anchor": "BACKGROUND_CENTER",
+          "asset_family": "fey_gardens_flower",
+          "lifetime": 1.5,
+          "mode": "persistent",
+          "scale": 1.0,
+          "spawn_count": 1.0,
+          "spawn_interval": 1.0,
+          "turns": "all",
+          "variant_mode": "random",
+          "x_offset": -558.0,
+          "y_offset": 9.0
+        },
+        {
+          "anchor": "BACKGROUND_CENTER",
+          "asset_family": "fey_gardens_flower",
+          "lifetime": 1.5,
+          "mode": "persistent",
+          "scale": 1.0,
+          "spawn_count": 1.0,
+          "spawn_interval": 1.0,
+          "turns": "all",
+          "variant_mode": "random",
+          "x_offset": 256.0,
+          "y_offset": 357.0
+        },
+        {
+          "anchor": "BACKGROUND_CENTER",
+          "asset_family": "fey_gardens_mushroom",
+          "lifetime": 1.5,
+          "mode": "persistent",
+          "scale": 1.0,
+          "spawn_count": 1.0,
+          "spawn_interval": 1.0,
+          "turns": "all",
+          "variant_mode": "random",
+          "x_offset": -552.0,
+          "y_offset": 357.0
+        },
+        {
+          "anchor": "BACKGROUND_CENTER",
+          "asset_family": "fey_gardens_mushroom",
+          "lifetime": 1.5,
+          "mode": "persistent",
+          "scale": 1.0,
+          "spawn_count": 1.0,
+          "spawn_interval": 1.0,
+          "turns": "all",
+          "variant_mode": "random",
+          "x_offset": 626.0,
+          "y_offset": 79.0
+        },
+        {
+          "anchor": "BACKGROUND_CENTER",
+          "asset_family": "fey_gardens_mushroom",
+          "lifetime": 1.5,
+          "mirror_x": true,
+          "mirror_y": false,
+          "mode": "persistent",
+          "scale": 1.0,
+          "spawn_count": 1.0,
+          "spawn_interval": 1.0,
+          "turns": "all",
+          "variant_mode": "random",
+          "x_offset": 300.0,
+          "y_offset": -29.0
+        },
+        {
+          "anchor": "BACKGROUND_CENTER",
+          "asset_family": "fey_gardens_fern",
+          "lifetime": 1.5,
+          "mode": "persistent",
+          "scale": 1.0,
+          "spawn_count": 1.0,
+          "spawn_interval": 1.0,
+          "turns": "all",
+          "variant_mode": "random",
+          "x_offset": 353.0,
+          "y_offset": 79.0
+        },
+        {
+          "anchor": "BACKGROUND_CENTER",
+          "asset_family": "fey_gardens_fern",
+          "lifetime": 1.5,
+          "mode": "persistent",
+          "scale": 1.0,
+          "spawn_count": 1.0,
+          "spawn_interval": 1.0,
+          "turns": "all",
+          "variant_mode": "random",
+          "x_offset": 353.0,
+          "y_offset": -172.0
+        },
+        {
+          "anchor": "BACKGROUND_CENTER",
+          "asset_family": "fey_gardens_fern",
+          "lifetime": 1.5,
+          "mode": "persistent",
+          "scale": 1.0,
+          "spawn_count": 1.0,
+          "spawn_interval": 1.0,
+          "turns": "all",
+          "variant_mode": "random",
+          "x_offset": -372.0,
+          "y_offset": 168.0
+        },
+        {
+          "anchor": "RANDOM_GROUND",
+          "asset_family": "fey_gardens_vine",
+          "lifetime": 1.5,
+          "mode": "ambient_spawn",
+          "scale": 1.0,
+          "scroll_direction": "right",
+          "scroll_speed": 60.0,
+          "spacing": 644.0,
+          "spawn_count": 1.0,
+          "spawn_interval": 1.0,
+          "sprite_mode": "scrolling",
+          "transition_overlap": 0.0,
+          "turns": 2,
+          "variant_mode": "random",
+          "x_offset": -10.0,
+          "y_offset": 335.0
+        }
+      ]
+    },
+    "Harsh Sunlight": {
+      "background_overlay": {
+        "anchor": "SCREEN_CENTER",
+        "asset": "res://assets/battle/weather/overlay_example.png",
+        "modulate": "#ffd45c",
+        "opacity": 0.32
+      },
+      "lighting_effects": [
+        {
+          "anchor": "SCREEN_CENTER",
+          "color": "#ffc83d",
+          "mode": "persistent",
+          "opacity": 0.16,
+          "type": "wash"
+        },
+        {
+          "color": "#fff3ad",
+          "count": 1.0,
+          "edge_softness": 0.78,
+          "end_anchor": "ALLY_FIELD",
+          "end_width": 1350.0,
+          "flicker_enabled": true,
+          "mode": "persistent",
+          "opacity": 0.2,
+          "spacing": 300.0,
+          "start_anchor": "SCREEN_TOP",
+          "start_width": 46.0,
+          "type": "beam"
+        },
+        {
+          "anchor": "ALLY_FIELD",
+          "height": 78.0,
+          "mode": "persistent",
+          "speed": 0.75,
+          "strength": 0.004,
+          "type": "heat_shimmer",
+          "width": 250.0,
+          "x_offset": 0.0,
+          "y_offset": 0.0
+        },
+        {
+          "anchor": "SCREEN_CENTER",
+          "color": "#fff4bd",
+          "count": 28.0,
+          "height": 330.0,
+          "horizontal_drift": 5.0,
+          "mode": "persistent",
+          "opacity": 0.34,
+          "size": 2.2,
+          "speed": 0.55,
+          "type": "particles",
+          "vertical_drift": -8.0,
+          "width": 820.0
+        },
+        {
+          "anchor": "SCREEN_TOP",
+          "color": "#fff3ad",
+          "count": 1.0,
+          "end_anchor": "ENEMY_FIELD",
+          "end_width": 1350.0,
+          "flicker_enabled": true,
+          "opacity": 0.2,
+          "spacing": 300.0,
+          "start_width": 46.0,
+          "turns": "all",
+          "type": "beam"
+        },
+        {
+          "anchor": "ENEMY_FIELD",
+          "color": "#ffffff",
+          "count": 1.0,
+          "opacity": 0.2,
+          "speed": 0.75,
+          "strength": 0.004,
+          "turns": "all",
+          "type": "heat_shimmer",
+          "width": 200.0,
+          "y_offset": 25.0
+        }
+      ],
+      "turn_effects": [
+        {
+          "color": "#fff2a1",
+          "duration": 0.8,
+          "interval": 2.4,
+          "loop": true,
+          "opacity": 0.1,
+          "type": "pulse"
+        }
+      ]
+    },
+    "Rootmind": {
+      "background_overlay": {
+        "asset": "res://assets/battle/weather/celestial_chorus_clouds_01.png",
+        "modulate": "#b26cb0",
+        "opacity": 0.3,
+        "turns": "all",
+        "x_offset": 0.0,
+        "y_offset": 0.0
+      },
+      "lighting_effects": [
+        {
+          "color": "#04180d",
+          "count": 1.0,
+          "opacity": 0.38,
+          "turns": "all",
+          "type": "wash"
+        },
+        {
+          "anchor": "ALLY_FIELD",
+          "color": "#ffffff",
+          "count": 1.0,
+          "height": 143.0,
+          "opacity": 0.035,
+          "speed": 0.18,
+          "turns": "all",
+          "type": "heat_shimmer",
+          "width": 358.0
+        },
+        {
+          "anchor": "ENEMY_FIELD",
+          "color": "#ffffff",
+          "count": 1.0,
+          "height": 143.0,
+          "opacity": 0.035,
+          "speed": 0.18,
+          "turns": "all",
+          "type": "heat_shimmer",
+          "width": 358.0
+        }
+      ],
+      "particle_effects": [
+        {
+          "emit_max_count": 32.0,
+          "emit_rate": 1.2,
+          "emitter_anchor": "RANDOM_SCREEN",
+          "emitter_height": 90.0,
+          "emitter_mode": "anchored",
+          "emitter_offset_x": 0.0,
+          "emitter_offset_y": 70.0,
+          "emitter_width": 520.0,
+          "flicker_enabled": true,
+          "flicker_min_alpha": 0.1,
+          "horizontal_drift": 8.0,
+          "movement_mode": "rise",
+          "offscreen_margin": 32.0,
+          "opacity_max": 0.65,
+          "opacity_min": 0.3,
+          "particle_lifetime": 3.4,
+          "particle_sprite": "fey_gardens_particle",
+          "rotation": 0.0,
+          "rotation_mode": "align_to_velocity",
+          "rotation_speed": 0.0,
+          "scale_max": 1.16,
+          "scale_min": 0.51,
+          "speed": 18.0,
+          "turns": "all",
+          "type": "particle"
+        },
+        {
+          "emit_max_count": 32.0,
+          "emit_rate": 0.3,
+          "emitter_anchor": "ALLY_FIELD",
+          "emitter_height": 0.0,
+          "emitter_mode": "anchored",
+          "emitter_offset_x": 0.0,
+          "emitter_offset_y": 0.0,
+          "emitter_width": 0.0,
+          "horizontal_drift": 0.0,
+          "movement_mode": "rise",
+          "offscreen_margin": 32.0,
+          "opacity_max": 0.6,
+          "opacity_min": 0.2,
+          "particle_lifetime": 5.01,
+          "particle_sprite": "fey_gardens_particle",
+          "rotation": 0.0,
+          "rotation_mode": "fixed",
+          "rotation_speed": 0.0,
+          "scale_max": 1.0,
+          "scale_min": 1.0,
+          "speed": 50.0,
+          "turns": "all",
+          "type": "particle"
+        },
+        {
+          "emit_max_count": 32.0,
+          "emit_rate": 0.3,
+          "emitter_anchor": "ENEMY_FIELD",
+          "emitter_height": 0.0,
+          "emitter_mode": "anchored",
+          "emitter_offset_x": 0.0,
+          "emitter_offset_y": 0.0,
+          "emitter_width": 0.0,
+          "horizontal_drift": 0.0,
+          "movement_mode": "rise",
+          "offscreen_margin": 32.0,
+          "opacity_max": 0.6,
+          "opacity_min": 0.2,
+          "particle_lifetime": 5.01,
+          "particle_sprite": "fey_gardens_particle",
+          "rotation": 0.0,
+          "rotation_mode": "fixed",
+          "rotation_speed": 0.0,
+          "scale_max": 1.0,
+          "scale_min": 1.0,
+          "speed": 50.0,
+          "turns": "all",
+          "type": "particle"
+        }
+      ],
+      "sprite_effects": [
+        {
+          "anchor": "FIELD_CENTER",
+          "asset_family": "rootmind_fungal_network",
+          "fade_out_causes": [
+            "weather_ends",
+            "duration"
+          ],
+          "fade_out_duration": 0.15,
+          "lifetime": 4.0,
+          "mirror_x": false,
+          "mirror_y": false,
+          "mode": "persistent",
+          "opacity": 0.42,
+          "scale": 0.82,
+          "signal_enabled": false,
+          "spawn_count": 1.0,
+          "spawn_interval": 4.0,
+          "thought_high_alpha": 0.8,
+          "thought_id": "A",
+          "thought_low_alpha": 0.28,
+          "turns": "all",
+          "variant_mode": "random",
+          "x_offset": 0.0,
+          "y_offset": 0.0
+        },
+        {
+          "anchor": "SCREEN_TOP",
+          "asset_family": "rootmind_fungal_network",
+          "fade_out_causes": [
+            "duration",
+            "weather_ends"
+          ],
+          "fade_out_duration": 0.15,
+          "lifetime": 4.0,
+          "mirror_x": false,
+          "mirror_y": false,
+          "mode": "persistent",
+          "opacity": 0.3,
+          "rotation": 82.0,
+          "scale": 0.46,
+          "spawn_count": 1.0,
+          "spawn_interval": 5.5,
+          "thought_high_alpha": 0.38,
+          "thought_id": "D",
+          "thought_low_alpha": 0.25,
+          "turns": "all",
+          "variant_mode": "random",
+          "x_offset": 290.0,
+          "y_offset": 28.0
+        },
+        {
+          "anchor": "ENEMY_FIELD",
+          "asset_family": "rootmind_fungal_network",
+          "fade_out_causes": [
+            "weather_ends",
+            "duration"
+          ],
+          "fade_out_duration": 0.15,
+          "lifetime": 4.0,
+          "mirror_x": false,
+          "mirror_y": false,
+          "mode": "persistent",
+          "opacity": 0.38,
+          "scale": 0.68,
+          "signal_enabled": false,
+          "spawn_count": 1.0,
+          "spawn_interval": 4.0,
+          "thought_high_alpha": 0.54,
+          "thought_id": "B",
+          "thought_low_alpha": 0.17,
+          "turns": "all",
+          "variant_mode": "random",
+          "x_offset": 0.0,
+          "y_offset": 110.0
+        },
+        {
+          "anchor": "ALLY_FIELD",
+          "asset_family": "rootmind_fungal_network",
+          "fade_out_causes": [
+            "weather_ends",
+            "duration"
+          ],
+          "fade_out_duration": 0.15,
+          "lifetime": 4.0,
+          "mirror_x": false,
+          "mirror_y": false,
+          "mode": "persistent",
+          "opacity": 0.38,
+          "scale": 0.68,
+          "signal_enabled": false,
+          "spawn_count": 1.0,
+          "spawn_interval": 4.0,
+          "thought_high_alpha": 0.44,
+          "thought_id": "C",
+          "thought_low_alpha": 0.17,
+          "turns": "all",
+          "variant_mode": "random",
+          "x_offset": 0.0,
+          "y_offset": 110.0
+        },
+        {
+          "anchor": "SCREEN_TOP",
+          "asset_family": "rootmind_fungal_network",
+          "fade_out_causes": [
+            "weather_ends",
+            "duration"
+          ],
+          "fade_out_duration": 0.15,
+          "lifetime": 4.0,
+          "mirror_x": false,
+          "mirror_y": false,
+          "mode": "persistent",
+          "opacity": 0.24,
+          "rotation": -78.0,
+          "scale": 0.42,
+          "spawn_count": 1.0,
+          "spawn_interval": 5.8,
+          "thought_high_alpha": 0.84,
+          "thought_id": "E",
+          "thought_low_alpha": 0.04,
+          "turns": "all",
+          "variant_mode": "random",
+          "x_offset": -305.0,
+          "y_offset": 36.0
+        },
+        {
+          "anchor": "RANDOM_GROUND",
+          "asset_family": "rootmind_fungal_network",
+          "fade_out_causes": [
+            "weather_ends",
+            "duration"
+          ],
+          "fade_out_duration": 0.15,
+          "lifetime": 4.0,
+          "mirror_x": false,
+          "mirror_y": false,
+          "mode": "persistent",
+          "opacity": 0.22,
+          "scale": 0.52,
+          "spawn_count": 1.0,
+          "spawn_interval": 6.2,
+          "thought_high_alpha": 0.76,
+          "thought_id": "F",
+          "thought_low_alpha": 0.15,
+          "turns": "all",
+          "variant_mode": "random",
+          "x_offset": 0.0,
+          "y_offset": -46.0
+        },
+        {
+          "anchor": "SCREEN_TOP",
+          "animation_ping_pong": true,
+          "asset_family": "rootmind_orchid1",
+          "fade_out_causes": [
+            "weather_ends",
+            "duration"
+          ],
+          "fade_out_duration": 2.0,
+          "frame_duration": 2.0,
+          "lifetime": 2.8,
+          "mode": "persistent",
+          "opacity": 1.0,
+          "scale": 0.68,
+          "signal_enabled": false,
+          "spawn_count": 4.0,
+          "spawn_interval": 5.2,
+          "sprite_mode": "animated",
+          "thought_high_alpha": 1.0,
+          "thought_id": "ORCHID_A",
+          "thought_low_alpha": 0.3,
+          "turns": 1,
+          "variant_mode": "fixed",
+          "visible_duration": 2.01,
+          "x_offset": -260.0,
+          "y_offset": 12.0
+        },
+        {
+          "anchor": "SCREEN_RIGHT",
+          "asset_family": "rootmind_orchid2",
+          "fade_out_causes": [
+            "weather_ends",
+            "duration"
+          ],
+          "fade_out_duration": 2.0,
+          "lifetime": 3.0,
+          "mode": "persistent",
+          "opacity": 1.0,
+          "scale": 0.62,
+          "signal_enabled": false,
+          "spawn_count": 1.0,
+          "spawn_interval": 6.1,
+          "thought_high_alpha": 0.7,
+          "thought_id": "ORCHID_B",
+          "thought_low_alpha": 0.5,
+          "turns": 2,
+          "variant_mode": "random",
+          "visible_duration": 2.11,
+          "x_offset": -61.0,
+          "y_offset": 4.0
+        },
+        {
+          "anchor": "SCREEN_LEFT",
+          "asset_family": "rootmind_orchid3",
+          "fade_out_causes": [
+            "weather_ends",
+            "duration"
+          ],
+          "fade_out_duration": 0.45,
+          "lifetime": 3.2,
+          "mode": "persistent",
+          "opacity": 1.0,
+          "scale": 0.76,
+          "spawn_count": 1.0,
+          "spawn_interval": 7.0,
+          "thought_high_alpha": 1.0,
+          "thought_id": "ORCHID_C",
+          "thought_low_alpha": 0.7,
+          "turns": 3,
+          "variant_mode": "random",
+          "x_offset": 18.0,
+          "y_offset": -118.0
+        }
+      ],
+      "thought_sequence": {
+        "initial_delay": 2.8,
+        "interval": 4.6,
+        "sequences": [
+          [
+            {
+              "duration": 0.28,
+              "targets": [
+                "A"
+              ]
+            },
+            {
+              "duration": 0.3,
+              "targets": [
+                "B"
+              ]
+            },
+            {
+              "duration": 0.32,
+              "targets": [
+                "C"
+              ]
+            },
+            {
+              "duration": 0.72,
+              "targets": [
+                "ORCHID_A"
+              ]
+            }
+          ],
+          [
+            {
+              "duration": 0.28,
+              "targets": [
+                "D"
+              ]
+            },
+            {
+              "duration": 0.3,
+              "targets": [
+                "C"
+              ]
+            },
+            {
+              "duration": 0.34,
+              "targets": [
+                "A"
+              ]
+            },
+            {
+              "duration": 0.7,
+              "particle_count": 5.0,
+              "particle_effect": 0.0,
+              "targets": [
+                "F"
+              ]
+            }
+          ],
+          [
+            {
+              "duration": 0.24,
+              "targets": [
+                "E"
+              ]
+            },
+            {
+              "duration": 0.28,
+              "targets": [
+                "B"
+              ]
+            },
+            {
+              "duration": 0.65,
+              "targets": [
+                "ORCHID_B"
+              ]
+            },
+            {
+              "duration": 0.18,
+              "targets": [
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "F",
+                "ORCHID_A",
+                "ORCHID_B",
+                "ORCHID_C"
+              ]
+            }
+          ]
+        ]
+      },
+      "turn_effects": [
+        {
+          "color": "#89ffd0",
+          "duration": 0.45,
+          "interval": 1.0,
+          "loop": true,
+          "opacity": 0.025,
+          "turns": "all",
+          "type": "pulse"
+        }
+      ]
+    }
+  }
+}
