@@ -8,6 +8,14 @@ const DATA_PATH := "res://data/battle_data.json"
 const EVOLVED_DATA_PATH := "res://data/evolved_fakemon.json"
 const EGG_GROUP_DATA_PATH := "res://data/egg_groups.json"
 const BATTLE_BACKGROUND := preload("res://assets/battle/battle_background.png")
+const DEFAULT_BATTLE_BACKGROUND_PATH := "res://assets/battle/battle_background.png"
+const SWIMMING_BATTLE_BACKGROUND_PATH := "res://assets/battle/battle_background_swimming.png"
+const BATTLE_BACKGROUND_PATHS := {
+	"Rainforest": DEFAULT_BATTLE_BACKGROUND_PATH,
+	"Indoor": "res://assets/battle/battle_background_indoor.png",
+	"Lush_Cave": "res://assets/battle/battle_background_cave.png",
+	"City": "res://assets/battle/battle_background_city.png",
+}
 const BATTLE_ANIMATOR_SCENE := preload("res://battle/vfx/battle_animator.tscn")
 const FAKEMON_ANIMATOR_SCRIPT := preload("res://battle/vfx/fakemon_animator.gd")
 const BATTLE_SPRITE_GEOMETRY := preload("res://battle/battle_sprite_geometry.gd")
@@ -395,7 +403,6 @@ func _build_battle_screen() -> void:
 	battle_screen.add_child(weather_visuals)
 	battle_animator = BATTLE_ANIMATOR_SCENE.instantiate() as BattleAnimator
 	battle_screen.add_child(battle_animator)
-
 	var opponent_parts := _create_combatant_panel(Vector2(55, 80), OPPONENT_ART_POSITION)
 	opponent_name_label = opponent_parts["name"]
 	opponent_hp_bar = opponent_parts["bar"]
@@ -483,6 +490,20 @@ func _build_battle_screen() -> void:
 	restart_button.disabled = true
 	switch_panel.hide()
 	action_panel.add_child(restart_button)
+
+
+func set_battle_background(map_type: String, is_water_encounter: bool = false) -> String:
+	var requested_path := SWIMMING_BATTLE_BACKGROUND_PATH if is_water_encounter else String(BATTLE_BACKGROUND_PATHS.get(map_type, DEFAULT_BATTLE_BACKGROUND_PATH))
+	var resolved_path := requested_path
+	var texture := load(requested_path) as Texture2D if ResourceLoader.exists(requested_path) else null
+	if texture == null:
+		resolved_path = DEFAULT_BATTLE_BACKGROUND_PATH
+		texture = BATTLE_BACKGROUND
+		push_warning("Battle background '%s' is unavailable; using '%s'." % [requested_path, DEFAULT_BATTLE_BACKGROUND_PATH])
+	var background := battle_screen.get_node_or_null("BattleBackgroundArt") as TextureRect
+	if background != null:
+		background.texture = texture
+	return resolved_path
 
 
 func _create_combatant_panel(panel_position: Vector2, square_position: Vector2) -> Dictionary:
@@ -1009,7 +1030,36 @@ func _apply_status_move(user: Dictionary, target: Dictionary, move: Dictionary, 
 			message_label.text += " %s's conditions were cured. " % user["name"]
 		else:
 			_apply_stat_changes(user, move["cure_or_stat_change"])
+	if move.has("weather_stat_effects"):
+		_apply_weather_stat_effect(user, move, user_is_player)
+	if move.has("random_stat_or_hp_boosts"):
+		_apply_random_stat_or_hp_boosts(user, move["random_stat_or_hp_boosts"], user_is_player)
 	_apply_fey_gardens_healing_bonus(user, move, user_is_player)
+
+
+func _apply_weather_stat_effect(user: Dictionary, move: Dictionary, user_is_player: bool) -> void:
+	var effects: Dictionary = move.get("weather_stat_effects", {})
+	var effect_key := "no_weather" if weather.is_empty() else weather
+	var effect: Dictionary = effects.get(effect_key, effects.get("other_weather", {}))
+	_apply_stat_changes(user, effect.get("stat_changes", []))
+	_heal_fixed_max_hp(user, float(effect.get("heal_max_hp_fraction", 0.0)), user_is_player)
+
+
+func _apply_random_stat_or_hp_boosts(user: Dictionary, config: Dictionary, user_is_player: bool) -> Array[String]:
+	var choices: Array[String] = ["hp"]
+	for stat: String in COMBAT_STATS:
+		choices.append(stat)
+	choices.shuffle()
+	var selected: Array[String] = []
+	var count := mini(int(config.get("count", 3)), choices.size())
+	for index in count:
+		var choice := choices[index]
+		selected.append(choice)
+		if choice == "hp":
+			_heal_fixed_max_hp(user, float(config.get("hp_heal_fraction", 0.1)), user_is_player)
+		else:
+			_apply_stat_changes(user, [{"stat": choice, "amount": float(config.get("stat_amount", 0.1))}])
+	return selected
 
 
 func _inflict_self_condition(user: Dictionary, condition: String, user_is_player: bool) -> void:
@@ -1189,7 +1239,21 @@ func _set_weather(weather_name: String) -> void:
 		player["fey_infatuation_bonus_used"] = false
 		opponent["fey_infatuation_bonus_used"] = false
 	message_label.text += " The weather became %s! " % weather_name
+	_apply_weather_presence_condition(player, true)
+	_apply_weather_presence_condition(opponent, false)
 	weather_visuals.show_weather(weather, weather_turns_remaining)
+
+
+func _apply_weather_presence_condition(mon: Dictionary, mon_is_player: bool) -> void:
+	if weather.is_empty():
+		return
+	var effect: Dictionary = battle_data.get("weather", {}).get(weather, {}).get("presence_type_condition", {})
+	if effect.is_empty() or not _fakemon_types(mon).has(String(effect.get("type", ""))):
+		return
+	_try_inflict_condition(mon, {
+		"condition": String(effect.get("condition", "")),
+		"condition_chance": float(effect.get("chance", 1.0))
+	}, mon, mon_is_player)
 
 
 func _move_effect_value(move: Dictionary, key: String, default_value: Variant) -> Variant:
@@ -1535,6 +1599,17 @@ func _apply_recoil(mon: Dictionary, player_side: bool, fraction: float) -> void:
 	message_label.text += " %s took %d recoil damage. " % [mon["name"], dealt]
 
 
+func _apply_max_hp_recoil(mon: Dictionary, player_side: bool, fraction: float) -> void:
+	if fraction <= 0.0:
+		return
+	if bool(mon.get("ignore_next_move_self_damage", false)):
+		message_label.text += " %s ignored the move's recoil. " % mon["name"]
+		return
+	var recoil := maxi(1, int(floor(float(mon["max_hp"]) * fraction)))
+	var dealt := _apply_hp_damage(mon, recoil, player_side)
+	message_label.text += " %s took %d recoil damage. " % [mon["name"], dealt]
+
+
 func _apply_after_damage_effects(user: Dictionary, target: Dictionary, move: Dictionary, user_is_player: bool, actual_damage: int = 1) -> void:
 	var dealt_damage := actual_damage > 0
 	if dealt_damage and int(target.get("reactive_poison_turns", 0)) > 0 and String(target.get("reactive_poison_damage_class", "")) == String(move.get("damage_class", "")):
@@ -1544,6 +1619,7 @@ func _apply_after_damage_effects(user: Dictionary, target: Dictionary, move: Dic
 	if dealt_damage and int(move.get("cannot_faint_turns", 0)) > 0:
 		_apply_cannot_faint(user, int(move["cannot_faint_turns"]))
 	_apply_recoil(user, user_is_player, float(move.get("recoil_current_hp_fraction", 0.0)))
+	_apply_max_hp_recoil(user, user_is_player, float(move.get("recoil_max_hp_fraction", 0.0)))
 	if bool(move.get("must_recharge", false)):
 		user["must_recharge"] = true
 	if bool(move.get("burn_user_party", false)) and user_is_player:
@@ -1623,16 +1699,18 @@ func _finish_turn_conditions() -> bool:
 	_process_scheduled_effects("end_of_turn")
 	_apply_rootmind_healing()
 	_apply_seeded_drain()
-	if String(player.get("condition", "")) == "Poisoned" and player_hp > 0:
-		var poison_fraction := float(battle_data["conditions"]["Poisoned"]["end_turn_hp_fraction"])
+	var player_condition_data: Dictionary = battle_data["conditions"].get(String(player.get("condition", "")), {})
+	if player_condition_data.has("end_turn_hp_fraction") and player_hp > 0:
+		var poison_fraction := float(player_condition_data["end_turn_hp_fraction"])
 		var player_damage := maxi(1, int(floor(float(player["max_hp"]) * poison_fraction)))
 		_apply_hp_damage(player, player_damage, true)
-		message_label.text += " %s lost %d HP from poison. " % [player["name"], player_damage]
-	if String(opponent.get("condition", "")) == "Poisoned" and opponent_hp > 0:
-		var poison_fraction := float(battle_data["conditions"]["Poisoned"]["end_turn_hp_fraction"])
+		message_label.text += " %s lost %d HP from %s. " % [player["name"], player_damage, String(player.get("condition", "")).to_lower()]
+	var opponent_condition_data: Dictionary = battle_data["conditions"].get(String(opponent.get("condition", "")), {})
+	if opponent_condition_data.has("end_turn_hp_fraction") and opponent_hp > 0:
+		var poison_fraction := float(opponent_condition_data["end_turn_hp_fraction"])
 		var opponent_damage := maxi(1, int(floor(float(opponent["max_hp"]) * poison_fraction)))
 		_apply_hp_damage(opponent, opponent_damage, false)
-		message_label.text += " %s lost %d HP from poison. " % [opponent["name"], opponent_damage]
+		message_label.text += " %s lost %d HP from %s. " % [opponent["name"], opponent_damage, String(opponent.get("condition", "")).to_lower()]
 	player["protected"] = false
 	opponent["protected"] = false
 	_tick_temporary_state(player)
@@ -1873,6 +1951,7 @@ func _select_battle_party_mon(next_index: int) -> void:
 	switch_panel.hide()
 	_update_active_player_ui()
 	message_label.text = "Go, %s! " % player["name"]
+	_apply_weather_presence_condition(player, true)
 	_set_action_buttons_disabled(false)
 	if not was_forced:
 		_set_action_buttons_disabled(true)
@@ -1912,6 +1991,7 @@ func _switch_opponent(next_index: int, forced_by_move: bool) -> void:
 	active_opponent_index = next_index
 	opponent = opponent_party[active_opponent_index]
 	opponent_hp = opponent_party_hp[active_opponent_index]
+	_apply_weather_presence_condition(opponent, false)
 	opponent_was_replaced_this_action = true
 	_update_active_opponent_ui()
 	if forced_by_move:
@@ -2027,6 +2107,11 @@ func _calculate_damage(attacker: Dictionary, defender: Dictionary, move: Diction
 		attack = defense
 	defense = maxf(1.0, defense)
 	var power := _move_effect_float(move, "power", float(move["power"]))
+	var size_power: Dictionary = move.get("power_from_user_size", {})
+	if not size_power.is_empty():
+		var size_text := String(attacker.get("size", "0"))
+		var size_meters := size_text.split(" ")[0].to_float()
+		power = minf(size_meters * float(size_power.get("power_per_meter", 0.0)), float(size_power.get("maximum_power", INF)))
 	var raised_stat_power: Dictionary = move.get("raised_stat_power", {})
 	if not raised_stat_power.is_empty():
 		var checked_stat := String(raised_stat_power["stat"])

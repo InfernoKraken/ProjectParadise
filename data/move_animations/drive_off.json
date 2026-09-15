@@ -1,0 +1,46 @@
+{
+  "duration": 1.9,
+  "events": [
+    {
+      "battler": "user",
+      "direction": "vertical",
+      "distance": 60.0,
+      "duration": 0.2,
+      "time": 0.2,
+      "type": "move_battler"
+    },
+    {
+      "battler": "user",
+      "direction": "vertical",
+      "distance": -60.0,
+      "duration": 0.2,
+      "time": 0.6,
+      "type": "move_battler"
+    },
+    {
+      "battler": "user",
+      "direction": "toward_target",
+      "distance": 110.0,
+      "duration": 0.2,
+      "time": 1.0,
+      "type": "move_battler"
+    },
+    {
+      "battler": "target",
+      "duration": 0.2,
+      "magnitude": 8.0,
+      "time": 1.2,
+      "type": "shake_battler"
+    },
+    {
+      "battler": "target",
+      "direction": "away_from_target",
+      "distance": 60.0,
+      "duration": 0.5,
+      "time": 1.4,
+      "type": "move_battler"
+    }
+  ],
+  "format_version": 1,
+  "id": "drive_off"
+}

@@ -1,0 +1,51 @@
+{
+  "duration": 1.5,
+  "events": [
+    {
+      "battler": "user",
+      "direction": "toward_target",
+      "distance": 110.0,
+      "duration": 0.1,
+      "time": 0.5,
+      "type": "move_battler"
+    },
+    {
+      "battler": "target",
+      "duration": 0.5,
+      "magnitude": 80.0,
+      "time": 0.55,
+      "type": "shake_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Body_Slam.png",
+      "duration": 0.3,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.56,
+      "tint": "#FFFFFF",
+      "type": "impact_sprite"
+    },
+    {
+      "battler": "user",
+      "direction": "toward_target",
+      "distance": 1.0,
+      "duration": 0.2,
+      "time": 0.6,
+      "type": "move_battler"
+    }
+  ],
+  "format_version": 1,
+  "id": "body_slam"
+}

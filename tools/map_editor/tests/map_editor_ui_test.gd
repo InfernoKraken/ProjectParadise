@@ -50,6 +50,7 @@ func _initialize() -> void:
 	assert(editor.document.data.objects[-1].type=="building.medical_ward", "Medical ward exteriors must be placeable on any outdoor map.")
 	editor.selected_palette_entry="npc.generic";editor._add_palette_object_at(Vector2(0,1))
 	assert(editor.document.data.objects[-1].type=="npc.generic" and editor.document.data.objects[-1].dialogue.size()==1,"Dialogue-only NPCs must be placeable on every map.")
+	assert(editor.inspector.find_child("NpcSprite",true,false)!=null and editor.inspector.find_child("NpcColor",true,false)!=null,"NPC inspectors must expose the runtime sprite and fallback-color fields.")
 	editor.selected_palette_entry="npc.opponent";editor._add_palette_object_at(Vector2(0,-1))
 	var trainer_placement:Dictionary=editor.document.data.objects[-1];var trainer_definition:Dictionary=editor._trainer_definition(trainer_placement)
 	assert(trainer_placement.type=="npc.opponent" and not String(trainer_placement.get("trainer_id","")).is_empty() and not trainer_placement.has("team"),"Trainer drops must serialize a stable trainer reference rather than duplicating roster data in the map.")
@@ -60,6 +61,7 @@ func _initialize() -> void:
 	assert(legacy_trainers[0].path=="$.trainers[0]" and legacy_trainers[0].universal_type=="npc.opponent","Legacy trainers must expose their whole record to the team inspector.")
 	editor._new_document()
 	assert(editor.document.kind=="outdoor" and editor.document.data.map_metadata.id=="new_map" and editor.document.data.objects is Array and editor.document.data.outdoor_connections is Array,"New Map must create a complete metadata-driven universal map, not a filename-limited route fragment.")
+	assert(editor.document.data.water_species is Array and is_equal_approx(float(editor.document.data.water_encounter_chance),0.0),"New outdoor maps must initialize the runtime water-encounter fields.")
 	assert(editor._compatible_array_field(editor.catalog.by_id["tree.main"])=="objects" and editor._compatible_array_field(editor.catalog.by_id["npc.opponent"])=="objects","Universal new maps must accept vegetation and trainers immediately.")
 	var refs:={"root":"old_map.json","maps":{"old_map":"old_map.json"},"connections":[{"destination_map":"old_map.json"}]}
 	assert(editor._replace_filename_references(refs,"old_map.json","renamed_map.json") and refs.root=="renamed_map.json" and refs.maps.has("renamed_map") and refs.connections[0].destination_map=="renamed_map.json","Map rename must update index keys and nested destination references.")
@@ -70,6 +72,7 @@ func _initialize() -> void:
 	# Restore the route and verify the two rectangle schemas are emitted exactly.
 	editor.document=editor.MapDocumentRef.load_file(editor.map_directory.path_join("eastern_rainforest_route.json"))
 	editor._refresh_all()
+	assert(editor.metadata_box.find_child("WaterEncounterChance",true,false)!=null,"Outdoor metadata must expose the runtime water encounter probability.")
 	var authored_cell_count:=0
 	for terrain_entry in editor.document.data.terrain_tiles:authored_cell_count+=terrain_entry.get("positions",[]).size()+(1 if terrain_entry.has("position") else 0)
 	assert(editor.editor_objects.filter(func(object):return object.field=="terrain_tiles").size()==authored_cell_count,"Grouped canonical terrain positions must expand into individually selectable canvas cells.")
@@ -139,6 +142,10 @@ func _initialize() -> void:
 	assert(not floor_object.is_empty() and wall_count==3,"Serialized interior floor and wall blocks must appear as editable building tiles.")
 	assert(furnishing_count==editor.document.data.furnishings.size() and furnishing_count>=4,"Every serialized rainforest-house furnishing must appear in the editor.")
 	assert(editor.canvas._draw_rank(floor_object)==0,"Floor blocks must remain below walls, props, markers, and cave objects.")
+	var overlapping_prop:Dictionary={"id":"prop-over-floor","field":"furnishings","position":floor_object.position,"size":Vector3.ONE,"shape":"point","footprint":Vector2.ONE}
+	var overlap_objects:Array[Dictionary]=[floor_object,overlapping_prop]
+	editor.canvas.set_document_objects(overlap_objects,editor._map_size())
+	assert(editor.canvas._hit_test(editor.canvas.world_to_screen(Vector2(floor_object.position.x,floor_object.position.z))).id=="prop-over-floor","Furniture and other foreground objects must be selected before an overlapping interior floor tile.")
 	var old_floor:Array=editor._get_path(String(floor_object.path)).duplicate()
 	assert(String(floor_object.texture).ends_with("tile_interior_floor_tiles.png"),"Interior floor rectangles must carry the real gameplay floor texture into the canvas renderer.")
 	editor._write_object_position(floor_object,Vector3(1,-0.1,2))

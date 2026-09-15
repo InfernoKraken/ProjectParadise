@@ -58,6 +58,9 @@ func _test_validation() -> void:
 	_check(issues.any(func(i): return i.path == "$.arrival_points.entry"), "Validation must reject malformed serialized arrival points.")
 	_check(issues.any(func(i): return i.message.contains("Duplicate connection id")), "Validation must reject duplicate connection ids.")
 	_check(issues.any(func(i): return i.message.contains("Duplicate link")), "Validation must reject duplicate warp links.")
+	var bad_water:=MapDocumentRef.from_text('{"water_species":[{"fakemon":"Moach","level":101}],"water_encounter_chance":1.5}',"unknown.json")
+	issues=MapValidatorRef.validate(bad_water)
+	_check(issues.any(func(i):return i.path=="$.water_species[0].level") and issues.any(func(i):return i.path=="$.water_encounter_chance"),"Water encounter levels and probabilities must use the same validation bounds as runtime.")
 
 func _test_bridge_validation() -> void:
 	var prefix:='{"format_version":1,"map_metadata":{},"origin":[0,0,0],"size":[10,10],"entry":[0,0,0],"return_warp":[0,0,0],"arrival_points":{},"outdoor_connections":[],"tall_grass_species":[],"grass_zones":[],"water_blocks":[],"sand_blocks":[],"objects":['

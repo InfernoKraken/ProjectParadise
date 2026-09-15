@@ -89,7 +89,7 @@
       ],
       "particle_effects": [
         {
-          "emit_max_count": 90,
+          "emit_max_count": 90.0,
           "emit_rate": 2.0,
           "emitter_anchor": "RANDOM_SCREEN",
           "emitter_height": 0.0,
@@ -581,6 +581,45 @@
           "loop": true,
           "opacity": 0.1,
           "type": "pulse"
+        }
+      ]
+    },
+    "Monsoon": {
+      "lighting_effects": [
+        {
+          "color": "#1c4972",
+          "count": 1.0,
+          "flicker_enabled": false,
+          "opacity": 0.41,
+          "turns": "all",
+          "type": "wash"
+        }
+      ],
+      "particle_effects": [
+        {
+          "emit_max_count": 60.0,
+          "emit_rate": 30.0,
+          "emitter_anchor": "SCREEN_TOP",
+          "emitter_height": 0.0,
+          "emitter_mode": "screen",
+          "emitter_offset_x": 0.0,
+          "emitter_offset_y": 0.0,
+          "emitter_width": 0.0,
+          "horizontal_drift": 0.0,
+          "movement_mode": "fall",
+          "offscreen_margin": 32.0,
+          "opacity_max": 1.0,
+          "opacity_min": 0.5,
+          "particle_lifetime": 3.01,
+          "particle_sprite": "monsoon_particle_rain",
+          "rotation": -12.0,
+          "rotation_mode": "fixed",
+          "rotation_speed": 5.0,
+          "scale_max": 1.0,
+          "scale_min": 0.31,
+          "speed": 600.0,
+          "turns": "all",
+          "type": "particle"
         }
       ]
     },

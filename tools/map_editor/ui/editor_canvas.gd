@@ -220,10 +220,16 @@ func _screen_rect(object: Dictionary) -> Rect2:
 
 func _hit_test(screen_position: Vector2) -> Dictionary:
 	var hit_objects:=objects.duplicate()
-	hit_objects.sort_custom(func(a,b):return _draw_rank(a)>_draw_rank(b))
+	# Selection mirrors visual stacking. Broad floor rectangles are deliberately
+	# last so furniture, NPCs, markers, and walls remain clickable above them.
+	hit_objects.sort_custom(func(a,b):return _selection_rank(a)>_selection_rank(b))
 	for object in hit_objects:
 		if _screen_rect(object).grow(5).has_point(screen_position): return object
 	return {}
+
+func _selection_rank(object:Dictionary)->int:
+	if String(object.get("field",""))=="floor_blocks":return -100
+	return _draw_rank(object)
 
 func _selected() -> Dictionary:
 	for object in objects:

@@ -338,5 +338,101 @@
 	  "Water",
       "Light"
 	]
+  },
+  {
+	"art_id": "Bravarb",
+	"attack": 70.0,
+	"base_exp": 85.0,
+	"catch_rate": 85.0,
+	"color": "eca331",
+	"defense": 55.0,
+	"description": "People often underestimate Bravarb. These otherwise large finned jungle Fakemon use their displays as warnings to stave off threats to their territory. Though they often prefer this to fighting to reserve energy, they have the means to drive attackers back. Bravarb are not social Fakemon, but they do strongly pair bond in ways conventionally 'higher' lifeforms fail to replicate. This doesn't mean they are overly malicious, far from it. Most of their aggression is tied to strong nesting and territorial instincts. And wishing to conserve energy doesn't make them slow or weak swimmers. Respect their space, or beware!",
+	"evolution_level": 16.0,
+	"evolves_from": "Moach",
+	"level": 5.0,
+	"male_ratio": 0.5,
+	"max_hp": 80.0,
+	"moveset_source": "Moach",
+	"name": "Bravarb",
+	"size": "0.7 m",
+	"special_attack": 25.0,
+	"special_defense": 70.0,
+	"speed": 65.0,
+	"types": [
+	  "Fighting",
+      "Water"
+	]
+  },
+  {
+	"art_id": "Regarbel",
+	"attack": 95.0,
+	"base_exp": 144.0,
+	"catch_rate": 75.0,
+	"color": "eca331",
+	"defense": 75.0,
+	"description": "It sails through warm rivers and lakes effortlessly. These large, colorful Fakemon are often particular what can and cannot exist within their waters, and will apply force when their presence alone is not enough. Hunting them in the past historically has proven impossible, as Regarbel will easily destroy ships and entire teams of spear fishers, as proven in the past, leading to the Fakemon ending up in a kind of cultural respect. Regarbel are widely understood as vain, though no conclusive study can prove that the Fakemon can recognize it's own splendor. What can be inferred is that it is smart enough to know how to effectively apply physics to accomplish it's agendas.",
+	"evolution_level": 20.0,
+	"evolves_from": "Bravarb",
+	"level": 5.0,
+	"male_ratio": 0.5,
+	"max_hp": 90.0,
+	"moveset_source": "Moach",
+	"name": "Regarbel",
+	"size": "2.5 m",
+	"special_attack": 60.0,
+	"special_defense": 75.0,
+	"speed": 85.0,
+	"types": [
+	  "Fighting",
+      "Water"
+	]
+  },
+  {
+	"art_id": "Chirial",
+	"attack": 70,
+	"base_exp": 100.0,
+	"catch_rate": 75.0,
+	"color": "dd66c8",
+	"defense": 50,
+	"description": "It's balloon like mantle is filled as the Fakemon grows to maturity, and it's internal organs are strong enough to be compressed without harm. It uses this property to escape into incredibly small spaces, which enables Chirial to set up more elaborate traps. It loves to grab and manipulate objects from it's raw curiosity, and each of it's arms can be occupied on a different task. If it likes something in particular, it's stripes grow thick and dark. If frightened, thin, showing it's lighter skin more prominently. The patterns swirl and scale, creating a mesmerizing language that apparently can be read not just by other members of it's species, but other cephalopods in general. The language is very difficult for humans to understand, and remains a mystery in it's complexity and intent.",
+	"evolution_level": 15,
+	"evolves_from": "Balopod",
+	"level": 5,
+	"male_ratio": 0.5,
+	"max_hp": 55,
+	"moveset_source": "Balopod",
+	"name": "Chirial",
+	"size": "0.3 m",
+	"special_attack": 65,
+	"special_defense": 55,
+	"speed": 65,
+	"types": [
+	  "Psychic",
+      "Poison"
+	]
+  },
+  {
+	"art_id": "Constilapod",
+	"attack": 80,
+	"base_exp": 165.0,
+	"catch_rate": 25.0,
+	"color": "dd66c8",
+	"defense": 65,
+	"description": "Constilapod gets it's name from the elaborate swirling and striping patterns on it's large mantle. These patterns can by slightly hypnotic, but evidence suggests they aren't used for hunting or mate selection, but rather, to convey abstractions the Fakemon deems to be fascinating. Constilapod cannot be easily ambushed, as it's eyes can focus on multiple objects at once. Even more odd, each of it's 8 arms has appeared to pick up a different specialization, and many believe that the arm itself takes purpose in it's chosen task. Researchers cannot currently agree on whether Constilapod possesses one decentralized mind, a central consciousness delegating unusually autonomous processing, or something for which neither description is appropriate.",
+	"evolution_level": 28,
+	"evolves_from": "Chirial",
+	"level": 5,
+	"male_ratio": 0.5,
+	"max_hp": 70,
+	"moveset_source": "Chirial",
+	"name": "Constilapod",
+	"size": "1.3 m",
+	"special_attack": 80,
+	"special_defense": 65,
+	"speed": 90,
+	"types": [
+	  "Psychic",
+      "Poison"
+	]
   }
 ]

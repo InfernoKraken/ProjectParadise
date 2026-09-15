@@ -15,16 +15,22 @@ static func validate(doc: MapDocument) -> Array[Dictionary]:
 			issues.append(_issue("error", "$." + field, "Missing required field."))
 			continue
 		_validate_shape(doc.data[field], String(expected[field]), "$." + field, issues)
-	if doc.data.has("tall_grass_species"):
-		for i in doc.data.tall_grass_species.size():
-			var encounter:Variant=doc.data.tall_grass_species[i]
+	for encounter_field in ["tall_grass_species","water_species"]:
+		if not doc.data.has(encounter_field):continue
+		if not doc.data[encounter_field] is Array:
+			issues.append(_issue("error","$."+encounter_field,"Expected an encounter array."));continue
+		for i in doc.data[encounter_field].size():
+			var encounter:Variant=doc.data[encounter_field][i]
+			var encounter_path:="$.%s[%d]"%[encounter_field,i]
 			if encounter is String:
-				if String(encounter).is_empty():issues.append(_issue("error","$.tall_grass_species[%d]"%i,"Species must be non-empty."))
+				if String(encounter).is_empty():issues.append(_issue("error",encounter_path,"Species must be non-empty."))
 			elif encounter is Dictionary:
-				if String(encounter.get("fakemon","")).is_empty():issues.append(_issue("error","$.tall_grass_species[%d].fakemon"%i,"Fakemon name is required."))
-				if not encounter.get("level") is int and not encounter.get("level") is float:issues.append(_issue("error","$.tall_grass_species[%d].level"%i,"Encounter level must be numeric."))
-				elif int(encounter.level)<1 or int(encounter.level)>100:issues.append(_issue("error","$.tall_grass_species[%d].level"%i,"Encounter level must be 1 to 100."))
-			else:issues.append(_issue("error","$.tall_grass_species[%d]"%i,"Expected a species name or Fakemon/level record."))
+				if String(encounter.get("fakemon","")).is_empty():issues.append(_issue("error",encounter_path+".fakemon","Fakemon name is required."))
+				if not encounter.get("level") is int and not encounter.get("level") is float:issues.append(_issue("error",encounter_path+".level","Encounter level must be numeric."))
+				elif int(encounter.level)<1 or int(encounter.level)>100:issues.append(_issue("error",encounter_path+".level","Encounter level must be 1 to 100."))
+			else:issues.append(_issue("error",encounter_path,"Expected a species name or Fakemon/level record."))
+	if doc.data.has("water_encounter_chance"):
+		_validate_shape(doc.data.water_encounter_chance,"chance","$.water_encounter_chance",issues)
 	_validate_bounds(doc, issues)
 	_validate_dangerous_overlaps(doc, issues)
 	_validate_connections(doc, issues)
@@ -113,6 +119,9 @@ static func _validate_shape(value: Variant, shape: String, path: String, issues:
 	match shape:
 		"number":
 			if not (value is int or value is float):issues.append(_issue("error",path,"Expected a number."))
+		"chance":
+			if not (value is int or value is float):issues.append(_issue("error",path,"Expected a numeric probability."))
+			elif float(value)<0.0 or float(value)>1.0:issues.append(_issue("error",path,"Probability must be between 0 and 1."))
 		"position3", "size3": _numeric_array(value, 3, path, issues)
 		"size2": _numeric_array(value, 2, path, issues)
 		"strings":

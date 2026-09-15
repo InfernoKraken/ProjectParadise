@@ -29,6 +29,7 @@ var found_list: VBoxContainer
 var evolution_preview:EvolutionVisualPreview
 var suppress := false
 var quit_dialog: ConfirmationDialog
+var color_picker: ColorPickerButton
 
 func _ready() -> void:
 	_build_ui()
@@ -86,7 +87,9 @@ func _build_general_tab() -> void:
 	_line(box, "art_id", "Art ID")
 	_line(box, "description", "Dex description", true)
 	_line(box, "size", "Size")
-	_line(box, "color", "Display color (hex)")
+	var color_row := HBoxContainer.new(); box.add_child(color_row); var color_label := Label.new(); color_label.text = "Display color (hex)"; color_label.custom_minimum_size.x = 160; color_row.add_child(color_label)
+	var color_input := LineEdit.new(); color_input.size_flags_horizontal = Control.SIZE_EXPAND_FILL; color_input.text_changed.connect(func(_text): _field_changed("color", color_input); _sync_color_picker()); fields["color"] = color_input; color_row.add_child(color_input)
+	color_picker = ColorPickerButton.new(); color_picker.text = "Sample"; color_picker.edit_alpha = false; color_picker.custom_minimum_size.x = 90; color_picker.color_changed.connect(_sample_display_color); color_row.add_child(color_picker)
 	for spec in [["level","Species level default"],["catch_rate","Catch rate"],["base_exp","Base experience"],["male_ratio","Male ratio (blank = genderless)"]]:
 		var input := LineEdit.new(); input.text_changed.connect(_number_text_changed.bind(spec[0], input)); fields[spec[0]] = input; _row(box, spec[1], input)
 	var types_row := HBoxContainer.new(); box.add_child(types_row); var types_label := Label.new(); types_label.text = "Types"; types_label.custom_minimum_size.x = 160; types_row.add_child(types_label)
@@ -129,7 +132,7 @@ func _build_evolution_tab() -> void:
 
 func _build_found_tab() -> void:
 	var box := _tab("Found In")
-	var note := Label.new(); note.text = "Assign this Fakemon to existing tall-grass maps at one exact level. These are the same map files used by runtime and the Map Editor.";note.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; box.add_child(note)
+	var note := Label.new(); note.text = "Assign this Fakemon to existing Tall Grass or Water encounter tables at one exact level. These are the same map files used by runtime and the Map Editor.";note.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; box.add_child(note)
 	found_list = VBoxContainer.new(); box.add_child(found_list)
 	var buttons:=HBoxContainer.new();box.add_child(buttons)
 	var save:=Button.new();save.text="Save Encounter Assignments";save.pressed.connect(_save_encounters);buttons.add_child(save)
@@ -154,7 +157,7 @@ func _select(name: String) -> void:
 		var value: Variant = model.draft.get(key, "")
 		if key == "male_ratio" and value == null: value = ""
 		fields[key].text = str(value)
-	_populate_options(); _render_moves(); art_tab.load_art(String(model.draft.get("art_id","")),String(model.draft.get("name",""))); _render_evolution(); _render_found()
+	_populate_options(); _sync_color_picker(); _render_moves(); art_tab.load_art(String(model.draft.get("art_id","")),String(model.draft.get("name",""))); _render_evolution(); _render_found()
 	for key in stat_spins: stat_spins[key].value = float(model.draft.get(key, 1))
 	_update_bst(); suppress = false; _dirty(); _message("Loaded without changing the source schema.")
 
@@ -188,8 +191,8 @@ func _render_moves() -> void:
 		var move := LineEdit.new(); move.text = String(entry.get("move", "")); move.placeholder_text = "Search move…"; move.size_flags_horizontal = Control.SIZE_EXPAND_FILL; row.add_child(move)
 		var suggestions := OptionButton.new(); suggestions.custom_minimum_size.x = 260; row.add_child(suggestions)
 		_fill_move_suggestions(suggestions, move.text)
-		move.text_changed.connect(func(text): _fill_move_suggestions(suggestions, text); entry["move"] = text; _dirty())
-		suggestions.item_selected.connect(func(i): var id := String(suggestions.get_item_metadata(i)); move.text = id; entry["move"] = id; _dirty())
+		move.text_changed.connect(func(text): _fill_move_suggestions(suggestions, text))
+		suggestions.get_popup().id_pressed.connect(func(id): _choose_move_suggestion(suggestions, suggestions.get_popup().get_item_index(id), move, entry))
 		var up := Button.new(); up.text = "↑"; up.disabled = index == 0; up.pressed.connect(_move_entry.bind(index, -1)); row.add_child(up)
 		var down := Button.new(); down.text = "↓"; down.disabled = index == model.draft.learnset.size()-1; down.pressed.connect(_move_entry.bind(index, 1)); row.add_child(down)
 		var remove := Button.new(); remove.text = "×"; remove.pressed.connect(func(): model.draft.learnset.remove_at(index); _render_moves(); _dirty()); row.add_child(remove)
@@ -201,6 +204,10 @@ func _fill_move_suggestions(box: OptionButton, query: String) -> void:
 		if needle.is_empty() or String(id).to_lower().contains(needle) or display.to_lower().contains(needle): box.add_item("%s  [%s]" % [display, id]); box.set_item_metadata(box.item_count-1, id); matches += 1
 		if matches >= 20: break
 
+func _choose_move_suggestion(box: OptionButton, index: int, search_box: LineEdit, entry: Dictionary) -> void:
+	if index < 0 or index >= box.item_count: return
+	var move_id := String(box.get_item_metadata(index)); entry["move"] = move_id; search_box.text = move_id; box.select(index); _dirty()
+
 func _render_evolution() -> void:
 	evolution_search.text = ""
 	_fill_evolution_options("")
@@ -210,8 +217,9 @@ func _render_evolution() -> void:
 func _fill_evolution_options(query: String) -> void:
 	evolution_box.clear(); evolution_box.add_item("— No evolution target —"); evolution_box.set_item_metadata(0, "")
 	var needle := query.strip_edges().to_lower()
-	for mon in model.evolved_data:
+	for mon in model.all_species():
 		var name := String(mon.get("name", "")); evolution_box.add_item(name); evolution_box.set_item_metadata(evolution_box.item_count-1, name)
+		if name == model.selected_name: evolution_box.remove_item(evolution_box.item_count - 1); continue
 		if not needle.is_empty() and not name.to_lower().contains(needle): evolution_box.remove_item(evolution_box.item_count - 1); continue
 		if name == model.evolution_target_name: evolution_box.select(evolution_box.item_count-1)
 
@@ -219,18 +227,18 @@ func _render_found() -> void:
 	for child in found_list.get_children(): child.queue_free()
 	var any:=false
 	for map in model.encounter_maps():
-		var encounter:=model.encounter_for(map.file);var row:=HBoxContainer.new();found_list.add_child(row)
-		var assigned:=CheckBox.new();assigned.text=map.name;assigned.button_pressed=encounter.assigned;assigned.custom_minimum_size.x=360;row.add_child(assigned)
+		var encounter:=model.encounter_for(map.file,"",map.kind);var row:=HBoxContainer.new();found_list.add_child(row)
+		var assigned:=CheckBox.new();assigned.text=map.label;assigned.button_pressed=encounter.assigned;assigned.custom_minimum_size.x=420;row.add_child(assigned)
 		var level:=SpinBox.new();level.min_value=1;level.max_value=100;level.value=encounter.level;level.prefix="Lv. ";level.editable=assigned.button_pressed;row.add_child(level)
-		assigned.toggled.connect(func(on):level.editable=on;model.set_encounter(map.file,on,int(level.value));_render_found_warning();_dirty())
-		level.value_changed.connect(func(value):if assigned.button_pressed:model.set_encounter(map.file,true,int(value));_dirty())
+		assigned.toggled.connect(func(on):level.editable=on;model.set_encounter(map.file,on,int(level.value),map.kind);_render_found_warning();_dirty())
+		level.value_changed.connect(func(value):if assigned.button_pressed:model.set_encounter(map.file,true,int(value),map.kind);_dirty())
 		if encounter.assigned:any=true
 	var warning:=Label.new();warning.name="NoWilds";warning.text="" if any else "NO WILDS!";warning.add_theme_font_size_override("font_size",30);warning.add_theme_color_override("font_color",Color("ff6b6b"));found_list.add_child(warning)
 
 func _render_found_warning()->void:
 	var any:=false
 	for map in model.encounter_maps():
-		if model.encounter_for(map.file).assigned:any=true
+		if model.encounter_for(map.file,"",map.kind).assigned:any=true
 	var warning:=found_list.get_node_or_null("NoWilds") as Label
 	if warning!=null:warning.text="" if any else "NO WILDS!"
 
@@ -254,6 +262,14 @@ func _field_changed(key: String, control: Control) -> void:
 	if key == "art_id" and art_tab.package.art_id != control.text: art_tab.load_art(control.text,String(model.draft.get("name","")))
 	if key == "name" and control.text != model.selected_name: _message("Renaming changes the runtime identifier. Trainer, map, evolution, and moveset references are not silently rewritten.", true)
 	_dirty()
+func _sync_color_picker() -> void:
+	if color_picker == null: return
+	var value := String(model.draft.get("color", "")).strip_edges().trim_prefix("#")
+	if value.length() in [6, 8] and value.is_valid_html_color(): color_picker.color = Color.from_string("#" + value, color_picker.color)
+func _sample_display_color(value: Color) -> void:
+	if suppress: return
+	var hex := value.to_html(false)
+	model.draft["color"] = hex; suppress = true; fields["color"].text = hex; suppress = false; _dirty()
 func _number_text_changed(text: String, key: String, _control: Control) -> void:
 	if suppress: return
 	model.draft[key] = null if key == "male_ratio" and text.strip_edges().is_empty() else float(text) if text.is_valid_float() else text; _dirty()
@@ -303,20 +319,28 @@ func _show_add_dialog() -> void:
 	if model.is_dirty() or model.encounters_dirty() or art_tab.has_unsaved(): _message("Save/write or discard current changes before creating another Fakemon.",true); return
 	var dialog := ConfirmationDialog.new()
 	dialog.title = "Add Fakemon"
+	var form := VBoxContainer.new(); form.custom_minimum_size = Vector2(390, 150); form.add_theme_constant_override("separation", 10); dialog.add_child(form)
+	var name_label := Label.new(); name_label.text = "Unique Fakemon name"; form.add_child(name_label)
 	var input := LineEdit.new()
-	input.placeholder_text = "Unique Fakemon name"
-	dialog.add_child(input)
+	input.placeholder_text = "Example: Bravarb"
+	form.add_child(input)
+	var evolved := CheckBox.new(); evolved.text = "Create as evolved form"; form.add_child(evolved)
+	var parent_label := Label.new(); parent_label.text = "Evolves from"; parent_label.visible = false; form.add_child(parent_label)
+	var parent := OptionButton.new(); parent.visible = false; parent.size_flags_horizontal = Control.SIZE_EXPAND_FILL; form.add_child(parent)
+	for species_name in model.species_names(): parent.add_item(species_name); parent.set_item_metadata(parent.item_count - 1, species_name)
+	evolved.toggled.connect(func(enabled): parent_label.visible = enabled; parent.visible = enabled)
 	add_child(dialog)
-	dialog.confirmed.connect(_add_confirmed.bind(dialog, input))
-	dialog.popup_centered(Vector2i(420, 150))
+	dialog.confirmed.connect(_add_confirmed.bind(dialog, input, evolved, parent))
+	dialog.popup_centered(Vector2i(440, 260))
 
-func _add_confirmed(dialog: ConfirmationDialog, input: LineEdit) -> void:
-	if model.add_species(input.text):
+func _add_confirmed(dialog: ConfirmationDialog, input: LineEdit, evolved: CheckBox, parent: OptionButton) -> void:
+	var evolves_from := String(parent.get_item_metadata(parent.selected)) if evolved.button_pressed and parent.item_count > 0 else ""
+	if model.add_species(input.text, evolves_from):
 		_select(model.selected_name)
 		model.original = {}
 		_dirty()
 		_refresh_browser()
-		_message("New base Fakemon is unsaved; complete its fields and save.")
+		_message("New %s Fakemon is unsaved; complete its fields and save." % ("evolved" if evolved.button_pressed else "base"))
 	else:
 		_message("Enter a unique name.", true)
 	dialog.queue_free()

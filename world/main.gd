@@ -7,11 +7,17 @@ const TerrainTransitionTextureCache := preload("res://world/terrain_transition_t
 const PlayerPalette := preload("res://world/player_palette.gd")
 const PlayerSpriteFrames := preload("res://world/player_sprite_frames.gd")
 const SwimSpriteFrames := preload("res://world/swim_sprite_frames.gd")
+const NpcSpriteLibrary := preload("res://world/npc_sprite_library.gd")
+const DayNightControllerScript := preload("res://world/day_night_controller.gd")
 const AUTO_SAVE_PATH := "user://project_paradise_autosave.json"
 const SAVE_SLOT_COUNT := 5
 const SAVE_VERSION := 1
 const MOVE_SPEED := 5.0
 const PLAYER_VISUAL_HEIGHT := 1.6
+const NPC_ADULT_VISUAL_HEIGHT := 1.65
+const NPC_CHILD_VISUAL_HEIGHT := 1.4
+const NPC_FOOT_COLLISION_SIZE := Vector3(0.55,0.3,0.45)
+const NPC_FOOT_COLLISION_OFFSET := Vector3(0.0,-0.45,0.0)
 const SWIM_VISUAL_HEIGHT := 0.58
 const DIVE_ACTOR_VISUAL_HEIGHT := PLAYER_VISUAL_HEIGHT
 const DIVE_NEUTRAL_TIME := 0.58
@@ -93,6 +99,7 @@ var terrain_foot_shape:BoxShape3D
 var follower: Node3D
 var follower_sprite: Sprite3D
 var sort_canvas: CanvasLayer
+var day_night_controller: Node
 var sort_root: Node2D
 var player_sort_root: Node2D
 var follower_sort_root: Node2D
@@ -117,6 +124,7 @@ var active_battle_is_wild := false
 var party: Array[Dictionary] = []
 var active_party_index := 0
 var last_grass_tile := ""
+var last_water_tile := ""
 var hint_label: Label
 var map_ui: CanvasLayer
 var party_panel: PanelContainer
@@ -274,6 +282,7 @@ func _physics_process(delta: float) -> void:
 		player.position.x = clampf(player.position.x, -float(map_size[0]) * 0.5 + 0.6, float(map_size[0]) * 0.5 - 0.6)
 		player.position.z = clampf(player.position.z, -float(map_size[1]) * 0.5 + 0.6, float(map_size[1]) * 0.5 - 0.6)
 	_process_poison_steps(position_before_move.distance_to(player.position))
+	_process_water_encounter(position_before_move.distance_to(player.position))
 	camera.position.x = player.position.x
 	var is_inside := inside_medical_ward or inside_house or inside_east_cave or inside_city_ward or inside_orchid_house or inside_family_house
 	camera.position.y = 7.0 if is_inside else 18.0
@@ -339,10 +348,13 @@ func _unhandled_input(event: InputEvent) -> void:
 	if hit.is_empty():
 		return
 	if hit["collider"] == opponent:
+		_face_npc_toward_player(opponent)
 		_start_battle()
 	elif hit["collider"] == house_npc:
+		_face_npc_toward_player(house_npc)
 		_start_burn_dialogue()
 	elif npc_dialogues.has(hit["collider"].get_instance_id()):
+		_face_npc_toward_player(hit["collider"] as Area3D)
 		var dialogue_data: Dictionary = npc_dialogues[hit["collider"].get_instance_id()]
 		_start_dialogue(String(dialogue_data["speaker"]), dialogue_data["pages"], dialogue_data.get("after_dialogue", Callable()))
 
@@ -397,8 +409,15 @@ func build_rainforest() -> void:
 	opponent = Area3D.new()
 	opponent.name = "RainforestTrainerPlaceholder"
 	opponent.position = _array_to_vector3(opponent_data["position"])
-	opponent.add_child(_square_sprite(Color("#df6d5f"), "BATTLE", Vector2(1.0, 1.25)))
+	var opponent_texture:=NpcSpriteLibrary.texture_for(String(opponent_data.get("sprite","man")))
+	var opponent_visual:=_billboard_sprite(opponent_texture,NPC_ADULT_VISUAL_HEIGHT,"BATTLESprite") if opponent_texture!=null else _square_sprite(Color("#df6d5f"),"BATTLE",Vector2(1.0,1.25))
+	if opponent_texture!=null:opponent_visual.offset=Vector2(0.0,float(opponent_texture.get_height())*0.5)
+	opponent.add_child(opponent_visual)
+	opponent.set_meta("sprite_id",String(opponent_data.get("sprite","man")))
+	opponent.set_meta("facing","down")
+	opponent.set_meta("visual_height",NPC_ADULT_VISUAL_HEIGHT)
 	opponent.add_child(_box_shape(Vector3(1.0, 1.3, 1.0)))
+	opponent.add_child(_npc_foot_body())
 	world.add_child(opponent)
 
 	# The clearing references the same complete ward-instance schema as Mossvale.
@@ -436,6 +455,10 @@ func build_rainforest() -> void:
 	camera.current = true
 	world.add_child(camera)
 	_build_sort_canvas()
+	day_night_controller = DayNightControllerScript.new()
+	day_night_controller.name = "DayNightController"
+	sort_canvas.add_child(day_night_controller)
+	day_night_controller.setup(get_node("/root/WorldClock"), world_environment)
 	_configure_visual_regions()
 	_set_active_visual_region("clearing")
 
@@ -447,7 +470,7 @@ func build_rainforest() -> void:
 	map_title.add_theme_font_size_override("font_size", 22)
 	map_ui.add_child(map_title)
 	hint_label = Label.new()
-	hint_label.text = "Move: WASD / Arrow Keys (including left/right)    Red: trainer    Green grass: 20% wild encounters"
+	hint_label.text = "Move: WASD / Arrow Keys (including left/right)    Grass: 20% encounters    Water: 5% encounters"
 	hint_label.position = Vector2(24, 50)
 	hint_label.add_theme_color_override("font_color", Color("#f1ffe9"))
 	map_ui.add_child(hint_label)
@@ -476,6 +499,7 @@ func _open_battle(enemy_index: int, enemy_party_indices: Array = [], enemy_team:
 	in_battle = true
 	_set_overworld_visuals_visible(false)
 	map_ui.visible = false
+	battle.set_battle_background(_map_type_for_location(_current_location()), active_battle_is_wild and swimming)
 	if active_battle_is_wild:
 		if not enemy_team.is_empty(): battle.begin_battle_with_enemy_party(party,active_party_index,enemy_team,true)
 		else: battle.begin_battle_with_party(party, active_party_index, enemy_index, true)
@@ -500,7 +524,7 @@ func _on_fakemon_selected(index: int) -> void:
 	in_battle = false
 	_set_overworld_visuals_visible(true)
 	map_ui.visible = true
-	hint_label.text = "Fakemon chosen! Move with WASD / Arrow Keys. Red: trainer. Green grass: 20% wild encounters."
+	hint_label.text = "Fakemon chosen! Move with WASD / Arrow Keys. Grass: 20% encounters. Water: 5% encounters."
 	_refresh_party_menu()
 	_auto_save()
 
@@ -540,6 +564,35 @@ func _random_tall_grass_encounter(encounter_species:Array)->Dictionary:
 				eligible.append({"fakemon":species_name,"level":clampi(int(value.get("level",battle.battle_data["fakemon"][index].get("level",5))) if value is Dictionary else int(battle.battle_data["fakemon"][index].get("level",5)),1,100)})
 				break
 	return {} if eligible.is_empty() else eligible.pick_random()
+
+
+func _process_water_encounter(distance_traveled: float) -> void:
+	if not swimming or distance_traveled <= 0.0:
+		last_water_tile = ""
+		return
+	var context := _terrain_context()
+	if context.is_empty() or _terrain_at(player.position) != "water":
+		last_water_tile = ""
+		return
+	var origin: Vector3 = context["origin"]
+	var cell := Vector2i(roundi(player.position.x - origin.x), roundi(player.position.z - origin.z))
+	var tile_id := "%s:%d,%d" % [_current_location(), cell.x, cell.y]
+	if tile_id == last_water_tile:
+		return
+	last_water_tile = tile_id
+	var map_region: Dictionary = context["data"]
+	var encounter_chance := float(map_region.get("water_encounter_chance", 0.0))
+	if randf() >= encounter_chance:
+		hint_label.text = "No encounter in this water tile. Each newly entered tile rolls %d%%." % roundi(encounter_chance * 100.0)
+		return
+	var encounter := _random_tall_grass_encounter(map_region.get("water_species", []))
+	if encounter.is_empty():
+		hint_label.text = "This water has no encounter species assigned yet."
+		return
+	active_battle_is_wild = true
+	var enemies := _build_trainer_team([encounter])
+	if not enemies.is_empty():
+		_open_battle(0, [], enemies)
 
 
 func _on_exterior_door_entered(body: Node3D) -> void:
@@ -833,12 +886,13 @@ func _process_poison_steps(distance_traveled: float) -> void:
 	while poison_step_distance >= 1.0:
 		poison_step_distance -= 1.0
 		for mon: Dictionary in party:
-			if String(mon.get("condition", "")) == "Poisoned" and int(mon.get("current_hp", mon["max_hp"])) > 0:
-				var poison_damage := int(battle.battle_data["conditions"]["Poisoned"]["overworld_damage_per_step"])
+			var condition_data: Dictionary = battle.battle_data["conditions"].get(String(mon.get("condition", "")), {})
+			if condition_data.has("overworld_damage_per_step") and int(mon.get("current_hp", mon["max_hp"])) > 0:
+				var poison_damage := int(condition_data["overworld_damage_per_step"])
 				mon["current_hp"] = maxi(0, int(mon.get("current_hp", mon["max_hp"])) - poison_damage)
 				took_damage = true
 	if took_damage:
-		hint_label.text = "Poison damaged affected party members while walking. Visit the medical ward to cure them."
+		hint_label.text = "A condition damaged affected party members while walking. Visit the medical ward to cure them."
 		_refresh_party_menu()
 
 
@@ -1298,8 +1352,7 @@ func _build_universal_objects(region_data: Dictionary, origin: Vector3, prefix: 
 			var speaker := String(character.get("name" if type_id == "npc.opponent" else "speaker", "TRAINER" if type_id == "npc.opponent" else "NPC"))
 			var pages: Array = character.get("dialogue", ["Let's battle!"] if type_id == "npc.opponent" else ["Hello, traveler!"])
 			var after_dialogue := _begin_trainer_battle.bind(character.get("team", character.get("party",[]))) if type_id == "npc.opponent" else Callable()
-			var npc := _add_talking_npc(node_name, position, Color(String(character.get("color", "df6d5f" if type_id == "npc.opponent" else "e9c35b"))), speaker.to_upper(), pages, after_dialogue)
-			_add_static_collision(node_name + "Collision", npc.position, Vector3(0.8, 1.1, 0.8))
+			var npc := _add_talking_npc(node_name, position, Color(String(character.get("color", "df6d5f" if type_id == "npc.opponent" else "e9c35b"))), speaker.to_upper(), pages, after_dialogue, String(character.get("sprite","")))
 		else:
 			var texture: Texture2D = TEX_FLOWER_RED
 			var height := 0.9
@@ -1499,15 +1552,14 @@ func _build_rainforest_city(city_data: Dictionary) -> void:
 	family_house_origin = _array_to_vector3(city_data["family_house"]["origin"])
 	for orchid_data: Array in city_data["orchid_house"]["orchids"]:
 		_add_small_orchid(orchid_house_origin + _array_to_vector3(orchid_data))
-	var orchid_npc := _add_talking_npc("GroundOrchidExpert", orchid_house_origin + _array_to_vector3(city_data["orchid_house"]["npc"]), Color("#b36bc9"), "ORCHID KEEPER", ["Ground orchids grow from the forest floor instead of clinging to trees. Their roots shelter in the rich leaf litter below the canopy."])
-	_add_static_collision("GroundOrchidExpertCollision", orchid_npc.position, Vector3(0.8, 1.1, 0.8))
+	var orchid_npc := _add_talking_npc("GroundOrchidExpert", orchid_house_origin + _array_to_vector3(city_data["orchid_house"]["npc"]), Color("#b36bc9"), "ORCHID KEEPER", ["Ground orchids grow from the forest floor instead of clinging to trees. Their roots shelter in the rich leaf litter below the canopy."], Callable(), "woman")
 	var adult_data: Array = city_data["family_house"]["adults"]
-	_add_talking_npc("EvolutionParent", family_house_origin + _array_to_vector3(adult_data[0]), Color("#d98b57"), "PARENT", ["Some Fakemon may evolve after earning enough experience. Training and exploring together can help them reach that turning point."])
-	_add_talking_npc("DespairParent", family_house_origin + _array_to_vector3(adult_data[1]), Color("#5c8ecb"), "PARENT", ["Try not to let your Fakemon fall into Despair. A despairing partner struggles to give its best, so care and recovery matter as much as winning."])
+	_add_talking_npc("EvolutionParent", family_house_origin + _array_to_vector3(adult_data[0]), Color("#d98b57"), "PARENT", ["Some Fakemon may evolve after earning enough experience. Training and exploring together can help them reach that turning point."], Callable(), "woman")
+	_add_talking_npc("DespairParent", family_house_origin + _array_to_vector3(adult_data[1]), Color("#5c8ecb"), "PARENT", ["Try not to let your Fakemon fall into Despair. A despairing partner struggles to give its best, so care and recovery matter as much as winning."], Callable(), "man")
 	var child_data: Array = city_data["family_house"]["children"]
 	for index in child_data.size():
-		var child := _add_talking_npc("FamilyChild%d" % (index + 1), family_house_origin + _array_to_vector3(child_data[index]), Color("#e9c35b"), "CHILD", ["We like playing together inside when the rainforest rain gets heavy!"])
-		family_children.append({"node": child, "target": child.position, "timer": randf_range(0.5, 2.0)})
+		var child := _add_talking_npc("FamilyChild%d" % (index + 1), family_house_origin + _array_to_vector3(child_data[index]), Color("#e9c35b"), "CHILD", ["We like playing together inside when the rainforest rain gets heavy!"], Callable(), "boy" if index%2==0 else "girl")
+		family_children.append({"node":child,"target":child.position,"timer":randf_range(0.5,2.0),"animation_time":0.0,"frame":0})
 	_build_trainers(city_data.get("trainers", []), city_origin, "Mossvale")
 
 
@@ -1602,12 +1654,20 @@ func _build_colored_warp(warp_name: String, position: Vector3, callback: Callabl
 	world.add_child(warp)
 
 
-func _add_talking_npc(npc_name: String, position: Vector3, color: Color, speaker: String, pages: Array, after_dialogue := Callable()) -> Area3D:
+func _add_talking_npc(npc_name: String, position: Vector3, color: Color, speaker: String, pages: Array, after_dialogue := Callable(), sprite_id:String="") -> Area3D:
 	var npc := Area3D.new()
 	npc.name = npc_name
 	npc.position = position
-	npc.add_child(_square_sprite(color, speaker, Vector2(0.8, 1.05)))
+	var texture:=NpcSpriteLibrary.texture_for(sprite_id) if not sprite_id.is_empty() else null
+	var visual_height:=NPC_CHILD_VISUAL_HEIGHT if sprite_id in ["boy","girl"] else NPC_ADULT_VISUAL_HEIGHT
+	var visual:=_billboard_sprite(texture,visual_height,speaker+"Sprite") if texture!=null else _square_sprite(color,speaker,Vector2(0.8,1.05))
+	visual.offset=Vector2(0.0,float(texture.get_height())*0.5) if texture!=null else visual.offset
+	npc.add_child(visual)
+	npc.set_meta("sprite_id",sprite_id)
+	npc.set_meta("facing","down")
+	npc.set_meta("visual_height",visual_height)
 	npc.add_child(_box_shape(Vector3(0.8, 1.1, 0.8)))
+	npc.add_child(_npc_foot_body())
 	world.add_child(npc)
 	npc_dialogues[npc.get_instance_id()] = {"speaker": speaker, "pages": pages, "after_dialogue": after_dialogue}
 	return npc
@@ -1620,8 +1680,7 @@ func _build_trainers(trainers: Array, map_origin: Vector3, prefix: String) -> vo
 		var party_indices: Array = trainer.get("team",trainer.get("party", [int(trainer.get("fakemon_index", 0))]))
 		var trainer_name := String(trainer.get("name", "RAIN FOREST TRAINER"))
 		var dialogue: Array = trainer.get("dialogue", ["My Fakemon and I are ready for a friendly battle!"])
-		var npc := _add_talking_npc("%sTrainer%d" % [prefix, index + 1], map_origin + _array_to_vector3(placement["position"]), Color(String(trainer.get("color", "df6d5f"))), trainer_name.to_upper(), dialogue, _begin_trainer_battle.bind(party_indices))
-		_add_static_collision("%sTrainer%dCollision" % [prefix, index + 1], npc.position, Vector3(0.8, 1.1, 0.8))
+		var npc := _add_talking_npc("%sTrainer%d" % [prefix, index + 1], map_origin + _array_to_vector3(placement["position"]), Color(String(trainer.get("color", "df6d5f"))), trainer_name.to_upper(), dialogue, _begin_trainer_battle.bind(party_indices), String(trainer.get("sprite","")))
 
 func _resolved_trainer(placement:Dictionary)->Dictionary:
 	var trainer_id:=String(placement.get("trainer_id",""))
@@ -1900,7 +1959,7 @@ func _build_medical_ward_instance(ward_data: Dictionary, prefix: String, exit_ca
 	_add_serialized_furnishings(ward_origin,ward_data.get("furnishings",[{"type":"ward_counter","position":[0,0,-2.2],"height":1.75},{"type":"ward_shelf","position":[-3,0,-1.7],"height":2.05},{"type":"ward_table","position":[2,0,0.8],"height":0.95},{"type":"ward_curtain","position":[2.95,0,-1],"height":1.85},{"type":"ward_wash","position":[-2.9,0,1.5],"height":1.85}]),prefix)
 	_build_universal_objects(ward_data, ward_origin, prefix)
 	var staff_position := ward_origin + _array_to_vector3(ward_data.get("staff", [0.0, 0.65, -1.25]))
-	var staff := _add_talking_npc(prefix + "Attendant", staff_position, Color("#72cbd0"), "WARD ATTENDANT", ["Welcome to the medical ward.", "Leave your Fakemon with me for a moment, and I will restore them to full health."], _heal_party_at_ward)
+	var staff := _add_talking_npc(prefix + "Attendant", staff_position, Color("#72cbd0"), "WARD ATTENDANT", ["Welcome to the medical ward.", "Leave your Fakemon with me for a moment, and I will restore them to full health."], _heal_party_at_ward, "woman")
 	_add_static_collision(prefix + "AttendantCollision", staff.position, Vector3(0.8, 1.1, 0.8))
 	#var reception := MeshInstance3D.new()
 	#reception.name = "MedicalWardCounterPlaceholder"
@@ -1939,10 +1998,16 @@ func _build_house(house_data: Dictionary) -> void:
 	house_npc = Area3D.new()
 	house_npc.name = "BurnTutorNPC"
 	house_npc.position = house_origin + _array_to_vector3(house_data["npc"])
-	house_npc.add_child(_square_sprite(Color("#f0a34a"), "BURN_TUTOR", Vector2(0.9, 1.15)))
+	var tutor_texture:=NpcSpriteLibrary.texture_for("man")
+	var tutor_visual:=_billboard_sprite(tutor_texture,NPC_ADULT_VISUAL_HEIGHT,"BURN_TUTORSprite") if tutor_texture!=null else _square_sprite(Color("#f0a34a"),"BURN_TUTOR",Vector2(0.9,1.15))
+	if tutor_texture!=null:tutor_visual.offset=Vector2(0.0,float(tutor_texture.get_height())*0.5)
+	house_npc.add_child(tutor_visual)
+	house_npc.set_meta("sprite_id","man")
+	house_npc.set_meta("facing","down")
+	house_npc.set_meta("visual_height",NPC_ADULT_VISUAL_HEIGHT)
 	house_npc.add_child(_box_shape(Vector3(0.9, 1.2, 0.9)))
+	house_npc.add_child(_npc_foot_body())
 	world.add_child(house_npc)
-	_add_static_collision("BurnTutorNPCCollision", house_npc.position, Vector3(0.9, 1.2, 0.9))
 
 	var interior_door := Area3D.new()
 	interior_door.name = "HouseInteriorDoor"
@@ -1977,6 +2042,16 @@ func _add_static_collision(collision_name: String, collision_position: Vector3, 
 	body.collision_mask = 1
 	body.add_child(_box_shape(collision_size))
 	world.add_child(body)
+
+
+func _npc_foot_body()->StaticBody3D:
+	var body:=StaticBody3D.new()
+	body.name="FootCollision"
+	body.position=NPC_FOOT_COLLISION_OFFSET
+	body.collision_layer=1
+	body.collision_mask=1
+	body.add_child(_box_shape(NPC_FOOT_COLLISION_SIZE))
+	return body
 
 
 func _add_building_collision(collision_name:String,position:Vector3,size:Vector3,building_type:String)->void:
@@ -2077,22 +2152,35 @@ func _build_party_menu() -> void:
 	bag_list.add_child(bag_title)
 	var items_label := Label.new()
 	items_label.name = "ItemsCategory"
-	items_label.text = "Items"
+	items_label.text = "Items\n  Nothing here yet."
 	bag_list.add_child(items_label)
+	var key_items_list := VBoxContainer.new()
+	key_items_list.name = "KeyItemsSection"
+	key_items_list.add_theme_constant_override("separation", 4)
+	bag_list.add_child(key_items_list)
+	var key_items_label := Label.new()
+	key_items_label.name = "KeyItemsCategory"
+	key_items_label.text = "Key Items"
+	key_items_list.add_child(key_items_label)
 	var swimgear_button := Button.new()
 	swimgear_button.name = "SwimgearButton"
 	swimgear_button.text = "Swimgear"
 	swimgear_button.tooltip_text = "Use beside water to go for a swim."
 	swimgear_button.pressed.connect(_use_swimgear)
-	bag_list.add_child(swimgear_button)
-	for category in ["Key Items", "Outfits"]:
-		var category_label := Label.new()
-		category_label.name = category.replace(" ", "") + "Category"
-		category_label.text = "%s\n  Nothing here yet." % category
-		bag_list.add_child(category_label)
+	key_items_list.add_child(swimgear_button)
+	var watch_button := Button.new()
+	watch_button.name = "WatchButton"
+	watch_button.text = "Watch"
+	watch_button.tooltip_text = "Check the shared world clock."
+	watch_button.pressed.connect(_use_watch)
+	key_items_list.add_child(watch_button)
+	var outfits_label := Label.new()
+	outfits_label.name = "OutfitsCategory"
+	outfits_label.text = "Outfits\n  Nothing here yet."
+	bag_list.add_child(outfits_label)
 	bag_panel.hide()
 	map_ui.add_child(bag_panel)
-	_set_bottom_right_rect(bag_panel, Vector2(-326, -296), Vector2(302, 224))
+	_set_bottom_right_rect(bag_panel, Vector2(-326, -344), Vector2(302, 272))
 	party_panel = PanelContainer.new()
 	var party_margin := MarginContainer.new()
 	party_margin.add_theme_constant_override("margin_left", 12)
@@ -2201,7 +2289,40 @@ func _update_family_children(delta: float) -> void:
 		if float(child_data["timer"]) <= 0.0 or child.position.distance_to(child_data["target"]) < 0.1:
 			child_data["target"] = family_house_origin + Vector3(randf_range(-3.8, 3.8), 0.65, randf_range(-2.5, 2.0))
 			child_data["timer"] = randf_range(1.5, 4.0)
-		child.position = child.position.move_toward(child_data["target"], 1.2 * delta)
+		var motion:Vector3=child_data["target"]-child.position
+		if motion.length()>0.1:
+			var direction:=_cardinal_direction(motion)
+			child_data["animation_time"]=float(child_data["animation_time"])+delta
+			if float(child_data["animation_time"])>=0.16:
+				child_data["animation_time"]=0.0
+				child_data["frame"]=(int(child_data["frame"])+1)%4
+			_set_npc_pose(child,direction,int(child_data["frame"]))
+			child.position=child.position.move_toward(child_data["target"],1.2*delta)
+		else:
+			_set_npc_pose(child,String(child.get_meta("facing","down")))
+
+
+func _face_npc_toward_player(npc:Area3D)->void:
+	if npc==null or player==null:return
+	_set_npc_pose(npc,_cardinal_direction(player.position-npc.position))
+
+
+func _cardinal_direction(vector:Vector3)->String:
+	if absf(vector.x)>absf(vector.z):return "left" if vector.x<0.0 else "right"
+	return "up" if vector.z<0.0 else "down"
+
+
+func _set_npc_pose(npc:Area3D,direction:String,walk_frame:int=-1)->void:
+	var sprite_id:=String(npc.get_meta("sprite_id",""))
+	if sprite_id.is_empty() or npc.get_child_count()==0:return
+	var texture:=NpcSpriteLibrary.texture_for(sprite_id,direction,walk_frame)
+	if texture==null:return
+	var visual:=npc.get_child(0) as Sprite3D
+	if visual==null:return
+	visual.texture=texture
+	visual.pixel_size=float(npc.get_meta("visual_height",NPC_ADULT_VISUAL_HEIGHT))/float(texture.get_height())
+	visual.offset=Vector2(0.0,float(texture.get_height())*0.5)
+	npc.set_meta("facing",direction)
 
 
 func _toggle_party_menu() -> void:
@@ -2247,6 +2368,15 @@ func _use_swimgear() -> void:
 	_start_swimming(water_position, direction)
 
 
+func _use_watch() -> void:
+	var world_clock := get_node_or_null("/root/WorldClock")
+	bag_panel.hide()
+	if world_clock == null:
+		hint_label.text = "The Watch cannot reach the world clock right now."
+		return
+	hint_label.text = "Watch — Day %d, %s" % [int(world_clock.day) + 1, String(world_clock.formatted_time())]
+
+
 func _start_swimming(water_position: Vector3, direction: String) -> void:
 	swim_transitioning = true
 	player.velocity = Vector3.ZERO
@@ -2261,6 +2391,9 @@ func _start_swimming(water_position: Vector3, direction: String) -> void:
 	_set_swim_transition_effect(SwimSpriteFrames.dive_effect_frame(player_gender, direction, false, dive_atlas), water_position, 0.7, flip_left)
 	await get_tree().create_timer(DIVE_BACKPACK_LAND_TIME).timeout
 	player.position = water_position
+	var water_context := _terrain_context()
+	var water_origin: Vector3 = water_context.get("origin", Vector3.ZERO)
+	last_water_tile = "%s:%d,%d" % [_current_location(), roundi(water_position.x - water_origin.x), roundi(water_position.z - water_origin.z)]
 	_set_dive_player_visual(SwimSpriteFrames.dive_actor_frame(player_gender, direction, 3, dive_atlas), flip_left)
 	await get_tree().create_timer(DIVE_JUMP_TIME).timeout
 	(player_sort_root.get_node("Visual") as Sprite2D).hide()
@@ -2274,7 +2407,7 @@ func _start_swimming(water_position: Vector3, direction: String) -> void:
 	player_frame_index = 0
 	player_animation_time = 0.0
 	_set_player_visual(SwimSpriteFrames.frames(player_gender, swim_direction, swim_atlas)[0], false)
-	hint_label.text = "Swimming! Move through water; swim onto shore to leave the water."
+	hint_label.text = "Swimming! Each new water tile has a 5% Moach encounter chance; swim onto shore to leave."
 	_update_sort_canvas()
 
 
@@ -2298,6 +2431,7 @@ func _hide_swim_transition_effect() -> void:
 
 func _finish_swimming(exit_position: Vector3) -> void:
 	swimming = false
+	last_water_tile = ""
 	player.position = exit_position
 	player.velocity = Vector3.ZERO
 	_apply_player_appearance()
@@ -2809,6 +2943,7 @@ func _load_game(slot: int = -1) -> bool:
 	bag_panel.hide()
 	dex_panel.hide()
 	last_grass_tile = ""
+	last_water_tile = ""
 	_apply_loaded_location(location)
 	player.velocity = Vector3.ZERO
 	adventure_started = true
@@ -2959,6 +3094,23 @@ func _set_active_visual_region(location: String) -> void:
 		return
 	var active_layer := _active_visual_layer(location)
 	camera.cull_mask = (1 << (active_layer - 1)) | (1 << (DYNAMIC_VISUAL_LAYER - 1))
+	if day_night_controller != null:
+		day_night_controller.set_map_type(_map_type_for_location(location))
+
+func _map_type_for_location(location: String) -> String:
+	var region: Variant = map_data
+	match location:
+		"medical_ward": region = map_data.get("medical_ward", {})
+		"house": region = map_data.get("house", {})
+		"route": region = map_data.get("route", {})
+		"east_route": region = map_data.get("east_route", {})
+		"west_route": region = map_data.get("west_route", {})
+		"east_cave": region = map_data.get("east_cave", {})
+		"city": region = map_data.get("rainforest_city", {})
+		"city_ward": region = map_data.get("rainforest_city", {}).get("medical_ward", {})
+		"orchid_house": region = map_data.get("rainforest_city", {}).get("orchid_house", {})
+		"family_house": region = map_data.get("rainforest_city", {}).get("family_house", {})
+	return String(region.get("map_type", "Rainforest")) if region is Dictionary else "Rainforest"
 
 
 func _active_visual_layer(location: String = "") -> int:

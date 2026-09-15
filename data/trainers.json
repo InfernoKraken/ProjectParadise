@@ -8,13 +8,18 @@
 				"I will lead with my best foot forward!"
 			],
 			"name": "ACE IVO",
+			"sprite": "man",
 			"team": [
 				{
-					"fakemon": "Scorchick",
+					"fakemon": "Slumboth",
 					"level": 5
 				},
 				{
-					"fakemon": "Sylvafin",
+					"fakemon": "Skeeter",
+					"level": 5
+				},
+				{
+					"fakemon": "Balopod",
 					"level": 5
 				}
 			]
@@ -26,6 +31,7 @@
 				"Let us see if you are prepared."
 			],
 			"name": "CAVER BEX",
+			"sprite": "man",
 			"team": [
 				{
 					"fakemon": "Slumboth",
@@ -44,9 +50,14 @@
 				"A quick battle keeps me quick on my feet!"
 			],
 			"name": "COURIER RHEA",
+			"sprite": "woman",
 			"team": [
 				{
-					"fakemon": "Sylvafin",
+					"fakemon": "Lochirp",
+					"level": 5
+				},
+				{
+					"fakemon": "Dartlet",
 					"level": 5
 				}
 			]
@@ -58,9 +69,14 @@
 				"Let us grow stronger together in battle!"
 			],
 			"name": "GARDENER NIA",
+			"sprite": "woman",
 			"team": [
 				{
-					"fakemon": "Keklid",
+					"fakemon": "Lochirp",
+					"level": 5
+				},
+				{
+					"fakemon": "Lochirp",
 					"level": 5
 				}
 			]
@@ -72,9 +88,14 @@
 				"Care for a trail battle?"
 			],
 			"name": "HIKER VERA",
+			"sprite": "woman",
 			"team": [
 				{
-					"fakemon": "Scorchick",
+					"fakemon": "Lochirp",
+					"level": 5
+				},
+				{
+					"fakemon": "Moach",
 					"level": 5
 				}
 			]
@@ -86,6 +107,7 @@
 				"Mine is eager to meet yours."
 			],
 			"name": "NATURALIST ORIN",
+			"sprite": "man",
 			"team": [
 				{
 					"fakemon": "Sylvafin",
@@ -100,9 +122,10 @@
 				"Ready when you are!"
 			],
 			"name": "PICNICKER SOL",
+			"sprite": "man",
 			"team": [
 				{
-					"fakemon": "Scorchick",
+					"fakemon": "Dartlet",
 					"level": 5
 				}
 			]
@@ -114,6 +137,7 @@
 				"Show me what your team can do!"
 			],
 			"name": "RANGER MOSS",
+			"sprite": "man",
 			"team": [
 				{
 					"fakemon": "Keklid",
@@ -128,6 +152,7 @@
 				"Let us have a quick match!"
 			],
 			"name": "SCOUT LINA",
+			"sprite": "woman",
 			"team": [
 				{
 					"fakemon": "Scorchick",
@@ -142,6 +167,7 @@
 				"Would you help with a field observation?"
 			],
 			"name": "STUDENT MIRA",
+			"sprite": "girl",
 			"team": [
 				{
 					"fakemon": "Keklid",

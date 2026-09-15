@@ -13,7 +13,13 @@ The editor intentionally writes the existing owners of each field:
 - base species: `data/battle_data.json` → `fakemon`
 - evolved species and evolution relationships: `data/evolved_fakemon.json`
 - egg-group assignments: `data/egg_groups.json`
-- wild locations: read-only scan of `data/maps/*.json`
+- encounter locations: editable Tall Grass (`tall_grass_species`) and Water (`water_species`) tables in `data/maps/*.json`, with one exact level per assignment
+
+**Add Fakemon** can create either a base species or an evolved form. Evolved creation requires an existing parent and immediately initializes `evolves_from`, `evolution_level`, and `moveset_source`, so the new species appears in evolution-target lists and can select a shared moveset source before its first save.
+
+Existing base records also appear in **Evolves To**. Assigning one as a target promotes it to `evolved_fakemon.json`, removes its independent move lists, and initializes its shared moveset source to the parent. In the Moves tab, the text box only filters suggestions; choosing an item in the adjacent dropdown commits the canonical move ID used by validation.
+
+The General tab accepts direct hexadecimal display-color entry and provides a synchronized color sampler. Picker selections are stored as the runtime's six-digit RGB hex value.
 
 Sprites are not stored as paths in the runtime schema. The Art tab treats `art_id` as a filename-driven package containing independent Player/Wild battle images, four static directional Follow images, and independent Player/Wild anchor maps. Image selection is staged; **Write Art Package** shows the exact overwrite/create set before writing canonical PNG filenames. Assigning an existing package only changes the Fakemon draft's `art_id` and never modifies images.
 

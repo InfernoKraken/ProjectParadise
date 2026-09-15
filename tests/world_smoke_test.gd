@@ -14,9 +14,13 @@ func _initialize() -> void:
 	assert(InputMap.action_get_events("move_left").any(func(event: InputEvent) -> bool: return event is InputEventKey and (event as InputEventKey).physical_keycode == KEY_LEFT), "move_left must include the Left Arrow key.")
 	assert(InputMap.action_get_events("move_right").any(func(event: InputEvent) -> bool: return event is InputEventKey and (event as InputEventKey).physical_keycode == KEY_RIGHT), "move_right must include the Right Arrow key.")
 	assert(main.opponent != null, "Trainer placeholder must be created.")
+	assert(main.opponent.get_child(0) is Sprite3D and not (main.opponent.get_child(0) as Sprite3D).name.ends_with("Placeholder"), "Trainer squares must be replaced with sliced NPC art when its configured source is available.")
 	assert(main.route_origin == Vector3(80, 0, 0), "Canopy Route must be built as a separate map region.")
 	assert(main.world.get_node_or_null("ClearingNorthExit") != null, "The clearing must own its forest route warp.")
 	assert(main.map_data.has("grass_zones") and not main.map_data.has("wild_zone"), "The clearing must use the standard grass_zones terrain field.")
+	assert(is_equal_approx(float(main.map_data.get("water_encounter_chance", 0.0)), 0.05) and main.map_data.get("water_species", []) == ["Moach"], "Water encounters must use a 5% Moach-only table.")
+	for water_map: Dictionary in [main.map_data, main.map_data["route"], main.map_data["east_route"], main.map_data["west_route"]]:
+		assert(is_equal_approx(float(water_map.get("water_encounter_chance", 0.0)), 0.05) and water_map.get("water_species", []) == ["Moach"], "Every swimmable outdoor map must use the 5% Moach-only water encounter table.")
 	var clearing_grass_tiles: Array = main.world.get_children().filter(func(node: Node) -> bool: return node.name.begins_with("GrassTile_"))
 	assert(not clearing_grass_tiles.is_empty(), "Clearing grass zones must generate standard visible tall-grass tiles.")
 	var clearing_warp_art := main.world.get_node("ClearingNorthExit/OutdoorWarpArt_Generic") as Sprite3D
@@ -122,6 +126,7 @@ func _initialize() -> void:
 	assert(main.world.get_node_or_null("EvolutionParent") != null, "The family needs an evolution parent.")
 	assert(main.world.get_node_or_null("DespairParent") != null, "The family needs a Despair parent.")
 	assert(main.family_children.size() == 3, "The family must include three wandering children.")
+	assert((main.world.get_node("FamilyChild1").get_child(0) as Sprite3D).texture.get_width() < 160, "Child NPC art must use a trimmed frame rather than displaying the full concept sheet.")
 	assert(main.save_slot_selector.item_count == 5, "The manual save UI must expose five states.")
 	assert(main.save_slot_selector.get_parent().get_parent().get_parent() == main.settings_panel, "Save controls must stay grouped inside Settings.")
 	assert(main._manual_save_path(1) != main._manual_save_path(5), "Manual save states must use independent files.")

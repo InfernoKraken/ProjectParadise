@@ -1,8 +1,24 @@
 {
   "assignments": {
+    "Balopod": [
+      "Mollusk",
+      "Mollusk"
+    ],
+    "Bravarb": [
+      "Fish",
+      "Fish"
+    ],
     "Celestraal": [
       "Fish",
       "Angellic"
+    ],
+    "Chirial": [
+      "Mollusk",
+      "Mollusk"
+    ],
+    "Constilapod": [
+      "Mollusk",
+      "Mollusk"
     ],
     "Croacoa": [
       "Amphibian",
@@ -36,6 +52,10 @@
       "Bird",
       "Plant"
     ],
+    "Moach": [
+      "Fish",
+      "Fish"
+    ],
     "Paradisia": [
       "Bird",
       "Plant"
@@ -51,6 +71,10 @@
     "Pyravion": [
       "Bird",
       "Cosmic"
+    ],
+    "Regarbel": [
+      "Fish",
+      "Fish"
     ],
     "Scorcaw": [
       "Bird",

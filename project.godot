@@ -15,6 +15,10 @@ run/main_scene="res://world/main.tscn"
 config/features=PackedStringArray("4.7", "Mobile")
 config/icon="res://icon.svg"
 
+[autoload]
+
+WorldClock="*res://world/world_clock.gd"
+
 [debug]
 
 settings/stdout/verbose_stdout=true

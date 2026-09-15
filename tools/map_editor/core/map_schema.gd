@@ -26,7 +26,7 @@ static func kind_for_file(path: String) -> String:
 static func kind_for_data(data:Dictionary, fallback:String="unknown")->String:
 	var metadata:Variant=data.get("map_metadata",{})
 	if metadata is Dictionary:
-		var declared:=String(metadata.get("map_type",""))
+		var declared:=String(metadata.get("layout_type",metadata.get("map_type","")))
 		if declared in ["outdoor","interior","cave"]:return declared
 	return fallback
 

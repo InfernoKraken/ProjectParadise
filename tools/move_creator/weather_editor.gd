@@ -13,6 +13,10 @@ var turn_label: Label
 var status_label: Label
 var move_select: OptionButton
 var new_weather_edit: LineEdit
+var field_effect_select: OptionButton
+var field_effect_list: ItemList
+var field_effect_json: TextEdit
+var selected_field_effect := ""
 var current_turn := 1
 
 func _ready() -> void:
@@ -27,9 +31,16 @@ func _build_ui() -> void:
 	new_weather_edit = LineEdit.new(); new_weather_edit.placeholder_text = "New weather name"; toolbar.add_child(new_weather_edit); _button(toolbar, "New Weather", _new_weather)
 	_button(toolbar, "Save Weather", _save)
 	var duration_row := HBoxContainer.new(); add_child(duration_row); duration_row.add_child(_label("Duration (turns):")); duration_spin = SpinBox.new(); duration_spin.min_value = 1; duration_spin.max_value = 99; duration_spin.step = 1; duration_row.add_child(duration_spin); duration_spin.value_changed.connect(func(value): model.set_duration(int(value)); current_turn = mini(current_turn, model.duration()); _sync_preview())
+	var field_box := VBoxContainer.new(); add_child(field_box); field_box.add_child(_label("Battle Field Effects"))
+	var field_actions := HBoxContainer.new(); field_box.add_child(field_actions); field_effect_select = OptionButton.new(); field_effect_select.size_flags_horizontal = Control.SIZE_EXPAND_FILL; field_actions.add_child(field_effect_select)
+	for key: String in WeatherEditorModel.FIELD_EFFECT_OPERATIONS: field_effect_select.add_item(WeatherEditorModel.FIELD_EFFECT_OPERATIONS[key]["label"]); field_effect_select.set_item_metadata(field_effect_select.item_count - 1, key)
+	_button(field_actions, "Add Operation", _add_field_effect); _button(field_actions, "Remove Selected", _remove_field_effect)
+	field_effect_list = ItemList.new(); field_effect_list.custom_minimum_size.y = 90; field_box.add_child(field_effect_list); field_effect_list.item_selected.connect(_select_field_effect)
+	field_effect_json = TextEdit.new(); field_effect_json.custom_minimum_size.y = 85; field_effect_json.placeholder_text = "Select an operation to edit its JSON value."; field_box.add_child(field_effect_json); _button(field_box, "Apply Selected Operation", _apply_field_effect)
 	var assignment := HBoxContainer.new(); add_child(assignment); assignment.add_child(_label("Assign to weather-setting move:")); move_select = OptionButton.new(); move_select.size_flags_horizontal = Control.SIZE_EXPAND_FILL; assignment.add_child(move_select); _button(assignment, "Assign to Move", _assign)
 	var split := HSplitContainer.new(); split.size_flags_vertical = Control.SIZE_EXPAND_FILL; add_child(split)
 	var left := VBoxContainer.new(); left.custom_minimum_size.x = 320; split.add_child(left)
+	remove_child(field_box); left.add_child(field_box)
 	var actions := HBoxContainer.new(); left.add_child(actions)
 	var add_menu := MenuButton.new(); add_menu.text = "Add Element"; actions.add_child(add_menu)
 	for item in [["Background Overlay", "background_overlay"], ["Sprite", "sprite_effect"], ["Light", "lighting_effect"], ["Particle", "particle_effect"], ["Pulse / Burst", "turn_effect"], ["Thought Sequence", "thought_sequence"]]: add_menu.get_popup().add_item(item[0]); add_menu.get_popup().set_item_metadata(add_menu.get_popup().item_count - 1, item[1])
@@ -63,7 +74,32 @@ func _new_weather() -> void:
 
 func _select_weather() -> void:
 	if weather_select.item_count == 0: return
-	model.select_weather(weather_select.get_item_text(weather_select.selected)); duration_spin.set_value_no_signal(model.duration()); current_turn = 1; _refresh_moves(); _refresh_elements(); _sync_preview()
+	model.select_weather(weather_select.get_item_text(weather_select.selected)); duration_spin.set_value_no_signal(model.duration()); current_turn = 1; _refresh_moves(); _refresh_field_effects(); _refresh_elements(); _sync_preview()
+
+func _refresh_field_effects() -> void:
+	selected_field_effect = ""; field_effect_list.clear(); field_effect_json.clear(); field_effect_json.editable = false
+	for effect: Dictionary in model.field_effects():
+		field_effect_list.add_item("%s  ·  %s" % [effect["label"], JSON.stringify(effect["value"])]); field_effect_list.set_item_metadata(field_effect_list.item_count - 1, effect["key"])
+
+func _select_field_effect(index: int) -> void:
+	selected_field_effect = String(field_effect_list.get_item_metadata(index)); field_effect_json.editable = true
+	field_effect_json.text = JSON.stringify(model.battle_data["weather"][model.selected_weather][selected_field_effect], "  ")
+
+func _add_field_effect() -> void:
+	if field_effect_select.item_count == 0: return
+	var key := String(field_effect_select.get_item_metadata(field_effect_select.selected))
+	if not model.add_field_effect(key): _status("That field-effect operation is already present.", true); return
+	_refresh_field_effects(); _status("Added field-effect operation. Edit its value, then save Weather.", false)
+
+func _remove_field_effect() -> void:
+	if selected_field_effect.is_empty() or not model.remove_field_effect(selected_field_effect): _status("Select a field-effect operation to remove.", true); return
+	_refresh_field_effects(); _status("Removed field-effect operation in memory.", false)
+
+func _apply_field_effect() -> void:
+	if selected_field_effect.is_empty(): _status("Select a field-effect operation first.", true); return
+	var parser := JSON.new()
+	if parser.parse(field_effect_json.text) != OK: _status("Field effect JSON is invalid: %s" % parser.get_error_message(), true); return
+	model.set_field_effect(selected_field_effect, parser.data); _refresh_field_effects(); _validate(); _status("Applied field-effect operation in memory.", false)
 
 func _refresh_moves() -> void:
 	move_select.clear()

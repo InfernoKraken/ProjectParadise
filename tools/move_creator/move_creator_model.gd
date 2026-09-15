@@ -7,6 +7,7 @@ const ANIMATION_DIR := "res://data/move_animations"
 const DAMAGE_CLASSES := ["Physical", "Special", "Status"]
 const STATS := ["attack", "defense", "special_attack", "special_defense", "speed"]
 const FALLBACK_ANIMATIONS := ["target_hit", "caster_lunge", "projectile", "target_burst", "buff_swirl", "field_overlay", "target_shake", "floating_icon"]
+const CSV_CORE_COLUMNS := ["move_id", "name", "description", "type", "damage_class", "power", "priority", "condition", "condition_chance", "min_hits", "max_hits", "stat_changes", "target_stat_changes", "animation_id", "fallback_animation", "sets_weather", "scheduled_effect"]
 const FIELD_REGISTRY := {
 	"name": {"label":"Name", "type":"string", "default":""},
 	"description": {"label":"Description", "type":"string", "default":""},
@@ -18,6 +19,7 @@ const FIELD_REGISTRY := {
 	"condition": {"label":"Condition", "type":"choice", "optional":true},
 	"condition_chance": {"label":"Condition Chance", "type":"float", "min":0.0, "max":1.0, "optional":true},
 	"stat_changes": {"label":"Stat Changes", "type":"array", "optional":true},
+	"target_stat_changes": {"label":"Target Stat Changes", "type":"array", "optional":true},
 	"priority": {"label":"Priority", "type":"integer", "optional":true},
 	"min_hits": {"label":"Minimum Hits", "type":"integer", "optional":true},
 	"max_hits": {"label":"Maximum Hits", "type":"integer", "optional":true},
@@ -45,6 +47,43 @@ func move_ids() -> PackedStringArray:
 	for move_id: Variant in data.get("moves", {}).keys(): values.append(String(move_id))
 	values.sort_custom(func(a: String, b: String): return display_label(a).naturalnocasecmp_to(display_label(b)) < 0)
 	return PackedStringArray(values)
+
+func export_columns() -> PackedStringArray:
+	var columns := PackedStringArray(CSV_CORE_COLUMNS)
+	var additional: Array[String] = []
+	for move: Dictionary in data.get("moves", {}).values():
+		for key: Variant in move.keys():
+			var field := String(key)
+			if not columns.has(field) and not additional.has(field): additional.append(field)
+	additional.sort()
+	columns.append_array(PackedStringArray(additional))
+	return columns
+
+func export_moves_csv(destination_path: String) -> Error:
+	if destination_path.strip_edges().is_empty(): return ERR_INVALID_PARAMETER
+	var columns := export_columns()
+	var lines := PackedStringArray([_csv_row(columns)])
+	for move_id: String in move_ids():
+		var move: Dictionary = data["moves"][move_id]
+		var values := PackedStringArray()
+		for column: String in columns: values.append(_csv_value(move_id if column == "move_id" else move.get(column)))
+		lines.append(_csv_row(values))
+	var file := FileAccess.open(destination_path, FileAccess.WRITE)
+	if file == null: return FileAccess.get_open_error()
+	# The BOM keeps Unicode descriptions readable when opened directly in Excel.
+	file.store_string("\ufeff" + "\r\n".join(lines) + "\r\n"); file.close()
+	return OK
+
+static func _csv_value(value: Variant) -> String:
+	if value == null: return ""
+	if value is Dictionary or value is Array: return JSON.stringify(value)
+	if value is bool: return "true" if value else "false"
+	return str(value)
+
+static func _csv_row(values: PackedStringArray) -> String:
+	var escaped := PackedStringArray()
+	for value: String in values: escaped.append('"%s"' % value.replace('"', '""'))
+	return ",".join(escaped)
 
 func display_label(move_id: String) -> String:
 	var move: Dictionary = data.get("moves", {}).get(move_id, {})
@@ -158,19 +197,34 @@ func effect_payload_kinds() -> PackedStringArray:
 	for value: StringName in BATTLE_EFFECT_INSTANCE.PAYLOAD_KINDS: result.append(String(value))
 	return result
 
-func add_stat_change(stat := "attack", amount := 0.1) -> void:
-	var changes: Array = selected_move.get("stat_changes", []).duplicate(true); changes.append({"stat":stat,"amount":amount}); selected_move["stat_changes"] = changes; dirty = true
+func add_stat_change(stat := "attack", amount := 0.1, affected := "user") -> void:
+	var key := _stat_change_key(affected)
+	var changes: Array = selected_move.get(key, []).duplicate(true); changes.append({"stat":stat,"amount":amount}); selected_move[key] = changes; dirty = true
 
-func remove_stat_change(index: int) -> void:
-	var changes: Array = selected_move.get("stat_changes", []).duplicate(true)
+func remove_stat_change(index: int, affected := "user") -> void:
+	var key := _stat_change_key(affected)
+	var changes: Array = selected_move.get(key, []).duplicate(true)
 	if index >= 0 and index < changes.size(): changes.remove_at(index)
-	if changes.is_empty(): selected_move.erase("stat_changes")
-	else: selected_move["stat_changes"] = changes
+	if changes.is_empty(): selected_move.erase(key)
+	else: selected_move[key] = changes
 	dirty = true
 
-func set_stat_change(index: int, stat: String, amount: float) -> void:
-	var changes: Array = selected_move.get("stat_changes", []).duplicate(true)
-	if index >= 0 and index < changes.size(): changes[index] = {"stat":stat,"amount":amount}; selected_move["stat_changes"] = changes; dirty = true
+func set_stat_change(index: int, stat: String, amount: float, affected := "user") -> void:
+	var key := _stat_change_key(affected)
+	var changes: Array = selected_move.get(key, []).duplicate(true)
+	if index >= 0 and index < changes.size(): changes[index] = {"stat":stat,"amount":amount}; selected_move[key] = changes; dirty = true
+
+func move_stat_change(index: int, from_affected: String, to_affected: String) -> void:
+	if from_affected == to_affected: return
+	var from_key := _stat_change_key(from_affected)
+	var changes: Array = selected_move.get(from_key, []).duplicate(true)
+	if index < 0 or index >= changes.size(): return
+	var change: Dictionary = changes[index]
+	remove_stat_change(index, from_affected)
+	add_stat_change(String(change.get("stat", "attack")), float(change.get("amount", 0.1)), to_affected)
+
+func _stat_change_key(affected: String) -> String:
+	return "target_stat_changes" if affected == "foe" else "stat_changes"
 
 func unknown_fields() -> Dictionary:
 	var result := {}
@@ -208,6 +262,8 @@ func validation_errors(animation_ids := PackedStringArray()) -> PackedStringArra
 	if selected_move.has("condition_chance") and (float(selected_move["condition_chance"]) < 0.0 or float(selected_move["condition_chance"]) > 1.0): errors.append("Condition Chance must be between 0 and 1.")
 	for change: Variant in selected_move.get("stat_changes", []):
 		if not change is Dictionary or not STATS.has(String(change.get("stat", ""))) or not change.has("amount"): errors.append("Stat Changes contain an invalid row.")
+	for change: Variant in selected_move.get("target_stat_changes", []):
+		if not change is Dictionary or not STATS.has(String(change.get("stat", ""))) or not change.has("amount"): errors.append("Target Stat Changes contain an invalid row.")
 	var animation_id := String(selected_move.get("animation_id", ""))
 	if not animation_id.is_empty() and not animation_ids.has(animation_id): errors.append("Custom animation '%s' does not exist." % animation_id)
 	var fallback := String(selected_move.get("fallback_animation", selected_move.get("animation_kind", "")))

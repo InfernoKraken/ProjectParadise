@@ -1,0 +1,85 @@
+{
+  "duration": 1.75,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Projectile_Water_Wave.png",
+      "instance_id": "effect",
+      "is_behind": true,
+      "opacity": 0.7,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 2.0,
+      "sprite_sheet": null,
+      "time": 0.5,
+      "tint": "#FFFFFF",
+      "type": "spawn_sprite"
+    },
+    {
+      "battler": "user",
+      "direction": "toward_target",
+      "distance": 110.0,
+      "duration": 0.2,
+      "time": 0.5,
+      "type": "move_battler"
+    },
+    {
+      "duration": 0.2,
+      "easing": "linear",
+      "instance_id": "effect",
+      "time": 0.5,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Water_Wave.png",
+      "duration": 0.3,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 2.0,
+      "sprite_sheet": null,
+      "time": 0.7,
+      "tint": "#FFFFFF",
+      "type": "impact_sprite"
+    },
+    {
+      "battler": "target",
+      "duration": 0.2,
+      "magnitude": 15.0,
+      "time": 0.7,
+      "type": "shake_battler"
+    },
+    {
+      "duration": 0.25,
+      "instance_id": "effect",
+      "opacity": 0.0,
+      "time": 0.7,
+      "type": "fade_sprite"
+    }
+  ],
+  "format_version": 1,
+  "id": "hydraulic_crash"
+}

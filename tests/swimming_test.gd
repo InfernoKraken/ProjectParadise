@@ -6,7 +6,17 @@ func _initialize() -> void:
 	var main := scene.instantiate()
 	root.add_child(main)
 	await process_frame
-	assert(main.bag_panel.find_child("SwimgearButton", true, false) is Button, "The Bag must contain Swimgear.")
+	var key_items: Node = main.bag_panel.find_child("KeyItemsSection", true, false)
+	var swimgear_button := main.bag_panel.find_child("SwimgearButton", true, false) as Button
+	var watch_button := main.bag_panel.find_child("WatchButton", true, false) as Button
+	assert(swimgear_button != null and swimgear_button.get_parent() == key_items, "Swimgear must be under Key Items.")
+	assert(watch_button != null and watch_button.get_parent() == key_items, "The Watch must be under Key Items.")
+	var world_clock := main.get_node("/root/WorldClock")
+	world_clock.day = 2
+	world_clock.set_time(19, 5)
+	main.bag_panel.show()
+	main._use_watch()
+	assert(main.hint_label.text == "Watch — Day 3, 19:05" and not main.bag_panel.visible, "The Watch must report the exact shared world-clock time and close the Bag.")
 	var swim_palette: Texture2D = main.PlayerPalette.create_texture("medium", "swim")
 	var dive_palette: Texture2D = main.PlayerPalette.create_texture("medium", "dive")
 	assert(swim_palette != null and dive_palette != null, "The swimming and diving sheets must produce runtime palette textures.")

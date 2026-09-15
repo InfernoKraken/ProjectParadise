@@ -53,6 +53,11 @@
 	  "overworld_damage_per_step": 1.0,
 	  "persistent": true
 	},
+	"Rusting": {
+	  "end_turn_hp_fraction": 0.0625,
+	  "overworld_damage_per_step": 1.0,
+	  "persistent": true
+	},
 	"Slowed": {
 	  "persistent": true,
 	  "speed_multiplier": 0.75
@@ -774,6 +779,214 @@
 		"Plant",
         "Mystic"
 	  ]
+	},
+	{
+	  "art_id": "Moach",
+	  "attack": 50.0,
+	  "base_exp": 60.0,
+	  "catch_rate": 150.0,
+	  "color": "eca331",
+	  "defense": 50.0,
+	  "description": "Moach often live in murky, warm bodies of water where they remain hidden from potential predators. Despite their low energy and poor swimming, they have excellent memory and powerful vision, allowing them to locate and remember threats within their muddy, often overgrown home. Their signature whiskers are sensitive to vibrations in the rare cases when their eyes are not enough. Moach rarely attack living prey, and prefer to locate carrion on the riverbed. It's thought that these Fakemon are highly responsible for keeping many otherwise murky bodies of water much cleaner then the appearance suggests.",
+	  "learnset": [
+		{
+		  "level": 1.0,
+		  "move": "dartlet_stare"
+		},
+		{
+		  "level": 2.0,
+		  "move": "bite"
+		},
+		{
+		  "level": 3.0,
+		  "move": "counter"
+		},
+		{
+		  "level": 5.0,
+		  "move": "fin_flash"
+		},
+		{
+		  "level": 8.0,
+		  "move": "detect"
+		},
+		{
+		  "level": 12.0,
+		  "move": "flip_turn"
+		},
+		{
+		  "level": 16.0,
+		  "move": "drive_off"
+		},
+		{
+		  "level": 25.0,
+		  "move": "body_slam"
+		},
+		{
+		  "level": 27.0,
+		  "move": "sea_cutter"
+		},
+		{
+		  "level": 30.0,
+		  "move": "bulk_up"
+		},
+		{
+		  "level": 33.0,
+		  "move": "valiance"
+		},
+		{
+		  "level": 36.0,
+		  "move": "kinetic_pummel"
+		},
+		{
+		  "level": 42.0,
+		  "move": "challenging_call"
+		},
+		{
+		  "level": 45.0,
+		  "move": "hydraulic_crash"
+		},
+		{
+		  "level": 50.0,
+		  "move": "monsoon"
+		},
+		{
+		  "level": 55.0,
+		  "move": "scourge"
+		}
+	  ],
+	  "level": 5.0,
+	  "male_ratio": 0.5,
+	  "max_hp": 80.0,
+	  "moves": [
+        "absolve"
+	  ],
+	  "name": "Moach",
+	  "size": "0.127 m",
+	  "special_attack": 15.0,
+	  "special_defense": 50.0,
+	  "speed": 15.0,
+	  "types": [
+		"Fighting",
+        "Water"
+	  ]
+	},
+	{
+	  "art_id": "Balopod",
+	  "attack": 30,
+	  "base_exp": 50.0,
+	  "catch_rate": 125.0,
+	  "color": "dd66c8",
+	  "defense": 40,
+	  "description": "It fills it's mantle full of water and air, allowing Balopod to float around like a balloon. It has surprising grip strength, but it's small arms are still too small to generate enough leverage. Balopod often has to be very clever in order to not starve, and scientists often witness their elaborate traps setup to catch prey. Because of their planning, they may eat prey that is much stronger then they would realistically be able to hunt. Cool or dirty water is often as threatening to the species as Balopod, which only adds to it's impressive neurological structure, as it's small arms can detect chemistry and temperature independently and precisely. If improper conditions are found, the Fakemon makes a move to attempt to find somewhere more suitable to live.",
+	  "learnset": [
+		{
+		  "level": 1,
+		  "move": "dartlet_stare"
+		},
+		{
+		  "level": 2,
+		  "move": "poison_bubble"
+		},
+		{
+		  "level": 3,
+		  "move": "mind_wave"
+		},
+		{
+		  "level": 5,
+		  "move": "tentacle_grip"
+		},
+		{
+		  "level": 7,
+		  "move": "mist"
+		},
+		{
+		  "level": 9,
+		  "move": "aqua_jet"
+		},
+		{
+		  "level": 12,
+		  "move": "disable"
+		},
+		{
+		  "level": 15,
+		  "move": "ink_jet"
+		},
+		{
+		  "level": 17,
+		  "move": "mind_bolt"
+		},
+		{
+		  "level": 19,
+		  "move": "mimic"
+		},
+		{
+		  "level": 23,
+		  "move": "warning_flare"
+		},
+		{
+		  "level": 25,
+		  "move": "night_dart"
+		},
+		{
+		  "level": 28,
+		  "move": "multitask"
+		},
+		{
+		  "level": 29,
+		  "move": "monsoon"
+		},
+		{
+		  "level": 32,
+		  "move": "scald"
+		},
+		{
+		  "level": 35,
+		  "move": "inner_focus"
+		},
+		{
+		  "level": 38,
+		  "move": "coat_toxin"
+		},
+		{
+		  "level": 40,
+		  "move": "hysteria"
+		},
+		{
+		  "level": 43,
+		  "move": "vicegrip"
+		},
+		{
+		  "level": 47,
+		  "move": "vital_cognition"
+		},
+		{
+		  "level": 50,
+		  "move": "synaptic_bloom"
+		},
+		{
+		  "level": 53,
+		  "move": "chromatic_thought"
+		},
+		{
+		  "level": 55,
+		  "move": "remembrance"
+		}
+	  ],
+	  "level": 5,
+	  "male_ratio": 0.5,
+	  "max_hp": 45,
+	  "moves": [
+        "absolve"
+	  ],
+	  "name": "Balopod",
+	  "size": "0.08 m",
+	  "special_attack": 45,
+	  "special_defense": 50,
+	  "speed": 60,
+	  "types": [
+		"Psychic",
+        "Poison"
+	  ]
 	}
   ],
   "moves": {
@@ -849,7 +1062,7 @@
 	  "fallback_animation": "field_overlay",
 	  "name": "Bloodmoon",
 	  "power": 0.0,
-	  "sets_weather": "Blood Moon",
+	  "sets_weather": "Monsoon",
 	  "type": "Dark"
 	},
 	"bloom": {
@@ -876,6 +1089,19 @@
 		  "bloom_heal_percent_bonus": 5.0
 		}
 	  }
+	},
+	"body_slam": {
+	  "animation_id": "body_slam",
+	  "damage_class": "Physical",
+	  "description": "Uses the user's size to deal up to 150 Base Power. The user takes recoil equal to 15% of its maximum HP.",
+	  "name": "Body Slam",
+	  "power": 0.0,
+	  "power_from_user_size": {
+		"maximum_power": 150.0,
+		"power_per_meter": 50.0
+	  },
+	  "recoil_max_hp_fraction": 0.15,
+	  "type": "Normal"
 	},
 	"brilliant_light": {
 	  "animation_id": "brilliant_light",
@@ -958,7 +1184,7 @@
 		"type": "Dragon"
 	  },
 	  "damage_class": "Status",
-	  "description": "Calls the foe to a challenge, lowering their attack by 1 stage, and adds a 80% chance for them to despair. If the foe is a Dragon type, it will always dispair.",
+	  "description": "Calls the foe to a challenge, lowering their attack by 1 stage, and adds a 80% chance for them to despair. If the foe is a Dragon type, it will always despair.",
 	  "name": "Challenging Call",
 	  "power": 0.0,
 	  "stat_changes": [
@@ -992,6 +1218,119 @@
 		"Rootmind": {
 		  "condition_chance": 0.3,
 		  "power": 110.0
+		}
+	  }
+	},
+	"chromatic_thought": {
+	  "animation_id": "chromatic_thought",
+	  "damage_class": "Status",
+	  "description": "Raises stats according to the active weather. With no weather, raises every stat by 1 stage and restores 5% of maximum HP.",
+	  "name": "Chromatic Thought",
+	  "power": 0.0,
+	  "type": "Psychic",
+	  "weather_stat_effects": {
+		"Blood Moon": {
+		  "stat_changes": [
+			{
+			  "amount": 0.2,
+			  "stat": "special_attack"
+			},
+			{
+			  "amount": 0.2,
+			  "stat": "speed"
+			}
+		  ]
+		},
+		"Celestial Chorus": {
+		  "stat_changes": [
+			{
+			  "amount": 0.2,
+			  "stat": "defense"
+			},
+			{
+			  "amount": 0.2,
+			  "stat": "special_defense"
+			}
+		  ]
+		},
+		"Fey Gardens": {
+		  "heal_max_hp_fraction": 0.2,
+		  "stat_changes": [
+			{
+			  "amount": 0.2,
+			  "stat": "special_defense"
+			}
+		  ]
+		},
+		"Harsh Sunlight": {
+		  "stat_changes": [
+			{
+			  "amount": 0.2,
+			  "stat": "attack"
+			},
+			{
+			  "amount": 0.2,
+			  "stat": "special_attack"
+			}
+		  ]
+		},
+		"Monsoon": {
+		  "heal_max_hp_fraction": 0.2,
+		  "stat_changes": [
+			{
+			  "amount": 0.2,
+			  "stat": "speed"
+			}
+		  ]
+		},
+		"Rootmind": {
+		  "stat_changes": [
+			{
+			  "amount": 0.2,
+			  "stat": "special_attack"
+			},
+			{
+			  "amount": 0.2,
+			  "stat": "special_defense"
+			}
+		  ]
+		},
+		"no_weather": {
+		  "heal_max_hp_fraction": 0.05,
+		  "stat_changes": [
+			{
+			  "amount": 0.1,
+			  "stat": "attack"
+			},
+			{
+			  "amount": 0.1,
+			  "stat": "defense"
+			},
+			{
+			  "amount": 0.1,
+			  "stat": "special_attack"
+			},
+			{
+			  "amount": 0.1,
+			  "stat": "special_defense"
+			},
+			{
+			  "amount": 0.1,
+			  "stat": "speed"
+			}
+		  ]
+		},
+		"other_weather": {
+		  "stat_changes": [
+			{
+			  "amount": 0.2,
+			  "stat": "attack"
+			},
+			{
+			  "amount": 0.2,
+			  "stat": "speed"
+			}
+		  ]
 		}
 	  }
 	},
@@ -1113,6 +1452,18 @@
 	  ],
 	  "type": "Normal"
 	},
+	"detect": {
+	  "animation_id": "detect",
+	  "damage_class": "Status",
+	  "description": "Becomes immune to an attack this turn, but becomes less effective the more it is used.",
+	  "name": "Detect",
+	  "power": 0.0,
+	  "priority": 4.0,
+	  "protect": true,
+	  "protect_success_base": 0.95,
+	  "protect_success_decrement": 0.25,
+	  "type": "Fighting"
+	},
 	"disable": {
 	  "animation_id": "disable",
 	  "damage_class": "Status",
@@ -1188,6 +1539,15 @@
 	  "power": 0.0,
 	  "requires_user_condition": "Asleep",
 	  "type": "Mystic"
+	},
+	"drive_off": {
+	  "animation_id": "drive_off",
+	  "damage_class": "Physical",
+	  "description": "Charges a foe, dealing double the damage if the foe is lighter than the user. Always attacks first.",
+	  "name": "Drive Off",
+	  "power": 50.0,
+	  "priority": 1.0,
+	  "type": "Fighting"
 	},
 	"evade": {
 	  "animation_id": "evade",
@@ -1395,6 +1755,20 @@
 	  ],
 	  "type": "Fire"
 	},
+	"hydraulic_crash": {
+	  "animation_id": "hydraulic_crash",
+	  "damage_class": "Physical",
+	  "description": "The user throws its full mass into the foe behind a crushing surge of water. Lowers the user's Defense by 1 stage.",
+	  "name": "Hydraulic Crash",
+	  "power": 110.0,
+	  "stat_changes": [
+		{
+		  "amount": -0.0999999999999996,
+		  "stat": "defense"
+		}
+	  ],
+	  "type": "Water"
+	},
 	"hypnotic_hum": {
 	  "animation_id": "new_animation",
 	  "condition": "Asleep",
@@ -1478,6 +1852,22 @@
 	  "name": "Infest",
 	  "power": 0.0,
 	  "type": "Bug"
+	},
+	"ink_jet": {
+	  "animation_id": "ink_jet",
+	  "damage_class": "Status",
+	  "description": "Fires a jet of Ink at the foe, lowering their Defense by 1 stage, then switches out for a random party member. Stat buffs are transfered to that new member.",
+	  "name": "Ink Jet",
+	  "passes_stat_modifiers": true,
+	  "power": 0.0,
+	  "random_party_switch": true,
+	  "target_stat_changes": [
+		{
+		  "amount": -0.0999999999999996,
+		  "stat": "defense"
+		}
+	  ],
+	  "type": "Poison"
 	},
 	"inner_focus": {
 	  "animation_id": "inner_focus",
@@ -1635,6 +2025,27 @@
 	  "power": 0.0,
 	  "reset_all_stat_changes": true,
 	  "type": "Water"
+	},
+	"monsoon": {
+	  "damage_class": "Status",
+	  "description": "Creates Monsoon weather for 3 turns. Water and Plant attacks deal 50% more damage, while Fire attacks deal 50% less damage. Steel types suffer from Rust.",
+	  "name": "Monsoon",
+	  "power": 0.0,
+	  "sets_weather": "Monsoon",
+	  "type": "Water"
+	},
+	"multitask": {
+	  "animation_id": "multitask",
+	  "damage_class": "Status",
+	  "description": "Raises 3 different random stats by 1 stage. HP may be selected, restoring 10% of maximum HP.",
+	  "name": "Multitask",
+	  "power": 0.0,
+	  "random_stat_or_hp_boosts": {
+		"count": 3.0,
+		"hp_heal_fraction": 0.1,
+		"stat_amount": 0.1
+	  },
+	  "type": "Normal"
 	},
 	"mycelial_hunt": {
 	  "animation_id": "mycelial_hunt",
@@ -1990,6 +2401,15 @@
 	  "power": 40.0,
 	  "type": "Normal"
 	},
+	"sea_cutter": {
+	  "animation_id": "sea_cutter",
+	  "damage_class": "Physical",
+	  "description": "A thin, fast and sharp water projectile that isn't affected by type resistance.",
+	  "ignore_resistance": true,
+	  "name": "Sea Cutter",
+	  "power": 50.0,
+	  "type": "Water"
+	},
 	"seed": {
 	  "animation_id": "seed",
 	  "damage_class": "Status",
@@ -2210,6 +2630,25 @@
 		}
 	  }
 	},
+	"tentacle_grip": {
+	  "animation_id": "tentacle_grip",
+	  "condition": "Slowed",
+	  "damage_class": "Physical",
+	  "description": "A weak tentacle attack that gains info on the opponent, slowing them and lowering their special defense and defense by 1 stage. ",
+	  "name": "Tentacle Grip",
+	  "power": 20.0,
+	  "target_stat_changes": [
+		{
+		  "amount": -0.0999999999999996,
+		  "stat": "defense"
+		},
+		{
+		  "amount": -0.0999999999999996,
+		  "stat": "special_defense"
+		}
+	  ],
+	  "type": "Normal"
+	},
 	"torment": {
 	  "animation_id": "torment",
 	  "damage_class": "Status",
@@ -2236,6 +2675,15 @@
 	  },
 	  "type": "Fire"
 	},
+	"valiance": {
+	  "animation_id": "valiance",
+	  "damage_class": "Physical",
+	  "description": "Strong contact move with a low chance to do recoil damage to the user.",
+	  "name": "Valiance",
+	  "power": 80.0,
+	  "recoil_current_hp_fraction": 0.25,
+	  "type": "Light"
+	},
 	"veil": {
 	  "animation_id": "veil",
 	  "damage_class": "Status",
@@ -2252,7 +2700,7 @@
 	  "name": "Vicegrip",
 	  "power": 80.0,
 	  "prevent_voluntary_switch_turns": 2.0,
-	  "type": "Plant"
+	  "type": "Normal"
 	},
 	"vital_cognition": {
 	  "animation_id": "vital_cognition",
@@ -2375,6 +2823,19 @@
 		"Water": 0.5
 	  },
 	  "duration": 3.0
+	},
+	"Monsoon": {
+	  "damage_multipliers": {
+		"Fire": 0.5,
+		"Plant": 1.5,
+		"Water": 1.5
+	  },
+	  "duration": 3.0,
+	  "presence_type_condition": {
+		"chance": 1.0,
+		"condition": "Rusting",
+		"type": "Steel"
+	  }
 	},
 	"Rootmind": {
 	  "duration": 3.0,

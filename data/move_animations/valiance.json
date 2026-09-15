@@ -1,0 +1,85 @@
+{
+  "duration": 4.1,
+  "events": [
+    {
+      "color": "f9fbe3",
+      "duration": 0.15,
+      "opacity": 0.4,
+      "time": 0.5,
+      "type": "background_tint"
+    },
+    {
+      "battler": "user",
+      "direction": "vertical",
+      "distance": -60.0,
+      "duration": 2.0,
+      "time": 0.65,
+      "type": "move_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Light_Geometric.png",
+      "instance_id": "effect",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "head",
+        "battler": "user",
+        "offset": [
+          0,
+          -15.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.85,
+      "tint": "#FFFFFF",
+      "type": "spawn_sprite"
+    },
+    {
+      "battler": "user",
+      "direction": "toward_target",
+      "distance": 110.0,
+      "duration": 0.5,
+      "time": 2.9,
+      "type": "move_battler"
+    },
+    {
+      "duration": 0.25,
+      "instance_id": "effect",
+      "opacity": 0.0,
+      "time": 3.0,
+      "type": "fade_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Holy_Star.png",
+      "duration": 0.3,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 3.15,
+      "tint": "#FFFFFF",
+      "type": "impact_sprite"
+    },
+    {
+      "battler": "target",
+      "duration": 0.5,
+      "magnitude": 40.0,
+      "time": 3.35,
+      "type": "shake_battler"
+    }
+  ],
+  "format_version": 1,
+  "id": "valiance"
+}

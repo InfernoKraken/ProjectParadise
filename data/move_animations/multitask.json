@@ -1,0 +1,91 @@
+{
+  "duration": 1.0,
+  "events": [
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Tentacles.png",
+      "duration": 0.5,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          -25.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.5,
+      "tint": "#FFFFFF",
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Tentacle_00.png",
+      "duration": 0.5,
+      "instance_id": "impact1",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          50.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.5,
+      "tint": "#FFFFFF",
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Tentacle_01.png",
+      "duration": 0.5,
+      "instance_id": "impact2",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          -50.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.5,
+      "tint": "#FFFFFF",
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Tentacle_02.png",
+      "duration": 0.5,
+      "instance_id": "impact3",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          50.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.5,
+      "tint": "#FFFFFF",
+      "type": "impact_sprite"
+    }
+  ],
+  "format_version": 1,
+  "id": "multitask"
+}

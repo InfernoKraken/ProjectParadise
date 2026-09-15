@@ -50,6 +50,39 @@ func _initialize() -> void:
 	battle._advance_weather()
 	assert(battle.weather.is_empty(), "Weather must fade after three turns.")
 
+	var body_slam: Dictionary = battle.battle_data["moves"]["body_slam"]
+	var size_attacker := test_mon.duplicate(true)
+	var size_defender := test_mon.duplicate(true)
+	size_attacker["size"] = "2.5 m"
+	assert(int(battle._calculate_damage(size_attacker, size_defender, body_slam)["power"]) == 125, "Body Slam must gain 50 Base Power per meter.")
+	size_attacker["size"] = "500 m"
+	assert(int(battle._calculate_damage(size_attacker, size_defender, body_slam)["power"]) == 150, "Body Slam must cap at 150 Base Power.")
+	size_attacker["size"] = "0.5 m"
+	assert(int(battle._calculate_damage(size_attacker, size_defender, body_slam)["power"]) == 25, "Body Slam must remain weak for small Fakemon.")
+	assert(is_equal_approx(float(body_slam["recoil_max_hp_fraction"]), 0.15), "Body Slam recoil must use 15% of maximum HP.")
+
+	var hydraulic_user := test_mon.duplicate(true)
+	var hydraulic_target := test_mon.duplicate(true)
+	battle._ensure_condition_fields(hydraulic_user)
+	battle._ensure_condition_fields(hydraulic_target)
+	battle._apply_after_damage_effects(hydraulic_user, hydraulic_target, battle.battle_data["moves"]["hydraulic_crash"], true, 1)
+	assert(float(hydraulic_user["stat_modifiers"]["defense"]) < 1.0 and is_equal_approx(float(hydraulic_target["stat_modifiers"]["defense"]), 1.0), "Hydraulic Crash must lower the user's Defense, not its target's.")
+
+	var steel_mon := test_mon.duplicate(true)
+	steel_mon["type"] = "Steel"
+	battle._ensure_condition_fields(steel_mon)
+	var original_player: Dictionary = battle.player
+	var original_player_hp: int = battle.player_hp
+	battle.player = steel_mon
+	battle.player_hp = int(steel_mon["max_hp"])
+	battle._set_weather("Monsoon")
+	assert(battle.weather_turns_remaining == 3 and steel_mon["condition"] == "Rusting", "Monsoon must last three turns and inflict Rusting on present Steel Fakemon.")
+	assert(battle.battle_data["weather"]["Monsoon"]["damage_multipliers"] == {"Fire": 0.5, "Plant": 1.5, "Water": 1.5}, "Monsoon must boost Water and Plant and weaken Fire.")
+	assert(battle.battle_data["conditions"]["Rusting"]["end_turn_hp_fraction"] == battle.battle_data["conditions"]["Poisoned"]["end_turn_hp_fraction"], "Rusting must deal the same battle damage as Poisoned.")
+	battle.player = original_player
+	battle.player_hp = original_player_hp
+	battle._clear_weather()
+
 	assert(battle.battle_data["moves"]["brilliant_light"]["ignore_resistance"], "Brilliant Light must ignore resistances.")
 	assert(battle.battle_data["moves"]["remembrance"]["calls_another_move"], "Remembrance must use the reusable move-caller flag.")
 	assert(battle._get_type_effectiveness("Light", "Psychic") == 2.0, "Psychic must be weak to Light.")

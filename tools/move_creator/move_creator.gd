@@ -7,7 +7,7 @@ var model := MoveCreatorModel.new()
 var move_select: OptionButton; var id_label: Label; var dirty_label: Label; var description_warning_label: Label; var status_label: Label; var tabs: TabContainer
 var move_form: VBoxContainer; var stat_rows: VBoxContainer; var unknown_text: TextEdit; var animation_choice: OptionButton
 var animation_editor: Control; var new_dialog: ConfirmationDialog; var new_id: LineEdit; var new_name: LineEdit; var new_type: OptionButton; var new_class: OptionButton
-var delete_move_dialog: ConfirmationDialog; var delete_animation_dialog: ConfirmationDialog; var _orphan_animation_id := ""
+var delete_move_dialog: ConfirmationDialog; var delete_animation_dialog: ConfirmationDialog; var export_dialog: FileDialog; var _orphan_animation_id := ""
 var _pending_action: Callable
 var _animation_assignment_target := "initial"
 
@@ -21,7 +21,7 @@ func _ready()->void:
 func _build_ui()->void:
 	var outer:=VBoxContainer.new();outer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT);add_child(outer)
 	var title:=Label.new();title.text="Move Creator v0.1";title.add_theme_font_size_override("font_size",26);outer.add_child(title)
-	var toolbar:=HBoxContainer.new();outer.add_child(toolbar);toolbar.add_child(_label("Move:"));move_select=OptionButton.new();move_select.size_flags_horizontal=Control.SIZE_EXPAND_FILL;toolbar.add_child(move_select);_button(toolbar,"Load",func():_request_action(func():_load_selected(true)));_button(toolbar,"New Move",func():_request_action(_show_new_dialog));_button(toolbar,"Save Move",_save_move);_button(toolbar,"Delete Move",func():_request_action(_request_delete_move));_button(toolbar,"Refresh",_refresh_moves)
+	var toolbar:=HBoxContainer.new();outer.add_child(toolbar);toolbar.add_child(_label("Move:"));move_select=OptionButton.new();move_select.size_flags_horizontal=Control.SIZE_EXPAND_FILL;toolbar.add_child(move_select);_button(toolbar,"Load",func():_request_action(func():_load_selected(true)));_button(toolbar,"New Move",func():_request_action(_show_new_dialog));_button(toolbar,"Save Move",_save_move);_button(toolbar,"Delete Move",func():_request_action(_request_delete_move));_button(toolbar,"Export Move CSV",_show_export_dialog);_button(toolbar,"Refresh",_refresh_moves)
 	var identity:=HBoxContainer.new();outer.add_child(identity);id_label=_label("Move ID: —");id_label.size_flags_horizontal=Control.SIZE_EXPAND_FILL;identity.add_child(id_label);dirty_label=_label("");identity.add_child(dirty_label)
 	description_warning_label=_label("");description_warning_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART;outer.add_child(description_warning_label)
 	tabs=TabContainer.new();tabs.size_flags_vertical=Control.SIZE_EXPAND_FILL;outer.add_child(tabs)
@@ -30,7 +30,7 @@ func _build_ui()->void:
 	animation_editor=ANIMATION_SCENE.instantiate();animation_editor.embedded_mode=true;animation_editor.size_flags_horizontal=Control.SIZE_EXPAND_FILL;animation_editor.size_flags_vertical=Control.SIZE_EXPAND_FILL;animation_panel.add_child(animation_editor)
 	var weather_panel:=VBoxContainer.new();weather_panel.name="Weather";weather_panel.set_script(WEATHER_EDITOR_SCRIPT);tabs.add_child(weather_panel)
 	var import_panel:=VBoxContainer.new();import_panel.name="Import";import_panel.set_script(IMPORT_PANEL_SCRIPT);tabs.add_child(import_panel)
-	status_label=Label.new();status_label.custom_minimum_size.y=24;status_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART;outer.add_child(status_label);_build_new_dialog();_build_delete_dialogs()
+	status_label=Label.new();status_label.custom_minimum_size.y=24;status_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART;outer.add_child(status_label);_build_new_dialog();_build_delete_dialogs();_build_export_dialog()
 
 func _build_new_dialog()->void:
 	new_dialog=ConfirmationDialog.new();new_dialog.title="New Move";add_child(new_dialog);var form:=VBoxContainer.new();new_dialog.add_child(form);form.add_child(_label("Move ID (lowercase_snake_case)"));new_id=LineEdit.new();form.add_child(new_id);form.add_child(_label("Name"));new_name=LineEdit.new();form.add_child(new_name);form.add_child(_label("Type"));new_type=_option(model.types(),model.types()[0]);form.add_child(new_type);form.add_child(_label("Damage Class"));new_class=_option(MoveCreatorModel.DAMAGE_CLASSES,"Physical");form.add_child(new_class);new_dialog.confirmed.connect(_create_move)
@@ -38,6 +38,18 @@ func _build_new_dialog()->void:
 func _build_delete_dialogs()->void:
 	delete_move_dialog=ConfirmationDialog.new();delete_move_dialog.title="Delete Move";delete_move_dialog.ok_button_text="Delete Move";add_child(delete_move_dialog);delete_move_dialog.confirmed.connect(_confirm_delete_move)
 	delete_animation_dialog=ConfirmationDialog.new();delete_animation_dialog.title="Unreferenced Animation";delete_animation_dialog.ok_button_text="Delete Animation";add_child(delete_animation_dialog);delete_animation_dialog.confirmed.connect(_confirm_delete_animation);delete_animation_dialog.canceled.connect(func():_orphan_animation_id="")
+
+func _build_export_dialog()->void:
+	export_dialog=FileDialog.new();export_dialog.title="Export Canonical Move Data";export_dialog.file_mode=FileDialog.FILE_MODE_SAVE_FILE;export_dialog.access=FileDialog.ACCESS_FILESYSTEM;export_dialog.filters=PackedStringArray(["*.csv ; CSV Spreadsheet"]);export_dialog.current_file="project_paradise_moves.csv";export_dialog.use_native_dialog=true;export_dialog.file_selected.connect(_export_moves_csv);add_child(export_dialog)
+
+func _show_export_dialog()->void:
+	if model.dirty:_status("Save or discard the current move changes before exporting canonical data.",true);return
+	export_dialog.popup_centered_ratio(0.7)
+
+func _export_moves_csv(destination_path:String)->void:
+	var path:=destination_path if destination_path.to_lower().ends_with(".csv") else destination_path+".csv"
+	var error:=model.export_moves_csv(path)
+	_status("Exported %d canonical moves to %s"%[model.move_ids().size(),path] if error==OK else "CSV export failed: %s"%error_string(error),error!=OK)
 
 func _refresh_moves(select_id:="")->void:
 	move_select.clear()
@@ -108,9 +120,14 @@ func _build_scheduled_effect_section(animation_ids:PackedStringArray)->void:
 
 func _build_stat_rows()->void:
 	for child in stat_rows.get_children():child.queue_free()
-	var changes:Array=model.selected_move.get("stat_changes",[])
-	for index in changes.size():
-		var row:=HBoxContainer.new();stat_rows.add_child(row);var change:Dictionary=changes[index];var stat:=_option(MoveCreatorModel.STATS,String(change.get("stat","attack")));row.add_child(stat);var amount:=SpinBox.new();amount.min_value=-10;amount.max_value=10;amount.step=0.05;amount.value=float(change.get("amount",0.1));row.add_child(amount);stat.item_selected.connect(func(_i,idx=index,s=stat,a=amount):model.set_stat_change(idx,s.get_item_text(s.selected),a.value);_changed());amount.value_changed.connect(func(_v,idx=index,s=stat,a=amount):model.set_stat_change(idx,s.get_item_text(s.selected),a.value);_changed());_button(row,"Remove",func(idx=index):model.remove_stat_change(idx);_build_move_form())
+	for affected in ["user", "foe"]:
+		var changes:Array=model.selected_move.get("target_stat_changes" if affected=="foe" else "stat_changes",[])
+		for index in changes.size():
+			var row:=HBoxContainer.new();stat_rows.add_child(row);var change:Dictionary=changes[index]
+			var recipient:=_option(PackedStringArray(["User","Foe"]),"Foe" if affected=="foe" else "User");row.add_child(recipient)
+			var stat:=_option(MoveCreatorModel.STATS,String(change.get("stat","attack")));row.add_child(stat);var amount:=SpinBox.new();amount.min_value=-10;amount.max_value=10;amount.step=0.05;amount.value=float(change.get("amount",0.1));row.add_child(amount)
+			recipient.item_selected.connect(func(_i,idx=index,old_affected=affected,r=recipient):model.move_stat_change(idx,old_affected,"foe" if r.get_item_text(r.selected)=="Foe" else "user");_build_move_form();_changed())
+			stat.item_selected.connect(func(_i,idx=index,who=affected,s=stat,a=amount):model.set_stat_change(idx,s.get_item_text(s.selected),a.value,who);_changed());amount.value_changed.connect(func(_v,idx=index,who=affected,s=stat,a=amount):model.set_stat_change(idx,s.get_item_text(s.selected),a.value,who);_changed());_button(row,"Remove",func(idx=index,who=affected):model.remove_stat_change(idx,who);_build_move_form())
 
 func _save_move()->void:
 	var errors:=model.validation_errors(_animation_ids());if not errors.is_empty():_status("Move errors:\n"+"\n".join(errors),true);return

@@ -1,4 +1,5 @@
 {
+	"map_type": "Rainforest",
 	"arrival_points": {
 		"north_return": [
 			0,
@@ -7,6 +8,8 @@
 		]
 	},
 	"base_terrain_type": "forest_floor",
+	"water_encounter_chance": 0.05,
+	"water_species": ["Moach"],
 	"blue_flowers": [
 		[
 			-2.0,
@@ -21,9 +24,9 @@
 	],
 	"building": {
 		"door": [
-			-8.0,
+			-7.5,
 			0.11999999731779,
-			-5.0
+			-5.5
 		],
 		"position": [
 			-7,

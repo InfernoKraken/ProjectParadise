@@ -11,6 +11,19 @@ const SPRITE_MODES := ["static", "animated", "scrolling"]
 const SPRITE_BEHAVIORS := ["persistent", "ambient_spawn"]
 const FADE_OUT_CAUSES := ["weather_ends", "element_not_on_turn", "duration"]
 const FLICKER_TYPES := ["all", "individual"]
+const FIELD_EFFECT_OPERATIONS := {
+	"damage_multipliers": {"label":"Move Type Damage Multipliers", "default":{"Normal":1.25}},
+	"presence_type_condition": {"label":"Condition on Weather Entry", "default":{"type":"Steel", "condition":"Rusting", "chance":1.0}},
+	"damaging_type_condition": {"label":"Condition from Damaging Move Type", "default":{"type":"Ghost", "condition":"Burned", "chance":0.2}},
+	"damaging_type_user_heal": {"label":"Heal User from Damaging Move Type", "default":{"type":"Dark", "max_hp_fraction":0.1}},
+	"plant_end_turn_heal_fraction": {"label":"Plant End-of-Turn Healing", "default":0.0625},
+	"prayer_healing_multiplier": {"label":"Prayer Healing Multiplier", "default":1.5},
+	"typed_healing_bonus_fraction": {"label":"Typed Healing Bonus", "default":0.1},
+	"first_infatuation_bonus_stacks": {"label":"First Infatuation Bonus Stacks", "default":1},
+	"healing_types": {"label":"Healing Types", "default":["Plant", "Mystic"]},
+	"protected_types": {"label":"Protected Types", "default":["Plant", "Mystic"]},
+	"protected_stats": {"label":"Protected Stats", "default":["special_attack", "special_defense"]}
+}
 
 var visuals: Dictionary = {}
 var battle_data: Dictionary = {}
@@ -77,6 +90,28 @@ func set_duration(value: int) -> void:
 	var weather_table: Dictionary = battle_data["weather"]
 	if not weather_table.has(selected_weather): weather_table[selected_weather] = {}
 	weather_table[selected_weather]["duration"] = maxi(1, value); dirty = true
+
+func field_effects() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var weather: Dictionary = battle_data.get("weather", {}).get(selected_weather, {})
+	for key: String in FIELD_EFFECT_OPERATIONS:
+		if weather.has(key): result.append({"key":key, "label":FIELD_EFFECT_OPERATIONS[key]["label"], "value":weather[key]})
+	return result
+
+func add_field_effect(key: String) -> bool:
+	if selected_weather.is_empty() or not FIELD_EFFECT_OPERATIONS.has(key): return false
+	var weather: Dictionary = battle_data["weather"].get(selected_weather, {})
+	if weather.has(key): return false
+	weather[key] = FIELD_EFFECT_OPERATIONS[key]["default"].duplicate(true) if FIELD_EFFECT_OPERATIONS[key]["default"] is Array or FIELD_EFFECT_OPERATIONS[key]["default"] is Dictionary else FIELD_EFFECT_OPERATIONS[key]["default"]
+	battle_data["weather"][selected_weather] = weather; dirty = true; return true
+
+func set_field_effect(key: String, value: Variant) -> bool:
+	if not FIELD_EFFECT_OPERATIONS.has(key) or not battle_data.get("weather", {}).get(selected_weather, {}).has(key): return false
+	battle_data["weather"][selected_weather][key] = value; dirty = true; return true
+
+func remove_field_effect(key: String) -> bool:
+	if not FIELD_EFFECT_OPERATIONS.has(key) or not battle_data.get("weather", {}).get(selected_weather, {}).has(key): return false
+	battle_data["weather"][selected_weather].erase(key); dirty = true; return true
 
 func elements() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []; var definition_value := definition()
@@ -214,6 +249,9 @@ static func turns_text(value: Variant) -> String:
 
 func validation_errors() -> PackedStringArray:
 	var errors := PackedStringArray(); var maximum := duration()
+	var weather: Dictionary = battle_data.get("weather", {}).get(selected_weather, {})
+	for key: String in FIELD_EFFECT_OPERATIONS:
+		if weather.has(key) and not _valid_field_effect(key, weather[key]): errors.append("Field effect '%s' has an invalid value." % FIELD_EFFECT_OPERATIONS[key]["label"])
 	for entry: Dictionary in elements():
 		var element: Dictionary = entry["element"]; var label := String(entry["category"])
 		if element.has("turns") and not _valid_turns(element["turns"], maximum): errors.append("%s has invalid turns for duration %d: %s" % [label, maximum, JSON.stringify(element["turns"])])
@@ -265,6 +303,19 @@ func validation_errors() -> PackedStringArray:
 					for step: Variant in sequence:
 						if not step is Dictionary or not step.get("targets", []) is Array or float(step.get("duration", 0.0)) < 0.05: errors.append("Thought sequence steps require target arrays and positive durations.")
 	return errors
+
+func _valid_field_effect(key: String, value: Variant) -> bool:
+	match key:
+		"damage_multipliers":
+			if not value is Dictionary or value.is_empty(): return false
+			for multiplier: Variant in value.values():
+				if not (multiplier is int or multiplier is float) or float(multiplier) < 0.0: return false
+			return true
+		"presence_type_condition", "damaging_type_condition": return value is Dictionary and not String(value.get("type", "")).is_empty() and not String(value.get("condition", "")).is_empty() and float(value.get("chance", -1.0)) >= 0.0 and float(value.get("chance", -1.0)) <= 1.0
+		"damaging_type_user_heal": return value is Dictionary and not String(value.get("type", "")).is_empty() and float(value.get("max_hp_fraction", -1.0)) >= 0.0
+		"healing_types", "protected_types", "protected_stats": return value is Array and not value.is_empty() and value.all(func(item): return item is String and not String(item).is_empty())
+		"first_infatuation_bonus_stacks": return (value is int or value is float) and float(value) >= 0.0 and float(value) == floor(float(value))
+		_: return (value is int or value is float) and float(value) >= 0.0
 
 func _valid_turns(value: Variant, maximum: int) -> bool:
 	if value is String and value == "all": return true

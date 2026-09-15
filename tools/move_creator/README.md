@@ -8,7 +8,9 @@ godot --path . tools/move_creator/move_creator.tscn
 
 The **Move Data** tab edits the canonical `moves` object inside `data/battle_data.json`. Select an existing move and Load it, or choose **New Move** and provide a stable lowercase `snake_case` ID, name, type, and damage class. **Save Move** validates and merges only the selected move into the complete database; it never replaces the database with one move.
 
-Supported controls cover Name, Description, Power, Type, Damage Class, custom Animation ID, Fallback Animation, Condition and Condition Chance, Priority, and self Stat Changes. Stat-change amounts use the engine's existing signed fractional values. Engine fields without dedicated controls can be edited as an **Additional Engine Fields** JSON key-value module. The full raw move JSON can also be edited; both editors require valid JSON objects before changes are applied.
+Supported controls cover Name, Description, Power, Type, Damage Class, custom Animation ID, Fallback Animation, Condition and Condition Chance, Priority, and Stat Changes. Each stat-change row selects its affected battler: User writes `stat_changes`, while Foe writes `target_stat_changes`. Stat-change amounts use the engine's existing signed fractional values. Engine fields without dedicated controls can be edited as an **Additional Engine Fields** JSON key-value module. The full raw move JSON can also be edited; both editors require valid JSON objects before changes are applied.
+
+**Export Move CSV** writes one row per saved canonical move. Core learnset fields appear first, followed by every specialized top-level move field found in the database. Array and dictionary values are retained as JSON inside CSV cells. Save or discard the current move before exporting so the file always reflects persisted canonical data.
 
 Animation IDs refer to definitions in `data/move_animations/`. **None / Use Fallback** removes `animation_id`. **Edit Animation** opens the selected definition in the embedded Animation tab. **New Animation** suggests the current move ID; save it separately in that tab, then use **Assign Current Animation to Move** and Save Move. Move and animation saves remain independent.
 
@@ -34,9 +36,11 @@ Effect ID is an identity used for runtime bookkeeping and animation callbacks. T
 
 Initial Move Animation plays when the move is used. Scheduled Effect Activation Animation is the nested recipe `animation_id` and plays later when that effect activates. Its Edit/New actions use the same Animation tab without overwriting the initial animation assignment.
 
-The game engine remains responsible for hit resolution, triggering, payload execution, ownership cleanup, and replacement behavior. Weather, hazards, Torment, and other legacy specialist fields not yet normalized as `scheduled_effect` remain visible and editable under Additional Engine Fields and survive load/save unchanged.
+The Weather tab edits presentation and battle field effects. Its operation catalog follows the existing weather mechanics: type damage multipliers, entry or damaging-move conditions, damaging-type healing, end-of-turn Plant healing, typed healing/protection, prayer healing, and infatuation bonuses. Map- and list-shaped operation values use focused JSON, are validated, and can be added or removed independently. Unknown specialist weather keys are preserved.
 
-Current limitations: no move learnset/distribution editing, target stat-change editor, weather editor, arbitrary engine-field editor, balance analysis, or new gameplay-mechanic creation. A gameplay mechanic must exist in the engine and be added to the approved field registry before Move Creator exposes it.
+The game engine remains responsible for hit resolution, triggering, payload execution, ownership cleanup, and replacement behavior. Hazards, Torment, and other legacy specialist move fields not yet normalized as `scheduled_effect` remain visible and editable under Additional Engine Fields and survive load/save unchanged.
+
+Current limitations: no move learnset/distribution editing, arbitrary engine-field editor, balance analysis, or new gameplay-mechanic creation. A gameplay mechanic must exist in the engine and be added to the approved field registry before Move Creator exposes it.
 
 Tests:
 

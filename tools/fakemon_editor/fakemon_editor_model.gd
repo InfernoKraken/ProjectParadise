@@ -165,7 +165,8 @@ func save_selected() -> bool:
 			if not old_target.is_empty(): old_target.erase("evolves_from"); old_target.erase("evolution_level")
 		if not evolution_target_name.is_empty():
 			var new_target := _species_dictionary(evolution_target_name)
-			if new_target.is_empty() or not evolved_data.has(new_target): error = "Evolution targets must be species stored in evolved_fakemon.json."; return false
+			if new_target.is_empty(): error = "Evolution target is missing."; return false
+			if not evolved_data.has(new_target) and not _promote_evolution_target(new_target, String(draft.name)): return false
 			new_target["evolves_from"] = String(draft.name)
 			new_target["evolution_level"] = evolution_level
 	elif not evolution_target_name.is_empty():
@@ -187,12 +188,29 @@ func save_selected() -> bool:
 	original_egg_groups = egg_groups_for()
 	return true
 
-func add_species(species_name: String) -> bool:
+func _promote_evolution_target(target: Dictionary, parent_name: String) -> bool:
+	var base_index: int = battle_data.get("fakemon", []).find(target)
+	if base_index < 0: error = "Evolution target could not be promoted to evolved data."; return false
+	battle_data["fakemon"].remove_at(base_index)
+	target["moveset_source"] = parent_name
+	target.erase("moves"); target.erase("learnset")
+	evolved_data.append(target)
+	return true
+
+func add_species(species_name: String, evolves_from := "") -> bool:
 	var clean := species_name.strip_edges()
 	if clean.is_empty() or species_names().map(func(v): return v.to_lower()).has(clean.to_lower()): return false
 	var starter_move := String(move_catalog().keys()[0]) if not move_catalog().is_empty() else ""
 	var created := {"name":clean,"art_id":clean,"male_ratio":0.5,"type":types_catalog()[0] if not types_catalog().is_empty() else "Normal","level":5,"max_hp":50,"attack":50,"defense":50,"special_attack":50,"special_defense":50,"speed":50,"color":"7ebf78","size":"1 m","description":"","catch_rate":75,"base_exp":64,"moves":[starter_move],"learnset":[{"level":1,"move":starter_move}]}
-	battle_data["fakemon"].append(created)
+	var parent := evolves_from.strip_edges()
+	if not parent.is_empty():
+		if not species_names().has(parent): return false
+		created["evolves_from"] = parent
+		created["evolution_level"] = 20
+		created["moveset_source"] = parent
+		created.erase("moves"); created.erase("learnset")
+		evolved_data.append(created)
+	else: battle_data["fakemon"].append(created)
 	if not egg_data.has("assignments"): egg_data["assignments"] = {}
 	egg_data.assignments[clean] = egg_data.get("default_groups", ["Mineral", "Mineral"]).duplicate()
 	select_species(clean)
@@ -224,28 +242,33 @@ func encounter_maps() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for filename in encounter_documents:
 		var data: Dictionary = encounter_documents[filename]
-		if data.get("grass_zones", []).is_empty() and not data.get("wild_zone") is Dictionary: continue
 		var metadata: Dictionary = data.get("map_metadata", {})
-		result.append({"file":filename,"name":String(metadata.get("display_name",filename.get_basename())).replace("_"," ").capitalize()})
-	result.sort_custom(func(a,b):return a.name<b.name)
+		var display:=String(metadata.get("display_name",filename.get_basename())).replace("_"," ").capitalize()
+		if not data.get("grass_zones", []).is_empty() or data.get("wild_zone") is Dictionary:
+			result.append({"file":filename,"name":display,"kind":"grass","label":display+" — Tall Grass"})
+		if data.has("water_species") or float(data.get("water_encounter_chance",0.0))>0.0:
+			result.append({"file":filename,"name":display,"kind":"water","label":display+" — Water"})
+	result.sort_custom(func(a,b):return a.label<b.label)
 	return result
 
-func encounter_for(filename:String,species_name:="")->Dictionary:
+func encounter_for(filename:String,species_name:="",kind:="grass")->Dictionary:
 	var wanted:=selected_name if species_name.is_empty() else species_name
 	var data:Dictionary=encounter_documents.get(filename,{})
-	for value:Variant in data.get("tall_grass_species",[]):
+	var field:="water_species" if kind=="water" else "tall_grass_species"
+	for value:Variant in data.get(field,[]):
 		if value is Dictionary and String(value.get("fakemon",""))==wanted:return {"assigned":true,"level":int(value.get("level",5))}
 		if value is String and String(value)==wanted:return {"assigned":true,"level":int(draft.get("level",5))}
 	return {"assigned":false,"level":int(draft.get("level",5))}
 
-func set_encounter(filename:String,assigned:bool,level:int)->void:
+func set_encounter(filename:String,assigned:bool,level:int,kind:="grass")->void:
 	var data:Dictionary=encounter_documents.get(filename,{})
-	var entries:Array=data.get("tall_grass_species",[])
+	var field:="water_species" if kind=="water" else "tall_grass_species"
+	var entries:Array=data.get(field,[])
 	for i in range(entries.size()-1,-1,-1):
 		var value:Variant=entries[i];var name:=String(value.get("fakemon","")) if value is Dictionary else String(value)
 		if name==selected_name:entries.remove_at(i)
 	if assigned:entries.append({"fakemon":selected_name,"level":clampi(level,1,100)})
-	data["tall_grass_species"]=entries
+	data[field]=entries
 
 func encounters_dirty()->bool:return encounter_documents!=original_encounter_documents
 

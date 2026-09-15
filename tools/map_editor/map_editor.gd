@@ -127,7 +127,7 @@ func _run_after_discard_check(action: Callable) -> void:
 	else: action.call()
 
 func _new_document() -> void:
-	var template:={"format_version":2,"map_metadata":{"id":"new_map","display_name":"New Map","map_type":"outdoor","group":"custom","tags":[]},"origin":[0,0,0],"size":[20,20],"base_terrain_type":"forest_floor","terrain_tiles":[],"entry":[0,0.65,8],"return_warp":[0,0.12,9.5],"arrival_points":{"entry":[0,0.65,8]},"outdoor_connections":[],"tall_grass_species":[],"objects":[],"grass_zones":[],"water_blocks":[],"sand_blocks":[],"rocks":[],"floor_blocks":[],"wall_blocks":[],"furnishings":[],"vines":[],"orchids":[]}
+	var template:={"format_version":2,"map_type":"Rainforest","map_metadata":{"id":"new_map","display_name":"New Map","layout_type":"outdoor","group":"custom","tags":[]},"origin":[0,0,0],"size":[20,20],"base_terrain_type":"forest_floor","terrain_tiles":[],"entry":[0,0.65,8],"return_warp":[0,0.12,9.5],"arrival_points":{"entry":[0,0.65,8]},"outdoor_connections":[],"tall_grass_species":[],"water_species":[],"water_encounter_chance":0.0,"objects":[],"grass_zones":[],"water_blocks":[],"sand_blocks":[],"rocks":[],"floor_blocks":[],"wall_blocks":[],"furnishings":[],"vines":[],"orchids":[]}
 	document=MapDocumentRef.from_text(JSON.stringify(template),"new_map.json");document.dirty=true;undo_stack.clear();redo_stack.clear();identity_by_path.clear();next_identity=1;_refresh_all();status_label.text="New universal outdoor map"
 
 func _load_path(path: String) -> void:
@@ -608,6 +608,8 @@ func _add_character_editor(object:Dictionary)->void:
 	var name_field:="name" if is_trainer else "speaker"
 	var name_edit:=LineEdit.new();name_edit.placeholder_text="Trainer name" if name_field=="name" else "Speaker name";name_edit.text=String(editable.get(name_field,""));name_edit.focus_exited.connect(func():editable[name_field]=name_edit.text;_mark_character_dirty(catalog_backed));inspector.add_child(name_edit)
 	var dialogue_edit:=LineEdit.new();dialogue_edit.placeholder_text="Dialogue pages separated by |";dialogue_edit.text=" | ".join(editable.get("dialogue",[]));dialogue_edit.focus_exited.connect(func():editable["dialogue"]=_split_nonempty(dialogue_edit.text,"|");_mark_character_dirty(catalog_backed));inspector.add_child(dialogue_edit)
+	var sprite_edit:=LineEdit.new();sprite_edit.name="NpcSprite";sprite_edit.placeholder_text="Sprite ID (man, woman, boy, girl)";sprite_edit.text=String(editable.get("sprite",""));sprite_edit.focus_exited.connect(func():editable["sprite"]=sprite_edit.text.strip_edges();_mark_character_dirty(catalog_backed));inspector.add_child(sprite_edit)
+	var color_edit:=LineEdit.new();color_edit.name="NpcColor";color_edit.placeholder_text="Fallback color (hex)";color_edit.text=String(editable.get("color",""));color_edit.focus_exited.connect(func():editable["color"]=color_edit.text.strip_edges().trim_prefix("#");_mark_character_dirty(catalog_backed));inspector.add_child(color_edit)
 	if is_trainer:
 		_add_team_rows(editable,catalog_backed)
 
@@ -682,18 +684,27 @@ func _refresh_metadata()->void:
 		var current:=String(document.data.get("base_terrain_type",""));for index in base.item_count:if String(base.get_item_metadata(index))==current:base.select(index)
 		base.item_selected.connect(func(index):_push_undo();document.set_value("$.base_terrain_type",String(base.get_item_metadata(index)));_after_edit());metadata_box.add_child(base)
 	if document.data.get("map_metadata") is Dictionary:
-		for field in ["id","display_name","map_type","group"]:
+		for field in ["id","display_name","layout_type","group"]:
 			var meta_edit:=LineEdit.new();meta_edit.placeholder_text="Map "+field;meta_edit.text=String(document.data.map_metadata.get(field,""));meta_edit.text_submitted.connect(func(text):_push_undo();document.data.map_metadata[field]=text;document.kind=MapSchemaRef.kind_for_data(document.data,document.kind);document.dirty=true;_after_edit());metadata_box.add_child(meta_edit)
 	if document.data.get("tall_grass_species") is Array:
-		var species:=LineEdit.new();species.placeholder_text="Encounters: Fakemon@level, Fakemon@level";var labels:Array[String]=[];for value:Variant in document.data.tall_grass_species:labels.append("%s@%d"%[value.get("fakemon","Unknown"),int(value.get("level",5))] if value is Dictionary else String(value));species.text=", ".join(labels);species.text_submitted.connect(_set_species);metadata_box.add_child(species)
+		_add_encounter_species_editor("Grass encounters", "tall_grass_species")
+	if document.data.get("water_species") is Array:
+		_add_encounter_species_editor("Water encounters", "water_species")
+	if document.data.has("water_encounter_chance"):
+		var chance:=SpinBox.new();chance.name="WaterEncounterChance";chance.min_value=0;chance.max_value=1;chance.step=0.01;chance.value=float(document.data.water_encounter_chance);chance.prefix="Water encounter chance ";chance.value_changed.connect(func(value):_push_undo();document.set_value("$.water_encounter_chance",value);_after_edit());metadata_box.add_child(chance)
+
+func _add_encounter_species_editor(label_text:String,field:String)->void:
+	var edit:=LineEdit.new();edit.placeholder_text=label_text+": Fakemon@level, Fakemon@level";var labels:Array[String]=[]
+	for value:Variant in document.data.get(field,[]):labels.append("%s@%d"%[value.get("fakemon","Unknown"),int(value.get("level",5))] if value is Dictionary else String(value))
+	edit.text=", ".join(labels);edit.text_submitted.connect(func(text):_set_encounter_species(field,text));metadata_box.add_child(edit)
 
 func _set_numeric_array(field:String,text:String)->void:
 	var values:=text.split(",");var parsed:Array=[];for v in values:parsed.append(float(v.strip_edges()))
 	_push_undo();document.set_value("$."+field,parsed);_after_edit()
 
-func _set_species(text:String)->void:
+func _set_encounter_species(field:String,text:String)->void:
 	var values:Array=[];for v in text.split(","):if not v.strip_edges().is_empty():var parts:=v.strip_edges().split("@",false,1);values.append({"fakemon":parts[0].strip_edges(),"level":clampi(int(parts[1]),1,100)} if parts.size()>1 and parts[1].is_valid_int() else parts[0].strip_edges())
-	_push_undo();document.set_value("$.tall_grass_species",values);_after_edit()
+	_push_undo();document.set_value("$."+field,values);_after_edit()
 
 func _after_edit()->void:_refresh_all()
 
