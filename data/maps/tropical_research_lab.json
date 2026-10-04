@@ -1,0 +1,3796 @@
+{
+	"arrival_points": {
+		"entry": [
+			0,
+			0.65,
+			8
+		]
+	},
+	"base_terrain_type": "forest_floor",
+	"entry": [
+		0,
+		0.65,
+		8
+	],
+	"floor_blocks": [],
+	"format_version": 2,
+	"furnishings": [],
+	"grass_zones": [],
+	"map_metadata": {
+		"display_name": "Tropical Research Institute",
+		"group": "custom",
+		"id": "new_map",
+		"layout_type": "outdoor",
+		"tags": []
+	},
+	"map_type": "Rainforest",
+	"npcs": [
+		{
+			"facing": "down",
+			"id": 1,
+			"position": [
+				1.0,
+				0.0,
+				-1.0
+			]
+		},
+		{
+			"facing": "down",
+			"id": 2,
+			"position": [
+				-7.0,
+				0.0,
+				-3.0
+			]
+		},
+		{
+			"facing": "down",
+			"id": 3,
+			"position": [
+				8.39999961853027,
+				0.0,
+				-2.79999995231628
+			]
+		},
+		{
+			"facing": "down",
+			"id": 4,
+			"position": [
+				-1.79999995231628,
+				0.0,
+				6.69999980926514
+			]
+		}
+	],
+	"objects": [
+		{
+			"asset_path": "res://assets/overworld/building_tropical_research_lab.png",
+			"height": 1.0,
+			"position": [
+				0.0,
+				1.5,
+				-8.0
+			],
+			"size": [
+				6.19999980926514,
+				3.0,
+				5.5
+			],
+			"type": "building.building_tropical_research_lab"
+		},
+		{
+			"elevation": 1.0,
+			"entrance_length": 1.0,
+			"length": 11,
+			"orientation": "vertical",
+			"position": [
+				0.21999999880791,
+				0.0,
+				-1.0
+			],
+			"traversal_layer": 1,
+			"type": "structure.bridge",
+			"width": 1.5
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_scorchic_main.png",
+			"height": 4.5,
+			"position": [
+				-6.69999980926514,
+				0.0,
+				-4.09999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_scorchic_main"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_scorchic_fallen_log_small.png",
+			"height": 0.5,
+			"position": [
+				-3.90000009536743,
+				0.0,
+				-4.90000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_scorchic_fallen_log_small"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_scorchic_fallen_log_small.png",
+			"height": 0.5,
+			"position": [
+				-9.19999980926514,
+				0.0,
+				-2.90000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_scorchic_fallen_log_small"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_scorchic_fallen_log_small.png",
+			"height": 0.5,
+			"position": [
+				-7.75000019073486,
+				0.0,
+				-5.10000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_scorchic_fallen_log_small"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_scorchic_fallen_log.png",
+			"height": 0.75,
+			"position": [
+				-4.30000019073486,
+				0.0,
+				-3.90000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_scorchic_fallen_log"
+		},
+		{
+			"asset_path": "res://assets/overworld/sunflower_cluster_00.png",
+			"height": 1.5,
+			"position": [
+				-4.80000019073486,
+				0.0,
+				-5.40000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.sunflower_cluster_small",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/sunflower_cluster_00.png",
+			"height": 1.5,
+			"position": [
+				-6.30000009536743,
+				0.0,
+				-5.20000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.sunflower_cluster_small",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/moss_rose_00.png",
+			"height": 0.2,
+			"position": [
+				-8.19999980926514,
+				0.0,
+				-3.90000009536743
+			],
+			"size": [
+				0.40000000596046,
+				1.0,
+				1.0
+			],
+			"type": "asset.moss_rose_small",
+			"variant": 0.0
+		},
+		{
+			"height": 0.45,
+			"position": [
+				-8.69999980926514,
+				0.20000000298023,
+				-3.79999995231628
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.blue"
+		},
+		{
+			"height": 0.45,
+			"position": [
+				-8.5,
+				0.20000000298023,
+				-5.5
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.blue"
+		},
+		{
+			"asset_path": "res://assets/overworld/moss_rose_01.png",
+			"height": 0.2,
+			"position": [
+				-7.90000009536743,
+				0.20000000298023,
+				-3.90000009536743
+			],
+			"size": [
+				0.40000000596046,
+				1.0,
+				1.0
+			],
+			"type": "asset.moss_rose_small",
+			"variant": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/moss_rose_01.png",
+			"height": 0.2,
+			"position": [
+				-8.30000019073486,
+				0.20000000298023,
+				-4.0
+			],
+			"size": [
+				0.40000000596046,
+				1.0,
+				1.0
+			],
+			"type": "asset.moss_rose_small",
+			"variant": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/moss_rose_00.png",
+			"height": 0.2,
+			"position": [
+				-4.90000009536743,
+				0.20000000298023,
+				-4.40000009536743
+			],
+			"size": [
+				0.40000000596046,
+				1.0,
+				1.0
+			],
+			"type": "asset.moss_rose_small",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/Rocks_Sunscorched_00.png",
+			"height": 1.2,
+			"position": [
+				-5.69999980926514,
+				0.0,
+				-2.79999995231628
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_sunscorched",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/Habitat_Scorchic_Sunning_Rock.png",
+			"height": 1.5,
+			"position": [
+				-7.69999980926514,
+				0.0,
+				-2.29999995231628
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_scorchic_sunning_rock"
+		},
+		{
+			"asset_path": "res://assets/overworld/Rocks_Sunscorched_00.png",
+			"height": 1.0,
+			"position": [
+				-8.69999980926514,
+				0.0,
+				-4.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_sunscorched",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/Rocks_Sunscorched_01.png",
+			"height": 0.5,
+			"position": [
+				-4.30000019073486,
+				0.0,
+				-5.59999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_sunscorched",
+			"variant": 1
+		},
+		{
+			"asset_path": "res://assets/overworld/Rocks_Sunscorched_01.png",
+			"height": 0.5,
+			"position": [
+				-8.5,
+				0.0,
+				-4.40000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_sunscorched",
+			"variant": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/Rocks_Sunscorched_05.png",
+			"height": 0.2,
+			"position": [
+				-8.10000038146973,
+				0.0,
+				-3.70000004768372
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_sunscorched",
+			"variant": 5
+		},
+		{
+			"asset_path": "res://assets/overworld/Rocks_Sunscorched_05.png",
+			"height": 0.2,
+			"position": [
+				-9.44999980926514,
+				0.0,
+				-3.79999995231628
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_sunscorched",
+			"variant": 5
+		},
+		{
+			"asset_path": "res://assets/overworld/Rocks_Sunscorched_05.png",
+			"height": 0.2,
+			"position": [
+				-7.54999990463257,
+				0.0,
+				-3.95
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_sunscorched",
+			"variant": 5
+		},
+		{
+			"asset_path": "res://assets/overworld/Rocks_Sunscorched_05.png",
+			"height": 0.2,
+			"position": [
+				-7.2,
+				0.0,
+				-3.65000004768372
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_sunscorched",
+			"variant": 5.0
+		},
+		{
+			"asset_path": "res://assets/overworld/Rocks_Sunscorched_05.png",
+			"height": 0.2,
+			"position": [
+				-8.64999980926514,
+				0.0,
+				-3.35000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_sunscorched",
+			"variant": 5.0
+		},
+		{
+			"asset_path": "res://assets/overworld/Rocks_Sunscorched_05.png",
+			"height": 0.2,
+			"position": [
+				-8.60000038146973,
+				0.0,
+				-3.70000004768372
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_sunscorched",
+			"variant": 5.0
+		},
+		{
+			"asset_path": "res://assets/overworld/Rocks_Sunscorched_05.png",
+			"height": 0.2,
+			"position": [
+				-7.69999980926514,
+				0.0,
+				-4.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_sunscorched",
+			"variant": 5.0
+		},
+		{
+			"asset_path": "res://assets/overworld/Rocks_Sunscorched_06.png",
+			"height": 0.2,
+			"position": [
+				-4.09999990463257,
+				0.0,
+				-5.30000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_sunscorched",
+			"variant": 6.0
+		},
+		{
+			"asset_path": "res://assets/overworld/Rocks_Sunscorched_06.png",
+			"height": 0.5,
+			"position": [
+				-5.40000009536743,
+				0.0,
+				-5.30000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_sunscorched",
+			"variant": 6.0
+		},
+		{
+			"asset_path": "res://assets/overworld/Rocks_Sunscorched_06.png",
+			"height": 0.2,
+			"position": [
+				-4.80000019073486,
+				0.0,
+				-5.09999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_sunscorched",
+			"variant": 6.0
+		},
+		{
+			"asset_path": "res://assets/overworld/Rocks_Sunscorched_06.png",
+			"height": 0.2,
+			"position": [
+				-6.59999990463257,
+				0.0,
+				-3.70000004768372
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_sunscorched",
+			"variant": 6.0
+		},
+		{
+			"asset_path": "res://assets/overworld/Rocks_Sunscorched_06.png",
+			"height": 0.2,
+			"position": [
+				-6.35000009536743,
+				0.0,
+				-3.45
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_sunscorched",
+			"variant": 6.0
+		},
+		{
+			"asset_path": "res://assets/overworld/Habitat_Scorchic_Sun_Sensor.png",
+			"height": 1.0,
+			"position": [
+				-9.0,
+				0.0,
+				-3.95000004768372
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_scorchic_sun_sensor"
+		},
+		{
+			"asset_path": "res://assets/overworld/Habitat_Scorchic_Sun_Sensor.png",
+			"height": 1.0,
+			"position": [
+				-4.20000019073486,
+				0.0,
+				-5.99999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_scorchic_sun_sensor"
+		},
+		{
+			"asset_path": "res://assets/overworld/aloe_large.png",
+			"height": 1.0,
+			"position": [
+				-9.0,
+				0.0,
+				-2.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.aloe_large"
+		},
+		{
+			"asset_path": "res://assets/overworld/aloe_small.png",
+			"height": 0.45,
+			"position": [
+				-8.25,
+				0.20000000298023,
+				-2.20000004768372
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.aloe_small"
+		},
+		{
+			"asset_path": "res://assets/overworld/aloe_small.png",
+			"height": 0.45,
+			"position": [
+				-6.59999990463257,
+				0.20000000298023,
+				-2.20000004768372
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.aloe_small"
+		},
+		{
+			"asset_path": "res://assets/overworld/aloe_small.png",
+			"height": 0.45,
+			"position": [
+				-6.90000009536743,
+				0.20000000298023,
+				-1.79999995231628
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.aloe_small"
+		},
+		{
+			"asset_path": "res://assets/overworld/aloe_small.png",
+			"height": 0.45,
+			"position": [
+				-6.30000019073486,
+				0.20000000298023,
+				-1.79999995231628
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.aloe_small"
+		},
+		{
+			"asset_path": "res://assets/overworld/aloe_small.png",
+			"height": 0.45,
+			"position": [
+				-5.40000009536743,
+				0.20000000298023,
+				-3.59999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.aloe_small"
+		},
+		{
+			"asset_path": "res://assets/overworld/aloe_small.png",
+			"height": 0.45,
+			"position": [
+				-6.90000009536743,
+				0.20000000298023,
+				-3.59999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.aloe_small"
+		},
+		{
+			"asset_path": "res://assets/overworld/desert_rose.png",
+			"height": 1.0,
+			"position": [
+				-9.0,
+				0.0,
+				-5.69999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.desert_rose"
+		},
+		{
+			"asset_path": "res://assets/overworld/desert_rose.png",
+			"height": 1.0,
+			"position": [
+				-4.5,
+				0.0,
+				-2.70000004768372
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.desert_rose"
+		},
+		{
+			"height": 4.2,
+			"position": [
+				9.55000019073486,
+				1.5,
+				-8.35000038146973
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"height": 4.2,
+			"position": [
+				8.8,
+				1.5,
+				-9.39999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"height": 4.2,
+			"position": [
+				6.10000019073486,
+				1.5,
+				-8.39999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"height": 4.2,
+			"position": [
+				7.3,
+				1.5,
+				-9.05000038146973
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"height": 4.2,
+			"position": [
+				5.05,
+				1.5,
+				-9.05000038146973
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"asset_path": "res://assets/overworld/lab_equipment_area.png",
+			"height": 2.2,
+			"position": [
+				-6.0,
+				0.0,
+				-9.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.lab_equipment_area"
+		},
+		{
+			"height": 1.15,
+			"position": [
+				9.0,
+				0.0,
+				-3.5
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.torch_ginger"
+		},
+		{
+			"height": 1.15,
+			"position": [
+				7.05,
+				0.0,
+				-4.95
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.torch_ginger"
+		},
+		{
+			"height": 4.2,
+			"instance_id": "placed-1790817586-1656177701",
+			"position": [
+				11.1999998092651,
+				1.5,
+				-5.59999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"height": 4.2,
+			"instance_id": "placed-1790817259-217522084",
+			"position": [
+				9.19999980926514,
+				1.5,
+				-4.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"height": 4.2,
+			"position": [
+				9.0,
+				1.5,
+				-6.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"height": 0.62,
+			"position": [
+				8.0,
+				0.0,
+				-5.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.passion_vine_horizontal"
+		},
+		{
+			"height": 3.8,
+			"instance_id": "placed-1790817791-1863961054",
+			"position": [
+				7.0,
+				1.5,
+				-6.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"height": 3.8,
+			"instance_id": "placed-1790875786-1307027161",
+			"position": [
+				11.0,
+				1.5,
+				-1.25
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"height": 3.8,
+			"position": [
+				9.5,
+				1.5,
+				-6.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"height": 3.8,
+			"position": [
+				8.0,
+				1.5,
+				-5.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"height": 0.9,
+			"position": [
+				9.64999961853027,
+				0.34999999403954,
+				-4.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.red_ginger"
+		},
+		{
+			"height": 0.9,
+			"position": [
+				8.05,
+				0.34999999403954,
+				-4.54999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.red_ginger"
+		},
+		{
+			"height": 0.9,
+			"position": [
+				7.39999990463257,
+				0.34999999403954,
+				-5.95
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.red_ginger"
+		},
+		{
+			"height": 0.9,
+			"position": [
+				6.55,
+				0.34999999403954,
+				-5.75000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.red_ginger"
+		},
+		{
+			"height": 4.2,
+			"instance_id": "placed-1790816791-555616714",
+			"position": [
+				7.0,
+				1.5,
+				-2.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"height": 0.45,
+			"position": [
+				7.5,
+				0.20000000298023,
+				-1.04999995231628
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.blue"
+		},
+		{
+			"height": 0.45,
+			"position": [
+				6.05,
+				0.20000000298023,
+				-1.7
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.blue"
+		},
+		{
+			"height": 0.45,
+			"position": [
+				5.8,
+				0.20000000298023,
+				-0.89999998807907
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.blue"
+		},
+		{
+			"height": 0.62,
+			"instance_id": "placed-1790816747-2689877068",
+			"position": [
+				7.19999980926514,
+				0.0,
+				-2.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.passion_vine_horizontal"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_keklid_overlook.png",
+			"height": 4.0,
+			"position": [
+				9.75,
+				0.0,
+				0.5
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_keklid_overlook"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_roots_00.png",
+			"height": 1.0,
+			"position": [
+				6.40000009536743,
+				0.0,
+				-0.80000001192093
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.roots",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_roots_03.png",
+			"height": 1.0,
+			"position": [
+				4.40000009536743,
+				0.0,
+				-7.80000019073486
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.roots",
+			"variant": 3.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_roots_01.png",
+			"height": 1.0,
+			"position": [
+				4.40000009536743,
+				0.0,
+				-8.60000038146973
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.roots",
+			"variant": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_roots_03.png",
+			"height": 1.0,
+			"position": [
+				6.39999980926514,
+				0.0,
+				-6.39999990463257
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.roots",
+			"variant": 3.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_roots_01.png",
+			"height": 1.0,
+			"position": [
+				7.59999990463257,
+				0.0,
+				-3.0
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.roots",
+			"variant": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_bromeliad.png",
+			"attachment_order": 0.0,
+			"height": 0.8,
+			"host_id": "placed-1790816791-555616714",
+			"is_attached": true,
+			"local_position": [
+				-1.0,
+				-1.59999990463257
+			],
+			"position": [
+				6.0,
+				1.5,
+				-3.59999990463257
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.bromeliad"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vine_passionflower_trailing_00.png",
+			"attachment_order": 2.0,
+			"height": 1.0,
+			"host_id": "placed-1790816791-555616714",
+			"is_attached": true,
+			"local_position": [
+				-0.09999990463257,
+				-1.45000004768372
+			],
+			"position": [
+				6.90000009536743,
+				1.5,
+				-3.45000004768372
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vine_passionflower_trailing",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vine_leafy_trailing_00.png",
+			"height": 1.0,
+			"is_attached": false,
+			"position": [
+				7.59999990463257,
+				1.5,
+				-3.20000004768372
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vine_leafy_trailing",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vine_leafy_trailing_00.png",
+			"attachment_order": 3.0,
+			"height": 1.0,
+			"host_id": "placed-1790816791-555616714",
+			"instance_id": "",
+			"is_attached": true,
+			"local_position": [
+				1.0,
+				-1.0
+			],
+			"position": [
+				8.0,
+				1.5,
+				-3.0
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vine_leafy_trailing",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_terrain_stream_opening.png",
+			"height": 3.0,
+			"position": [
+				6.59999990463257,
+				0.0,
+				-4.0
+			],
+			"rotation_degrees": 12.0,
+			"size": [
+				2.67901234567901,
+				0.2,
+				3.0
+			],
+			"type": "tile.terrain_stream_opening"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_stream_north.png",
+			"height": 2.6,
+			"position": [
+				10.3999996185303,
+				0.0,
+				-2.79999995231628
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.77411764705882,
+				0.2,
+				2.6
+			],
+			"type": "tile.stream_north"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_swan.png",
+			"attachment_order": 0.0,
+			"height": 1.3,
+			"host_id": "placed-1790817259-217522084",
+			"is_attached": true,
+			"local_position": [
+				-0.80000019073486,
+				-0.94999980926514
+			],
+			"position": [
+				8.39999961853027,
+				1.5,
+				-4.94999980926514
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_swan"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_swan.png",
+			"attachment_order": 0.0,
+			"height": 1.3,
+			"host_id": "placed-1790817259-217522084",
+			"instance_id": "",
+			"is_attached": true,
+			"local_position": [
+				-0.05000019073486,
+				-1.09999990463257
+			],
+			"position": [
+				9.14999961853027,
+				1.5,
+				-5.09999990463257
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_swan"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_orchid_ground.png",
+			"height": 1.0,
+			"position": [
+				11.1999998092651,
+				0.0,
+				-3.59999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_orchid_ground"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_orchid_ground.png",
+			"height": 1.0,
+			"position": [
+				6.75,
+				0.0,
+				0.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_orchid_ground"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_holy_ghost_orchid.png",
+			"height": 1.5,
+			"position": [
+				7.5,
+				0.0,
+				-0.5
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_holy_ghost_orchid"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_tree_yellow.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1790817586-1656177701",
+			"is_attached": true,
+			"local_position": [
+				0.05000019073486,
+				-1.59999990463257
+			],
+			"position": [
+				11.25,
+				1.5,
+				-7.19999980926514
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_tree_yellow"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_tree_yellow.png",
+			"attachment_order": 0,
+			"height": 1.0,
+			"host_id": "placed-1790817586-1656177701",
+			"instance_id": "",
+			"is_attached": true,
+			"local_position": [
+				-0.69999980926514,
+				-1.0
+			],
+			"position": [
+				10.5,
+				1.5,
+				-6.59999990463257
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_tree_yellow"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_stream_north.png",
+			"height": 3.25,
+			"position": [
+				5.59999990463257,
+				0.0,
+				-6.80000019073486
+			],
+			"rotation_degrees": 25.0,
+			"size": [
+				2.21764705882353,
+				0.2,
+				3.25
+			],
+			"type": "tile.stream_north"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_swan.png",
+			"attachment_order": 0.0,
+			"height": 1.1,
+			"host_id": "placed-1790817791-1863961054",
+			"is_attached": true,
+			"local_position": [
+				-0.19999980926514,
+				-1.0
+			],
+			"position": [
+				6.80000019073486,
+				1.5,
+				-7.0
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_swan"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_orchid_ground.png",
+			"height": 1.0,
+			"position": [
+				4.59999990463257,
+				0.0,
+				-6.59999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_orchid_ground"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_orchid_ground.png",
+			"height": 1.0,
+			"position": [
+				5.59999990463257,
+				0.0,
+				-7.40000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_orchid_ground"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_terrain_stream_opening_rocky.png",
+			"height": 1.25,
+			"position": [
+				6.59999990463257,
+				0.0,
+				-7.40000009536743
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.23505976095618,
+				0.2,
+				1.25
+			],
+			"type": "tile.terrain_stream_opening_rocky"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_terrain_stream_opening.png",
+			"height": 4.0,
+			"position": [
+				9.80000019073486,
+				0.0,
+				-5.40000009536743
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				3.57201646090535,
+				0.2,
+				4.0
+			],
+			"type": "tile.terrain_stream_opening"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_large_00.png",
+			"height": 1.0,
+			"position": [
+				5.0,
+				0.0,
+				-4.40000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_large",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 1.0,
+			"position": [
+				5.80000019073486,
+				0.0,
+				-5.40000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 1.0,
+			"position": [
+				6.00000019073486,
+				0.0,
+				-5.20000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_01.png",
+			"height": 1.0,
+			"position": [
+				4.0,
+				0.0,
+				-5.40000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 1.0,
+			"position": [
+				5.40000009536743,
+				0.0,
+				-2.40000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_orchid_ground.png",
+			"height": 1.0,
+			"position": [
+				5.59999990463257,
+				0.0,
+				-1.60000002384186
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_orchid_ground"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_tree_yellow.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1790875786-1307027161",
+			"is_attached": true,
+			"local_position": [
+				0.0,
+				-1.5
+			],
+			"position": [
+				11.0,
+				1.5,
+				-2.75
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_tree_yellow"
+		},
+		{
+			"height": 3.8,
+			"instance_id": "placed-1790950213-3610514463",
+			"position": [
+				-5.19999980926514,
+				1.5,
+				6.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"height": 3.8,
+			"instance_id": "placed-1790950162-2619806712",
+			"position": [
+				4.0,
+				1.5,
+				9.19999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"height": 3.8,
+			"instance_id": "placed-1790950140-3394029552",
+			"position": [
+				4.59999990463257,
+				1.5,
+				6.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"height": 3.8,
+			"position": [
+				-4.79999980926514,
+				1.5,
+				9.20000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"height": 4.2,
+			"position": [
+				-10.8000001907349,
+				1.5,
+				7.59999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"height": 4.2,
+			"instance_id": "placed-1790950042-3782601682",
+			"position": [
+				7.19999980926514,
+				1.5,
+				3.79999995231628
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"height": 4.2,
+			"instance_id": "placed-1791058404-301811976",
+			"position": [
+				-10.9,
+				1.5,
+				2.80000004768372
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"height": 4.2,
+			"instance_id": "placed-1791058395-3014055950",
+			"position": [
+				-11.0999998092651,
+				1.5,
+				9.29999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"height": 4.2,
+			"instance_id": "placed-1790950064-1634810409",
+			"position": [
+				-10.0,
+				1.5,
+				10.3999996185303
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"height": 4.2,
+			"position": [
+				11.1999998092651,
+				1.5,
+				9.19999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"height": 4.2,
+			"instance_id": "placed-1790950090-177608827",
+			"position": [
+				10.0,
+				1.5,
+				10.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"height": 4.2,
+			"position": [
+				10.3999996185303,
+				1.5,
+				7.59999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_roots_00.png",
+			"height": 1.0,
+			"position": [
+				-8.8,
+				0.0,
+				7.6
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.roots",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_roots_02.png",
+			"height": 1.0,
+			"position": [
+				-9.6,
+				0.0,
+				5.6
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.roots",
+			"variant": 2.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_roots_01.png",
+			"height": 1.0,
+			"position": [
+				8.4,
+				0.0,
+				9.2
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.roots",
+			"variant": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_roots_00.png",
+			"height": 1.0,
+			"position": [
+				8.80000019073486,
+				0.0,
+				6.40000009536743
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.roots",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_swan.png",
+			"attachment_order": 0,
+			"height": 1.0,
+			"host_id": "placed-1790950042-3782601682",
+			"is_attached": true,
+			"local_position": [
+				-0.19999980926514,
+				-1.54999971389771
+			],
+			"position": [
+				7.0,
+				1.5,
+				2.25000023841857
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_swan"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_swan.png",
+			"attachment_order": 0,
+			"height": 1.0,
+			"host_id": "placed-1790950064-1634810409",
+			"is_attached": true,
+			"local_position": [
+				-0.19999980926514,
+				-1.54999923706055
+			],
+			"position": [
+				-10.1999998092651,
+				1.5,
+				8.85000038146973
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_swan"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_swan.png",
+			"attachment_order": 0,
+			"height": 1.0,
+			"host_id": "placed-1790950090-177608827",
+			"is_attached": true,
+			"local_position": [
+				-0.25,
+				-1.44999980926514
+			],
+			"position": [
+				9.75,
+				1.5,
+				8.55000019073486
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_swan"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vine_leafy_arch.png",
+			"attachment_order": 0,
+			"height": 1.0,
+			"host_id": "placed-1790950140-3394029552",
+			"is_attached": true,
+			"local_position": [
+				0.05000019073486,
+				-1.19999980926514
+			],
+			"position": [
+				4.65000009536743,
+				1.5,
+				4.80000019073486
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vine_leafy_arch"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vine_passionflower_trailing_00.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1790950162-2619806712",
+			"is_attached": true,
+			"local_position": [
+				0.05000019073486,
+				-1.39999961853027
+			],
+			"position": [
+				4.05000019073486,
+				1.5,
+				7.80000019073486
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vine_passionflower_trailing",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vine_leafy_trailing_00.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1790950213-3610514463",
+			"is_attached": true,
+			"local_position": [
+				0.09999990463257,
+				-1.19999980926514
+			],
+			"position": [
+				-5.09999990463257,
+				1.5,
+				4.80000019073486
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vine_leafy_trailing",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_roots_00.png",
+			"height": 1.0,
+			"position": [
+				-6.80000019073486,
+				0.0,
+				4.80000019073486
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.roots",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_roots_02.png",
+			"height": 1.0,
+			"position": [
+				10.6000003814697,
+				0.0,
+				3.79999995231628
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.roots",
+			"variant": 2.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_roots_02.png",
+			"height": 1.0,
+			"position": [
+				-7.0,
+				0.0,
+				2.0
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.roots",
+			"variant": 2.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_bromeliad.png",
+			"height": 1.0,
+			"position": [
+				-4.59999990463257,
+				0.0,
+				9.39999961853027
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.bromeliad"
+		},
+		{
+			"asset_path": "res://assets/overworld/outdoor_street_lamp.png",
+			"height": 1.0,
+			"position": [
+				-1.79999995231628,
+				0.0,
+				-7.19999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.outdoor_street_lamp"
+		},
+		{
+			"asset_path": "res://assets/overworld/outdoor_street_lamp.png",
+			"height": 1.0,
+			"position": [
+				2.59999990463257,
+				0.0,
+				-7.19999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.outdoor_street_lamp"
+		},
+		{
+			"asset_path": "res://assets/overworld/outdoor_street_lamp.png",
+			"height": 1.0,
+			"position": [
+				-5.80000019073486,
+				0.0,
+				-10.1999998092651
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.outdoor_street_lamp"
+		},
+		{
+			"asset_path": "res://assets/overworld/outdoor_street_lamp.png",
+			"height": 1.0,
+			"position": [
+				-8.60000038146973,
+				0.0,
+				-10.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.outdoor_street_lamp"
+		},
+		{
+			"asset_path": "res://assets/overworld/outdoor_street_lamp.png",
+			"height": 1.0,
+			"position": [
+				3.59999990463257,
+				0.0,
+				-9.60000038146973
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.outdoor_street_lamp"
+		},
+		{
+			"height": 4.2,
+			"instance_id": "placed-1790950369-2336046384",
+			"position": [
+				-11.0,
+				1.5,
+				-6.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"height": 4.2,
+			"instance_id": "placed-1790950379-2650732773",
+			"position": [
+				-10.1999998092651,
+				1.5,
+				-8.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_bromeliad.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1790950369-2336046384",
+			"is_attached": true,
+			"local_position": [
+				-0.39999961853027,
+				-1.39999961853027
+			],
+			"position": [
+				-11.3999996185303,
+				1.5,
+				-8.19999980926514
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.bromeliad"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_bromeliad.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1790950379-2650732773",
+			"is_attached": true,
+			"local_position": [
+				-0.40000057220459,
+				-1.19999980926514
+			],
+			"position": [
+				-10.6000003814697,
+				1.5,
+				-10.0
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.bromeliad"
+		},
+		{
+			"asset_path": "res://assets/overworld/aloe_large.png",
+			"height": 1.0,
+			"position": [
+				-11.0,
+				0.0,
+				-5.19999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.aloe_large"
+		},
+		{
+			"asset_path": "res://assets/overworld/aloe_large.png",
+			"height": 1.0,
+			"position": [
+				-11.1999998092651,
+				0.0,
+				-2.40000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.aloe_large"
+		},
+		{
+			"asset_path": "res://assets/overworld/Rocks_Sunscorched_00.png",
+			"height": 1.0,
+			"position": [
+				-11.0,
+				0.0,
+				-3.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_sunscorched",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/Rocks_Sunscorched_01.png",
+			"height": 1.0,
+			"position": [
+				-11.0,
+				0.0,
+				-5.59999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_sunscorched",
+			"variant": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/rocks_generic_00.png",
+			"height": 0.25,
+			"position": [
+				-11.3999996185303,
+				0.0,
+				-4.59999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_generic",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/rocks_generic_02.png",
+			"height": 0.25,
+			"position": [
+				-11.3999996185303,
+				0.0,
+				-4.19999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_generic",
+			"variant": 2.0
+		},
+		{
+			"asset_path": "res://assets/overworld/rocks_generic_02.png",
+			"height": 0.25,
+			"position": [
+				-11.3999996185303,
+				0.0,
+				-3.79999995231628
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_generic",
+			"variant": 2.0
+		},
+		{
+			"asset_path": "res://assets/overworld/rocks_generic_01.png",
+			"height": 0.25,
+			"position": [
+				-10.6000003814697,
+				0.0,
+				-4.19999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_generic",
+			"variant": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/desert_rose.png",
+			"height": 1.0,
+			"position": [
+				-11.0,
+				0.0,
+				-4.19999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.desert_rose"
+		},
+		{
+			"asset_path": "res://assets/overworld/desert_rose.png",
+			"height": 1.0,
+			"position": [
+				-9.60000038146973,
+				0.0,
+				-1.20000004768372
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.desert_rose"
+		},
+		{
+			"asset_path": "res://assets/overworld/aloe_small.png",
+			"height": 0.45,
+			"position": [
+				-10.4,
+				0.2,
+				-3.2
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.aloe_small"
+		},
+		{
+			"asset_path": "res://assets/overworld/aloe_small.png",
+			"height": 0.45,
+			"position": [
+				-10.8000001907349,
+				0.20000000298023,
+				-3.79999995231628
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.aloe_small"
+		},
+		{
+			"height": 3.8,
+			"instance_id": "placed-1790950620-2183324254",
+			"position": [
+				-8.60000038146973,
+				1.5,
+				-6.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vine_leafy_trailing_00.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1790950620-2183324254",
+			"is_attached": true,
+			"local_position": [
+				-0.19999980926514,
+				-1.19999980926514
+			],
+			"position": [
+				-8.80000019073486,
+				1.5,
+				-8.0
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vine_leafy_trailing",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 1.0,
+			"position": [
+				-2.0,
+				0.0,
+				-5.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 1.0,
+			"position": [
+				-2.0,
+				0.0,
+				-4.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 1.0,
+			"position": [
+				-3.20000004768372,
+				0.0,
+				-0.80000001192093
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_large_00.png",
+			"height": 1.0,
+			"position": [
+				-2.79999995231628,
+				0.0,
+				-1.20000004768372
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_large",
+			"variant": 0.0
+		},
+		{
+			"height": 3.8,
+			"position": [
+				-4.0,
+				1.5,
+				2.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"height": 3.8,
+			"position": [
+				-2.79999995231628,
+				1.5,
+				-2.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"asset_path": "res://assets/overworld/floater_water_lily.png",
+			"height": 1.0,
+			"position": [
+				3.79999995231628,
+				0.0,
+				1.10000002384186
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.floater_water_lily"
+		},
+		{
+			"asset_path": "res://assets/overworld/floater_water_lily.png",
+			"height": 1.0,
+			"position": [
+				3.0,
+				0.0,
+				-2.0
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.floater_water_lily"
+		},
+		{
+			"asset_path": "res://assets/overworld/floater_water_lily.png",
+			"height": 1.0,
+			"position": [
+				1.0,
+				0.0,
+				1.0
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.floater_water_lily"
+		},
+		{
+			"asset_path": "res://assets/overworld/floater_water_generic.png",
+			"height": 1.0,
+			"position": [
+				3.90000009536743,
+				0.0,
+				-4.19999980926514
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.floater_water_generic"
+		},
+		{
+			"asset_path": "res://assets/overworld/floater_water_generic.png",
+			"height": 1.0,
+			"position": [
+				-1.5,
+				0.0,
+				-1.60000002384186
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.floater_water_generic"
+		},
+		{
+			"asset_path": "res://assets/overworld/floater_water_generic.png",
+			"height": 1.0,
+			"position": [
+				-1.89999997615814,
+				0.0,
+				0.40000000596046
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.floater_water_generic"
+		},
+		{
+			"asset_path": "res://assets/overworld/floater_water_generic.png",
+			"height": 1.0,
+			"position": [
+				-5.94999980926514,
+				0.0,
+				3.5
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.floater_water_generic"
+		},
+		{
+			"asset_path": "res://assets/overworld/floater_water_generic.png",
+			"height": 1.0,
+			"position": [
+				-3.5,
+				0.0,
+				3.5
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.floater_water_generic"
+		},
+		{
+			"asset_path": "res://assets/overworld/submerged_water_props_generic_00.png",
+			"height": 1.0,
+			"position": [
+				2.20000004768372,
+				0.0,
+				-0.60000002384186
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.submerged_water_props_generic",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/submerged_water_props_generic_00.png",
+			"height": 1.0,
+			"position": [
+				-2.0,
+				0.0,
+				3.0
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.submerged_water_props_generic",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/submerged_water_props_generic_01.png",
+			"height": 1.0,
+			"position": [
+				1.60000002384186,
+				0.0,
+				-3.90000009536743
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.submerged_water_props_generic",
+			"variant": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_swan.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1791058395-3014055950",
+			"is_attached": true,
+			"local_position": [
+				-0.19999980926514,
+				-1.54999971389771
+			],
+			"position": [
+				-11.2999996185303,
+				1.5,
+				7.75000009536743
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_swan"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_swan.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1791058404-301811976",
+			"is_attached": true,
+			"local_position": [
+				-0.19999980926514,
+				-1.54999971389771
+			],
+			"position": [
+				-11.0999998092651,
+				1.5,
+				1.25000033378601
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_swan"
+		},
+		{
+			"height": 0.9,
+			"position": [
+				2.59999990463257,
+				0.34999999403954,
+				8.39999961853027
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.red_ginger"
+		},
+		{
+			"height": 0.9,
+			"position": [
+				2.50000009536743,
+				0.34999999403954,
+				5.50000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.red_ginger"
+		},
+		{
+			"height": 0.9,
+			"position": [
+				-6.59999980926514,
+				0.34999999403954,
+				8.79999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.red_ginger"
+		},
+		{
+			"height": 0.9,
+			"position": [
+				-3.3,
+				0.35,
+				5.4
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.red_ginger"
+		}
+	],
+	"orchids": [],
+	"origin": [
+		0,
+		0,
+		0
+	],
+	"outdoor_connections": [],
+	"return_warp": [
+		0,
+		0.11999999731779,
+		10.0
+	],
+	"rocks": [],
+	"sand_blocks": [],
+	"size": [
+		23.0,
+		20
+	],
+	"tall_grass_species": [],
+	"terrain_tiles": [
+		{
+			"positions": [
+				[
+					-1,
+					-5
+				],
+				[
+					-1,
+					-4
+				],
+				[
+					-1,
+					-3
+				],
+				[
+					0.0,
+					-5.0
+				],
+				[
+					0,
+					-4.0
+				],
+				[
+					0,
+					-3.0
+				],
+				[
+					1.0,
+					-5.0
+				],
+				[
+					1.0,
+					-4.0
+				],
+				[
+					1,
+					-3.0
+				],
+				[
+					2.0,
+					-5.0
+				],
+				[
+					2.0,
+					-4.0
+				],
+				[
+					2.0,
+					-3.0
+				],
+				[
+					3.0,
+					-5
+				],
+				[
+					3.0,
+					-4
+				],
+				[
+					3.0,
+					-3
+				],
+				[
+					4.0,
+					-5.0
+				],
+				[
+					4.0,
+					-4.0
+				],
+				[
+					4.0,
+					-3.0
+				]
+			],
+			"terrain_type": "water"
+		},
+		{
+			"positions": [
+				[
+					-2,
+					-2
+				],
+				[
+					-2,
+					-1
+				],
+				[
+					-2,
+					0
+				],
+				[
+					-2,
+					1
+				]
+			],
+			"terrain_type": "water"
+		},
+		{
+			"positions": [
+				[
+					-1,
+					-2
+				],
+				[
+					-1,
+					-1
+				],
+				[
+					0,
+					0
+				],
+				[
+					-1,
+					1
+				],
+				[
+					0,
+					-2
+				],
+				[
+					-1,
+					0
+				],
+				[
+					0,
+					-1
+				],
+				[
+					0,
+					1
+				],
+				[
+					1,
+					-2
+				],
+				[
+					1,
+					-1
+				],
+				[
+					1,
+					0
+				],
+				[
+					1,
+					1
+				],
+				[
+					2,
+					-2
+				],
+				[
+					2,
+					-1
+				],
+				[
+					2,
+					0
+				],
+				[
+					2,
+					1
+				],
+				[
+					3,
+					-2
+				],
+				[
+					3,
+					-1
+				],
+				[
+					3,
+					0
+				],
+				[
+					3,
+					1
+				],
+				[
+					4,
+					-2
+				],
+				[
+					4,
+					-1
+				],
+				[
+					4,
+					0
+				],
+				[
+					4,
+					1
+				]
+			],
+			"terrain_type": "water"
+		},
+		{
+			"positions": [
+				[
+					-6,
+					3
+				],
+				[
+					-5,
+					3
+				],
+				[
+					-4,
+					3
+				],
+				[
+					-3,
+					2
+				],
+				[
+					-3,
+					3
+				],
+				[
+					-2,
+					2
+				],
+				[
+					-2,
+					3
+				],
+				[
+					-1,
+					2
+				],
+				[
+					-1,
+					3
+				],
+				[
+					0,
+					2
+				],
+				[
+					0,
+					3
+				],
+				[
+					1,
+					2
+				],
+				[
+					1,
+					3
+				],
+				[
+					2,
+					2
+				],
+				[
+					2,
+					3
+				]
+			],
+			"terrain_type": "water"
+		},
+		{
+			"positions": [
+				[
+					5,
+					-6
+				],
+				[
+					5,
+					-4
+				],
+				[
+					5,
+					-3
+				],
+				[
+					5,
+					-2
+				],
+				[
+					5,
+					-1
+				],
+				[
+					5,
+					0
+				],
+				[
+					5,
+					1
+				],
+				[
+					-7,
+					-1
+				],
+				[
+					-8,
+					-1
+				],
+				[
+					-8,
+					-2
+				],
+				[
+					-8,
+					-3
+				],
+				[
+					-6,
+					-2
+				],
+				[
+					-7,
+					-2
+				],
+				[
+					-7,
+					-3
+				],
+				[
+					-8,
+					-5
+				],
+				[
+					-9,
+					-4
+				],
+				[
+					-9,
+					-3
+				],
+				[
+					-9,
+					-2
+				],
+				[
+					-9,
+					-1
+				],
+				[
+					-10,
+					-1
+				],
+				[
+					-10,
+					-2
+				],
+				[
+					-10,
+					-3
+				],
+				[
+					-11,
+					-2
+				],
+				[
+					-11,
+					-3
+				],
+				[
+					-10,
+					-4
+				],
+				[
+					-10,
+					-5
+				],
+				[
+					-10,
+					-6
+				],
+				[
+					-11,
+					-5
+				],
+				[
+					-11,
+					-4
+				],
+				[
+					-11,
+					-6
+				],
+				[
+					-9,
+					-6
+				],
+				[
+					-8,
+					-6
+				],
+				[
+					-8,
+					-7
+				],
+				[
+					-9,
+					-7
+				],
+				[
+					-9,
+					-5
+				],
+				[
+					-6,
+					-3
+				],
+				[
+					-5,
+					-3
+				],
+				[
+					-5,
+					-2
+				],
+				[
+					-4,
+					-2
+				],
+				[
+					-4,
+					-3
+				],
+				[
+					-4,
+					-4
+				],
+				[
+					-4,
+					-5
+				],
+				[
+					-4,
+					-6
+				],
+				[
+					-3,
+					-5
+				],
+				[
+					-3,
+					-4
+				],
+				[
+					-3,
+					-6
+				],
+				[
+					-5,
+					-6
+				],
+				[
+					-6,
+					-6
+				],
+				[
+					-7,
+					-6
+				],
+				[
+					-7,
+					-5
+				],
+				[
+					-8,
+					-4
+				],
+				[
+					-7,
+					-4
+				],
+				[
+					-5,
+					-4
+				],
+				[
+					-6,
+					-4
+				],
+				[
+					-5,
+					-5
+				],
+				[
+					-6,
+					-5
+				],
+				[
+					-6,
+					-1
+				],
+				[
+					-6,
+					0
+				],
+				[
+					-6,
+					1
+				],
+				[
+					-7,
+					0
+				],
+				[
+					-7,
+					1
+				],
+				[
+					-5,
+					1
+				],
+				[
+					-5,
+					-1
+				],
+				[
+					-4,
+					-1
+				],
+				[
+					-5,
+					0
+				],
+				[
+					-4,
+					0
+				],
+				[
+					-8,
+					0
+				],
+				[
+					-3,
+					-7
+				],
+				[
+					-4,
+					-7
+				],
+				[
+					-5,
+					-7
+				],
+				[
+					-6,
+					-7
+				],
+				[
+					-7,
+					-7
+				],
+				[
+					-7,
+					-8
+				],
+				[
+					-7,
+					-9
+				],
+				[
+					-8,
+					-8
+				],
+				[
+					-8,
+					-9
+				],
+				[
+					-6,
+					-9
+				],
+				[
+					-5,
+					-9
+				],
+				[
+					-4,
+					-9
+				],
+				[
+					-3,
+					-9
+				],
+				[
+					-3,
+					-10
+				],
+				[
+					-4,
+					-10
+				],
+				[
+					-5,
+					-10
+				],
+				[
+					-6,
+					-10
+				],
+				[
+					-7,
+					-10
+				],
+				[
+					-8,
+					-10
+				],
+				[
+					-6,
+					-8
+				],
+				[
+					-4,
+					-8
+				],
+				[
+					-3,
+					-8
+				],
+				[
+					-5,
+					-8
+				]
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				3,
+				2
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				4,
+				2
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				5,
+				2
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				1,
+				4
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				3,
+				3
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				2,
+				4
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				3,
+				4
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-6,
+				4
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-5,
+				4
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-4,
+				4
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-3,
+				4
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-2,
+				4
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-1,
+				4
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				0,
+				4
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-7,
+				3
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-7,
+				4
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-7,
+				2
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-6,
+				2
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-5,
+				2
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-4,
+				1
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-4,
+				2
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-3,
+				1
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-3,
+				0
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-3,
+				-1
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-3,
+				-2
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-2,
+				-3
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-3,
+				-3
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-2,
+				-4
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-2,
+				-5
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"position": [
+				-2,
+				-6
+			],
+			"terrain_type": "mud"
+		},
+		{
+			"positions": [
+				[
+					-1,
+					-6
+				],
+				[
+					0,
+					-6
+				],
+				[
+					1,
+					-6
+				],
+				[
+					2,
+					-6
+				],
+				[
+					3,
+					-6
+				],
+				[
+					4,
+					-6
+				],
+				[
+					5,
+					-5
+				]
+			],
+			"terrain_type": "mud"
+		}
+	],
+	"vines": [
+		[
+			9.80000019073486,
+			0.5,
+			-4.94999980926514
+		],
+		[
+			6.75,
+			0.5,
+			-6.84999990463257
+		]
+	],
+	"wall_blocks": [],
+	"warp_2": [
+		0.0,
+		0.0,
+		-9.0
+	],
+	"warp_metadata": {
+		"return_warp": {
+			"entrance_map": "jalovea_city.json",
+			"entrance_map_warp_id": 2,
+			"facing": "generic",
+			"id": 1
+		},
+		"warp_2": {
+			"entrance_map": "tropical_research_institute_indoor.json",
+			"entrance_map_warp_id": 1,
+			"facing": "generic",
+			"id": 2
+		}
+	},
+	"water_blocks": [],
+	"water_encounter_chance": 0.0,
+	"water_species": []
+}

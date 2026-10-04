@@ -16,6 +16,7 @@ var day := 0
 var paused := false
 
 func _process(delta: float) -> void:
+	preload("res://world/overworld_texture_animation.gd").advance(delta)
 	if paused or minutes_per_real_second <= 0.0:
 		return
 	var previous := world_minutes

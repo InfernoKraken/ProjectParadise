@@ -187,6 +187,8 @@ func _load_battle_data() -> Dictionary:
 	var data := parsed as Dictionary
 	if not _append_evolved_fakemon(data):
 		return {}
+	for species: Dictionary in data["fakemon"]:
+		species["moves"] = _moves_at_level(species.get("learnset", []), int(species.get("level", 5)))
 	if not _append_egg_groups(data):
 		return {}
 	if not _validate_fakemon_moves(data):
@@ -228,7 +230,6 @@ func _append_evolved_fakemon(data: Dictionary) -> bool:
 			push_error("%s references missing moveset source '%s'." % [evolved.get("name", "Unnamed Fakemon"), source_name])
 			return false
 		var source: Dictionary = species_by_name[source_name]
-		evolved["moves"] = source["moves"].duplicate(true)
 		evolved["learnset"] = source.get("learnset", []).duplicate(true)
 		data["fakemon"].append(evolved)
 		species_by_name[String(evolved["name"])] = evolved
@@ -257,10 +258,24 @@ func _append_egg_groups(data: Dictionary) -> bool:
 	return true
 
 
-func create_fakemon(species: Dictionary) -> Dictionary:
+func create_fakemon(species: Dictionary, level_override: int = -1) -> Dictionary:
 	var mon := species.duplicate(true)
+	if level_override > 0:
+		mon["level"] = level_override
+	mon["moves"] = _moves_at_level(mon.get("learnset", []), int(mon.get("level", 5)))
 	_ensure_gender(mon)
 	return mon
+
+
+func _moves_at_level(learnset: Array, level: int) -> Array:
+	var known: Array = []
+	for entry: Dictionary in learnset:
+		var move_id := String(entry.get("move", ""))
+		if int(entry.get("level", 0)) <= level and not known.has(move_id):
+			known.append(move_id)
+			if known.size() > 6:
+				known.pop_front()
+	return known
 
 
 func _ensure_gender(mon: Dictionary) -> void:
@@ -760,7 +775,7 @@ func _perform_player_attack(move: Dictionary, move_id: String = "") -> bool:
 	if String(move["damage_class"]) == "Status":
 		message_label.text += " %s used %s! " % [player["name"], move["name"]]
 		await _animate_move_to_impact(move, player_square, opponent_square)
-		_record_received_move(opponent, move, 0)
+		_record_received_move(opponent, player, move, 0)
 		if bool(move.get("force_random_opponent_switch", false)):
 			if _apply_whirlwind(true):
 				return true
@@ -779,7 +794,7 @@ func _perform_player_attack(move: Dictionary, move_id: String = "") -> bool:
 		message_label.text = "%s used %s! %s protected itself! " % [player["name"], move["name"], opponent["name"]]
 	else:
 		result = await _resolve_damage_hits(player, opponent, move, false, player_square, opponent_square)
-		_record_received_move(opponent, move, int(result["damage"]))
+		_record_received_move(opponent, player, move, int(result["damage"]))
 		message_label.text = _attack_message(player, move, result)
 	if int(result["damage"]) > 0:
 		_try_inflict_condition(opponent, move, player, true)
@@ -865,7 +880,7 @@ func _perform_enemy_attack(end_turn: bool = true, selected_move_id: String = "")
 	if String(move["damage_class"]) == "Status":
 		message_label.text += " %s used %s! " % [opponent["name"], move["name"]]
 		await _animate_move_to_impact(move, opponent_square, player_square)
-		_record_received_move(player, move, 0)
+		_record_received_move(player, opponent, move, 0)
 		if bool(move.get("force_random_opponent_switch", false)):
 			if _apply_whirlwind(false):
 				return true
@@ -889,7 +904,7 @@ func _perform_enemy_attack(end_turn: bool = true, selected_move_id: String = "")
 		message_label.text = "%s used %s! %s protected itself! " % [opponent["name"], move["name"], player["name"]]
 	else:
 		result = await _resolve_damage_hits(opponent, player, move, true, opponent_square, player_square)
-		_record_received_move(player, move, int(result["damage"]))
+		_record_received_move(player, opponent, move, int(result["damage"]))
 		message_label.text = _attack_message(opponent, move, result)
 	if int(result["damage"]) > 0:
 		_try_inflict_condition(player, move, opponent, false)
@@ -952,6 +967,10 @@ func _ensure_condition_fields(mon: Dictionary) -> void:
 	mon["reactive_poison_damage_class"] = ""
 	mon["reactive_poison_turns"] = 0
 	mon["fey_infatuation_bonus_used"] = false
+	mon["turns_on_field"] = 0
+	mon["materialized_special_moves"] = false
+	mon["dormancy_pending"] = false
+	mon["dormancy_animation_id"] = ""
 
 
 func _apply_status_move(user: Dictionary, target: Dictionary, move: Dictionary, user_is_player: bool) -> void:
@@ -964,6 +983,10 @@ func _apply_status_move(user: Dictionary, target: Dictionary, move: Dictionary, 
 		_heal_fixed_max_hp(user, fixed_heal_fraction, user_is_player)
 	if bool(move.get("cures_conditions", false)):
 		_cure_conditions(user)
+	if bool(move.get("dormancy", false)):
+		_remove_all_removable_conditions(user)
+		user["dormancy_pending"] = true
+		user["dormancy_animation_id"] = String(move.get("wake_animation_id", ""))
 	if bool(move.get("cures_one_condition", false)):
 		_remove_one_condition(user)
 	if not String(move.get("self_condition", "")).is_empty():
@@ -1008,6 +1031,9 @@ func _apply_status_move(user: Dictionary, target: Dictionary, move: Dictionary, 
 		_disable_last_move(target, int(move["disable_last_move_turns"]))
 	if not String(move.get("sets_weather", "")).is_empty():
 		_set_weather(String(move["sets_weather"]))
+	if bool(move.get("materialize_special_moves", false)):
+		user["materialized_special_moves"] = true
+		message_label.text += " %s's special moves became physical until it switches out! " % user["name"]
 	if bool(move.get("nest", false)):
 		_apply_nest(user, user_is_player)
 	if int(move.get("cannot_faint_turns", 0)) > 0:
@@ -1079,8 +1105,8 @@ func _apply_counter(user: Dictionary, target: Dictionary, user_is_player: bool) 
 	message_label.text += " %s countered for %d damage! " % [user["name"], actual_damage]
 
 
-func _record_received_move(target: Dictionary, move: Dictionary, damage: int) -> void:
-	target["last_received_damage_class"] = String(move.get("damage_class", ""))
+func _record_received_move(target: Dictionary, source: Dictionary, move: Dictionary, damage: int) -> void:
+	target["last_received_damage_class"] = _resolved_damage_class(source, move)
 	target["last_received_damage"] = damage
 
 
@@ -1131,6 +1157,25 @@ func _has_any_stat_change(mon: Dictionary) -> bool:
 		if not is_equal_approx(float(mon.get("stat_modifiers", {}).get(stat, NEUTRAL_STAT_MODIFIER)), NEUTRAL_STAT_MODIFIER):
 			return true
 	return false
+
+
+func _has_raised_stat(mon: Dictionary) -> bool:
+	for stat: String in COMBAT_STATS:
+		if float(mon.get("stat_modifiers", {}).get(stat, NEUTRAL_STAT_MODIFIER)) > NEUTRAL_STAT_MODIFIER:
+			return true
+	return false
+
+
+func _resolved_damage_class(attacker: Dictionary, move: Dictionary) -> String:
+	var damage_class := String(move.get("damage_class", "Status"))
+	if damage_class == "Special" and bool(attacker.get("materialized_special_moves", false)):
+		return "Physical"
+	return damage_class
+
+
+func _reset_switch_scoped_effects(mon: Dictionary) -> void:
+	mon["turns_on_field"] = 0
+	mon["materialized_special_moves"] = false
 
 
 func _has_any_special_condition(mon: Dictionary) -> bool:
@@ -1234,11 +1279,17 @@ func _disable_last_move(target: Dictionary, turns: int) -> void:
 
 func _set_weather(weather_name: String) -> void:
 	weather = weather_name
-	weather_turns_remaining = int(battle_data.get("weather", {}).get(weather_name, {}).get("duration", 3))
+	var weather_data: Dictionary = battle_data.get("weather", {}).get(weather_name, {})
+	weather_turns_remaining = int(weather_data.get("duration", 3))
 	if weather_name == "Fey Gardens":
 		player["fey_infatuation_bonus_used"] = false
 		opponent["fey_infatuation_bonus_used"] = false
 	message_label.text += " The weather became %s! " % weather_name
+	if bool(weather_data.get("reset_stats_and_conditions_on_activation", false)):
+		_reset_all_stat_changes()
+		_remove_all_removable_conditions(player)
+		_remove_all_removable_conditions(opponent)
+		message_label.text += " The winds swept away every condition. "
 	_apply_weather_presence_condition(player, true)
 	_apply_weather_presence_condition(opponent, false)
 	weather_visuals.show_weather(weather, weather_turns_remaining)
@@ -1319,6 +1370,7 @@ func _reset_all_stat_changes() -> void:
 
 
 func _tick_temporary_state(mon: Dictionary) -> void:
+	mon["turns_on_field"] = int(mon.get("turns_on_field", 0)) + 1
 	if int(mon.get("nest_turns", 0)) > 0:
 		mon["nest_turns"] = int(mon["nest_turns"]) - 1
 		if int(mon["nest_turns"]) == 0:
@@ -1463,7 +1515,14 @@ func _can_use_move(mon: Dictionary, move: Dictionary = {}) -> bool:
 		message_label.text = "%s is %s%s " % [mon["name"], verb, " and can still act!" if can_act_asleep else " and cannot move!"]
 		if int(mon["condition_turns"]) == 0:
 			mon["condition"] = ""
-			message_label.text += " It will recover next turn. "
+			if condition == "Asleep" and bool(mon.get("dormancy_pending", false)):
+				mon["dormancy_pending"] = false
+				_remove_all_removable_conditions(mon)
+				_heal_mon(mon, int(mon.get("max_hp", 1)), is_same(mon, player))
+				_play_dormancy_wake_animation(mon)
+				message_label.text += " Dormancy fully restored it upon waking! "
+			else:
+				message_label.text += " It will recover next turn. "
 		return can_act_asleep
 	if condition == "Confusion":
 		mon["condition_turns"] = maxi(0, int(mon.get("condition_turns", 1)) - 1)
@@ -1551,7 +1610,7 @@ func _cure_conditions(mon: Dictionary) -> void:
 
 
 func _apply_condemned_backlash(mon: Dictionary, player_side: bool, move: Dictionary) -> void:
-	if String(mon.get("condition", "")) != "Condemned" or String(move["damage_class"]) != "Special":
+	if String(mon.get("condition", "")) != "Condemned" or _resolved_damage_class(mon, move) != "Special":
 		return
 	var condition_data: Dictionary = battle_data["conditions"]["Condemned"]
 	var level := float(mon["level"])
@@ -1612,7 +1671,7 @@ func _apply_max_hp_recoil(mon: Dictionary, player_side: bool, fraction: float) -
 
 func _apply_after_damage_effects(user: Dictionary, target: Dictionary, move: Dictionary, user_is_player: bool, actual_damage: int = 1) -> void:
 	var dealt_damage := actual_damage > 0
-	if dealt_damage and int(target.get("reactive_poison_turns", 0)) > 0 and String(target.get("reactive_poison_damage_class", "")) == String(move.get("damage_class", "")):
+	if dealt_damage and int(target.get("reactive_poison_turns", 0)) > 0 and String(target.get("reactive_poison_damage_class", "")) == _resolved_damage_class(user, move):
 		_try_inflict_condition(user, {"condition": "Poisoned", "condition_chance": 1.0}, target, not user_is_player)
 	if move.has("stat_changes"):
 		_apply_stat_changes(user, move["stat_changes"])
@@ -1626,6 +1685,9 @@ func _apply_after_damage_effects(user: Dictionary, target: Dictionary, move: Dic
 		_burn_non_active_user_party()
 	if dealt_damage and float(move.get("drain_damage_fraction", 0.0)) > 0.0:
 		_heal_mon(user, maxi(1, int(floor(float(actual_damage) * float(move["drain_damage_fraction"])))), user_is_player)
+	var typed_drain: Dictionary = move.get("drain_if_target_type", {})
+	if dealt_damage and not typed_drain.is_empty() and _fakemon_types(target).has(String(typed_drain.get("type", ""))):
+		_heal_mon(user, maxi(1, int(floor(float(actual_damage) * float(typed_drain.get("fraction", 0.0))))), user_is_player)
 	var fixed_heal_fraction := _move_effect_float(move, "fixed_max_hp_heal_fraction", 0.0)
 	if dealt_damage and fixed_heal_fraction > 0.0:
 		_heal_fixed_max_hp(user, fixed_heal_fraction, user_is_player)
@@ -1697,6 +1759,7 @@ func _burn_non_active_user_party() -> void:
 
 func _finish_turn_conditions() -> bool:
 	_process_scheduled_effects("end_of_turn")
+	_apply_progressive_weather_healing()
 	_apply_rootmind_healing()
 	_apply_seeded_drain()
 	var player_condition_data: Dictionary = battle_data["conditions"].get(String(player.get("condition", "")), {})
@@ -1800,6 +1863,17 @@ func _play_scheduled_effect_animation(effect: Variant) -> void:
 	battle_animator.play_definition(String(effect.animation_id), context)
 
 
+func _play_dormancy_wake_animation(mon: Dictionary) -> void:
+	var animation_id := String(mon.get("dormancy_animation_id", ""))
+	mon["dormancy_animation_id"] = ""
+	if animation_id.is_empty(): return
+	scheduled_effect_animation_requested.emit(animation_id, "dormancy")
+	if battle_animator == null or not battle_animator.animations_enabled: return
+	if not FileAccess.file_exists("res://data/move_animations/%s.json" % animation_id): return
+	var art := player_square if is_same(mon, player) else opponent_square
+	battle_animator.play_definition(animation_id, battle_animator._create_context(art, art))
+
+
 func _execute_scheduled_payload(effect: Variant) -> void:
 	var recipient: Dictionary = effect.target_battler if effect.owner == &"battle" else effect.owner_battler
 	if recipient.is_empty():
@@ -1854,6 +1928,22 @@ func _apply_rootmind_healing() -> void:
 	if player_hp > 0 and _fakemon_types(player).has("Plant"):
 		_heal_fixed_max_hp(player, fraction, true)
 	if opponent_hp > 0 and _fakemon_types(opponent).has("Plant"):
+		_heal_fixed_max_hp(opponent, fraction, false)
+
+
+func _apply_progressive_weather_healing() -> void:
+	if weather.is_empty():
+		return
+	var weather_data: Dictionary = battle_data.get("weather", {}).get(weather, {})
+	var fractions: Array = weather_data.get("progressive_type_healing", {}).get("fractions", [])
+	var healing_type := String(weather_data.get("progressive_type_healing", {}).get("type", ""))
+	if fractions.is_empty() or healing_type.is_empty():
+		return
+	var elapsed_turn := int(weather_data.get("duration", 3)) - weather_turns_remaining
+	var fraction := float(fractions[clampi(elapsed_turn, 0, fractions.size() - 1)])
+	if player_hp > 0 and _fakemon_types(player).has(healing_type):
+		_heal_fixed_max_hp(player, fraction, true)
+	if opponent_hp > 0 and _fakemon_types(opponent).has(healing_type):
 		_heal_fixed_max_hp(opponent, fraction, false)
 
 
@@ -1941,6 +2031,7 @@ func _select_battle_party_mon(next_index: int) -> void:
 	player["light_exposed"] = false
 	player["dark_exposed"] = false
 	player["seeded_by_side"] = ""
+	_reset_switch_scoped_effects(player)
 	active_party_index = next_index
 	if not participating_party_indices.has(active_party_index):
 		participating_party_indices.append(active_party_index)
@@ -1988,6 +2079,7 @@ func _switch_opponent(next_index: int, forced_by_move: bool) -> void:
 	opponent["light_exposed"] = false
 	opponent["dark_exposed"] = false
 	opponent["seeded_by_side"] = ""
+	_reset_switch_scoped_effects(opponent)
 	active_opponent_index = next_index
 	opponent = opponent_party[active_opponent_index]
 	opponent_hp = opponent_party_hp[active_opponent_index]
@@ -2020,6 +2112,7 @@ func _random_switch_player(pass_stat_modifiers: bool) -> void:
 	outgoing["light_exposed"] = false
 	outgoing["dark_exposed"] = false
 	outgoing["seeded_by_side"] = ""
+	_reset_switch_scoped_effects(outgoing)
 	active_party_index = int(available.pick_random())
 	if not participating_party_indices.has(active_party_index):
 		participating_party_indices.append(active_party_index)
@@ -2088,7 +2181,7 @@ func _calculate_experience_reward() -> int:
 func _calculate_damage(attacker: Dictionary, defender: Dictionary, move: Dictionary) -> Dictionary:
 	var level := float(attacker["level"])
 	var burn_data: Dictionary = battle_data["conditions"]["Burned"]
-	var is_physical := String(move["damage_class"]) == "Physical"
+	var is_physical := _resolved_damage_class(attacker, move) == "Physical"
 	var attack_stat := "attack" if is_physical else "special_attack"
 	var defense_stat := "defense" if is_physical else "special_defense"
 	var attack := _effective_stat(attacker, attack_stat)
@@ -2124,6 +2217,10 @@ func _calculate_damage(attacker: Dictionary, defender: Dictionary, move: Diction
 		power *= float(conditional_multiplier.get("multiplier", 1.0))
 	if move.has("power_if_user_has_stat_change") and _has_any_stat_change(attacker):
 		power = _move_effect_float(move, "power_if_user_has_stat_change", float(move["power_if_user_has_stat_change"]))
+	if bool(move.get("double_power_if_target_has_raised_stat", false)) and _has_raised_stat(defender):
+		power *= 2.0
+	if move.has("power_per_turn_on_field"):
+		power = minf(float(move.get("maximum_power", power)), power + float(move["power_per_turn_on_field"]) * float(attacker.get("turns_on_field", 0)))
 	var staged_power: Dictionary = move.get("power_per_positive_stage", {})
 	if not staged_power.is_empty():
 		var staged_stat := String(staged_power.get("stat", ""))

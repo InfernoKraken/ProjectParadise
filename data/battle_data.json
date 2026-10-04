@@ -161,13 +161,9 @@
 	  "level": 5.0,
 	  "male_ratio": 0.5,
 	  "max_hp": 55.0,
-	  "moves": [
-		"squawk",
-		"ignite",
-		"peck",
-        "mimic"
-	  ],
 	  "name": "Scorchick",
+	  "light_source": true,
+	  "light_strength": 0.5,
 	  "size": "0.6 m",
 	  "special_attack": 40.0,
 	  "special_defense": 45.0,
@@ -263,13 +259,9 @@
 	  "level": 5.0,
 	  "male_ratio": 0.5,
 	  "max_hp": 55.0,
-	  "moves": [
-		"peck",
-		"soak",
-		"flutter",
-        "photon_beam"
-	  ],
 	  "name": "Sylvafin",
+	  "light_source": true,
+	  "light_strength": 0.5,
 	  "size": "0.7 m",
 	  "special_attack": 65.0,
 	  "special_defense": 65.0,
@@ -370,13 +362,9 @@
 	  "level": 5.0,
 	  "male_ratio": null,
 	  "max_hp": 55.0,
-	  "moves": [
-		"petal_whip",
-		"charm",
-		"stare",
-        "mind_wave"
-	  ],
 	  "name": "Keklid",
+	  "light_source": false,
+	  "light_strength": 0.5,
 	  "size": "0.5 m",
 	  "special_attack": 70.0,
 	  "special_defense": 60.0,
@@ -465,12 +453,9 @@
 	  "level": 5.0,
 	  "male_ratio": 0.5,
 	  "max_hp": 55.0,
-	  "moves": [
-		"doze_off",
-		"sleep_talk",
-        "defense_curl"
-	  ],
 	  "name": "Slumboth",
+	  "light_source": false,
+	  "light_strength": 0.5,
 	  "size": "1.0 m",
 	  "special_attack": 25.0,
 	  "special_defense": 45.0,
@@ -568,12 +553,9 @@
 	  "level": 5.0,
 	  "male_ratio": 0.5,
 	  "max_hp": 50.0,
-	  "moves": [
-		"poison_bubble",
-		"croak",
-        "leap"
-	  ],
 	  "name": "Dartlet",
+	  "light_source": true,
+	  "light_strength": 0.5,
 	  "size": "0.1 m",
 	  "special_attack": 80.0,
 	  "special_defense": 35.0,
@@ -661,12 +643,9 @@
 	  "level": 5.0,
 	  "male_ratio": 0.5,
 	  "max_hp": 35.0,
-	  "moves": [
-		"gnaw",
-		"buzz",
-        "needle_nip"
-	  ],
 	  "name": "Skeeter",
+	  "light_source": false,
+	  "light_strength": 0.5,
 	  "size": "0.01 m",
 	  "special_attack": 45.0,
 	  "special_defense": 30.0,
@@ -764,13 +743,9 @@
 	  "level": 5.0,
 	  "male_ratio": 0.5,
 	  "max_hp": 40.0,
-	  "moves": [
-		"nectar_drink",
-		"petal_whip",
-		"dazzle",
-        "charm"
-	  ],
 	  "name": "Lochirp",
+	  "light_source": true,
+	  "light_strength": 0.5,
 	  "size": "0.1 m",
 	  "special_attack": 55.0,
 	  "special_defense": 50.0,
@@ -857,10 +832,9 @@
 	  "level": 5.0,
 	  "male_ratio": 0.5,
 	  "max_hp": 80.0,
-	  "moves": [
-        "absolve"
-	  ],
 	  "name": "Moach",
+	  "light_source": false,
+	  "light_strength": 0.5,
 	  "size": "0.127 m",
 	  "special_attack": 15.0,
 	  "special_defense": 50.0,
@@ -872,121 +846,218 @@
 	},
 	{
 	  "art_id": "Balopod",
-	  "attack": 30,
+	  "attack": 30.0,
 	  "base_exp": 50.0,
 	  "catch_rate": 125.0,
 	  "color": "dd66c8",
-	  "defense": 40,
+	  "defense": 40.0,
 	  "description": "It fills it's mantle full of water and air, allowing Balopod to float around like a balloon. It has surprising grip strength, but it's small arms are still too small to generate enough leverage. Balopod often has to be very clever in order to not starve, and scientists often witness their elaborate traps setup to catch prey. Because of their planning, they may eat prey that is much stronger then they would realistically be able to hunt. Cool or dirty water is often as threatening to the species as Balopod, which only adds to it's impressive neurological structure, as it's small arms can detect chemistry and temperature independently and precisely. If improper conditions are found, the Fakemon makes a move to attempt to find somewhere more suitable to live.",
 	  "learnset": [
 		{
-		  "level": 1,
+		  "level": 1.0,
 		  "move": "dartlet_stare"
 		},
 		{
-		  "level": 2,
+		  "level": 2.0,
 		  "move": "poison_bubble"
 		},
 		{
-		  "level": 3,
+		  "level": 3.0,
 		  "move": "mind_wave"
 		},
 		{
-		  "level": 5,
+		  "level": 5.0,
 		  "move": "tentacle_grip"
 		},
 		{
-		  "level": 7,
+		  "level": 7.0,
 		  "move": "mist"
 		},
 		{
-		  "level": 9,
+		  "level": 9.0,
 		  "move": "aqua_jet"
 		},
 		{
-		  "level": 12,
+		  "level": 12.0,
 		  "move": "disable"
 		},
 		{
-		  "level": 15,
+		  "level": 15.0,
 		  "move": "ink_jet"
 		},
 		{
-		  "level": 17,
+		  "level": 17.0,
 		  "move": "mind_bolt"
 		},
 		{
-		  "level": 19,
+		  "level": 19.0,
 		  "move": "mimic"
 		},
 		{
-		  "level": 23,
+		  "level": 23.0,
 		  "move": "warning_flare"
 		},
 		{
-		  "level": 25,
+		  "level": 25.0,
 		  "move": "night_dart"
 		},
 		{
-		  "level": 28,
+		  "level": 28.0,
 		  "move": "multitask"
 		},
 		{
-		  "level": 29,
+		  "level": 29.0,
 		  "move": "monsoon"
 		},
 		{
-		  "level": 32,
+		  "level": 32.0,
 		  "move": "scald"
 		},
 		{
-		  "level": 35,
+		  "level": 35.0,
 		  "move": "inner_focus"
 		},
 		{
-		  "level": 38,
+		  "level": 38.0,
 		  "move": "coat_toxin"
 		},
 		{
-		  "level": 40,
+		  "level": 40.0,
 		  "move": "hysteria"
 		},
 		{
-		  "level": 43,
+		  "level": 43.0,
 		  "move": "vicegrip"
 		},
 		{
-		  "level": 47,
+		  "level": 47.0,
 		  "move": "vital_cognition"
 		},
 		{
-		  "level": 50,
+		  "level": 50.0,
 		  "move": "synaptic_bloom"
 		},
 		{
-		  "level": 53,
+		  "level": 53.0,
 		  "move": "chromatic_thought"
 		},
 		{
-		  "level": 55,
+		  "level": 55.0,
 		  "move": "remembrance"
 		}
 	  ],
-	  "level": 5,
+	  "level": 5.0,
 	  "male_ratio": 0.5,
-	  "max_hp": 45,
-	  "moves": [
-        "absolve"
-	  ],
+	  "max_hp": 45.0,
 	  "name": "Balopod",
+	  "light_source": false,
+	  "light_strength": 0.5,
 	  "size": "0.08 m",
-	  "special_attack": 45,
-	  "special_defense": 50,
-	  "speed": 60,
+	  "special_attack": 45.0,
+	  "special_defense": 50.0,
+	  "speed": 60.0,
 	  "types": [
 		"Psychic",
         "Poison"
 	  ]
+	},
+	{
+	  "art_id": "Tuggle",
+	  "attack": 55,
+	  "base_exp": 55.0,
+	  "catch_rate": 75,
+	  "color": "9d7f27",
+	  "defense": 80,
+	  "description": "Tuggle sits in warm and still bodies of water, lazily consuming plants when it needs to. If something cools the water temperature or changes the plant availability, it will bury in the mud and go dormant until more favorable conditions arrive, rather than seek a new location. If a predator is found, it often holds it's ground, relying heavily on it's defenses to make it not worth the time. Though it's sight in general is weak, Tuggle's color vision is not - a necessity in a tropical bog.",
+	  "learnset": [
+		{
+		  "level": 1,
+		  "move": "defense_curl"
+		},
+		{
+		  "level": 2,
+		  "move": "bite"
+		},
+		{
+		  "level": 3,
+		  "move": "doze_off"
+		},
+		{
+		  "level": 5,
+		  "move": "relic_strike"
+		},
+		{
+		  "level": 8,
+		  "move": "scatter_stone"
+		},
+		{
+		  "level": 12,
+		  "move": "body_slam"
+		},
+		{
+		  "level": 16,
+		  "move": "stone_gnaw"
+		},
+		{
+		  "level": 20,
+		  "move": "fortify"
+		},
+		{
+		  "level": 25,
+		  "move": "deep_impact"
+		},
+		{
+		  "level": 29,
+		  "move": "rubble_slide"
+		},
+		{
+		  "level": 33,
+		  "move": "outlast"
+		},
+		{
+		  "level": 36,
+		  "move": "vicegrip"
+		},
+		{
+		  "level": 39,
+		  "move": "dormancy"
+		},
+		{
+		  "level": 42,
+		  "move": "boulder_drop"
+		},
+		{
+		  "level": 45,
+		  "move": "winds_of_time"
+		},
+		{
+		  "level": 50,
+		  "move": "kinetic_pummel"
+		},
+		{
+		  "level": 53,
+		  "move": "materialize"
+		},
+		{
+		  "level": 57,
+		  "move": "epoch_crash"
+		},
+		{
+		  "level": 62,
+		  "move": "memorial"
+		}
+	  ],
+	  "level": 5,
+	  "male_ratio": 0.75,
+	  "max_hp": 70,
+	  "name": "Tuggle",
+	  "light_source": false,
+	  "light_strength": 0.5,
+	  "size": "0.3 m",
+	  "special_attack": 15,
+	  "special_defense": 25,
+	  "speed": 15,
+	  "type": "Ancient"
 	}
   ],
   "moves": {
@@ -1102,6 +1173,16 @@
 	  },
 	  "recoil_max_hp_fraction": 0.15,
 	  "type": "Normal"
+	},
+	"boulder_drop": {
+	  "animation_id": "boulder_drop",
+	  "condition": "Flinch",
+	  "condition_chance": 0.1,
+	  "damage_class": "Physical",
+	  "description": "A powerful rock attack with a 10% chance to make the foe flinch.",
+	  "name": "Boulder Drop",
+	  "power": 80.0,
+	  "type": "Rock"
 	},
 	"brilliant_light": {
 	  "animation_id": "brilliant_light",
@@ -1438,6 +1519,16 @@
 	  ],
 	  "type": "Mystic"
 	},
+	"deep_impact": {
+	  "animation_id": "deep_impact",
+	  "condition": "Flinch",
+	  "condition_chance": 0.1,
+	  "damage_class": "Physical",
+	  "description": "Strikes the foe with an ancient method, with a 10% flinch chance.",
+	  "name": "Deep Impact",
+	  "power": 70.0,
+	  "type": "Ancient"
+	},
 	"defense_curl": {
 	  "animation_id": "defense_curl",
 	  "damage_class": "Status",
@@ -1486,6 +1577,17 @@
 		}
 	  ],
 	  "type": "Light"
+	},
+	"dormancy": {
+	  "animation_id": "rest",
+	  "damage_class": "Status",
+	  "description": "The user cleanses itself and falls asleep. Upon waking, it fully heals and is cleansed again.",
+	  "dormancy": true,
+	  "name": "Dormancy",
+	  "power": 0.0,
+	  "self_condition": "Asleep",
+	  "type": "Ancient",
+	  "wake_animation_id": "dormancy_activation"
 	},
 	"doze_off": {
 	  "animation_id": "doze_off",
@@ -1549,6 +1651,22 @@
 	  "priority": 1.0,
 	  "type": "Fighting"
 	},
+	"epoch_crash": {
+	  "animation_id": "epoch_crash",
+	  "condition": "Flinch",
+	  "condition_chance": 0.05,
+	  "damage_class": "Special",
+	  "description": "A devastating blow of the ages that may flinch the foe and lowers its Special Defense by 1 stage.",
+	  "name": "Epoch Crash",
+	  "power": 100.0,
+	  "target_stat_changes": [
+		{
+		  "amount": -0.1,
+		  "stat": "special_defense"
+		}
+	  ],
+	  "type": "Ancient"
+	},
 	"evade": {
 	  "animation_id": "evade",
 	  "damage_class": "Status",
@@ -1560,6 +1678,20 @@
 	  "protect_success_base": 0.95,
 	  "protect_success_decrement": 0.25,
 	  "type": "Air"
+	},
+	"fatal_jaw": {
+	  "animation_id": "fatal_jaw",
+	  "damage_class": "Physical",
+	  "description": "Crushes the foe with a jaw of dense mineral and lowers its Defense by 1 stage.",
+	  "name": "Fatal Jaw",
+	  "power": 90.0,
+	  "target_stat_changes": [
+		{
+		  "amount": -0.1,
+		  "stat": "defense"
+		}
+	  ],
+	  "type": "Rock"
 	},
 	"fey_dust": {
 	  "animation_id": "fey_dust",
@@ -1667,6 +1799,24 @@
 		}
 	  ],
 	  "type": "Bug"
+	},
+	"fortify": {
+	  "animation_id": "fortify",
+	  "damage_class": "Status",
+	  "description": "Raises Defense by 2 stages, but lowers Speed by 1 stage.",
+	  "name": "Fortify",
+	  "power": 0.0,
+	  "stat_changes": [
+		{
+		  "amount": 0.2,
+		  "stat": "defense"
+		},
+		{
+		  "amount": -0.1,
+		  "stat": "speed"
+		}
+	  ],
+	  "type": "Rock"
 	},
 	"gather": {
 	  "animation_id": "gather",
@@ -1974,6 +2124,25 @@
 	  ],
 	  "type": "Mystic"
 	},
+	"materialize": {
+	  "animation_id": "materialize",
+	  "damage_class": "Status",
+	  "description": "Changes all of the user's learned Special moves to Physical until it switches out.",
+	  "materialize_special_moves": true,
+	  "name": "Materialize",
+	  "power": 0.0,
+	  "type": "Rock"
+	},
+	"memorial": {
+	  "animation_id": "memorial",
+	  "damage_class": "Special",
+	  "description": "Gains 20 power per completed turn the user remains on the field, up to 200 power. Switching resets the power back to 60.",
+	  "maximum_power": 200.0,
+	  "name": "Memorial",
+	  "power": 60.0,
+	  "power_per_turn_on_field": 20.0,
+	  "type": "Ancient"
+	},
 	"mimic": {
 	  "animation_id": "mimic",
 	  "calls_another_move": true,
@@ -2117,6 +2286,15 @@
 	  },
 	  "priority": 1.0,
 	  "type": "Dark"
+	},
+	"outlast": {
+	  "animation_id": "outlast",
+	  "damage_class": "Special",
+	  "description": "Power doubles if the foe has at least one raised stat.",
+	  "double_power_if_target_has_raised_stat": true,
+	  "name": "Outlast",
+	  "power": 60.0,
+	  "type": "Ancient"
 	},
 	"paradise_bloom": {
 	  "animation_id": "paradise_bloom",
@@ -2322,6 +2500,16 @@
 		}
 	  }
 	},
+	"relic_strike": {
+	  "animation_id": "relic_strike",
+	  "condition": "Flinch",
+	  "condition_chance": 0.05,
+	  "damage_class": "Physical",
+	  "description": "Strikes the foe with an ancient treasure, with a 5% flinch chance.",
+	  "name": "Relic Strike",
+	  "power": 40.0,
+	  "type": "Ancient"
+	},
 	"remedy": {
 	  "animation_id": "remedy",
 	  "cures_conditions": true,
@@ -2374,6 +2562,16 @@
 	  "sets_weather": "Rootmind",
 	  "type": "Plant"
 	},
+	"rubble_slide": {
+	  "animation_id": "rubble_slide",
+	  "condition": "Slowed",
+	  "condition_chance": 1.0,
+	  "damage_class": "Physical",
+	  "description": "Buries the foe in mineral chunks, slowing it.",
+	  "name": "Rubble Slide",
+	  "power": 70.0,
+	  "type": "Rock"
+	},
 	"scald": {
 	  "animation_id": "scald",
 	  "condition": "Burned",
@@ -2383,6 +2581,17 @@
 	  "name": "Scald",
 	  "power": 80.0,
 	  "type": "Water"
+	},
+	"scatter_stone": {
+	  "animation_id": "scatter_stone",
+	  "condition": "Flinch",
+	  "condition_chance": 0.05,
+	  "damage_class": "Physical",
+	  "description": "Strikes the foe with small rocks, with a 5% chance to make it flinch.",
+	  "fallback_animation": "projectile",
+	  "name": "Scatter Stone",
+	  "power": 40.0,
+	  "type": "Rock"
 	},
 	"scourge": {
 	  "animation_id": "scourge",
@@ -2577,6 +2786,18 @@
 	  ],
 	  "type": "Psychic"
 	},
+	"stone_gnaw": {
+	  "animation_id": "gnaw",
+	  "damage_class": "Physical",
+	  "description": "If the target is a Rock type, heals the user for all damage dealt.",
+	  "drain_if_target_type": {
+		"fraction": 1.0,
+		"type": "Rock"
+	  },
+	  "name": "Stone Gnaw",
+	  "power": 55.0,
+	  "type": "Rock"
+	},
 	"sun_chorus": {
 	  "animation_id": "sun_chorus",
 	  "damage_class": "Status",
@@ -2751,6 +2972,15 @@
 	  "power": 0.0,
 	  "type": "Air"
 	},
+	"winds_of_time": {
+	  "damage_class": "Status",
+	  "description": "Creates Winds of Time for 3 turns, cleansing the field, empowering Ancient and Air attacks, and progressively healing Ancient types.",
+	  "fallback_animation": "field_overlay",
+	  "name": "Winds of Time",
+	  "power": 0.0,
+	  "sets_weather": "Winds of Time",
+	  "type": "Ancient"
+	},
 	"wingbeat": {
 	  "animation_id": "wingbeat",
 	  "damage_class": "Physical",
@@ -2840,6 +3070,22 @@
 	"Rootmind": {
 	  "duration": 3.0,
 	  "plant_end_turn_heal_fraction": 0.0625
+	},
+	"Winds of Time": {
+	  "damage_multipliers": {
+		"Air": 1.15,
+		"Ancient": 1.15
+	  },
+	  "duration": 3.0,
+	  "progressive_type_healing": {
+		"fractions": [
+		  0.125,
+		  0.25,
+		  0.5
+		],
+		"type": "Ancient"
+	  },
+	  "reset_stats_and_conditions_on_activation": true
 	}
   }
 }

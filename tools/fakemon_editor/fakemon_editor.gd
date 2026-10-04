@@ -14,11 +14,13 @@ var status: RichTextLabel
 var tabs: TabContainer
 var fields: Dictionary = {}
 var stat_spins: Dictionary = {}
+var light_source_box: CheckButton
+var light_strength_spin: SpinBox
 var bst_label: Label
 var egg_boxes: Array[OptionButton] = []
 var type_boxes: Array[OptionButton] = []
 var move_rows: VBoxContainer
-var starting_moves: LineEdit
+var starting_moves: Label
 var moveset_source_box: OptionButton
 var art_tab: FakemonArtTab
 var evolution_box: OptionButton
@@ -107,6 +109,17 @@ func _build_stats_tab() -> void:
 	for key in STAT_LABELS:
 		var spin := SpinBox.new(); spin.min_value = 1; spin.max_value = 999; spin.step = 1; spin.value_changed.connect(_stat_changed.bind(key)); stat_spins[key] = spin; _row(box, STAT_LABELS[key], spin)
 
+	light_source_box = CheckButton.new(); light_source_box.text = "Yes / No"
+	light_source_box.toggled.connect(func(on):
+		light_strength_spin.editable = on
+		if not suppress: model.draft["light_source"] = on; _dirty())
+	_row(box, "Light Source (overworld)", light_source_box)
+	light_strength_spin = SpinBox.new(); light_strength_spin.min_value = 0.05; light_strength_spin.max_value = 100; light_strength_spin.step = 0.05
+	light_strength_spin.value_changed.connect(func(value):
+		if not suppress: model.draft["light_strength"] = value; _dirty())
+	_row(box, "Light Strength (radius in map units)", light_strength_spin)
+	var light_hint := Label.new(); light_hint.text = "Low: 0.5 · Medium: 1 · Huge: 2. Only affects overworld lighting."; box.add_child(light_hint)
+
 func _build_art_tab() -> void:
 	var scroll:=ScrollContainer.new();scroll.name="Art";scroll.size_flags_vertical=Control.SIZE_EXPAND_FILL;tabs.add_child(scroll)
 	art_tab=ArtTab.new();art_tab.size_flags_horizontal=Control.SIZE_EXPAND_FILL;art_tab.setup(model.game_root);art_tab.changed.connect(_art_changed);art_tab.message.connect(_message);scroll.add_child(art_tab)
@@ -114,8 +127,8 @@ func _build_art_tab() -> void:
 func _build_moves_tab() -> void:
 	var box := _tab("Moves")
 	moveset_source_box = OptionButton.new(); moveset_source_box.item_selected.connect(_moveset_source_changed); _row(box, "Shared moveset source", moveset_source_box)
-	starting_moves = LineEdit.new(); starting_moves.placeholder_text = "move_id, move_id (base species only)"; starting_moves.text_changed.connect(_starting_moves_changed); _row(box, "Starting moves", starting_moves)
-	var hint := Label.new(); hint.text = "Learnset move boxes search by display name or runtime ID. Invalid references cannot be saved."; hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; box.add_child(hint)
+	starting_moves = Label.new(); starting_moves.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; _row(box, "Moves at base level", starting_moves)
+	var hint := Label.new(); hint.text = "Moves at the base level are calculated from the learnset. A Fakemon can know up to six moves; later entries replace the oldest. Learnset boxes search by display name or runtime ID."; hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; box.add_child(hint)
 	move_rows = VBoxContainer.new(); box.add_child(move_rows)
 	var add := Button.new(); add.text = "+ Add learned move"; add.pressed.connect(func(): model.draft.get_or_add("learnset", []).append({"level":1,"move":""}); _render_moves(); _dirty()); box.add_child(add)
 
@@ -159,6 +172,9 @@ func _select(name: String) -> void:
 		fields[key].text = str(value)
 	_populate_options(); _sync_color_picker(); _render_moves(); art_tab.load_art(String(model.draft.get("art_id","")),String(model.draft.get("name",""))); _render_evolution(); _render_found()
 	for key in stat_spins: stat_spins[key].value = float(model.draft.get(key, 1))
+	light_source_box.button_pressed = bool(model.draft.get("light_source", false))
+	light_strength_spin.value = float(model.draft.get("light_strength", 0.5))
+	light_strength_spin.editable = light_source_box.button_pressed
 	_update_bst(); suppress = false; _dirty(); _message("Loaded without changing the source schema.")
 
 func _populate_options() -> void:
@@ -182,8 +198,7 @@ func _render_moves() -> void:
 		moveset_source_box.add_item(source_name); moveset_source_box.set_item_metadata(moveset_source_box.item_count - 1, source_name)
 		if source_name == String(model.draft.get("moveset_source", "")): moveset_source_box.select(moveset_source_box.item_count - 1)
 	moveset_source_box.disabled = model.selected_source.ends_with("battle_data.json")
-	starting_moves.editable = model.selected_source.ends_with("battle_data.json")
-	starting_moves.text = ", ".join(model.draft.get("moves", [])) if starting_moves.editable else "Inherited from %s" % model.draft.get("moveset_source", "")
+	starting_moves.text = ", ".join(model.moves_at_base_level()) if model.selected_source.ends_with("battle_data.json") else "Inherited from %s" % model.draft.get("moveset_source", "")
 	var catalog := model.move_catalog()
 	for index in model.draft.get("learnset", []).size():
 		var entry: Dictionary = model.draft.learnset[index]; var row := HBoxContainer.new(); move_rows.add_child(row)
@@ -286,9 +301,6 @@ func _types_changed(_index: int) -> void:
 func _eggs_changed(_index: int) -> void:
 	if suppress: return
 	model.set_egg_groups([egg_boxes[0].get_item_text(egg_boxes[0].selected), egg_boxes[1].get_item_text(egg_boxes[1].selected)]); _dirty()
-func _starting_moves_changed(text: String) -> void:
-	if suppress or not starting_moves.editable: return
-	model.draft["moves"] = Array(text.split(",", false)).map(func(v): return String(v).strip_edges()); _dirty()
 func _moveset_source_changed(index: int) -> void:
 	if suppress or moveset_source_box.disabled: return
 	model.draft["moveset_source"] = String(moveset_source_box.get_item_metadata(index)); _dirty()
@@ -309,6 +321,8 @@ func _art_changed()->void:
 	fields["art_id"].text=art_tab.package.art_id
 	_dirty()
 func _dirty() -> void:
+	if starting_moves != null and model.selected_source.ends_with("battle_data.json"):
+		starting_moves.text = ", ".join(model.moves_at_base_level())
 	var dirty:=model.is_dirty() or model.encounters_dirty() or (art_tab!=null and art_tab.has_unsaved());dirty_label.text = "● UNSAVED" if dirty else "Saved"; dirty_label.add_theme_color_override("font_color", Color("ffbd69") if dirty else Color("78dba9"))
 func _save() -> void:
 	if model.save_selected(): _refresh_browser(); _dirty(); _message("Saved to the engine-owned data files. Sprite warnings remain informational.")

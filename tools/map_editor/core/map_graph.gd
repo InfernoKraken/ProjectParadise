@@ -37,10 +37,44 @@ static func destination_for(filename: String, json_path: String, map_directory :
 		var doc := MapDocument.load_file(map_directory.path_join(filename))
 		if doc.parse_error.is_empty():
 			var warp := json_path.trim_prefix("$.")
+			var metadata_result := metadata_destination(doc.data, json_path, map_directory)
+			if not metadata_result.is_empty(): return metadata_result
 			for value: Variant in doc.data.get("outdoor_connections", []):
 				if value is Dictionary and String(value.get("warp", "")) == warp:
 					return {"map":String(value.get("destination_map", "")), "target_path":"$.arrival_points.%s" % String(value.get("arrival", "")), "legacy_target_path":"$.%s" % String(value.get("arrival", "")), "label":"Follow %s" % String(value.get("id", warp)), "connection":value}
 	return Dictionary(WARP_ENDPOINTS.get(filename + "|" + json_path, {}))
+
+static func metadata_destination(data: Dictionary, json_path: String, map_directory: String) -> Dictionary:
+	var warp := json_path.trim_prefix("$.")
+	var metadata: Variant = data.get("warp_metadata", {})
+	if not metadata is Dictionary or not metadata.get(warp) is Dictionary: return {}
+	var record: Dictionary = metadata[warp]
+	var target_map := String(record.get("entrance_map", "")); var target_id := int(record.get("entrance_map_warp_id", 1))
+	if target_map.is_empty(): return {}
+	var target_field := warp_field_for_id(target_map, target_id, map_directory)
+	return {"map":target_map, "target_path":"$." + target_field if not target_field.is_empty() else "", "label":"Open %s warp %d" % [target_map, target_id], "warp_metadata":record}
+
+static func warp_fields(data: Dictionary) -> Array[String]:
+	var result: Array[String] = []
+	for field: Variant in data:
+		var name := String(field)
+		if MapSchema.is_marker_field(name) and data[field] is Array and data[field].size() >= 3 and (name.contains("warp") or name in ["door", "exit_door"]): result.append(name)
+	result.sort()
+	return result
+
+static func warp_id_for(data: Dictionary, field: String) -> int:
+	var metadata: Variant = data.get("warp_metadata", {})
+	if metadata is Dictionary and metadata.get(field) is Dictionary: return maxi(1, int(metadata[field].get("id", 1)))
+	var fields := warp_fields(data)
+	var index := fields.find(field)
+	return index + 1 if index >= 0 else 1
+
+static func warp_field_for_id(filename: String, warp_id: int, map_directory: String) -> String:
+	var doc := MapDocument.load_file(map_directory.path_join(filename))
+	if not doc.parse_error.is_empty(): return ""
+	for field in warp_fields(doc.data):
+		if warp_id_for(doc.data, field) == warp_id: return field
+	return ""
 
 static func scan(map_directory: String) -> Dictionary:
 	var result := {"maps": {}, "connections": [], "issues": []}
@@ -51,6 +85,7 @@ static func scan(map_directory: String) -> Dictionary:
 	for value in Dictionary(index_doc.data.get("sections", {})).values(): files.append(String(value))
 	for children in Dictionary(index_doc.data.get("nested_sections", {})).values():
 		for value in Dictionary(children).values(): files.append(String(value))
+	for value in Dictionary(index_doc.data.get("maps", {})).values(): files.append(String(value))
 	for filename in files:
 		var full := map_directory.path_join(filename)
 		if not FileAccess.file_exists(full): result.issues.append({"severity":"error", "path":filename, "message":"Referenced map is missing."})
@@ -63,6 +98,20 @@ static func scan(map_directory: String) -> Dictionary:
 					var key := "%s,%s,%s" % [p[0],p[1],p[2]]
 					if seen_markers.has(key): result.issues.append({"severity":"warning", "path":"%s.$.%s" % [filename,field], "message":"Coincident/duplicate marker position with %s." % seen_markers[key]})
 					else: seen_markers[key] = field
+	var bounded_maps: Array[Dictionary] = []
+	for filename: String in result.maps:
+		var data: Dictionary = result.maps[filename].data
+		var origin: Variant = data.get("origin", [])
+		var size: Variant = data.get("size", data.get("interior_size", data.get("map_size", [])))
+		if origin is Array and origin.size() >= 3 and size is Array and size.size() >= 2:
+			bounded_maps.append({"file":filename, "min_x":float(origin[0])-float(size[0])*0.5, "max_x":float(origin[0])+float(size[0])*0.5, "min_z":float(origin[2])-float(size[1])*0.5, "max_z":float(origin[2])+float(size[1])*0.5})
+	for left_index in bounded_maps.size():
+		for right_index in range(left_index + 1, bounded_maps.size()):
+			var left: Dictionary = bounded_maps[left_index]
+			var right: Dictionary = bounded_maps[right_index]
+			if left.min_x < right.max_x and left.max_x > right.min_x and left.min_z < right.max_z and left.max_z > right.min_z:
+				result.issues.append({"severity":"error", "path":"%s.$.origin" % left.file, "message":"World-space bounds overlap %s; the runtime builds both maps in one world." % right.file})
+				result.issues.append({"severity":"error", "path":"%s.$.origin" % right.file, "message":"World-space bounds overlap %s; the runtime builds both maps in one world." % left.file})
 	var links := {}
 	var endpoint_owners := {}
 	for filename: String in result.maps:

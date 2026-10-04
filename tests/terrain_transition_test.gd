@@ -4,6 +4,11 @@ const Resolver := preload("res://world/terrain_transition_resolver.gd")
 const TextureCache := preload("res://world/terrain_transition_texture_cache.gd")
 
 func _init() -> void:
+	_assert_tile_cache_pair_and_order_identity()
+	if "--cache-order-only" in OS.get_cmdline_user_args():
+		print("Terrain transition cache order test passed.")
+		quit()
+		return
 	assert(Resolver.resolve({Vector2i(0,0):"water",Vector2i(1,0):"water"}).is_empty())
 	_check_pair("water", "sand", "east")
 	_check_pair("sand", "forest_floor", "east")
@@ -99,6 +104,10 @@ func _init() -> void:
 	assert(three_priority_tile!=null,"Different terrain pairs must compose into one canonical tile texture.")
 	var prepared := Resolver.prepare_map({"terrain_tiles":[{"position":[0,0],"terrain_type":"water"},{"position":[1,0],"terrain_type":"sand"}]})
 	assert(prepared._terrain_transitions.size()>0 and not prepared.has("collision") and not prepared.has("elevation"))
+	var cyclic_map:={"size":[2,2],"terrain_tiles":[]}
+	cyclic_map["_map_files"]={"root.json":cyclic_map}
+	var prepared_cycle:=Resolver.prepare_map(cyclic_map,"cyclic_world")
+	assert(prepared_cycle.has("_terrain_grid") and prepared_cycle._map_files.get("root.json") is Dictionary,"Terrain preparation must tolerate the world loader's intentional _map_files self-reference.")
 	print("Terrain transition tests passed.")
 	quit()
 
@@ -106,6 +115,22 @@ func _check_pair(lower:String,higher:String,orientation:String)->void:
 	var neighbor := Vector2i(1,0) if orientation=="east" else Vector2i(0,1)
 	var records := Resolver.resolve({Vector2i(0,0):lower,neighbor:higher})
 	assert(records.size()==1 and records[0].boundary_kind=="cardinal" and records[0].piece.orientation==orientation and Vector2i.ZERO in records[0].affected_tiles and neighbor in records[0].affected_tiles)
+
+func _assert_tile_cache_pair_and_order_identity()->void:
+	var forest_sand:={"terrain_a":"forest_floor","terrain_b":"sand","mask_type":"vertical_edge","mask_variant":0,"orientation":"east","slice":"vertical_negative"}
+	var forest_mud:={"terrain_a":"forest_floor","terrain_b":"mud","mask_type":"vertical_edge","mask_variant":0,"orientation":"east","slice":"vertical_negative"}
+	TextureCache.clear()
+	var sand_first:=TextureCache.texture_for_tile("forest_floor",[forest_sand])
+	var mud_second:=TextureCache.texture_for_tile("forest_floor",[forest_mud])
+	assert(sand_first!=null and mud_second!=null and sand_first!=mud_second,"Tile cache identity must distinguish terrain_b.")
+	var sand_first_pixels:=sand_first.get_image().get_data()
+	var mud_second_pixels:=mud_second.get_image().get_data()
+	assert(sand_first_pixels!=mud_second_pixels,"Forest/sand and forest/mud edges must render different pixels.")
+	TextureCache.clear()
+	var mud_first:=TextureCache.texture_for_tile("forest_floor",[forest_mud])
+	var sand_second:=TextureCache.texture_for_tile("forest_floor",[forest_sand])
+	assert(mud_first.get_image().get_data()==mud_second_pixels,"Mud-edge output must not depend on generation order.")
+	assert(sand_second.get_image().get_data()==sand_first_pixels,"Sand-edge output must not depend on generation order.")
 
 func _assert_mask_sides(generated: Texture2D, terrain_a_type: String, terrain_b_type: String, vertical_split: bool) -> void:
 	var actual := generated.get_image()

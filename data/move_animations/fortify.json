@@ -1,0 +1,57 @@
+{
+  "duration": 1.6,
+  "events": [
+    {
+      "battler": "user",
+      "direction": "vertical",
+      "distance": 50.0,
+      "duration": 0.2,
+      "time": 0.5,
+      "type": "move_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Rock_Wall.png",
+      "duration": 0.3,
+      "instance_id": "impact",
+      "is_behind": true,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.5,
+      "sprite_sheet": null,
+      "time": 0.7,
+      "tint": "#FFFFFF",
+      "type": "impact_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Buff.png",
+      "duration": 0.3,
+      "instance_id": "impact1",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 0.8,
+      "tint": "#FFFFFF",
+      "type": "impact_sprite"
+    }
+  ],
+  "format_version": 1.0,
+  "id": "fortify"
+}

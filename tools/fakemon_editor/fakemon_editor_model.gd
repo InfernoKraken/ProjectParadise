@@ -100,6 +100,15 @@ func types_catalog() -> Array[String]:
 func move_catalog() -> Dictionary:
 	return battle_data.get("moves", {})
 
+func moves_at_base_level() -> Array[String]:
+	var result: Array[String] = []
+	for entry: Dictionary in draft.get("learnset", []):
+		var move_id := String(entry.get("move", ""))
+		if int(entry.get("level", 0)) <= int(draft.get("level", 5)) and not result.has(move_id):
+			result.append(move_id)
+			if result.size() > 6: result.pop_front()
+	return result
+
 func egg_groups_for(species_name := "") -> Array:
 	var name := selected_name if species_name.is_empty() else species_name
 	return egg_data.get("assignments", {}).get(name, egg_data.get("default_groups", [])).duplicate()
@@ -123,6 +132,8 @@ func validate() -> Array[String]:
 	if name.to_lower() != selected_name.to_lower() and occurrences > 0: issues.append("Duplicate Fakemon name: %s." % name)
 	for key in STAT_KEYS:
 		if int(draft.get(key, 0)) < 1: issues.append("%s must be positive." % String(key))
+	if bool(draft.get("light_source", false)) and float(draft.get("light_strength", 0.5)) <= 0.0:
+		issues.append("Light Strength must be a positive radius.")
 	var types := _types_of(draft)
 	if types.is_empty() or types.size() > 2: issues.append("A Fakemon must have one or two types.")
 	var known_moves: Dictionary = move_catalog()
@@ -130,10 +141,7 @@ func validate() -> Array[String]:
 		if not entry is Dictionary or not known_moves.has(String(entry.get("move", ""))): issues.append("Learnset contains a missing move reference.")
 		elif int(entry.get("level", 0)) < 1: issues.append("Learnset levels must be positive.")
 	if selected_source == BASE_FILE:
-		var moves: Array = draft.get("moves", [])
-		if moves.is_empty() or moves.size() > 6: issues.append("Starting moves must contain 1 to 6 moves.")
-		for move_id in moves:
-			if not known_moves.has(String(move_id)): issues.append("Starting moves contain missing move '%s'." % move_id)
+		if moves_at_base_level().is_empty(): issues.append("Learnset needs a move at or below the base level.")
 	else:
 		var source := String(draft.get("moveset_source", ""))
 		if source.is_empty() or not species_names().has(source): issues.append("Moveset source is missing or invalid.")
@@ -201,7 +209,7 @@ func add_species(species_name: String, evolves_from := "") -> bool:
 	var clean := species_name.strip_edges()
 	if clean.is_empty() or species_names().map(func(v): return v.to_lower()).has(clean.to_lower()): return false
 	var starter_move := String(move_catalog().keys()[0]) if not move_catalog().is_empty() else ""
-	var created := {"name":clean,"art_id":clean,"male_ratio":0.5,"type":types_catalog()[0] if not types_catalog().is_empty() else "Normal","level":5,"max_hp":50,"attack":50,"defense":50,"special_attack":50,"special_defense":50,"speed":50,"color":"7ebf78","size":"1 m","description":"","catch_rate":75,"base_exp":64,"moves":[starter_move],"learnset":[{"level":1,"move":starter_move}]}
+	var created := {"name":clean,"art_id":clean,"male_ratio":0.5,"type":types_catalog()[0] if not types_catalog().is_empty() else "Normal","level":5,"max_hp":50,"attack":50,"defense":50,"special_attack":50,"special_defense":50,"speed":50,"light_source":false,"light_strength":0.5,"color":"7ebf78","size":"1 m","description":"","catch_rate":75,"base_exp":64,"learnset":[{"level":1,"move":starter_move}]}
 	var parent := evolves_from.strip_edges()
 	if not parent.is_empty():
 		if not species_names().has(parent): return false

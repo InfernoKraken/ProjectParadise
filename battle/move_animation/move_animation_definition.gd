@@ -4,7 +4,7 @@ extends RefCounted
 const CONTEXTUAL_ASSETS := preload("res://battle/move_animation/contextual_move_effect_resolver.gd")
 
 const FORMAT_VERSION := 1
-const EVENT_TYPES := ["spawn_sprite", "impact_sprite", "beam", "vertical_sprite", "move_sprite", "fade_sprite", "destroy_sprite", "shake_battler", "move_battler", "scale_battler", "background_tint", "restore_background", "marker"]
+const EVENT_TYPES := ["spawn_sprite", "impact_sprite", "beam", "vertical_sprite", "move_sprite", "fade_sprite", "destroy_sprite", "shake_battler", "move_battler", "scale_battler", "color_battler", "background_tint", "restore_background", "marker"]
 const BATTLERS := ["user", "target"]
 const ANCHORS := ["origin", "head", "mouth", "neck", "left_wing", "right_wing", "tail"]
 const BEAM_LAYERS := ["behind_battlers", "between_battlers", "above_battlers", "below_user_above_target"]
@@ -137,6 +137,14 @@ func validation_errors() -> PackedStringArray:
 			if not Color.html_is_valid(String(e.get("color", ""))): errors.append("%s background color is invalid." % prefix)
 			var opacity := float(e.get("opacity", -1.0))
 			if opacity < 0.0 or opacity > 1.0: errors.append("%s opacity must be between 0 and 1." % prefix)
+		elif event_type == "color_battler":
+			if not BATTLERS.has(String(e.get("battler", ""))): errors.append("%s battler must be user or target." % prefix)
+			if not ["direct", "shine", "fade"].has(String(e.get("mode", ""))): errors.append("%s color mode is invalid." % prefix)
+			if not Color.html_is_valid(String(e.get("color", ""))): errors.append("%s color is invalid." % prefix)
+			if String(e.get("mode", "")) == "fade":
+				var minimum := float(e.get("min_opacity", -1.0))
+				var maximum := float(e.get("max_opacity", -1.0))
+				if minimum < 0.0 or minimum > 1.0 or maximum < 0.0 or maximum > 1.0 or minimum > maximum: errors.append("%s fade opacity range must be within 0–1, minimum through maximum." % prefix)
 	var explicit_duration := float(data.get("duration", calculated_duration))
 	if explicit_duration < calculated_duration: errors.append("Animation duration does not cover all events.")
 	return errors

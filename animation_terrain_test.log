@@ -1,0 +1,80 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+Using "default" pen tablet driver...
+
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+CORE API HASH: 3769296884
+EDITOR API HASH: 3146738256
+Loading resource: res://tests/terrain_transition_test.gd remapped: res://tests/terrain_transition_test.gd
+Completed load for: 'res://tests/terrain_transition_test.gd' remapped 'res://tests/terrain_transition_test.gd' at thread -1
+SceneTreeFTI: traversal method DEFAULT
+Loading resource: res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png remapped: res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png
+Loading resource: res://.godot/imported/mask_vertical_edge_small_00.png-0b73df9dc81033f0c6967b585d968555.ctex remapped: res://.godot/imported/mask_vertical_edge_small_00.png-0b73df9dc81033f0c6967b585d968555.ctex
+Completed load for: 'res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png' remapped 'res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png' at thread -1
+Loading resource: res://assets/overworld/tile_sand_generic.png remapped: res://assets/overworld/tile_sand_generic.png
+Loading resource: res://.godot/imported/tile_sand_generic.png-60c3c38f8443909ef7829dddf4a7b4ec.ctex remapped: res://.godot/imported/tile_sand_generic.png-60c3c38f8443909ef7829dddf4a7b4ec.ctex
+Completed load for: 'res://assets/overworld/tile_sand_generic.png' remapped 'res://assets/overworld/tile_sand_generic.png' at thread -1
+Loading resource: res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png remapped: res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png
+Loading resource: res://.godot/imported/mask_vertical_edge_small_00.png-0b73df9dc81033f0c6967b585d968555.ctex remapped: res://.godot/imported/mask_vertical_edge_small_00.png-0b73df9dc81033f0c6967b585d968555.ctex
+Completed load for: 'res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png' remapped 'res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png' at thread -1
+Loading resource: res://assets/overworld/grass_main.png remapped: res://assets/overworld/grass_main.png
+Loading resource: res://.godot/imported/grass_main.png-6f7a0349fb1b22a62f0062f6e0823877.ctex remapped: res://.godot/imported/grass_main.png-6f7a0349fb1b22a62f0062f6e0823877.ctex
+Completed load for: 'res://assets/overworld/grass_main.png' remapped 'res://assets/overworld/grass_main.png' at thread -1
+Loading resource: res://assets/overworld/grass_main.png remapped: res://assets/overworld/grass_main.png
+Loading resource: res://.godot/imported/grass_main.png-6f7a0349fb1b22a62f0062f6e0823877.ctex remapped: res://.godot/imported/grass_main.png-6f7a0349fb1b22a62f0062f6e0823877.ctex
+Completed load for: 'res://assets/overworld/grass_main.png' remapped 'res://assets/overworld/grass_main.png' at thread -1
+Loading resource: res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png remapped: res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png
+Loading resource: res://.godot/imported/mask_vertical_edge_small_00.png-0b73df9dc81033f0c6967b585d968555.ctex remapped: res://.godot/imported/mask_vertical_edge_small_00.png-0b73df9dc81033f0c6967b585d968555.ctex
+Completed load for: 'res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png' remapped 'res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png' at thread -1
+Loading resource: res://assets/overworld/tile_dirt_generic.png remapped: res://assets/overworld/tile_dirt_generic.png
+Loading resource: res://.godot/imported/tile_dirt_generic.png-445f5214403721cb507d06fed13bd768.ctex remapped: res://.godot/imported/tile_dirt_generic.png-445f5214403721cb507d06fed13bd768.ctex
+Completed load for: 'res://assets/overworld/tile_dirt_generic.png' remapped 'res://assets/overworld/tile_dirt_generic.png' at thread -1
+Loading resource: res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png remapped: res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png
+Loading resource: res://.godot/imported/mask_vertical_edge_small_00.png-0b73df9dc81033f0c6967b585d968555.ctex remapped: res://.godot/imported/mask_vertical_edge_small_00.png-0b73df9dc81033f0c6967b585d968555.ctex
+Completed load for: 'res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png' remapped 'res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png' at thread -1
+Loading resource: res://assets/overworld/grass_main.png remapped: res://assets/overworld/grass_main.png
+Loading resource: res://.godot/imported/grass_main.png-6f7a0349fb1b22a62f0062f6e0823877.ctex remapped: res://.godot/imported/grass_main.png-6f7a0349fb1b22a62f0062f6e0823877.ctex
+Completed load for: 'res://assets/overworld/grass_main.png' remapped 'res://assets/overworld/grass_main.png' at thread -1
+Loading resource: res://assets/overworld/grass_main.png remapped: res://assets/overworld/grass_main.png
+Loading resource: res://.godot/imported/grass_main.png-6f7a0349fb1b22a62f0062f6e0823877.ctex remapped: res://.godot/imported/grass_main.png-6f7a0349fb1b22a62f0062f6e0823877.ctex
+Completed load for: 'res://assets/overworld/grass_main.png' remapped 'res://assets/overworld/grass_main.png' at thread -1
+Loading resource: res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png remapped: res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png
+Loading resource: res://.godot/imported/mask_vertical_edge_small_00.png-0b73df9dc81033f0c6967b585d968555.ctex remapped: res://.godot/imported/mask_vertical_edge_small_00.png-0b73df9dc81033f0c6967b585d968555.ctex
+Completed load for: 'res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png' remapped 'res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png' at thread -1
+Loading resource: res://assets/overworld/tile_dirt_generic.png remapped: res://assets/overworld/tile_dirt_generic.png
+Loading resource: res://.godot/imported/tile_dirt_generic.png-445f5214403721cb507d06fed13bd768.ctex remapped: res://.godot/imported/tile_dirt_generic.png-445f5214403721cb507d06fed13bd768.ctex
+Completed load for: 'res://assets/overworld/tile_dirt_generic.png' remapped 'res://assets/overworld/tile_dirt_generic.png' at thread -1
+Loading resource: res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png remapped: res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png
+Loading resource: res://.godot/imported/mask_vertical_edge_small_00.png-0b73df9dc81033f0c6967b585d968555.ctex remapped: res://.godot/imported/mask_vertical_edge_small_00.png-0b73df9dc81033f0c6967b585d968555.ctex
+Completed load for: 'res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png' remapped 'res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png' at thread -1
+Loading resource: res://assets/overworld/grass_main.png remapped: res://assets/overworld/grass_main.png
+Loading resource: res://.godot/imported/grass_main.png-6f7a0349fb1b22a62f0062f6e0823877.ctex remapped: res://.godot/imported/grass_main.png-6f7a0349fb1b22a62f0062f6e0823877.ctex
+Completed load for: 'res://assets/overworld/grass_main.png' remapped 'res://assets/overworld/grass_main.png' at thread -1
+Loading resource: res://assets/overworld/grass_main.png remapped: res://assets/overworld/grass_main.png
+Loading resource: res://.godot/imported/grass_main.png-6f7a0349fb1b22a62f0062f6e0823877.ctex remapped: res://.godot/imported/grass_main.png-6f7a0349fb1b22a62f0062f6e0823877.ctex
+Completed load for: 'res://assets/overworld/grass_main.png' remapped 'res://assets/overworld/grass_main.png' at thread -1
+Loading resource: res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png remapped: res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png
+Loading resource: res://.godot/imported/mask_vertical_edge_small_00.png-0b73df9dc81033f0c6967b585d968555.ctex remapped: res://.godot/imported/mask_vertical_edge_small_00.png-0b73df9dc81033f0c6967b585d968555.ctex
+Completed load for: 'res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png' remapped 'res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png' at thread -1
+Loading resource: res://assets/overworld/tile_sand_generic.png remapped: res://assets/overworld/tile_sand_generic.png
+Loading resource: res://.godot/imported/tile_sand_generic.png-60c3c38f8443909ef7829dddf4a7b4ec.ctex remapped: res://.godot/imported/tile_sand_generic.png-60c3c38f8443909ef7829dddf4a7b4ec.ctex
+Completed load for: 'res://assets/overworld/tile_sand_generic.png' remapped 'res://assets/overworld/tile_sand_generic.png' at thread -1
+Loading resource: res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png remapped: res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png
+Loading resource: res://.godot/imported/mask_vertical_edge_small_00.png-0b73df9dc81033f0c6967b585d968555.ctex remapped: res://.godot/imported/mask_vertical_edge_small_00.png-0b73df9dc81033f0c6967b585d968555.ctex
+Completed load for: 'res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png' remapped 'res://assets/overworld/terrain_masks/mask_vertical_edge_small_00.png' at thread -1
+Loading resource: res://assets/overworld/grass_main.png remapped: res://assets/overworld/grass_main.png
+Loading resource: res://.godot/imported/grass_main.png-6f7a0349fb1b22a62f0062f6e0823877.ctex remapped: res://.godot/imported/grass_main.png-6f7a0349fb1b22a62f0062f6e0823877.ctex
+Completed load for: 'res://assets/overworld/grass_main.png' remapped 'res://assets/overworld/grass_main.png' at thread -1
+Loading resource: res://assets/overworld/grass_main.png remapped: res://assets/overworld/grass_main.png
+Loading resource: res://.godot/imported/grass_main.png-6f7a0349fb1b22a62f0062f6e0823877.ctex remapped: res://.godot/imported/grass_main.png-6f7a0349fb1b22a62f0062f6e0823877.ctex
+Completed load for: 'res://assets/overworld/grass_main.png' remapped 'res://assets/overworld/grass_main.png' at thread -1
+SCRIPT ERROR: Assertion failed.
+   at: _init (res://tests/terrain_transition_test.gd:41)
+   GDScript backtrace (most recent call first):
+       [0] _init (res://tests/terrain_transition_test.gd:41)
+Loading resource: res://world/world_clock.gd remapped: res://world/world_clock.gd
+Completed load for: 'res://world/world_clock.gd' remapped 'res://world/world_clock.gd' at thread -1
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+Loaded builtin CA certificates

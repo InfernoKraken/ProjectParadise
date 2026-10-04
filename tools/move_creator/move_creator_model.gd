@@ -2,6 +2,7 @@ class_name MoveCreatorModel
 extends RefCounted
 
 const BATTLE_EFFECT_INSTANCE := preload("res://battle/battle_effect_instance.gd")
+const BATTLE_RUNTIME := preload("res://battle/battle.gd")
 const DATA_PATH := "res://data/battle_data.json"
 const ANIMATION_DIR := "res://data/move_animations"
 const DAMAGE_CLASSES := ["Physical", "Special", "Status"]
@@ -321,8 +322,7 @@ func delete_selected_move() -> Error:
 
 func types() -> PackedStringArray:
 	var result := PackedStringArray()
-	for move: Dictionary in data.get("moves", {}).values():
-		var value := String(move.get("type", "")); if not value.is_empty() and not result.has(value): result.append(value)
+	for type_name: Variant in BATTLE_RUNTIME.TYPE_EFFECTIVENESS.keys(): result.append(String(type_name))
 	result.sort(); return result
 
 func conditions() -> PackedStringArray:

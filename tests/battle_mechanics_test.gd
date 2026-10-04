@@ -103,6 +103,9 @@ func _initialize() -> void:
 	assert(battle.create_fakemon({"male_ratio": 1.0})["gender"] == "Male", "A male ratio of 1 must always produce a male Fakemon.")
 	assert(battle.create_fakemon({"male_ratio": 0.0})["gender"] == "Female", "A male ratio of 0 must always produce a female Fakemon.")
 	assert(battle.create_fakemon({"male_ratio": null})["gender"] == "Genderless", "A null male ratio must produce a Genderless Fakemon.")
+	var balopod: Dictionary = battle.battle_data["fakemon"].filter(func(mon: Dictionary) -> bool: return mon["name"] == "Balopod")[0]
+	assert(battle.create_fakemon(balopod)["moves"] == ["dartlet_stare", "poison_bubble", "mind_wave", "tentacle_grip"], "Balopod must start with its level-five learnset moves.")
+	assert(battle.create_fakemon(balopod, 9)["moves"].has("aqua_jet"), "A higher-level encounter must receive moves learned by that level.")
 	assert(scorchick["moves"] == ["squawk", "ignite", "peck", "mimic"], "Level 5 Scorchick must know its four currently accessible moves.")
 	assert(scorchick["learnset"].size() == 21, "Scorchick's complete level-gated learnset must be recorded.")
 	assert(String(scorchick["learnset"][4]["move"]) == "scratch" and int(scorchick["learnset"][4]["level"]) == 7 and String(scorchick["learnset"][20]["move"]) == "inferno" and int(scorchick["learnset"][20]["level"]) == 60, "Scorchick's learnset levels must remain ordered and data-driven.")

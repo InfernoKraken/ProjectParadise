@@ -1,0 +1,111 @@
+{
+  "duration": 2.6,
+  "events": [
+    {
+      "battler": "user",
+      "color": "d5d5d5",
+      "duration": 0.4,
+      "max_opacity": 0.5,
+      "min_opacity": 0.25,
+      "mode": "direct",
+      "pulse": true,
+      "time": 0.5,
+      "type": "color_battler"
+    },
+    {
+      "battler": "user",
+      "loop_duration": 0.4,
+      "loops": 3,
+      "mode": "stretch",
+      "scale_delta_percent": 15.01,
+      "time": 0.7,
+      "type": "scale_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Shield_Ancient.png",
+      "instance_id": "effect",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          50.0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.9,
+      "tint": "#FFFFFF",
+      "type": "spawn_sprite"
+    },
+    {
+      "battler": "user",
+      "direction": "toward_target",
+      "distance": 110.0,
+      "duration": 0.2,
+      "time": 2.0,
+      "type": "move_battler"
+    },
+    {
+      "duration": 0.3,
+      "easing": "linear",
+      "instance_id": "effect",
+      "time": 2.1,
+      "to": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "type": "move_sprite"
+    },
+    {
+      "battler": "target",
+      "direction": "away_from_target",
+      "distance": 60.0,
+      "duration": 0.2,
+      "time": 2.15,
+      "type": "move_battler"
+    },
+    {
+      "instance_id": "effect",
+      "time": 2.2,
+      "type": "destroy_sprite"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Ancient_00.png",
+      "duration": 0.3,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 2.3,
+      "tint": "#FFFFFF",
+      "type": "impact_sprite"
+    },
+    {
+      "battler": "target",
+      "duration": 0.2,
+      "magnitude": 16.0,
+      "time": 2.31,
+      "type": "shake_battler"
+    }
+  ],
+  "format_version": 1,
+  "id": "outlast"
+}

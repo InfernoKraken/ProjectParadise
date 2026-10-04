@@ -15,3 +15,39 @@ data_*/
 mono_crash.*.json
 
 tests/
+
+# Keep checkpoint NPC tests; their generated fixtures remain ignored.
+!/tests/
+/tests/*
+!/tests/npc_checkpoint_test.gd
+!/tests/npc_checkpoint_test.gd.uid
+!/tests/npc_movement_test.gd
+!/tests/npc_movement_test.gd.uid
+!/tools/map_editor/tests/
+/tools/map_editor/tests/*
+!/tools/map_editor/tests/npc_editor_test.gd
+!/tools/map_editor/tests/npc_editor_test.gd.uid
+
+# Keep the overworld Fakemon lighting regression checks.
+!/tests/fakemon_lighting_test.gd
+!/tests/fakemon_lighting_test.gd.uid
+!/tests/fakemon_light_render_test.gd
+!/tests/fakemon_light_render_test.gd.uid
+!/tools/fakemon_editor/tests/
+/tools/fakemon_editor/tests/*
+!/tools/fakemon_editor/tests/light_fields_test.gd
+!/tools/fakemon_editor/tests/light_fields_test.gd.uid
+
+!tests/runtime_map_isolation_test.gd
+!tests/runtime_map_isolation_test.gd.uid
+
+!/tests/sylvafin_habitat_test.gd
+!/tests/sylvafin_habitat_test.gd.uid
+!/tests/run_sylvafin_tests.ps1
+!/tests/SYLVAFIN_HABITAT.md
+/sylvafin_*.log
+!/tests/water_decoration_test.gd
+!/tests/water_decoration_test.gd.uid
+!/tools/map_editor/tests/water_decoration_editor_test.gd
+!/tools/map_editor/tests/water_decoration_editor_test.gd.uid
+/water_decoration_*.log

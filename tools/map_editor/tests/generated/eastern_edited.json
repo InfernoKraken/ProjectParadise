@@ -615,6 +615,18 @@
 			1.0
 		]
 	],
+	"warp_3": [
+		-1.0,
+		0.11999999731779,
+		-2.0
+	],
+	"warp_metadata": {
+		"warp_3": {
+			"entrance_map": "jalovea_city.json",
+			"entrance_map_warp_id": 1,
+			"id": 3
+		}
+	},
 	"water_blocks": [
 		[
 			-6.0,
@@ -646,6 +658,10 @@
 		"Moach",
 		{
 			"fakemon": "Balopod",
+			"level": 5.0
+		},
+		{
+			"fakemon": "Tuggle",
 			"level": 5
 		}
 	]

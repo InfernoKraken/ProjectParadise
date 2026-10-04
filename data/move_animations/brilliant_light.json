@@ -1,5 +1,5 @@
 {
-  "duration": 2.65,
+  "duration": 3.05,
   "events": [
     {
       "color": "eeeec2",
@@ -17,6 +17,17 @@
       "type": "move_battler"
     },
     {
+      "battler": "user",
+      "color": "f0f6ac",
+      "duration": 1.0,
+      "max_opacity": 1.0,
+      "min_opacity": 0.25,
+      "mode": "shine",
+      "pulse": false,
+      "time": 1.55,
+      "type": "color_battler"
+    },
+    {
       "asset": "res://assets/move_effects/Attack_Base_Light_Halo.png",
       "duration": 0.5,
       "instance_id": "impact",
@@ -26,7 +37,7 @@
         "anchor": "origin",
         "battler": "target",
         "offset": [
-          0,
+          0.0,
           60.0
         ]
       },
@@ -44,6 +55,6 @@
       "type": "shake_battler"
     }
   ],
-  "format_version": 1,
+  "format_version": 1.0,
   "id": "brilliant_light"
 }

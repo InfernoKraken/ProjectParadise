@@ -28,6 +28,9 @@ The embedded anchor pane uses the existing anchor-map v1 signature, marker color
 Current engine conflicts/limitations shown accurately by the editor:
 
 - Fakemon have no separate internal ID; their case-sensitive `name` is used by evolution, trainer, and encounter references.
-- Evolved Fakemon inherit both starting moves and learnsets from `moveset_source` at runtime. Those inherited lists are displayed as such; the source relationship is the editable engine field.
+- Evolved Fakemon inherit the learnset from `moveset_source` at runtime; their current moves are derived at their own level. The source relationship is the editable engine field.
+- Base species store only a level learnset. The runtime derives their starting moves from entries at or below the base level, keeping the six most recent. The Moves tab shows this calculated list.
 - Wild encounters do not currently store encounter levels. Runtime creates the species at its default `level` (currently generally 5), so Found In reports that fact instead of inventing a level range.
 - Removing or renaming a species can break references in maps, trainers, evolutions, or moveset sources. The editor never silently rewrites those unrelated files.
+
+The **Stats** tab includes **Light Source** and **Light Strength**, stored as `light_source` (boolean) and `light_strength` (radius in map units). Low = 0.5, medium = 1, huge = 2; custom positive radii are supported. Emitting followers and placed Fakemon NPCs retain their daytime appearance and softly restore nearby overworld art toward daylight. The effect follows movement and disappears when the source leaves; battles are unaffected.

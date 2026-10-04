@@ -34,11 +34,7 @@
 			"sprite": "man",
 			"team": [
 				{
-					"fakemon": "Slumboth",
-					"level": 5
-				},
-				{
-					"fakemon": "Skeeter",
+					"fakemon": "Keklid",
 					"level": 5
 				}
 			]

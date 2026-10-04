@@ -103,6 +103,7 @@ func _build_properties()->void:
 		"shake_battler":_add_battler(event);_add_number("Duration",event.get("duration",0.2),0,99,0.01,func(v):_set_event(event,"duration",v));_add_number("Magnitude",event.get("magnitude",8),0,999,0.5,func(v):_set_event(event,"magnitude",v))
 		"move_battler":_add_battler(event);_add_choice("Direction",["Toward Target","Away From Target","Vertical"],["toward_target","away_from_target","vertical"],"vertical" if event.get("direction","")=="baseline" else event.get("direction","toward_target"),func(v):_set_event(event,"direction",v));_add_number("Distance",event.get("distance",60),-999,999,1,func(v):_set_event(event,"distance",v));_add_number("Duration",event.get("duration",0.2),0,99,0.01,func(v):_set_event(event,"duration",v))
 		"scale_battler":_scale_battler_form(event)
+		"color_battler":_color_battler_form(event)
 		"background_tint":_add_color(event);_add_number("Opacity",event.get("opacity",0.4),0,1,0.01,func(v):_set_event(event,"opacity",v));_add_number("Fade Duration",event.get("duration",0.15),0,99,0.01,func(v):_set_event(event,"duration",v))
 		"restore_background":_add_number("Duration",event.get("duration",0.2),0,99,0.01,func(v):_set_event(event,"duration",v))
 		"marker":_add_text("Marker Name",event.get("name","impact"),func(v):_set_event(event,"name",v))
@@ -139,6 +140,16 @@ func _vertical_sprite_form(event: Dictionary) -> void:
 
 func _scale_battler_form(event: Dictionary) -> void:
 	_add_choice("Owner",["User","Target"],["user","target"],event.get("battler","user"),func(v):_set_event(event,"battler",v));_add_choice("Mode",["Stretch","Shrink"],["stretch","shrink"],event.get("mode","stretch"),func(v):_set_event(event,"mode",v));_add_number("Scale Change (%)",event.get("scale_delta_percent",50),0.01,1000,1,func(v):_set_event(event,"scale_delta_percent",v));_add_number("Loops",event.get("loops",1),1,100,1,func(v):_set_event(event,"loops",int(v)));_add_number("Loop Duration",event.get("loop_duration",0.4),0.01,99,0.01,func(v):_set_event(event,"loop_duration",v));properties.add_child(_label("Each loop reaches the temporary scale halfway through, then restores it."))
+
+func _color_battler_form(event: Dictionary) -> void:
+	_add_choice("Battler",["User","Target"],["user","target"],event.get("battler","user"),func(v):_set_event(event,"battler",v))
+	_add_choice("Mode",["Direct Color","Shine","Fade"],["direct","shine","fade"],event.get("mode","direct"),func(v):_set_event(event,"mode",v);_build_properties())
+	_add_color(event)
+	_add_number("Duration",event.get("duration",0.4),0.01,99,0.01,func(v):_set_event(event,"duration",v))
+	if String(event.get("mode", "direct")) == "fade":
+		_add_number("Min Opacity",event.get("min_opacity",0.25),0,1,0.01,func(v):_set_event(event,"min_opacity",v))
+		_add_number("Max Opacity",event.get("max_opacity",1),0,1,0.01,func(v):_set_event(event,"max_opacity",v))
+		_add_bool("Pulse",bool(event.get("pulse",false)),func(v):_set_event(event,"pulse",v))
 
 func _add_section(text: String) -> void:
 	var heading:=Label.new();heading.text=text;heading.add_theme_font_size_override("font_size",16);properties.add_child(heading)

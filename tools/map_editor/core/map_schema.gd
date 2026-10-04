@@ -47,7 +47,7 @@ static func expected_fields(kind: String) -> Dictionary:
 	return {}
 
 static func is_marker_field(field: String) -> bool:
-	return field in ["player_spawn", "entry", "door", "exit_door", "clearing_warp", "clearing_return", "exit_warp", "east_warp", "east_return", "west_warp", "west_return", "north_warp", "north_return", "return_warp", "cave_warp", "cave_return", "exterior_return"]
+	return field in ["player_spawn", "entry", "door", "exit_door", "clearing_warp", "clearing_return", "exit_warp", "east_warp", "east_return", "west_warp", "west_return", "north_warp", "north_return", "return_warp", "cave_warp", "cave_return", "exterior_return"] or field.begins_with("warp_")
 
 static func coordinate_space(kind: String, field: String) -> String:
 	if kind == "clearing": return "global"

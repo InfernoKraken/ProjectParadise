@@ -1,5 +1,5 @@
 {
-  "duration": 2.15,
+  "duration": 2.35,
   "events": [
     {
       "color": "50e868",
@@ -9,14 +9,22 @@
       "type": "background_tint"
     },
     {
+      "battler": "user",
+      "direction": "vertical",
+      "distance": -50.0,
+      "duration": 0.2,
+      "time": 0.5,
+      "type": "move_battler"
+    },
+    {
       "asset": "res://assets/move_effects/Attack_Beam_Mystic.png",
       "duration": 1.0,
       "from": {
         "anchor": "head",
         "battler": "user",
         "offset": [
-          0,
-          0
+          0.0,
+          0.0
         ]
       },
       "instance_id": "beam",
@@ -27,8 +35,8 @@
         "anchor": "origin",
         "battler": "target",
         "offset": [
-          0,
-          0
+          0.0,
+          0.0
         ]
       },
       "type": "beam",
@@ -44,8 +52,8 @@
         "anchor": "origin",
         "battler": "target",
         "offset": [
-          0,
-          0
+          0.0,
+          0.0
         ]
       },
       "rotation": 0.0,

@@ -13,6 +13,7 @@ var _tweens: Array[Tween] = []
 var _baselines := {}
 var _original_z := {}
 var _original_scales := {}
+var _original_modulates := {}
 var _cancelled := false
 var _generation := 0
 
@@ -26,6 +27,7 @@ func play(definition: MoveAnimationDefinition, context: MoveAnimationContext) ->
 	_baselines = {"user": context.user.position, "target": context.target.position}
 	_original_z = {"user": context.user.z_index, "target": context.target.z_index}
 	_original_scales = {"user": context.user.scale, "target": context.target.scale}
+	_original_modulates = {"user": context.user.modulate, "target": context.target.modulate}
 	var started := Time.get_ticks_msec() / 1000.0
 	for event: Dictionary in definition.data.get("events", []):
 		var wait_time := float(event.get("time", 0.0)) - (Time.get_ticks_msec() / 1000.0 - started)
@@ -55,6 +57,7 @@ func _execute(event: Dictionary) -> void:
 		"shake_battler": _shake(event)
 		"move_battler": _move_battler(event)
 		"scale_battler": _scale_battler(event)
+		"color_battler": _color_battler(event)
 		"background_tint": _tint(event)
 		"restore_background": _restore_background(float(event.get("duration", 0.0)))
 		"marker": marker_reached.emit(String(event.get("name", "")))
@@ -182,6 +185,42 @@ func _scale_battler(event: Dictionary) -> void:
 	for _loop in int(event.get("loops", 1)):
 		tween.tween_property(node, "scale", origin * factor, loop_duration * 0.5); tween.tween_property(node, "scale", origin, loop_duration * 0.5)
 
+func _color_battler(event: Dictionary) -> void:
+	var which := String(event.get("battler", "user"))
+	var node := _context.battler(which)
+	var color := Color(String(event.get("color", "#FFFFFF")))
+	var baseline: Color = _original_modulates[which]
+	var mode := String(event.get("mode", "direct"))
+	var duration := float(event.get("duration", 0.4))
+	var tinted := baseline * color
+	if mode == "fade":
+		tinted.a = baseline.a * float(event.get("max_opacity", 1.0))
+		if bool(event.get("pulse", false)):
+			var low := tinted
+			low.a = baseline.a * float(event.get("min_opacity", 0.25))
+			node.modulate = low
+			var tween := create_tween(); _tweens.append(tween)
+			tween.tween_property(node, "modulate", tinted, duration * 0.5)
+			tween.tween_property(node, "modulate", low, duration * 0.5)
+			tween.tween_callback(_restore_battler_color.bind(node, baseline))
+			return
+	elif mode == "shine":
+		var bright := tinted
+		bright.r *= 1.6; bright.g *= 1.6; bright.b *= 1.6
+		node.modulate = tinted
+		var tween := create_tween(); _tweens.append(tween)
+		tween.tween_property(node, "modulate", bright, duration * 0.5)
+		tween.tween_property(node, "modulate", tinted, duration * 0.5)
+		tween.tween_callback(_restore_battler_color.bind(node, baseline))
+		return
+	node.modulate = tinted
+	var hold := create_tween(); _tweens.append(hold)
+	hold.tween_interval(duration)
+	hold.tween_callback(_restore_battler_color.bind(node, baseline))
+
+func _restore_battler_color(node: CanvasItem, color: Color) -> void:
+	if is_instance_valid(node): node.modulate = color
+
 func _tint(event: Dictionary) -> void:
 	if _context.background_overlay == null: return
 	_context.background_overlay.visible = true; _context.background_overlay.color = Color(String(event["color"]), 0.0)
@@ -208,5 +247,7 @@ func _cleanup() -> void:
 		if is_instance_valid(_context.target) and _original_z.has("target"): _context.target.z_index = _original_z["target"]
 		if is_instance_valid(_context.user) and _original_scales.has("user"): _context.user.scale = _original_scales["user"]
 		if is_instance_valid(_context.target) and _original_scales.has("target"): _context.target.scale = _original_scales["target"]
+		if is_instance_valid(_context.user) and _original_modulates.has("user"): _context.user.modulate = _original_modulates["user"]
+		if is_instance_valid(_context.target) and _original_modulates.has("target"): _context.target.modulate = _original_modulates["target"]
 		if is_instance_valid(_context.background_overlay): _context.background_overlay.color.a = 0.0; _context.background_overlay.visible = false
-	_context = null; _baselines.clear(); _original_z.clear(); _original_scales.clear()
+	_context = null; _baselines.clear(); _original_z.clear(); _original_scales.clear(); _original_modulates.clear()

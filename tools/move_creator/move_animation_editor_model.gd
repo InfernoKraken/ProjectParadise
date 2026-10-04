@@ -6,8 +6,8 @@ const CONTEXTUAL_ASSETS := preload("res://battle/move_animation/contextual_move_
 const EFFECT_DIR := "res://assets/move_effects"
 const WEATHER_DIR := "res://assets/battle/weather"
 const IMPORT_DIRS := [EFFECT_DIR, WEATHER_DIR]
-const TYPES := ["spawn_sprite", "impact_sprite", "beam", "vertical_sprite", "move_sprite", "fade_sprite", "destroy_sprite", "shake_battler", "move_battler", "scale_battler", "background_tint", "restore_background", "marker"]
-const TYPE_LABELS := {"spawn_sprite":"Spawn Sprite", "impact_sprite":"Impact Sprite", "beam":"Beam", "vertical_sprite":"Vertical Sprite", "move_sprite":"Move Sprite", "fade_sprite":"Fade Sprite", "destroy_sprite":"Destroy Sprite", "shake_battler":"Shake Battler", "move_battler":"Move Battler", "scale_battler":"Scale Battler", "background_tint":"Background Tint", "restore_background":"Restore Background", "marker":"Marker"}
+const TYPES := ["spawn_sprite", "impact_sprite", "beam", "vertical_sprite", "move_sprite", "fade_sprite", "destroy_sprite", "shake_battler", "move_battler", "scale_battler", "color_battler", "background_tint", "restore_background", "marker"]
+const TYPE_LABELS := {"spawn_sprite":"Spawn Sprite", "impact_sprite":"Impact Sprite", "beam":"Beam", "vertical_sprite":"Vertical Sprite", "move_sprite":"Move Sprite", "fade_sprite":"Fade Sprite", "destroy_sprite":"Destroy Sprite", "shake_battler":"Shake Battler", "move_battler":"Move Battler", "scale_battler":"Scale Battler", "color_battler":"Color Battler", "background_tint":"Background Tint", "restore_background":"Restore Background", "marker":"Marker"}
 
 var document := MoveAnimationDefinition.from_dictionary({"format_version": 1, "id": "new_animation", "duration": 0.5, "events": []})
 var selected_event: Dictionary = {}
@@ -165,7 +165,7 @@ func event_summary(event: Dictionary) -> String:
 		"impact_sprite": detail = String(event.get("instance_id", event.get("position", {}).get("battler", "target")))
 		"beam", "vertical_sprite": detail = String(event.get("instance_id", ""))
 		"marker": detail = String(event.get("name", ""))
-		"shake_battler", "move_battler", "scale_battler": detail = String(event.get("battler", ""))
+		"shake_battler", "move_battler", "scale_battler", "color_battler": detail = String(event.get("battler", ""))
 	return "%5.2f  %-20s %s" % [float(event.get("time", 0.0)), TYPE_LABELS.get(String(event.get("type", "")), "Unknown"), detail]
 
 func validation_text() -> String:
@@ -198,6 +198,7 @@ static func default_event(type: String, time := 0.0) -> Dictionary:
 		"shake_battler": return {"time":time,"type":type,"battler":"target","duration":0.2,"magnitude":8.0}
 		"move_battler": return {"time":time,"type":type,"battler":"user","direction":"toward_target","distance":60.0,"duration":0.2}
 		"scale_battler": return {"time":time,"type":type,"battler":"user","mode":"stretch","scale_delta_percent":50.0,"loops":1,"loop_duration":0.4}
+		"color_battler": return {"time":time,"type":type,"battler":"user","mode":"direct","color":"#FFFFFF","duration":0.4,"min_opacity":0.25,"max_opacity":1.0,"pulse":false}
 		"background_tint": return {"time":time,"type":type,"color":"#663399","opacity":0.4,"duration":0.15}
 		"restore_background": return {"time":time,"type":type,"duration":0.2}
 		"marker": return {"time":time,"type":type,"name":"impact"}

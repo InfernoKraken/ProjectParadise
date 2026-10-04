@@ -1,0 +1,113 @@
+{
+  "duration": 7.15,
+  "events": [
+    {
+      "battler": "user",
+      "direction": "vertical",
+      "distance": 60.0,
+      "duration": 0.2,
+      "time": 0.5,
+      "type": "move_battler"
+    },
+    {
+      "color": "b2945a",
+      "duration": 0.5,
+      "opacity": 0.4,
+      "time": 0.7,
+      "type": "background_tint"
+    },
+    {
+      "battler": "user",
+      "direction": "toward_target",
+      "distance": 90.0,
+      "duration": 0.2,
+      "time": 1.2,
+      "type": "move_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Strata_00.png",
+      "duration": 0.3,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 2.02,
+      "sprite_sheet": null,
+      "time": 1.4,
+      "tint": "#FFFFFF",
+      "type": "impact_sprite"
+    },
+    {
+      "battler": "target",
+      "duration": 0.5,
+      "magnitude": 52.0,
+      "time": 1.45,
+      "type": "shake_battler"
+    },
+    {
+      "battler": "user",
+      "direction": "away_from_target",
+      "distance": 60.0,
+      "duration": 0.2,
+      "time": 1.5,
+      "type": "move_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Strata_01.png",
+      "duration": 0.3,
+      "instance_id": "impact1",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 2.02,
+      "sprite_sheet": null,
+      "time": 1.7,
+      "tint": "#FFFFFF",
+      "type": "impact_sprite"
+    },
+    {
+      "duration": 1.0,
+      "time": 1.95,
+      "type": "restore_background"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Impact_Strata_02.png",
+      "duration": 0.3,
+      "instance_id": "impact2",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "target",
+        "offset": [
+          0.0,
+          0.0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 2.02,
+      "sprite_sheet": null,
+      "time": 2.0,
+      "tint": "#FFFFFF",
+      "type": "impact_sprite"
+    }
+  ],
+  "format_version": 1.0,
+  "id": "deep_impact"
+}

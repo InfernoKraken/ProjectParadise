@@ -1,5 +1,9 @@
 {
   "assignments": {
+    "Archaegis": [
+      "Reptile",
+      "Mineral"
+    ],
     "Balopod": [
       "Mollusk",
       "Mollusk"
@@ -76,6 +80,10 @@
       "Fish",
       "Fish"
     ],
+    "Ruggrit": [
+      "Reptile",
+      "Mineral"
+    ],
     "Scorcaw": [
       "Bird",
       "Cosmic"
@@ -103,6 +111,10 @@
     "Sylvafin": [
       "Fish",
       "Angellic"
+    ],
+    "Tuggle": [
+      "Reptile",
+      "Mineral"
     ],
     "Vamprick": [
       "Bug",

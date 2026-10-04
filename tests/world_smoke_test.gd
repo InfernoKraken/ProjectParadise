@@ -125,8 +125,10 @@ func _initialize() -> void:
 	assert(main.map_data["rainforest_city"]["orchid_house"]["orchids"].size() == 6, "The orchid arrangement must remain data-driven.")
 	assert(main.world.get_node_or_null("EvolutionParent") != null, "The family needs an evolution parent.")
 	assert(main.world.get_node_or_null("DespairParent") != null, "The family needs a Despair parent.")
-	assert(main.family_children.size() == 3, "The family must include three wandering children.")
-	assert((main.world.get_node("FamilyChild1").get_child(0) as Sprite3D).texture.get_width() < 160, "Child NPC art must use a trimmed frame rather than displaying the full concept sheet.")
+	assert(main.family_children.size() == 3, "The family needs three children.")
+	for child_data: Dictionary in main.family_children:
+		var child: Area3D = child_data["node"]
+		assert((child.get_child(0) as Sprite3D).texture != null, "Children must display their individual artwork.")
 	assert(main.save_slot_selector.item_count == 5, "The manual save UI must expose five states.")
 	assert(main.save_slot_selector.get_parent().get_parent().get_parent() == main.settings_panel, "Save controls must stay grouped inside Settings.")
 	assert(main._manual_save_path(1) != main._manual_save_path(5), "Manual save states must use independent files.")

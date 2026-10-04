@@ -547,6 +547,10 @@
     "Moach",
     {
       "fakemon": "Balopod",
+      "level": 5.0
+    },
+    {
+      "fakemon": "Tuggle",
       "level": 5
     }
   ]

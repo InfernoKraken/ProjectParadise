@@ -1071,6 +1071,72 @@
           "type": "pulse"
         }
       ]
+    },
+    "Winds of Time": {
+      "lighting_effects": [
+        {
+          "anchor": "SCREEN_CENTER",
+          "color": "#91834a",
+          "mode": "persistent",
+          "opacity": 0.5,
+          "type": "wash"
+        },
+        {
+          "anchor": "SCREEN_CENTER",
+          "color": "#dcb367",
+          "count": 18.0,
+          "height": 871.0,
+          "horizontal_drift": 34.0,
+          "mode": "persistent",
+          "opacity": 0.45,
+          "size": 3.0,
+          "speed": 3.0,
+          "type": "particles",
+          "vertical_drift": -12.0,
+          "width": 1300.0
+        }
+      ],
+      "particle_effects": [
+        {
+          "emit_max_count": 32,
+          "emit_rate": 0.5,
+          "emitter_anchor": "SCREEN_CENTER",
+          "emitter_height": 0.0,
+          "emitter_mode": "screen",
+          "emitter_offset_x": 0.0,
+          "emitter_offset_y": 0.0,
+          "emitter_width": 0.0,
+          "flicker_enabled": true,
+          "flicker_interval": 0.5,
+          "flicker_min_alpha": 0.2,
+          "horizontal_drift": 0.0,
+          "movement_mode": "right",
+          "offscreen_margin": 32.0,
+          "opacity_max": 1.0,
+          "opacity_min": 0.8,
+          "particle_lifetime": 15.01,
+          "particle_sprite": "Winds_Of_Time_Particle",
+          "rotation": 0.0,
+          "rotation_mode": "align_to_velocity",
+          "rotation_speed": 0.0,
+          "scale_max": 1.0,
+          "scale_min": 0.71,
+          "speed": 99.0,
+          "turns": "all",
+          "type": "particle"
+        }
+      ],
+      "turn_effects": [
+        {
+          "color": "#d9fff7",
+          "duration": 0.9,
+          "interval": 1.8,
+          "loop": true,
+          "opacity": 0.12,
+          "turns": "all",
+          "type": "pulse"
+        }
+      ]
     }
   }
 }

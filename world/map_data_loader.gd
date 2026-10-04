@@ -1,6 +1,10 @@
 class_name MapDataLoader
 extends RefCounted
 
+const NpcMapData := preload("res://world/npc_map_data.gd")
+const NpcVisualResolver := preload("res://world/npc_visual_resolver.gd")
+static var _npc_visuals: RefCounted
+
 const TerrainTransitionResolver := preload("res://world/terrain_transition_resolver.gd")
 
 
@@ -16,12 +20,14 @@ static func load_world(index_path: String) -> Dictionary:
 	var world := _load_json_object(base_directory.path_join(root_file))
 	if world.is_empty():
 		return {}
+	var map_files := {index_path.get_file():index, root_file:world}
 	var sections: Dictionary = index.get("sections", {})
 	for section_name: String in sections:
-		var section := _load_json_object(base_directory.path_join(String(sections[section_name])))
+		var section_file := String(sections[section_name]); var section := _load_json_object(base_directory.path_join(section_file))
 		if section.is_empty():
 			return {}
 		world[section_name] = section
+		map_files[section_file] = section
 	var nested_sections: Dictionary = index.get("nested_sections", {})
 	for parent_name: String in nested_sections:
 		if not world.get(parent_name) is Dictionary:
@@ -30,16 +36,23 @@ static func load_world(index_path: String) -> Dictionary:
 		var parent: Dictionary = world[parent_name]
 		var children: Dictionary = nested_sections[parent_name]
 		for section_name: String in children:
-			var section := _load_json_object(base_directory.path_join(String(children[section_name])))
+			var section_file := String(children[section_name]); var section := _load_json_object(base_directory.path_join(section_file))
 			if section.is_empty():
 				return {}
 			parent[section_name] = section
+			map_files[section_file] = section
 	var authored_maps:={}
+	var authored_file_ids:={}
 	for map_id in Dictionary(index.get("maps",{})):
-		var authored:=_load_json_object(base_directory.path_join(String(index.maps[map_id])))
+		var authored_file:=String(index.maps[map_id]);var authored:Dictionary=map_files.get(authored_file,{})
+		if authored.is_empty():authored=_load_json_object(base_directory.path_join(authored_file))
 		if authored.is_empty():return {}
 		authored_maps[String(map_id)]=authored
+		map_files[authored_file] = authored
+		authored_file_ids[authored_file]=String(map_id)
 	world["authored_maps"]=authored_maps
+	world["_map_files"] = map_files
+	world["_authored_file_ids"] = authored_file_ids
 	_prepare_terrain_recursive(world,"world")
 	return world
 
@@ -70,7 +83,17 @@ static func _load_json_object(path: String) -> Dictionary:
 	if not json.data is Dictionary:
 		push_error("Map data must be a JSON object: %s" % path)
 		return {}
-	return json.data
+	var map: Dictionary = json.data
+	# Resolve once per load; cached map-file records are reused by load_world.
+	if not path.ends_with("_NPC_Data.json"):
+		if _npc_visuals == null: _npc_visuals = NpcVisualResolver.new(ProjectSettings.globalize_path("res://"))
+		var npcs := NpcMapData.new()
+		npcs.load_for_map(path)
+		map["_resolved_npcs"] = npcs.resolve(map, _npc_visuals)
+		map["_npc_issues"] = npcs.issues(map, _npc_visuals)
+		map["_npc_map_file"] = path.get_file()
+		for issue: Dictionary in map._npc_issues: push_warning("%s %s: %s" % [path, issue.path, issue.message])
+	return map
 
 
 static func outdoor_destination(source: Dictionary, warp_field: String) -> Dictionary:
@@ -86,3 +109,14 @@ static func arrival_position(source: Dictionary, warp_field: String, target: Dic
 	var arrivals: Dictionary = target.get("arrival_points", {})
 	var position: Variant = arrivals.get(arrival_name, target.get(arrival_name, []))
 	return position if position is Array else []
+
+
+static func warp_field_for_id(map: Dictionary, warp_id: int) -> String:
+	var metadata: Variant = map.get("warp_metadata", {})
+	if not metadata is Dictionary:
+		return ""
+	for field: Variant in metadata:
+		var record: Variant = metadata[field]
+		if record is Dictionary and int(record.get("id", 0)) == warp_id:
+			return String(field)
+	return ""

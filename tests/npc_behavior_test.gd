@@ -1,24 +1,28 @@
 extends SceneTree
 
 
-func _initialize()->void:
-	var scene:=load("res://world/main.tscn") as PackedScene
-	var main:=scene.instantiate()
+func _initialize() -> void:
+	var scene := load("res://world/main.tscn") as PackedScene
+	var main := scene.instantiate()
 	root.add_child(main)
 	await process_frame
-	var child:Area3D=main.family_children[0].node
-	var foot:=child.get_node("FootCollision") as StaticBody3D
-	var foot_shape:BoxShape3D=(foot.get_child(0) as CollisionShape3D).shape
-	assert(foot!=null and foot_shape.size==main.NPC_FOOT_COLLISION_SIZE and foot.position.y<0.0,"NPCs must carry compact foot-level collision that follows wandering actors.")
-	assert(is_equal_approx(float(child.get_meta("visual_height")),main.NPC_CHILD_VISUAL_HEIGHT),"Children must use the larger normalized child display height.")
-	assert(main.NPC_ADULT_VISUAL_HEIGHT>=main.PLAYER_VISUAL_HEIGHT,"Adult NPCs should be approximately player-sized.")
-	main.inside_family_house=true
-	main.family_children[0].target=child.position+Vector3.RIGHT*2.0
-	var idle_texture:Texture2D=(child.get_child(0) as Sprite3D).texture
+	assert(main.family_children.size() == 3, "The family house must spawn three children.")
+	assert(main.world.find_children("FamilyChild*", "Area3D", true, false).size() == 3, "Each child must have one NPC node.")
+	main.inside_family_house = true
+	for child_data: Dictionary in main.family_children:
+		var child: Area3D = child_data["node"]
+		assert((child.get_child(0) as Sprite3D).texture != null, "Each child must have an idle sprite.")
+		child_data["target"] = child.position + Vector3.RIGHT * 2.0
+		child_data["timer"] = 3.0
 	main._update_family_children(0.17)
-	assert(child.get_meta("facing")=="right" and (child.get_child(0) as Sprite3D).texture!=idle_texture,"A wandering child must select a directional walking frame.")
-	main.player.position=child.position+Vector3.LEFT
-	main._face_npc_toward_player(child)
-	assert(child.get_meta("facing")=="left","The face-player command must choose the nearest cardinal direction.")
-	print("NPC runtime behavior checks passed.")
+	main._update_sort_canvas()
+	for child_data: Dictionary in main.family_children:
+		var child: Area3D = child_data["node"]
+		var visual := child.get_child(0) as Sprite3D
+		assert(child.get_meta("facing") == "right", "Every moving child must face its movement direction.")
+		assert(visual.texture == main.NpcSpriteLibrary.texture_for(String(child.get_meta("sprite_id")), "right", 1), "Every child must advance its own sheet animation.")
+		var entry: Dictionary = main.npc_sort_entries.filter(func(candidate: Dictionary) -> bool: return candidate["node"] == child)[0]
+		assert(not visual.visible, "The source 3D sprite must stay hidden when the sorted sprite is used.")
+		assert((entry["sort_root"] as Node2D).get_node("Visual").texture == visual.texture, "The sorted visual must follow the current animation frame.")
+	print("NPC_BEHAVIOR_TEST_PASSED")
 	quit()

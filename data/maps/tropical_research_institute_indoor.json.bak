@@ -1,0 +1,63 @@
+{
+	"arrival_points": {
+		"entry": [
+			0,
+			0.65,
+			8
+		]
+	},
+	"base_terrain_type": "stone",
+	"entry": [
+		0,
+		0.65,
+		8
+	],
+	"floor_blocks": [],
+	"format_version": 2,
+	"furnishings": [],
+	"grass_zones": [],
+	"map_metadata": {
+		"display_name": "Tropical Research Institute",
+		"group": "custom",
+		"id": "new_map",
+		"layout_type": "outdoor",
+		"tags": []
+	},
+	"map_type": "Rainforest",
+	"objects": [],
+	"orchids": [],
+	"origin": [
+		0,
+		0,
+		0
+	],
+	"outdoor_connections": [],
+	"return_warp": [
+		0,
+		0.12,
+		9.5
+	],
+	"rocks": [],
+	"sand_blocks": [],
+	"size": [
+		20,
+		20
+	],
+	"tall_grass_species": [],
+	"terrain_tiles": [
+		{
+			"positions": [],
+			"terrain_type": "stone"
+		},
+		{
+			"positions": [],
+			"terrain_type": "rock"
+		}
+	],
+	"vines": [],
+	"wall_blocks": [],
+	"warp_metadata": {},
+	"water_blocks": [],
+	"water_encounter_chance": 0.0,
+	"water_species": []
+}

@@ -197,6 +197,10 @@ func _clear_thought_sequences() -> void:
 
 
 func _sync_thought_sequences() -> void:
+	# Weather can be initialized while a battle UI is being assembled. Do not create
+	# or start a child timer until this renderer belongs to the active scene tree.
+	if not is_inside_tree():
+		return
 	if is_instance_valid(_thought_timer):
 		return
 	var config: Dictionary = definitions.get(current_weather, {}).get("thought_sequence", {})
@@ -208,7 +212,7 @@ func _sync_thought_sequences() -> void:
 	_thought_timer.wait_time = maxf(0.1, float(config.get("initial_delay", config.get("interval", 5.0))))
 	_thought_timer.timeout.connect(_play_next_thought_sequence)
 	add_child(_thought_timer)
-	_thought_timer.start()
+	_start_timer_safely(_thought_timer)
 
 
 func _play_next_thought_sequence() -> void:
@@ -228,7 +232,7 @@ func _play_next_thought_sequence() -> void:
 		await get_tree().create_timer(maxf(0.05, float(step.get("duration", 0.3)))).timeout
 	if generation == _thought_generation and weather_name == current_weather and is_instance_valid(_thought_timer):
 		_thought_timer.wait_time = maxf(0.1, float(config.get("interval", 5.0)))
-		_thought_timer.start()
+		_start_timer_safely(_thought_timer)
 
 
 func _activate_thought_targets(step: Dictionary) -> void:
@@ -313,7 +317,7 @@ func _sync_looping_pulses() -> void:
 		timer.wait_time = maxf(0.05, float(effect.get("interval", 1.0)))
 		timer.timeout.connect(_create_pulse.bind(effect))
 		add_child(timer)
-		timer.start()
+		_start_timer_safely(timer)
 		_pulse_timers.append(timer)
 
 
@@ -503,7 +507,7 @@ func _create_sprite_behavior(config: Dictionary, element_index := -1) -> void:
 			timer.wait_time = maxf(0.1, float(config.get("spawn_interval", 1.0)))
 			timer.timeout.connect(_spawn_sprite_effect.bind(config))
 			add_child(timer)
-			timer.start()
+			_start_timer_safely(timer)
 			_ambient_timers.append(timer)
 		"burst":
 			pass
@@ -611,7 +615,12 @@ func _start_sprite_frame_animation(sprite: TextureRect, variants: Array[String],
 		sprite.texture = load(frame_paths[int(state["frame"])])
 	)
 	sprite.add_child(timer)
-	timer.start()
+	_start_timer_safely(timer)
+
+
+func _start_timer_safely(timer:Timer)->void:
+	if timer.is_inside_tree():timer.start()
+	else:timer.autostart=true
 
 
 func _start_sprite_signal(sprite: TextureRect, config: Dictionary) -> void:

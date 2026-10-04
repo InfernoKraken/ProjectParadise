@@ -1,0 +1,35 @@
+{
+  "duration": 1.96,
+  "events": [
+    {
+      "battler": "user",
+      "duration": 0.26,
+      "magnitude": 38.0,
+      "time": 1.0,
+      "type": "shake_battler"
+    },
+    {
+      "asset": "res://assets/move_effects/Attack_Particle_Heal.png",
+      "duration": 0.7,
+      "instance_id": "impact",
+      "is_behind": false,
+      "opacity": 1.0,
+      "position": {
+        "anchor": "origin",
+        "battler": "user",
+        "offset": [
+          0,
+          0
+        ]
+      },
+      "rotation": 0.0,
+      "scale": 1.0,
+      "sprite_sheet": null,
+      "time": 1.26,
+      "tint": "#FFFFFF",
+      "type": "impact_sprite"
+    }
+  ],
+  "format_version": 1,
+  "id": "dormancy_activation"
+}

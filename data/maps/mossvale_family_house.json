@@ -1,4 +1,4 @@
-﻿{
+{
     "map_type": "Indoor",
     "position":  [
                      8,
@@ -51,23 +51,7 @@
                        -2
                    ]
                ],
-    "children":  [
-                     [
-                         -2,
-                         0.65,
-                         0
-                     ],
-                     [
-                         0,
-                         0.65,
-                         -0.5
-                     ],
-                     [
-                         2,
-                         0.65,
-                         0.5
-                     ]
-                 ],
+    "children": [{"position":[-2,0.65,0],"sprite":"boy"},{"position":[0,0.65,-0.5],"sprite":"girl"},{"position":[2,0.65,0.5],"sprite":"boy"}],
     "floor_blocks": [[0, -0.1, 0, 10, 0.2, 8]],
     "furnishings": [{"type":"bed","position":[-4,0,-2.8],"height":2.4},{"type":"dresser","position":[4.1,0,-3.1],"height":2.2},{"type":"lampstand","position":[4.2,0,1.5],"height":1.0},{"type":"table","position":[0,0,0.4],"height":1.35}],
     "wall_blocks": [[0, 1.2, -3.85, 10, 2.4, 0.3], [-4.85, 1.2, 0, 0.3, 2.4, 8], [4.85, 1.2, 0, 0.3, 2.4, 8]],

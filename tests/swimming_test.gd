@@ -1,5 +1,6 @@
 extends SceneTree
 
+const TerrainTransitionResolver := preload("res://world/terrain_transition_resolver.gd")
 
 func _initialize() -> void:
 	var scene := load("res://world/main.tscn") as PackedScene
@@ -28,7 +29,10 @@ func _initialize() -> void:
 	assert(dive_source.get_size() == dive_mask.get_size(), "The authored diving sprite and mask must remain pixel-aligned.")
 	var male_swim_regions: Dictionary = main.SwimSpriteFrames.SWIM_REGIONS["Male"]
 	assert((male_swim_regions["down"][0] as Rect2i).end.y <= (male_swim_regions["up"][0] as Rect2i).position.y, "Swimming frames must not crop pixels from the adjacent direction row.")
-	assert((main.SwimSpriteFrames.DIVE_REGIONS["Male"]["down"][0] as Rect2i).size.y == 235, "Male dive frames must retain the full authored actor height.")
+	assert((main.SwimSpriteFrames.DIVE_REGIONS["Male"]["down"][0] as Rect2i).end.y == 311, "Male dive frames must stop before the sheet artwork below the actor row.")
+	for direction: String in main.SwimSpriteFrames.DIVE_REGIONS["Male"]:
+		for region: Rect2i in main.SwimSpriteFrames.DIVE_REGIONS["Male"][direction]:
+			assert(region.end.y == 311, "Every male dive crop must exclude the next sheet row.")
 	assert(main.SWIM_VISUAL_HEIGHT < main.PLAYER_VISUAL_HEIGHT * 0.5, "The wide swimming wake must render at a waterline-relative scale rather than full actor height.")
 	assert(swim_palette.get_image().get_pixel(337, 5) != swim_source.get_pixel(337, 5), "The swimming mask must recolor authored hair pixels.")
 	assert(dive_palette.get_image().get_pixel(143, 106) != dive_source.get_pixel(143, 106), "The corrected diving mask must recolor authored hair pixels.")
@@ -37,6 +41,32 @@ func _initialize() -> void:
 	main.adventure_started = true
 	main.player_gender = "Male"
 	main.player_palette_preset = "medium"
+	# Editor-authored outdoor maps must use their own terrain grid for Swimgear.
+	main.active_authored_map_id="jalovea_city"
+	var jalovea:Dictionary=main.map_data.authored_maps["jalovea_city"]
+	var jalovea_grid:Dictionary=jalovea["_terrain_grid"]
+	var jalovea_water:=Vector2i.ZERO
+	for cell_value:Variant in jalovea_grid:
+		var cell:=cell_value as Vector2i
+		if String(jalovea_grid[cell])=="water":jalovea_water=cell;break
+	assert(jalovea_water!=Vector2i.ZERO,"Jalovea needs an authored water tile for its swimming check.")
+	var jalovea_origin:=Vector3(float(jalovea.origin[0]),float(jalovea.origin[1]),float(jalovea.origin[2]))
+	var jalovea_water_position:=jalovea_origin+Vector3(jalovea_water.x,0.65,jalovea_water.y)
+	assert(main._terrain_at(jalovea_water_position)=="water","Jalovea's authored terrain grid must be available to Swimgear.")
+	await main._start_swimming(jalovea_water_position,"down")
+	assert(main.swimming and main.player.position.is_equal_approx(jalovea_water_position),"Swimming must start on Jalovea's authored water.")
+	main._finish_swimming(jalovea_origin+Vector3.ZERO)
+	# This is the smallest valid outdoor map emitted by the map editor after a
+	# water-tile paint. It proves authored maps do not need a Jalovea-specific path.
+	var blank_editor_map:=TerrainTransitionResolver.prepare_map({"map_metadata":{"id":"editor_swim_fixture","layout_type":"outdoor"},"origin":[500,0,500],"size":[4,4],"base_terrain_type":"forest_floor","terrain_tiles":[{"terrain_type":"water","position":[0,0]}],"water_blocks":[],"sand_blocks":[],"objects":[]},"editor_swim_fixture")
+	main.map_data.authored_maps["editor_swim_fixture"]=blank_editor_map
+	main.active_authored_map_id="editor_swim_fixture"
+	var editor_water_position:=Vector3(500,0.65,500)
+	assert(main._terrain_at(editor_water_position)=="water","A blank map-editor outdoor map must expose painted water to Swimgear.")
+	await main._start_swimming(editor_water_position,"down")
+	assert(main.swimming and main.player.position.is_equal_approx(editor_water_position),"Swimming must start on water painted into a blank map-editor map.")
+	main._finish_swimming(Vector3(499,0.65,500))
+	main.active_authored_map_id=""
 	main.inside_route = true
 	var grid: Dictionary = main.map_data["route"]["_terrain_grid"]
 	var water_cell := Vector2i.ZERO
@@ -63,8 +93,11 @@ func _initialize() -> void:
 	main._use_swimgear()
 	assert(not main.swimming and not main.swim_transitioning and main.player.position == dry_position, "Swimgear must do nothing when the player is not facing nearby water.")
 	main.player_animation = "idle_" + _direction_name(land_to_water)
+	main.active_traversal_layer = 1
+	main.active_traversal_surface = {"center": main.player.position, "axis": Vector3.FORWARD, "side_axis": Vector3.RIGHT, "width": 1.0}
 	await main._start_swimming(main.route_origin + Vector3(water_cell.x, 0.65, water_cell.y), _direction_name(land_to_water))
 	assert(main.swimming and main.player.position.is_equal_approx(main.route_origin + Vector3(water_cell.x, 0.65, water_cell.y)), "Using Swimgear beside faced water must enter that water cell.")
+	assert(main.active_traversal_layer == 0 and main.active_traversal_surface.is_empty(), "Diving must release bridge traversal correction before entering water.")
 	assert(not main.follower.visible, "The follower must remain on shore while the player swims.")
 
 	var water_to_land := -land_to_water
@@ -83,6 +116,7 @@ func _initialize() -> void:
 	main.player.position = main.route_origin + Vector3(north_water.x, 0.65, north_water.y)
 	main._swim_constrained_velocity(Vector3.FORWARD * main.MOVE_SPEED, 0.21)
 	assert(not main.swimming and main._terrain_at(main.player.position) != "water" and not main._terrain_foot_blocked(main.player.position), "A north-facing exit must place the player beyond the shoreline apron before restoring walking.")
+	print("SWIMMING_TEST_PASSED")
 	main.queue_free()
 	quit()
 

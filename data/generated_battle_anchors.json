@@ -1,6 +1,78 @@
 {
   "format_version": 1,
   "sprites": {
+    "Archaegis_Player": {
+      "anchors": {
+        "head": [
+          151.5,
+          106.5
+        ],
+        "left_wing": [
+          174.5,
+          165.5
+        ],
+        "mouth": [
+          141.5,
+          149.5
+        ],
+        "neck": [
+          94.5,
+          121.0
+        ],
+        "origin": [
+          66.5,
+          138.5
+        ],
+        "right_wing": [
+          52.5,
+          175.5
+        ],
+        "tail": [
+          29.5,
+          151.5
+        ]
+      },
+      "processed_size": [
+        200.0,
+        200.0
+      ]
+    },
+    "Archaegis_Wild": {
+      "anchors": {
+        "head": [
+          39.5,
+          112.5
+        ],
+        "left_wing": [
+          146.0,
+          178.0
+        ],
+        "mouth": [
+          52.5,
+          150.5
+        ],
+        "neck": [
+          95.5,
+          120.5
+        ],
+        "origin": [
+          113.5,
+          135.0
+        ],
+        "right_wing": [
+          22.5,
+          171.5
+        ],
+        "tail": [
+          152.5,
+          138.5
+        ]
+      },
+      "processed_size": [
+        200,
+        200
+      ]
+    },
     "Balopod_Player": {
       "anchors": {
         "head": [
@@ -341,8 +413,8 @@
         ]
       },
       "processed_size": [
-        200,
-        200
+        200.0,
+        200.0
       ]
     },
     "Croacoa_Player": {
@@ -1217,6 +1289,62 @@
         200.0
       ]
     },
+    "Ruggrit_Player": {
+      "anchors": {
+        "head": [
+          162.5,
+          124.5
+        ],
+        "mouth": [
+          163.5,
+          160.0
+        ],
+        "neck": [
+          113.5,
+          140.5
+        ],
+        "origin": [
+          89.5,
+          154.5
+        ],
+        "tail": [
+          6.5,
+          169.5
+        ]
+      },
+      "processed_size": [
+        200.0,
+        200.0
+      ]
+    },
+    "Ruggrit_Wild": {
+      "anchors": {
+        "head": [
+          25.5,
+          135.5
+        ],
+        "mouth": [
+          38.5,
+          159.5
+        ],
+        "neck": [
+          85.0,
+          146.0
+        ],
+        "origin": [
+          101.5,
+          153.5
+        ],
+        "tail": [
+          189.5,
+          170.5
+        ]
+      },
+      "processed_size": [
+        200.0,
+        200.0
+      ]
+    },
     "Scorcaw_Player": {
       "anchors": {
         "head": [
@@ -1690,6 +1818,62 @@
         "tail": [
           85.0,
           66.0
+        ]
+      },
+      "processed_size": [
+        125.0,
+        125.0
+      ]
+    },
+    "Tuggle_Player": {
+      "anchors": {
+        "head": [
+          100.0,
+          53.0
+        ],
+        "mouth": [
+          118.0,
+          55.0
+        ],
+        "neck": [
+          85.0,
+          80.0
+        ],
+        "origin": [
+          59.0,
+          89.0
+        ],
+        "tail": [
+          18.0,
+          105.0
+        ]
+      },
+      "processed_size": [
+        125.0,
+        125.0
+      ]
+    },
+    "Tuggle_Wild": {
+      "anchors": {
+        "head": [
+          33.0,
+          54.0
+        ],
+        "mouth": [
+          4.0,
+          53.0
+        ],
+        "neck": [
+          43.0,
+          83.0
+        ],
+        "origin": [
+          69.0,
+          87.0
+        ],
+        "tail": [
+          105.0,
+          105.0
         ]
       },
       "processed_size": [

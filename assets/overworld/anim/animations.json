@@ -1,0 +1,9 @@
+{
+  "animations": {
+    "water_generic_glisten": {
+      "frame_count": 4,
+      "frame_duration": 0.2,
+      "loop": true
+    }
+  }
+}

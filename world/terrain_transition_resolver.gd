@@ -25,7 +25,7 @@ const DIRECTIONS := [
 ]
 
 const TERRAIN := {
-	"water":{"priority":0, "texture":"res://assets/overworld/tile_water_generic.png", "tint":"3188b8"},
+	"water":{"animation":"water_generic_glisten", "priority":0, "texture":"res://assets/overworld/tile_water_generic.png", "tint":"ffffff"},
 	"sand":{"priority":1, "texture":"res://assets/overworld/tile_sand_generic.png", "tint":"ffffff"},
 	"mud":{"priority":2, "texture":"res://assets/overworld/tile_dirt_generic.png", "tint":"ffffff"},
 	"forest_floor":{"priority":3, "texture":"res://assets/overworld/grass_main.png", "tint":"376b42", "rotate_180":true},
@@ -55,7 +55,11 @@ const RECIPES := {
 }
 
 static func prepare_map(map_data: Dictionary,map_seed:String="") -> Dictionary:
-	var prepared := map_data.duplicate(true)
+	# World loading keeps the root map in _map_files, which intentionally creates
+	# a reference cycle. Terrain preparation only adds derived top-level fields,
+	# so a shallow copy avoids recursively duplicating that graph while preserving
+	# every authored collection as read-only input.
+	var prepared := map_data.duplicate(false)
 	var grid := terrain_grid(prepared)
 	prepared["_terrain_grid"] = grid
 	prepared["_terrain_issues"] = canonical_terrain_issues(prepared)

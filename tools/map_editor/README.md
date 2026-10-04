@@ -12,6 +12,12 @@ negative world Z is shown upward/north. Middle- or right-drag pans, the mouse wh
 zooms, and left-drag moves objects. Drag the yellow lower-right handle of a selected
 water or grass rectangle to resize it.
 
+The left activity sidebar has three mutually exclusive views: **Objects** for the
+placement palette, **Inspector** for the selected object, and **Map** for map identity,
+dimensions, terrain, encounters, validation, raw JSON, and the warp graph. Selecting
+an object automatically opens Inspector; clearing selection does not change the
+current activity. The canvas occupies all space to the right of this single sidebar.
+
 Canonical `terrain_tiles` have a dedicated toolbar palette. Choose a terrain type,
 then Paint or Erase and drag across the canvas; cells always snap to the 1×1 terrain
 grid. Select returns to ordinary object editing, and Escape exits either brush.
@@ -26,6 +32,12 @@ the cursor. The drop position follows the current grid/snap settings and the ass
 catalog supplies its default Y, footprint, size, and variant. The new object is
 selected immediately. "Add at Origin" remains available as a keyboard-friendly
 fallback.
+
+Use **Import Sprite** in the toolbar to select one or more PNG, WebP, or JPEG files.
+The editor validates and copies them into `assets/overworld`, refreshes the object
+palette immediately, and asks the gameplay Godot project to generate its normal
+import sidecars in the background. Existing files are never overwritten. Numbered
+suffixes such as `_00`, `_01`, and `_02` become variants of one palette asset.
 
 New Map creates a format-version 2 universal document with explicit `map_metadata`
 (`id`, display name, map type, group, and tags), connection/arrival collections,
@@ -75,6 +87,9 @@ when edited.
 Universal sprite objects serialize an explicit visual `height`. The canvas and
 runtime consume that same number; building-only width scaling is never applied to
 trees or other sprites. The selected-object inspector can change visual height.
+Imported assets can persist a shared scale beside the sprite. Their collision rows
+also provide **Edit**, which opens numeric Offset X/Z and Size X/Y/Z controls without
+requiring the collision rectangle to win canvas hit-testing.
 
 Interior furnishings are serialized as `furnishings` records containing a stable
 `type`, local `position` (`[x,y,z]`), and display `height`. The editor draws floors
@@ -99,12 +114,56 @@ fields remain in the document and serialized output.
 
 Rename changes a saved map's filename, updates its metadata ID, recursively updates
 world-index and connection references, and retains the old file as a `.bak`. The
-The runtime keeps the physical `map_index.json` filename fixed. The editor's Rename action edits its `index_metadata.display_name`, so the world/index can be named without breaking the runtime bootstrap path.
+The runtime keeps the physical `map_index.json` filename fixed. Manifest detection is
+based on its index structure (`root`, `sections`, and `nested_sections`), not merely
+its current filename, so Rename and Save As cannot disguise or relocate it. The
+editor's Rename action edits `index_metadata.display_name`, allowing the world/index
+to be named without breaking the runtime bootstrap path.
 
 Trainer placements store a stable `trainer_id`; reusable names, dialogue, colors, and explicit Fakemon/level team rows live in `data/trainers.json`. Saving a map also atomically saves any edited trainer definitions. Legacy inline trainer records remain readable during migration.
 
+Warps expose a numeric ID, their X/Y/Z position, an Entrance Map picker populated
+from the map directory, and an Entrance Map Warp ID. These editor-facing fields are
+stored as `warp_metadata`; legacy runtime connection fields remain synchronized so
+gameplay still arrives at the configured return warp. Following a link to a map with
+no warp creates a placeholder return warp with ID 1 at `[0, 0.12, 0]`.
+Use **Add Warp** in the toolbar to create a warp at the map origin. It receives the
+next available numeric ID, is selected immediately, and can be positioned and linked
+from the Inspector. Editor-authored `warp_*` markers can also be deleted and undone.
+Placed `Warp Outdoor` art is decorative until converted: select it and use **Convert
+to Functional Warp** to preserve its position and facing while assigning it a warp ID
+and editable destination.
+
 Outdoor maps serialize named `arrival_points` and directed `outdoor_connections`.
+Attached overlays store `local_position` as a bottom-center offset on the host's
+artwork, in sprite display units. Gameplay scales both components equally, matching
+the editor; camera ground projection and the host's stored Y do not alter this
+offset. Rotation remains around the overlay's bottom-center anchor.
+
 The Warp Graph pairs reverse links and reports missing destinations/arrivals, one-way
 links, duplicate IDs, and duplicate warp endpoints. Selecting a warp exposes its
 destination map, arrival name, reverse-link ID, and facing in the inspector. Legacy
 coordinate fields remain runtime and editor fallbacks during incremental migration.
+
+Water decorations are imported automatically from `assets/overworld/`:
+
+- **Water Floaters** (`floater_*`): lilies and foliage above the water surface,
+  using ordinary world Y-sort so foreground actors and objects still occlude them.
+- **Water Submerged** (`submerged_*`): floor artwork below swimming Fakemon and
+  the shared translucent water surface. Numbered files appear as asset variants.
+
+Both families support visual height, rotation, and ordinary map save/load. They
+never create collision or navigation, including from asset-sidecar metadata;
+their inspector therefore omits collision authoring. Paint canonical water beneath
+them for surface compositing. A submerged prop enables the existing surface over
+the map's water cells even without swimming NPCs. Props and swimmers share one
+surface container, with no per-prop water clocks or processing callbacks. This
+checkpoint reuses the current translucent surface; it does not add a new water
+shader or change shoreline legality. `semi_submerged_*` stays out of the palette
+until its separate behavior is implemented.
+
+Regression scripts: `tests/water_decoration_test.gd` in the game project and
+`tests/water_decoration_editor_test.gd` in the map-editor project. Both report a
+zero-failure summary on success. The runtime test optionally accepts
+`-- --render-check` with a real OpenGL3 renderer to verify pixel compositing and
+mask clipping; headless runs validate nodes, ordering, and shared surface reuse.

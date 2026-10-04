@@ -2,10 +2,14 @@ extends SceneTree
 
 
 func _initialize() -> void:
+	create_timer(45).timeout.connect(func(): quit(1))
 	var scene := load("res://world/main.tscn") as PackedScene
 	var main := scene.instantiate()
 	root.add_child(main)
 	await process_frame
+	main.active_authored_map_id = ""
+	main.inside_east_route = true
+	main._set_active_visual_region("east_route")
 	assert(main.traversal_surfaces.size() >= 2, "Authored vertical and horizontal bridges must build traversal surfaces.")
 	var surface: Dictionary = main.traversal_surfaces.filter(func(item: Dictionary) -> bool: return String(item.name).begins_with("EastRoute"))[0]
 	assert(main.world.get_node_or_null("EastRouteUniversalObject0DeckTile0") != null, "Bridge deck tiles must render separately from terrain.")
@@ -37,10 +41,17 @@ func _initialize() -> void:
 	assert(Vector2(main.player.position.x, main.player.position.z) == under_position, "Under and on-deck actors may share X/Z while differing in world Y.")
 	assert((main.player.collision_mask & main.TERRAIN_OBSTACLE_LAYER) == 0, "Deck traversal must ignore only underlying terrain obstacles.")
 	assert(main.player_sort_root.z_index > main.bridge_sort_entries[0].sort_root.z_index, "A player on the deck must render over bridge art.")
+	assert(main.follower_sort_root.z_index == main.player_sort_root.z_index, "Following Fakemon must render on the player's bridge layer.")
+	assert(is_equal_approx(main.follower.position.y, main.player.position.y) and is_equal_approx(main.follower_target.y, main.player.position.y), "Follower height and movement target must follow the player onto the deck.")
 	main.player.position += (surface.side_axis as Vector3) * 2.0
 	main._update_traversal_surface(main.player.position, Vector2(-1, 0))
 	var constrained: Vector2 = main._surface_coordinates(surface, main.player.position)
-	assert(absf(constrained.y) <= float(surface.width) * 0.5 - 0.4 + 0.001 and main.active_traversal_layer == 1, "An elevated actor must not walk off either long side of the deck.")
+	assert(constrained.y >= float(surface.lateral_min) + 0.4 - 0.001 and constrained.y <= float(surface.lateral_max) - 0.4 + 0.001 and main.active_traversal_layer == 1, "An elevated actor must not walk off either long side of the deck.")
+
+	main.player.position -= (surface.side_axis as Vector3) * 2.0
+	main._update_traversal_surface(main.player.position, Vector2(1, 0))
+	constrained = main._surface_coordinates(surface, main.player.position)
+	assert(constrained.y >= float(surface.lateral_min) + 0.4 - 0.001, "Left containment must follow visible rails despite transparent texture padding.")
 
 	# A ground actor approaching the long side cannot jump to bridge elevation.
 	main.active_traversal_layer = 0
@@ -48,6 +59,7 @@ func _initialize() -> void:
 	main._update_traversal_surface(main.player.position, Vector2(-1, 0))
 	assert(main.active_traversal_layer == 0 and is_equal_approx(main.player.position.y, 0.65), "Bridge sides must not become accidental entrances.")
 	assert(main.player_sort_root.z_index < main.bridge_sort_entries[0].sort_root.z_index, "Bridge art must occlude a player passing underneath.")
+	assert(main.follower_sort_root.z_index == main.player_sort_root.z_index and is_equal_approx(main.follower.position.y, 0.65), "The follower must return to ground height and render beneath bridges with the player.")
 	assert(main.world.get_node_or_null("EastRouteUniversalObject0RailingA") != null and main.world.get_node_or_null("EastRouteUniversalObject0RailingB") != null, "Bridge railings must use permanent structure collision.")
 
 	# The western map authors a horizontal bridge with the dedicated texture set.
@@ -58,5 +70,24 @@ func _initialize() -> void:
 	assert((main.world.get_node("WestRouteUniversalObject0DeckTile0") as MeshInstance3D).material_override.albedo_texture.resource_path.ends_with("tile_bridge_horizontal_l.png"), "Horizontal bridges must use their horizontal start texture.")
 	assert(main.world.find_child("WestRouteCanonicalBase_*_water",false,false) != null, "Horizontal bridge placement must preserve canonical water beneath it.")
 	assert(main.world.get_node_or_null("CanopyRouteUniversalObject0") != null and (main.world.get_node("CanopyRouteUniversalObject0") as Sprite3D).texture.resource_path.ends_with("vines_horizontal_flower_passion.png"), "Outdoor maps must render authored horizontal passion vines.")
+	main.player.position = Vector3(center.x, 0.65, center.z)
+	main.active_authored_map_id = ""
+	main.inside_east_route = true
+	main._set_active_visual_region("east_route")
+	# Supply water on both sides for this symmetric dive fixture.
+	main.map_data.east_route._terrain_grid[Vector2i(-3, -6)] = "water"
+	# Diving from either side must discard the destination's inherited deck Y.
+	for side in [-1.0, 1.0]:
+		main.swimming = false
+		main.player.position = center + Vector3(0, 1.65, 0)
+		main.active_traversal_layer = 1
+		await main._start_swimming(Vector3(center.x + side, 1.65, center.z), "left" if side < 0 else "right")
+		assert(is_equal_approx(main.player.position.y, 0.65), "Bridge dives must land at water elevation on both sides.")
+		for step in 24:
+			await physics_frame
+			main.player.velocity = Vector3(-side, 0, 0) * main.MOVE_SPEED
+			main.player.move_and_slide()
+			assert(not main.player.is_on_wall(), "Swimmers must pass beneath either railing.")
+		assert((main.player.position.x - center.x) * side < 0, "Swimming must cross under the bridge from either side.")
 	print("BRIDGE_TRAVERSAL_TEST_PASSED")
 	quit()

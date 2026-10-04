@@ -1,0 +1,56 @@
+{
+	"1": {
+		"height_offset": -0.2,
+		"interaction_text": "Fishy? Or sofishticated?",
+		"movement": {
+			"preset": "random",
+			"range": [
+				2.0,
+				2.0
+			]
+		},
+		"movement_mode": "swimming",
+		"sprite": "Sylvafin",
+		"type": "fakemon"
+	},
+	"2": {
+		"height_offset": 1.5,
+		"interaction_text": "Spicy, peppy parrot.",
+		"movement": {
+			"preset": "random",
+			"range": [
+				4.0,
+				4.0
+			]
+		},
+		"movement_mode": "flying",
+		"sprite": "Scorchick",
+		"type": "fakemon"
+	},
+	"3": {
+		"height_offset": 1.5,
+		"interaction_text": "Blooming eye of wonder.",
+		"movement": {
+			"preset": "random",
+			"range": [
+				2.0,
+				2.0
+			]
+		},
+		"movement_mode": "flying",
+		"sprite": "Keklid",
+		"type": "fakemon"
+	},
+	"4": {
+		"interaction_text": "Have you been to the Research Institute? It's partially a museum for the public. I've heard some of the region's top ecologists and biologists work there.",
+		"movement": {
+			"preset": "left_right",
+			"range": [
+				2.0,
+				2.0
+			]
+		},
+		"sprite": "Young Man",
+		"type": "human"
+	}
+}
