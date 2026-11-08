@@ -35,20 +35,20 @@ const TYPE_EFFECTIVENESS := {
 	"Plant": {"Water": 2.0, "Plant": 0.5, "Fire": 0.5, "Light": 2.0, "Air": 2.0, "Bug": 0.5, "Rock": 2.0, "Ancient": 2.0, "Poison": 0.5},
 	"Light": {"Dark": 2.0, "Water": 2.0, "Plant": 0.5, "Bug": 0.5, "Ghost": 2.0, "Psychic": 2.0, "Ancient": 2.0, "Rock": 0.5, "Light": 0.5},
 	"Dark": {"Light": 0.5, "Bug": 0.5, "Ghost": 2.0, "Psychic": 2.0, "Mystic": 2.0, "Ancient": 2.0, "Dark": 0.5, "Fighting": 2.0},
-	"Normal": {"Bug": 2.0, "Ghost": 0.5, "Psychic": 0.5, "Mystic": 2.0, "Steel": 0.5, "Ancient": 0.5, "Rock": 0.5, "Plant":2.0, "Fighting": 0.5},
-	"Air": {"Fire": 2.0, "Plant": 0.5, "Bug": 2.0, "Fighting": 2.0, "Electric": 0.5, "Ice": 0.5, "Rock": 2.0, "Normal": 0.5, "Air": 0.5},
+	"Normal": {"Bug": 2.0, "Ghost": 0.5, "Mystic": 2.0, "Steel": 0.5, "Ancient": 0.5, "Rock": 0.5, "Plant":2.0, "Dragon":0.5},
+	"Air": {"Fire": 2.0, "Plant": 0.5, "Bug": 2.0, "Fighting": 2.0, "Electric": 0.5, "Ice": 0.5, "Rock": 2.0, "Air": 0.5},
 	"Bug": {"Fire": 0.5, "Plant": 2.0, "Normal": 0.5, "Light": 2.0, "Dark": 2.0, "Air": 0.5, "Steel": 0.5, "Mystic": 2.0, "Dragon": 0.5, "Ice": 0.5, "Bug": 0.5, "Psychic": 2.0, "Fighting": 0.5},
 	"Mystic": {"Normal": 0.5, "Dark": 0.5, "Mystic": 0.5, "Fighting": 0.5, "Ghost": 2.0, "Ancient": 2.0, "Dragon": 2.0, "Bug": 0.5},
 	"Ghost": {"Ancient": 0.5, "Light": 0.5, "Psychic": 2.0, "Mystic": 0.5, "Fighting": 2.0, "Ghost": 0.5, "Steel": 2.0},
 	"Psychic": {"Normal": 2.0, "Light": 0.5, "Dark": 0.5, "Ghost": 0.5, "Fighting": 2.0, "Poison": 2.0, "Steel": 2.0, "Ancient": 0.5, "Bug": 0.5},
 	"Fighting": {"Normal": 2.0, "Bug": 2.0, "Ghost": 0.5, "Air": 0.5, "Psychic": 0.5, "Mystic": 2.0, "Steel": 0.5, "Rock": 2.0, "Dark": 2.0},
-	"Poison": {"Normal": 2.0, "Water": 2.0, "Plant": 2.0, "Psychic": 0.5, "Steel": 0.5, "Rock": 0.5, "Air": 0.5, "Ice": 0.5},
-	"Steel": {"Fire": 0.5, "Water": 0.5, "Psychic": 0.5, "Electric": 0.5, "Fighting": 2.0, "Bug": 2.0, "Rock": 2.0, "Ice":2.0, "Dragon": 2.0, "Steel": 0.5},
+	"Poison": {"Normal": 2.0, "Water": 2.0, "Plant": 2.0, "Psychic": 0.5, "Steel": 2.0, "Rock": 0.5, "Air": 0.5, "Ice": 0.5},
+	"Steel": {"Fire": 0.5, "Water": 0.5, "Psychic": 0.5, "Electric": 0.5, "Fighting": 2.0, "Bug": 2.0, "Rock": 2.0, "Ice":2.0, "Steel": 0.5},
 	"Ancient": {"Water": 0.5, "Plant": 0.5, "Light": 0.5, "Ghost": 2.0, "Electric": 2.0, "Normal": 2.0, "Psychic": 2.0, "Ice": 2.0},
-	"Electric": {"Ancient": 0.5, "Steel": 2.0, "Water": 2.0, "Plant": 0.5, "Rock": 0.5, "Air": 2.0, "Electric": 0.5, "Fighting": 2.0},
+	"Electric": {"Ancient": 0.5, "Steel": 2.0, "Water": 2.0, "Plant": 0.5, "Rock": 0.5, "Air": 2.0, "Fighting": 2.0},
 	"Rock": {"Fire": 2.0, "Plant": 0.5, "Steel": 0.5, "Bug": 2.0, "Ice": 2.0, "Fighting": 0.5, "Light": 2.0, "Ancient": 0.5, "Rock": 0.5, "Electric": 2.0},
 	"Ice": {"Fire": 0.5, "Steel": 0.5, "Rock": 0.5, "Plant": 2.0, "Bug": 2.0, "Dragon": 2.0, "Air": 2.0, "Ancient": 0.5, "Ice": 0.5},
-	"Dragon": {"Steel": 0.5, "Mystic": 0.5, "Fighting": 2.0, "Normal": 2.0, "Electric": 2.0}
+	"Dragon": {"Steel": 0.5, "Mystic": 0.5, "Fighting": 2.0, "Normal": 2.0}
 }
 
 var battle_data: Dictionary
@@ -108,9 +108,18 @@ func _ready() -> void:
 	if battle_data.is_empty():
 		return
 	_build_background()
-	_build_selection_screen()
 	_build_battle_screen()
-	_show_selection()
+	# The map-test entry point supplies a starter directly. Selection is built
+	# on demand if a normal adventure or the standalone battle scene needs it.
+	var testing_map := false
+	for argument: String in OS.get_cmdline_user_args():
+		if argument.begins_with("--test-map=") and not argument.trim_prefix("--test-map=").is_empty():
+			testing_map = true
+			break
+	if testing_map:
+		battle_screen.hide()
+	else:
+		_show_selection()
 
 
 func begin_battle_with_party(party_members: Array[Dictionary], starting_index: int, opponent_index: int, wild_battle: bool) -> void:
@@ -161,13 +170,14 @@ func begin_battle_with_enemy_party(party_members: Array[Dictionary], starting_in
 	is_wild_battle = wild_battle
 	weather = ""
 	weather_turns_remaining = 0
-	selection_screen.hide()
+	if selection_screen != null: selection_screen.hide()
 	battle_screen.show()
 	show()
 	_start_battle()
 
 
 func begin_adventure_selection() -> void:
+	if selection_screen == null: _build_selection_screen()
 	selecting_for_adventure = true
 	battle_over = true
 	selection_screen.show()
@@ -583,6 +593,7 @@ func _on_fakemon_selected(index: int) -> void:
 
 
 func _show_selection() -> void:
+	if selection_screen == null: _build_selection_screen()
 	battle_over = true
 	selection_screen.show()
 	battle_screen.hide()

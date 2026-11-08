@@ -61,6 +61,39 @@ const DIAGONAL_REGIONS := {
 	},
 }
 
+# Render-only calibration, relative to the normal displayed actor height.
+# Entries address the authored strides, not the interleaved neutral frames.
+# Keep scaling uniform to preserve proportions. Offsets use screen coordinates
+# (+Y down); left-facing art mirrors X automatically. Recoloring happens first,
+# so these transforms apply to the sprite and all masked colors together.
+const FRAME_ADJUSTMENTS := {
+	"Male": {
+		"walk_right": [
+			{"scale": Vector2(0.93, 0.93), "offset": Vector2(0.02, 0.0)},
+			{"scale": Vector2(0.93, 0.93), "offset": Vector2(-0.025, 0.0)},
+		],
+	},
+}
+
+static func frame_adjustment(gender: String, animation: String, cycle_frame: int) -> Dictionary:
+	var pose := animation
+	var authored_index := 0
+	if animation.begins_with("walk_"):
+		var phase := posmod(cycle_frame, 4)
+		pose = "idle_" + animation.trim_prefix("walk_") if phase % 2 == 1 else animation
+		authored_index = phase / 2 if phase % 2 == 0 else 0
+	var mirrored := gender == "Male" and pose.ends_with("left")
+	if mirrored:
+		pose = pose.trim_suffix("left") + "right"
+	var poses: Dictionary = FRAME_ADJUSTMENTS.get(gender, {})
+	var adjustments: Array = poses.get(pose, [])
+	if authored_index >= adjustments.size():
+		return {"scale": Vector2.ONE, "offset": Vector2.ZERO}
+	var adjustment: Dictionary = adjustments[authored_index].duplicate()
+	if mirrored:
+		adjustment["offset"] = Vector2(-adjustment.offset.x, adjustment.offset.y)
+	return adjustment
+
 static func is_diagonal(animation: String) -> bool:
 	return animation.get_slice_count("_") == 3
 

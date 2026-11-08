@@ -4,7 +4,7 @@ const NpcSpriteLibrary:=preload("res://world/npc_sprite_library.gd")
 
 
 func _initialize()->void:
-	for sprite_id in ["man","woman","boy","girl"]:
+	for sprite_id in ["man","woman","boy","girl","Professor","Scientist"]:
 		var texture:=NpcSpriteLibrary.texture_for(sprite_id)
 		assert(texture!=null,"%s NPC art must load from its configured sheet slice."%sprite_id)
 		var image:=texture.get_image()
@@ -20,9 +20,9 @@ func _initialize()->void:
 					var walk_texture := NpcSpriteLibrary.texture_for(sprite_id, direction, frame)
 					assert(walk_texture != null and walk_texture.get_width() < 95, "Each frame must contain one grid cell.")
 	# Verify idle and all four walking frames come from the authoritative sheets.
-	for sprite_id in ["man", "woman"]:
+	for sprite_id in ["man", "woman", "Professor", "Scientist"]:
 		var spec: Dictionary = NpcSpriteLibrary.SPRITES[sprite_id]
-		var expected_path := "res://assets/trainers/%s Citizen.png" % ("Male" if sprite_id == "man" else "Female")
+		var expected_path := "res://assets/trainers/%s.png" % sprite_id if sprite_id in ["Professor", "Scientist"] else "res://assets/trainers/%s Citizen.png" % ("Male" if sprite_id == "man" else "Female")
 		assert(spec.grid_path == expected_path)
 		assert(NpcSpriteLibrary.walk_frame_count(sprite_id) == 8)
 		var source := (load(expected_path) as Texture2D).get_image()

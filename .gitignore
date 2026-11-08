@@ -1,5 +1,11 @@
 # Godot 4+ specific ignores
+/shared_layout_*.log
 .godot/
+
+# Generated logs and isolated Godot test user-data/cache directories.
+*.log
+/.godot*_appdata/
+/.godot*_local/
 
 # Godot-specific ignores
 .import/
@@ -19,14 +25,32 @@ tests/
 # Keep checkpoint NPC tests; their generated fixtures remain ignored.
 !/tests/
 /tests/*
+!/tests/imported_indoor_assets_test.gd
+!/tests/imported_indoor_assets_test.gd.uid
+!/tests/lab_transition_performance_test.gd
+!/tests/lab_transition_performance_test.gd.uid
+!/tests/indoor_map_runtime_test.gd
+!/tests/indoor_map_runtime_test.gd.uid
+!/tests/building_entrance_collision_test.gd
+!/tests/building_entrance_collision_test.gd.uid
+!/tests/map_border_runtime_test.gd
+!/tests/map_border_runtime_test.gd.uid
 !/tests/npc_checkpoint_test.gd
 !/tests/npc_checkpoint_test.gd.uid
 !/tests/npc_movement_test.gd
 !/tests/npc_movement_test.gd.uid
 !/tools/map_editor/tests/
 /tools/map_editor/tests/*
+!/tools/map_editor/tests/indoor_visual_behavior_test.gd
+!/tools/map_editor/tests/indoor_visual_behavior_test.gd.uid
+!/tools/map_editor/tests/furniture_assets_test.gd
+!/tools/map_editor/tests/furniture_assets_test.gd.uid
+!/tools/map_editor/tests/indoor_terrain_test.gd
+!/tools/map_editor/tests/indoor_terrain_test.gd.uid
 !/tools/map_editor/tests/npc_editor_test.gd
 !/tools/map_editor/tests/npc_editor_test.gd.uid
+!/tools/map_editor/tests/map_border_editor_test.gd
+!/tools/map_editor/tests/map_border_editor_test.gd.uid
 
 # Keep the overworld Fakemon lighting regression checks.
 !/tests/fakemon_lighting_test.gd
@@ -51,3 +75,47 @@ tests/
 !/tools/map_editor/tests/water_decoration_editor_test.gd
 !/tools/map_editor/tests/water_decoration_editor_test.gd.uid
 /water_decoration_*.log
+
+# Scripting V1 tests and source fixture.
+!/tests/scripting_test.gd
+!/tests/scripting_test.gd.uid
+!/tests/scripting_world_test.gd
+!/tests/scripting_world_test.gd.uid
+!/tests/fixtures/
+/tests/fixtures/*
+!/tests/fixtures/research_institute.paradise
+!/tools/map_editor/tests/scripting_editor_test.gd
+!/tools/map_editor/tests/scripting_editor_test.gd.uid
+/scripting-*.log
+/script-editor-validation.log
+!/tests/scripting_v2_test.gd
+!/tests/scripting_v2_test.gd.uid
+!/tests/scripting_movement_test.gd
+!/tests/scripting_movement_test.gd.uid
+!/tests/fixtures/script_tour.json
+!/tools/map_editor/tests/scripting_v2_editor_test.gd
+!/tools/map_editor/tests/scripting_v2_editor_test.gd.uid
+
+!/tests/yes_no_starter_test.gd
+!/tests/yes_no_starter_test.gd.uid
+
+!/tests/shared_layout_test.gd
+!/tests/shared_layout_test.gd.uid
+!/tools/map_editor/tests/map_navigation_test.gd
+!/tools/map_editor/tests/map_navigation_test.gd.uid
+/map_navigation_*.log
+!/tests/map_navigation_runtime_test.gd
+!/tests/map_navigation_runtime_test.gd.uid
+!/tools/map_editor/tests/shared_layout_ui_test.gd
+!/tools/map_editor/tests/shared_layout_ui_test.gd.uid
+!/tools/map_editor/tests/map_resize_arrows_test.gd
+!/tools/map_editor/tests/map_resize_arrows_test.gd.uid
+!/tests/map_bounds_runtime_test.gd
+!/tests/map_bounds_runtime_test.gd.uid
+!/tests/player_frame_adjustment_test.gd
+!/tests/player_frame_adjustment_test.gd.uid
+
+!/tests/patrol_test.gd
+!/tests/patrol_test.gd.uid
+!/tools/map_editor/tests/patrol_editor_test.gd
+!/tools/map_editor/tests/patrol_editor_test.gd.uid

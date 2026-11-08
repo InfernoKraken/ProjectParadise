@@ -1,0 +1,29 @@
+// Tropical Research Institute test script
+Block ProfessorIntroduction:
+    Lock
+    TextBox "Welcome to the Tropical Research Institute."
+    TextBox "Before we begin, I should probably explain our funding."
+    SetFlag MetProfessor
+    Call ProfessorExplanation
+    Unlock
+End
+
+Block ProfessorExplanation:
+    TextBox "We study the habitats and Fakemon of Jalovea."
+    Return
+End
+
+Block StarterCheck:
+    IfFlag StarterChosen AlreadyHasStarter
+    IfNotFlag StarterChosen StarterAvailable
+End
+
+Block AlreadyHasStarter:
+    TextBox "You've already chosen your partner."
+    Return
+End
+
+Block StarterAvailable:
+    TextBox "You haven't chosen a partner yet."
+    Return
+End

@@ -21,9 +21,10 @@ static func traversal_error(definition: Dictionary) -> String:
 	return ""
 
 static func elevation(definition: Dictionary) -> float:
-	return float(MODE_OFFSETS.get(definition.get("movement_mode", "ground"), 0.0)) + float(definition.get("height_offset", 0.0))
+	return float(MODE_OFFSETS.get("swimming" if definition.get("type") == "vehicle" else definition.get("movement_mode", "ground"), 0.0)) + float(definition.get("height_offset", 0.0))
 
-const SPEED := 1.2
+const SPEED := 4.5
+const FOOT_SIZE := Vector3(0.55, 0.3, 0.45)
 const PAUSE := 1.0
 const FACINGS := ["down", "up", "left", "right"]
 
@@ -55,6 +56,15 @@ func _init(initial_position: Vector3, config: Dictionary, seed_value: int) -> vo
 	extent = Vector2(float(config.range[0]), float(config.range[1]))
 	rng.seed = seed_value
 
+# Release scripted control without changing the authored anchor or preset.
+func resume(position: Vector3) -> void:
+	target = _in_range(position)
+	timer = 0.0
+	waypoint = 0
+
+func _in_range(position: Vector3) -> Vector3:
+	return Vector3(clampf(position.x,anchor.x-extent.x,anchor.x+extent.x),anchor.y,clampf(position.z,anchor.z-extent.y,anchor.z+extent.y))
+
 # Pure planning state; main.gd applies the proposed displacement with physics.
 func step(position: Vector3, facing: String, delta: float) -> Dictionary:
 	if preset == "stationary" or delta <= 0: return {"position":position, "facing":facing}
@@ -77,8 +87,9 @@ func step(position: Vector3, facing: String, delta: float) -> Dictionary:
 	elif absf(motion.z) > 0.0001:
 		destination.z = move_toward(position.z, target.z, SPEED * delta)
 		facing = "down" if motion.z > 0 else "up"
-	destination.x = clampf(destination.x, anchor.x-extent.x, anchor.x+extent.x)
-	destination.z = clampf(destination.z, anchor.z-extent.y, anchor.z+extent.y)
+	# A scripted walk may leave the authored range. Re-enter at walking speed.
+	destination.x = clampf(destination.x, minf(position.x,anchor.x-extent.x), maxf(position.x,anchor.x+extent.x))
+	destination.z = clampf(destination.z, minf(position.z,anchor.z-extent.y), maxf(position.z,anchor.z+extent.y))
 	destination.y = anchor.y
 	if destination.distance_squared_to(target) < 0.000001: timer = PAUSE
 	return {"position":destination, "facing":facing}
@@ -88,6 +99,8 @@ func blocked(position: Vector3) -> void:
 	timer = PAUSE
 
 func _next_target(position: Vector3) -> Vector3:
+	var bounded := _in_range(position)
+	if Vector2(position.x-bounded.x,position.z-bounded.z).length_squared() > 0.000001: return bounded
 	var point := anchor
 	match preset:
 		"left_right":

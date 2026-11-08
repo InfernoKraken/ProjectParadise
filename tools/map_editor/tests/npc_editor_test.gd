@@ -8,7 +8,11 @@ func _initialize() -> void:
 	root.add_child(editor)
 	await process_frame
 	editor._new_document()
-	assert(editor.npc_visuals.sprites("human")==["Young Man","Young Woman","Young Boy","Young Girl"])
+	assert(editor.npc_visuals.sprites("human")==["Young Man","Young Woman","Young Boy","Young Girl","Professor","Scientist"])
+	for sprite in ["Professor", "Scientist"]:
+		assert(editor.npc_visuals.available("human", sprite))
+		for direction in ["down", "up", "left", "right"]:
+			assert(editor.npc_visuals.texture_for("human", sprite, direction) != null)
 	assert(editor.npc_visuals.sprites("fakemon").has("Sylvafin"))
 	assert(editor.npc_visuals.sprites("fakemon").has("Celestraal"),"The existing evolved-species registry must also provide NPC sprites.")
 	editor._add_npc()

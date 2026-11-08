@@ -599,6 +599,29 @@
 			1.0
 		]
 	],
+	"warp_metadata": {
+		"east_warp": {
+			"entrance_map": "eastern_rainforest_route.json",
+			"entrance_map_warp_id": 1,
+			"facing": "generic",
+			"id": 1,
+			"show_sprite": true
+		},
+		"exit_warp": {
+			"entrance_map": "rainforest_clearing.json",
+			"entrance_map_warp_id": 1,
+			"facing": "generic",
+			"id": 2,
+			"show_sprite": true
+		},
+		"north_warp": {
+			"entrance_map": "mossvale_city.json",
+			"entrance_map_warp_id": 1,
+			"facing": "generic",
+			"id": 3,
+			"show_sprite": true
+		}
+	},
 	"water_blocks": [
 		[
 			-4.5,
@@ -622,6 +645,10 @@
 		"Moach",
 		{
 			"fakemon": "Balopod",
+			"level": 5.0
+		},
+		{
+			"fakemon": "Tuggle",
 			"level": 5
 		}
 	],

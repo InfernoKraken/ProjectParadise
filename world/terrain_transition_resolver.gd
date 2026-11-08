@@ -25,6 +25,15 @@ const DIRECTIONS := [
 ]
 
 const TERRAIN := {
+	"dark_museum_floor":{"priority":9,"texture":"res://assets/overworld/tile_dark_museum_floor.png","tint":"ffffff"},
+	"dark_museum_floor_corner":{"priority":10,"texture":"res://assets/overworld/tile_dark_museum_floor_corner.png","tint":"ffffff"},
+	"dark_museum_floor_icon":{"priority":11,"texture":"res://assets/overworld/tile_dark_museum_floor_icon.png","tint":"ffffff"},
+	"earthy_museum_floor":{"priority":12,"texture":"res://assets/overworld/tile_earthy_museum_floor.png","tint":"ffffff"},
+	"pale_museum_floor":{"priority":13,"texture":"res://assets/overworld/tile_pale_museum_floor.png","tint":"ffffff"},
+
+	"warm_honey_limestone_paving":{"priority":8, "texture":"res://assets/overworld/tile_warm_honey_limestone_paving.png", "tint":"ffffff"},
+	"indoor_floor_tile":{"priority":6, "texture":"res://assets/overworld/tile_interior_floor_tiles.png", "tint":"ffffff"},
+	"indoor_floor_tile_00":{"priority":7, "texture":"res://assets/overworld/tile_interior_floor_tiles_00.png", "tint":"ffffff"},
 	"water":{"animation":"water_generic_glisten", "priority":0, "texture":"res://assets/overworld/tile_water_generic.png", "tint":"ffffff"},
 	"sand":{"priority":1, "texture":"res://assets/overworld/tile_sand_generic.png", "tint":"ffffff"},
 	"mud":{"priority":2, "texture":"res://assets/overworld/tile_dirt_generic.png", "tint":"ffffff"},
@@ -67,16 +76,22 @@ static func prepare_map(map_data: Dictionary,map_seed:String="") -> Dictionary:
 	prepared["_terrain_transitions"] = resolve(grid,resolved_seed)
 	return prepared
 
+static func _bounds_center(data:Dictionary)->Vector2:
+	# Keep the resolver loadable from the standalone editor's resource root.
+	var value:Variant=data.get("bounds_center",[0,0])
+	return Vector2(float(value[0]),float(value[1])) if value is Array and value.size()==2 else Vector2.ZERO
+
 static func terrain_grid(map_data: Dictionary) -> Dictionary:
 	var grid: Dictionary = {}
+	var center:=_bounds_center(map_data)
 	var map_size: Variant = map_data.get("size", map_data.get("map_size", []))
 	if map_size is Array and map_size.size() == 2:
 		var base_terrain := String(map_data.get("base_terrain_type", "forest_floor"))
 		if TERRAIN.has(base_terrain):
-			var width := maxi(0, int(map_size[0])); var depth := maxi(0, int(map_size[1]))
-			var start_x := floori(-float(width) * 0.5); var start_z := floori(-float(depth) * 0.5)
-			for x in range(start_x, start_x + width):
-				for z in range(start_z, start_z + depth): grid[Vector2i(x, z)] = base_terrain
+			var width:=maxi(0,int(map_size[0]));var depth:=maxi(0,int(map_size[1]))
+			var start_x := floori(center.x-float(width)*0.5); var start_z := floori(center.y-float(depth)*0.5)
+			for x in range(start_x, start_x+width):
+				for z in range(start_z, start_z+depth): grid[Vector2i(x, z)] = base_terrain
 	# Canonical identity is the sole topology source. Legacy water/sand rectangles
 	# and block objects remain render/collision compatibility data and never enter
 	# this grid.
@@ -89,11 +104,12 @@ static func terrain_grid(map_data: Dictionary) -> Dictionary:
 				for position: Vector2i in _entry_positions(value): grid[position] = terrain_type
 	if map_size is Array and map_size.size() >= 2:
 		for position: Vector2i in grid.keys():
-			if not tile_fits_map_bounds(position, Vector2(float(map_size[0]), float(map_size[1]))): grid.erase(position)
+			if not tile_fits_map_bounds(position, Vector2(float(map_size[0]), float(map_size[1])),center): grid.erase(position)
 	return grid
 
 static func canonical_terrain_issues(map_data: Dictionary) -> Array[Dictionary]:
 	var issues: Array[Dictionary] = []
+	var center:=_bounds_center(map_data)
 	var claimed: Dictionary = {}
 	var map_size_value: Variant = map_data.get("size", map_data.get("map_size", []))
 	var has_bounds: bool = map_size_value is Array and map_size_value.size()==2
@@ -109,7 +125,7 @@ static func canonical_terrain_issues(map_data: Dictionary) -> Array[Dictionary]:
 		if not TERRAIN.has(terrain_type):
 			issues.append({"code":"unknown_terrain", "index":index, "terrain_type":terrain_type});continue
 		for position:Vector2i in _entry_positions(value):
-			if has_bounds and not tile_fits_map_bounds(position,map_size):
+			if has_bounds and not tile_fits_map_bounds(position,map_size,center):
 				issues.append({"code":"out_of_bounds", "index":index, "position":position});continue
 			if claimed.has(position): issues.append({"code":"duplicate_coordinate", "index":index, "position":position, "first_index":claimed[position]})
 			else: claimed[position]=index
@@ -125,10 +141,10 @@ static func _entry_positions(entry: Dictionary) -> Array[Vector2i]:
 	if single is Array and single.size()>=2:result.append(Vector2i(int(single[0]),int(single[1])))
 	return result
 
-static func tile_fits_map_bounds(position: Vector2i, map_size: Vector2) -> bool:
+static func tile_fits_map_bounds(position: Vector2i, map_size: Vector2, center:Vector2=Vector2.ZERO) -> bool:
 	var half := map_size * 0.5
-	return float(position.x) - 0.5 >= -half.x and float(position.x) + 0.5 <= half.x \
-		and float(position.y) - 0.5 >= -half.y and float(position.y) + 0.5 <= half.y
+	return float(position.x) - 0.5 >= center.x-half.x and float(position.x) + 0.5 <= center.x+half.x \
+		and float(position.y) - 0.5 >= center.y-half.y and float(position.y) + 0.5 <= center.y+half.y
 
 static func resolve(grid: Dictionary, map_seed := "map") -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
@@ -240,3 +256,15 @@ static func affected_positions(changed: Vector2i) -> Array[Vector2i]:
 	var result: Array[Vector2i] = [changed]
 	for direction: Dictionary in DIRECTIONS: result.append(changed + direction.offset)
 	return result
+
+# Sand is the simple visual fallback at a hard boundary or a mixed water/land
+# junction. Avoid multiple half-cell masks carving strips through a sand cell.
+static func solid_sand_fill(base_terrain:String,patches:Array,hard_boundary:bool=false)->bool:
+	if base_terrain!="sand":return false
+	if hard_boundary:return true
+	var water:=false;var other_land:=false
+	for patch in patches:
+		for terrain in [patch.get("terrain_a",""),patch.get("terrain_b","")]:
+			if terrain=="water":water=true
+			elif terrain!="sand" and terrain!="":other_land=true
+	return water and other_land

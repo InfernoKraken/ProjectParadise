@@ -3,6 +3,7 @@ extends RefCounted
 
 const MapSchemaRef := preload("res://core/map_schema.gd")
 const WallGeometryRef := preload("res://core/wall_geometry.gd")
+const BorderLayout := preload("res://core/map_border_layout.gd")
 
 static func validate(doc: MapDocument) -> Array[Dictionary]:
 	var issues: Array[Dictionary] = []
@@ -10,10 +11,15 @@ static func validate(doc: MapDocument) -> Array[Dictionary]:
 		issues.append(_issue("error", "$", doc.parse_error))
 		return issues
 	var expected := MapSchemaRef.expected_fields(doc.kind)
+	if doc.data.has("bounds_center"):_numeric_array(doc.data.bounds_center,2,"$.bounds_center",issues)
+	if doc.data.has("borders"):_validate_borders(doc.data.borders, issues)
+	if doc.data.has("border_corner_priority") and doc.data.border_corner_priority not in BorderLayout.CORNER_PRIORITIES:
+		issues.append(_issue("error", "$.border_corner_priority", "Expected north_south or east_west."))
+	_validate_shared_layout(doc.data, issues)
 	if expected.is_empty(): issues.append(_issue("warning", "$", "Unsupported filename/schema; content will be preserved but typed editing is limited."))
 	for field in expected:
 		if not doc.data.has(field):
-			issues.append(_issue("error", "$." + field, "Missing required field."))
+			issues.append(_issue("error", "$." + field, "Missing required field: %s." % field))
 			continue
 		_validate_shape(doc.data[field], String(expected[field]), "$." + field, issues)
 	for encounter_field in ["tall_grass_species","water_species"]:
@@ -40,6 +46,77 @@ static func validate(doc: MapDocument) -> Array[Dictionary]:
 	_validate_canonical_terrain(doc,issues)
 	return issues
 
+static func _validate_borders(borders: Variant, issues: Array[Dictionary]) -> void:
+	if not borders is Dictionary:
+		issues.append(_issue("error", "$.borders", "Expected a border definition object."))
+		return
+	for side: String in BorderLayout.SIDES:
+		if not borders.has(side): continue
+		var path := "$.borders." + side
+		var border: Variant = borders[side]
+		if not border is Dictionary:
+			issues.append(_issue("error", path, "Expected a border canvas object."))
+			continue
+		if not border.get("enabled", false) is bool:
+			issues.append(_issue("error", path + ".enabled", "Expected a boolean."))
+		for axis in ["width", "height", "depth"]:
+			var value: Variant = border.get(axis, 4)
+			if not (value is int or value is float) or value != int(value) or value < 1 or value > BorderLayout.MAX_DIMENSION:
+				issues.append(_issue("error", path + "." + axis, "Expected a whole tile count from 1 to %d." % BorderLayout.MAX_DIMENSION))
+		var cells: Variant = border.get("cells", {})
+		if not cells is Dictionary:
+			issues.append(_issue("error", path + ".cells", "Expected an object keyed by x,z coordinates."))
+			continue
+		for key: String in cells:
+			var cell_path := path + ".cells." + key
+			var position := BorderLayout.cell_position(key)
+			var outward := position.y if BorderLayout.horizontal(side) else position.x
+			if position.x < 0 or position.y < 0 or outward >= BorderLayout.MAX_DIMENSION or key != BorderLayout.cell_key(position):
+				issues.append(_issue("error", cell_path, "Expected a valid x,z cell coordinate."))
+			var cell: Variant = cells[key]
+			if not cell is Dictionary:
+				issues.append(_issue("error", cell_path, "Expected a border cell object."))
+				continue
+			if cell.has("terrain") and (not cell.terrain is String or cell.terrain.is_empty()):
+				issues.append(_issue("error", cell_path + ".terrain", "Expected a terrain ID."))
+			if cell.has("art"):
+				var art: Variant = cell.art
+				if not art is Dictionary or BorderLayout.texture_path(art).is_empty():
+					issues.append(_issue("error", cell_path + ".art", "Expected an artwork record with an image path under assets/."))
+					continue
+				if art.has("size"): _numeric_array(art.size, 2, cell_path + ".art.size", issues)
+				if art.has("footprint"): _numeric_array(art.footprint, 2, cell_path + ".art.footprint", issues)
+				if art.has("anchor_offset"): _numeric_array(art.anchor_offset, 2, cell_path + ".art.anchor_offset", issues)
+				if not (art.get("rotation", 0) is int or art.get("rotation", 0) is float):
+					issues.append(_issue("error", cell_path + ".art.rotation", "Expected an angle in degrees."))
+
+static func _validate_shared_layout(data: Dictionary, issues: Array[Dictionary]) -> void:
+	if data.has("shared_layout") and not data.shared_layout is bool:
+		issues.append(_issue("error", "$.shared_layout", "Shared Layout must be a boolean."))
+	if not data.has("layout_instances"): return
+	if not data.layout_instances is Array:
+		issues.append(_issue("error", "$.layout_instances", "Expected an instance array.")); return
+	var seen := {}
+	var shapes := {"npcs":TYPE_ARRAY, "script_source":TYPE_STRING, "script_interactions":TYPE_DICTIONARY, "script_sprite_names":TYPE_DICTIONARY, "script_paths":TYPE_ARRAY, "map_script_header":TYPE_DICTIONARY, "map_script_headers":TYPE_ARRAY, "warp_destinations":TYPE_DICTIONARY}
+	for index in data.layout_instances.size():
+		var path := "$.layout_instances[%d]" % index
+		var record: Variant = data.layout_instances[index]
+		if not record is Dictionary:
+			issues.append(_issue("error", path, "Expected an instance object.")); continue
+		var id: Variant = record.get("id")
+		if not id is String or String(id).is_empty() or String(id).contains("#"):
+			issues.append(_issue("error", path + ".id", "Expected a nonempty ID without #."))
+		elif seen.has(id): issues.append(_issue("error", path + ".id", "Duplicate instance ID."))
+		else: seen[id] = true
+		for field: String in record:
+			if shapes.has(field):
+				if typeof(record[field]) != shapes[field]: issues.append(_issue("error", path + "." + field, "Invalid instance field type."))
+			elif field != "id": issues.append(_issue("warning", path + "." + field, "Unsupported instance override; geometry belongs to the shared layout."))
+		if record.get("warp_destinations") is Dictionary:
+			for field: String in record.warp_destinations:
+				if not data.get("warp_metadata", {}) is Dictionary or not data.get("warp_metadata", {}).has(field): issues.append(_issue("error", path + ".warp_destinations." + field, "Unknown shared warp."))
+				if not record.warp_destinations[field] is Dictionary: issues.append(_issue("error", path + ".warp_destinations." + field, "Expected a warp destination object."))
+
 static func _validate_warp_metadata(doc: MapDocument, issues: Array[Dictionary]) -> void:
 	if not doc.data.has("warp_metadata"): return
 	if not doc.data.warp_metadata is Dictionary: issues.append(_issue("error", "$.warp_metadata", "Expected an object keyed by warp field.")); return
@@ -56,7 +133,7 @@ static func _validate_warp_metadata(doc: MapDocument, issues: Array[Dictionary])
 		if not (target_id is int or target_id is float) or int(target_id) < 1 or not is_equal_approx(float(target_id),floorf(float(target_id))): issues.append(_issue("error", path + ".entrance_map_warp_id", "Entrance Map Warp ID must be a positive whole number."))
 
 static func _validate_canonical_terrain(doc:MapDocument,issues:Array[Dictionary])->void:
-	var valid_types:=["water","sand","mud","forest_floor","stone","rock"]
+	var valid_types:=["dark_museum_floor","dark_museum_floor_corner","dark_museum_floor_icon","earthy_museum_floor","pale_museum_floor","water","sand","mud","forest_floor","stone","rock","indoor_floor_tile","indoor_floor_tile_00","warm_honey_limestone_paving"]
 	if doc.data.has("base_terrain_type") and String(doc.data.get("base_terrain_type","")) not in valid_types:issues.append(_issue("error","$.base_terrain_type","Unknown canonical base terrain type."))
 	if not doc.data.has("terrain_tiles"):return
 	var entries:Variant=doc.data.terrain_tiles
@@ -83,6 +160,7 @@ static func _validate_universal_objects(doc: MapDocument, issues: Array[Dictiona
 	if not doc.data.has("objects"): return
 	if not doc.data.objects is Array: issues.append(_issue("error", "$.objects", "Expected an array of universal map objects.")); return
 	var supported := ["tree.main","tree.palm","flower.red_ginger","flower.torch_ginger","flower.blue","flower.orchid","flower.passion_vine_horizontal","cave.vine","structure.bridge","block.water","block.sand","block.rock","building.house","building.medical_ward","background.citybuilding_00","background.citybuilding_01","background.citybuilding_02","background.citybuilding_03","background.citybuilding_04","background.citybuilding_apartment_00","background.citybuilding_apartment_01","background.citybuilding_apartment_02","background.citybuilding_apartment_03","background.citybuilding_apartment_04","npc.generic","npc.opponent","wall.fence"]
+	supported.append("structure.canal_lock")
 	var instance_ids:Dictionary={};var valid_hosts:Dictionary={}
 	for i in doc.data.objects.size():
 		var candidate:Variant=doc.data.objects[i]
@@ -110,7 +188,7 @@ static func _validate_universal_objects(doc: MapDocument, issues: Array[Dictiona
 			var attachment_order:Variant=value.get("attachment_order",null)
 			if not (attachment_order is int or attachment_order is float) or float(attachment_order)<0.0 or not is_equal_approx(float(attachment_order),floorf(float(attachment_order))):issues.append(_issue("error",path+".attachment_order","Attachment order must be a non-negative integer."))
 		if type_id=="wall.fence":
-			if String(value.get("wall_set",""))!="generic_wall":issues.append(_issue("error",path+".wall_set","Unknown Wall/Fence asset."))
+			if String(value.get("wall_set","")) not in ["generic_wall","canal_wall"]:issues.append(_issue("error",path+".wall_set","Unknown Wall/Fence asset."))
 			var points:Variant=value.get("points",[])
 			if not points is Array or points.size()<2:issues.append(_issue("error",path+".points","Walls require at least two anchor points."))
 			else:
@@ -124,6 +202,18 @@ static func _validate_universal_objects(doc: MapDocument, issues: Array[Dictiona
 			continue
 		_numeric_array(value.get("position", null), 3, path + ".position", issues)
 		if value.has("size"): _numeric_array(value.size, 3, path + ".size", issues)
+		if type_id=="structure.canal_lock":
+			for key:String in ["gate_scale","animation_time","height"]:
+				var number:Variant=value.get(key,1.0)
+				if not (number is int or number is float) or not is_finite(float(number)) or float(number)<=0.0:issues.append(_issue("error",path+"."+key,"Gate values must be finite positive numbers."))
+			for key:String in ["rotation_degrees","sort_offset_y"]:
+				var number:Variant=value.get(key,0.0)
+				if not (number is int or number is float) or not is_finite(float(number)):issues.append(_issue("error",path+"."+key,"Expected a finite number."))
+			for key:String in ["autoplay","loop"]:
+				if not value.get(key,true) is bool:issues.append(_issue("error",path+"."+key,"Expected a boolean."))
+			if value.get("size") is Array:
+				for component:Variant in value.size:
+					if (component is int or component is float) and (not is_finite(float(component)) or float(component)<=0.0):issues.append(_issue("error",path+".size","Collider dimensions must be finite positive numbers."))
 		if type_id == "structure.bridge":
 			if String(value.get("orientation", "")) not in ["horizontal", "vertical"]: issues.append(_issue("error", path + ".orientation", "Bridge orientation must be horizontal or vertical."))
 			_validate_bridge_number(value,"length",path,issues,3.0,true)
@@ -197,7 +287,17 @@ static func _validate_shape(value: Variant, shape: String, path: String, issues:
 					else:
 						_numeric_array(value[i], 3, "%s[%d]" % [path, i], issues)
 				elif shape == "trees": _numeric_array(value[i], 4, "%s[%d]" % [path, i], issues)
-				elif shape == "blocks": _numeric_array(value[i], 6, "%s[%d]" % [path, i], issues)
+				elif shape == "blocks":
+					var block:Variant=value[i];var block_path:="%s[%d]"%[path,i]
+					if path.ends_with("wall_blocks") and block is Array and block.size()==7 and block[6] is Dictionary:
+						_numeric_array(block.slice(0,6),6,block_path,issues)
+						var config:Dictionary=block[6]
+						if config.has("offset"):_numeric_array(config.offset,3,block_path+".collider.offset",issues)
+						if config.has("size"):
+							_numeric_array(config.size,3,block_path+".collider.size",issues)
+							if config.size is Array and config.size.any(func(v):return (v is int or v is float) and float(v)<=0):issues.append(_issue("error",block_path,"Collider dimensions must be positive."))
+						if config.has("enabled") and not config.enabled is bool:issues.append(_issue("error",block_path,"Collider enabled must be boolean."))
+					else:_numeric_array(block,6,block_path,issues)
 				elif shape == "furnishings":
 					if not value[i] is Dictionary:issues.append(_issue("error","%s[%d]"%[path,i],"Expected a furnishing object."))
 					else:
@@ -238,10 +338,11 @@ static func _validate_bounds(doc: MapDocument, issues: Array[Dictionary]) -> voi
 	if not size is Array or size.size() < 2: return
 	var limit_x := float(size[0]) * 0.5 + 2.5
 	var limit_z := float(size[1]) * 0.5 + 2.5
+	var center:=preload("res://core/map_bounds.gd").center(doc.data)
 	for field in doc.data:
 		if MapSchemaRef.is_marker_field(String(field)) and doc.data[field] is Array and doc.data[field].size() >= 3 and MapSchemaRef.coordinate_space(doc.kind, String(field)) == "map_local":
 			var p: Array = doc.data[field]
-			if absf(float(p[0])) > limit_x or absf(float(p[2])) > limit_z: issues.append(_issue("warning", "$." + String(field), "Marker is well outside the nominal map bounds."))
+			if absf(float(p[0])-center.x) > limit_x or absf(float(p[2])-center.y) > limit_z: issues.append(_issue("warning", "$." + String(field), "Marker is well outside the nominal map bounds."))
 
 static func _validate_dangerous_overlaps(doc: MapDocument, issues: Array[Dictionary]) -> void:
 	var markers: Array[Dictionary] = []

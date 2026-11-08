@@ -7,6 +7,41 @@ static var definitions: Dictionary = {}
 static var loaded := false
 static var current_frames: Dictionary = {}
 static var bindings: Dictionary = {}
+static var visibility_signature:Array=[]
+const CameraView := preload("res://world/terrain_camera_view.gd")
+
+# Shared frame textures remain shared. A variant advances if ANY nearby consumer
+# needs it; offscreen-only variants pause writes, not their logical clock.
+static func register_terrain(texture:Texture2D,node:MeshInstance3D)->void:
+	for key in bindings:
+		var binding:Dictionary=bindings[key]
+		if binding.texture!=texture:continue
+		if not binding.has("consumers"):binding["consumers"]=[]
+		var box:AABB=node.global_transform*node.mesh.get_aabb()
+		binding.consumers.append({"node":weakref(node),"bounds":Rect2(Vector2(box.position.x,box.position.z),Vector2(box.size.x,box.size.z))})
+		binding["active"]=false
+		visibility_signature=[]
+		return
+
+static func update_visibility(camera:Camera3D,layer:int)->void:
+	var signature:=CameraView.signature(camera)+[layer]
+	if signature==visibility_signature:return
+	visibility_signature=signature
+	var view:=CameraView.ground_rect(camera).grow(0.5)
+	for binding in bindings.values():
+		if not binding.has("consumers"):continue
+		var active:=false
+		for index in range(binding.consumers.size()-1,-1,-1):
+			var consumer:Dictionary=binding.consumers[index]
+			var node:MeshInstance3D=consumer.node.get_ref()
+			if node==null:binding.consumers.remove_at(index);continue
+			if int(node.get_meta("visual_layer",layer))==layer and node.visible and view.intersects(consumer.bounds,true):active=true
+		binding.active=active
+		# Re-entry synchronizes before rendering, even between animation ticks.
+		if active:
+			var frame:=frame_index(binding.id,elapsed)
+			if binding.texture.current_frame!=frame:binding.texture.current_frame=frame
+
 
 static func definition(id: String) -> Dictionary:
 	if not loaded:
@@ -78,5 +113,6 @@ static func advance(delta: float) -> void:
 	if not changed: return
 	for key: String in bindings:
 		var binding: Dictionary = bindings[key]
+		if not binding.get("active",true):continue
 		var frame: int = current_frames[binding.id]
 		if binding.texture.current_frame != frame: binding.texture.current_frame = frame

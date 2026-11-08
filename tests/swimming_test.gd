@@ -41,6 +41,10 @@ func _initialize() -> void:
 	main.adventure_started = true
 	main.player_gender = "Male"
 	main.player_palette_preset = "medium"
+	for direction: String in ["left", "right"]:
+		var cycle: Array = main._player_animation_frames("walk_" + direction)
+		var neutral: AtlasTexture = main.PlayerSpriteFrames.frames("Male", "idle_" + direction, main.player_atlas)[0]
+		assert(cycle.size() == 4 and cycle[1].region == neutral.region and cycle[3].region == neutral.region, "Both male side strides must pass through neutral.")
 	# Editor-authored outdoor maps must use their own terrain grid for Swimgear.
 	main.active_authored_map_id="jalovea_city"
 	var jalovea:Dictionary=main.map_data.authored_maps["jalovea_city"]
@@ -53,8 +57,29 @@ func _initialize() -> void:
 	var jalovea_origin:=Vector3(float(jalovea.origin[0]),float(jalovea.origin[1]),float(jalovea.origin[2]))
 	var jalovea_water_position:=jalovea_origin+Vector3(jalovea_water.x,0.65,jalovea_water.y)
 	assert(main._terrain_at(jalovea_water_position)=="water","Jalovea's authored terrain grid must be available to Swimgear.")
-	await main._start_swimming(jalovea_water_position,"down")
+	var shore_position: Vector3 = main.player.position
+	# Keep automatic movement from shifting the actor before landing assertions.
+	main.set_physics_process(false)
+	main._start_swimming(jalovea_water_position,"down")
+	await create_timer(main.DIVE_NEUTRAL_TIME + main.DIVE_THROW_TIME + main.DIVE_BACKPACK_LAND_TIME + main.DIVE_JUMP_TIME * 0.5).timeout
+	assert(main.swim_transitioning and not main.swimming, "Input must stay locked during the shoreline jump.")
+	assert(not main.player.position.is_equal_approx(shore_position) and not main.player.position.is_equal_approx(jalovea_water_position), "The jump must travel between shore and water instead of teleporting.")
+	assert(main.swim_jump_height > 0.0, "The shoreline jump must rise above the ground.")
+	# Moving the camera must reproject the effect at its saved water contact.
+	main.camera.position.x += 1.0
+	main._update_sort_canvas()
+	assert(main.swim_transition_effect_root.position.is_equal_approx(main.camera.unproject_position(jalovea_water_position)), "Dive effects must remain anchored to water when the camera changes.")
+	# Catch the held jump frame being restored by per-frame platform sorting.
+	while main.swim_jump_height > 0.0:
+		await process_frame
+	assert(main.swim_transitioning and main.swim_transition_effect_root.visible, "Landing must start the splash phase.")
+	main._update_sort_canvas()
+	assert(not main.player_sort_root.visible, "Platform sorting must keep the last jump frame hidden during the splash.")
+	while main.swim_transitioning:
+		await process_frame
 	assert(main.swimming and main.player.position.is_equal_approx(jalovea_water_position),"Swimming must start on Jalovea's authored water.")
+	assert(main.player_sort_root.visible and (main.player_sort_root.get_node("Visual") as Sprite2D).visible and not main.swim_transition_effect_root.visible, "Swimming must restore the actor and hide the splash.")
+	main.set_physics_process(true)
 	main._finish_swimming(jalovea_origin+Vector3.ZERO)
 	# This is the smallest valid outdoor map emitted by the map editor after a
 	# water-tile paint. It proves authored maps do not need a Jalovea-specific path.

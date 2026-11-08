@@ -40,11 +40,11 @@ func add_default(map: Dictionary) -> int:
 	if not map.npcs is Array or not load_error.is_empty(): return -1
 	var id := next_id(map.npcs)
 	map.npcs.append({"id":id, "position":[0.0,0.0,0.0], "facing":"down"})
-	definitions[str(id)] = {"type":"human", "sprite":"Young Man", "interaction_text":""}
+	definitions[str(id)] = {"type":"human", "sprite":"Young Man", "interaction_text":"", "hidden":false}
 	return id
 
 func issues(map: Dictionary, visuals: RefCounted) -> Array[Dictionary]:
-	var result: Array[Dictionary] = []
+	var result: Array[Dictionary] = preload("vehicle_patrols.gd").issues(map, visuals)
 	if not load_error.is_empty(): result.append(_issue("$.npcs", load_error))
 	var placements: Variant = map.get("npcs", [])
 	if not placements is Array:
@@ -72,7 +72,8 @@ func issues(map: Dictionary, visuals: RefCounted) -> Array[Dictionary]:
 			result.append(_issue(path, "Missing NPC definition %d in companion file." % id)); continue
 		if not definition.get("type") is String or not definition.get("sprite") is String or not visuals.available(String(definition.get("type", "")), String(definition.get("sprite", ""))):
 			result.append(_issue(path, "Unavailable NPC type/sprite for ID %d." % id))
-		if not definition.get("interaction_text") is String: result.append(_issue(path, "NPC interaction_text must be a string."))
+		if definition.has("hidden") and not definition.hidden is bool: result.append(_issue(path, "NPC hidden must be a boolean."))
+		if definition.get("type") != "vehicle" and not definition.get("interaction_text") is String: result.append(_issue(path, "NPC interaction_text must be a string."))
 		var traversal_error := Movement.traversal_error(definition)
 		if not traversal_error.is_empty(): result.append(_issue(path, traversal_error))
 		if definition.has("movement"):

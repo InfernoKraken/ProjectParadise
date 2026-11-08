@@ -13,6 +13,17 @@
 		"sprite": "Sylvafin",
 		"type": "fakemon"
 	},
+	"10": {
+		"interaction_text": "Why hello, are you here for the Professor?\nThat doesn't really help me narrow it down for you. What is the department?",
+		"sprite": "Scientist",
+		"type": "human"
+	},
+	"11": {
+		"hidden": true,
+		"interaction_text": "",
+		"sprite": "Professor",
+		"type": "human"
+	},
 	"2": {
 		"height_offset": 1.5,
 		"interaction_text": "Spicy, peppy parrot.",
@@ -51,6 +62,38 @@
 			]
 		},
 		"sprite": "Young Man",
+		"type": "human"
+	},
+	"5": {
+		"interaction_text": "Can you imagine taking care of that many plants?\nSome people here make a hobby of exploring Jalovea's forests, looking for unusual flowers and useful things they can bring home.",
+		"movement": {
+			"preset": "random",
+			"range": [
+				1.0,
+				1.0
+			]
+		},
+		"sprite": "Young Man",
+		"type": "human"
+	},
+	"6": {
+		"interaction_text": "That little guy keeps begging me for spicy peppers.\nHe already seems to know my voice, even though I've only been here for an hour.",
+		"sprite": "Young Woman",
+		"type": "human"
+	},
+	"7": {
+		"interaction_text": "Call me crazy, but there's something almost angelic about this Fakemon.\nMaybe it's the grace, the gentleness... No. I'm sure there's something more.",
+		"sprite": "Young Man",
+		"type": "human"
+	},
+	"8": {
+		"interaction_text": "Dad and I saw a flying eyeball flower in the trees up there!\nI bet it evolves into something HUGE!",
+		"sprite": "Young Boy",
+		"type": "human"
+	},
+	"9": {
+		"interaction_text": "People come from all around to see the rare Fakemon we're studying. I can't blame them.\nBut now I have to watch the specimens and the visitors. Especially that young man who keeps trying to feed the angelfish whatever his \"little angel\" wants.",
+		"sprite": "Scientist",
 		"type": "human"
 	}
 }

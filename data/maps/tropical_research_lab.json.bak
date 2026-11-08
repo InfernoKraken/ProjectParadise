@@ -23,6 +23,28 @@
 		"layout_type": "outdoor",
 		"tags": []
 	},
+	"map_script_headers": [
+		{
+			"false_block": "MapEntry1False",
+			"flag": "PlayerIsPicking",
+			"true_block": "MapEntry1True"
+		},
+		{
+			"false_block": "StarterFireVisible",
+			"flag": "StarterFire",
+			"true_block": "StarterFireHidden"
+		},
+		{
+			"false_block": "StarterWaterVisible",
+			"flag": "StarterWater",
+			"true_block": "StarterWaterHidden"
+		},
+		{
+			"false_block": "StarterGrassVisible",
+			"flag": "StarterGrass",
+			"true_block": "StarterGrassHidden"
+		}
+	],
 	"map_type": "Rainforest",
 	"npcs": [
 		{
@@ -60,6 +82,69 @@
 				0.0,
 				6.69999980926514
 			]
+		},
+		{
+			"facing": "down",
+			"id": 5,
+			"position": [
+				8.25,
+				0.0,
+				0.5
+			]
+		},
+		{
+			"facing": "up",
+			"id": 6,
+			"position": [
+				-7.5,
+				0.0,
+				-1.0
+			]
+		},
+		{
+			"facing": "left",
+			"id": 7,
+			"position": [
+				3.0,
+				0.0,
+				2.0
+			]
+		},
+		{
+			"facing": "down",
+			"id": 8,
+			"position": [
+				9.0,
+				0.0,
+				1.25
+			]
+		},
+		{
+			"facing": "down",
+			"id": 9,
+			"position": [
+				5.0,
+				0.0,
+				0.25
+			]
+		},
+		{
+			"facing": "down",
+			"id": 10,
+			"position": [
+				-6.75,
+				0.0,
+				-8.5
+			]
+		},
+		{
+			"facing": "down",
+			"id": 11,
+			"position": [
+				-3.0,
+				0.0,
+				-7.0
+			]
 		}
 	],
 	"objects": [
@@ -76,6 +161,7 @@
 				3.0,
 				5.5
 			],
+			"sort_offset_y": -1.5,
 			"type": "building.building_tropical_research_lab"
 		},
 		{
@@ -2176,6 +2262,21 @@
 			"type": "asset.outdoor_street_lamp"
 		},
 		{
+			"asset_path": "res://assets/overworld/outdoor_street_lamp.png",
+			"height": 1.0,
+			"position": [
+				3.59999990463257,
+				0.0,
+				-9.60000038146973
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.outdoor_street_lamp"
+		},
+		{
 			"height": 4.2,
 			"instance_id": "placed-1790950369-2336046384",
 			"position": [
@@ -2506,7 +2607,7 @@
 				1.0
 			],
 			"type": "asset.vegitation_fern_small",
-			"variant": 0
+			"variant": 0.0
 		},
 		{
 			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
@@ -2745,7 +2846,7 @@
 				1.0
 			],
 			"type": "asset.submerged_water_props_generic",
-			"variant": 1
+			"variant": 1.0
 		},
 		{
 			"asset_path": "res://assets/overworld/overlay_orchid_swan.png",
@@ -2860,10 +2961,206 @@
 	"return_warp": [
 		0,
 		0.11999999731779,
-		10.0
+		9.60000038146973
 	],
 	"rocks": [],
 	"sand_blocks": [],
+	"script_interactions": {
+		"npc:1": "AngelfishScript",
+		"npc:11": "OutdoorProfessor",
+		"npc:2": "ParrotScript",
+		"npc:3": "OrchidScript"
+	},
+	"script_paths": [
+		{
+			"name": "ParrotMove",
+			"nodes": [
+				[
+					-5.94999980926514,
+					-2.09999990463257
+				],
+				[
+					-7.34999990463257,
+					-3.84999990463257
+				],
+				[
+					-8.39999961853027,
+					-1.75
+				],
+				[
+					-7.69999980926514,
+					-0.34999999403954
+				],
+				[
+					-5.94999980926514,
+					-1.75
+				],
+				[
+					-5.94999980926514,
+					-2.09999990463257
+				]
+			],
+			"type": "MOVE"
+		},
+		{
+			"name": "AngelfishPath",
+			"nodes": [
+				[
+					-7.0,
+					-2.0
+				],
+				[
+					-3.5,
+					-1.0
+				]
+			],
+			"type": "MOVE"
+		},
+		{
+			"name": "OrchidPath",
+			"nodes": [
+				[
+					-3.5,
+					-1.0
+				],
+				[
+					-7.5,
+					2.0
+				],
+				[
+					-7.5,
+					4.0
+				],
+				[
+					-6.0,
+					4.5
+				],
+				[
+					6.0,
+					4.5
+				],
+				[
+					6.0,
+					2.5
+				],
+				[
+					7.0,
+					0.0
+				],
+				[
+					10.0,
+					1.0
+				],
+				[
+					10.8000001907349,
+					0.0
+				],
+				[
+					9.89999961853027,
+					-2.70000004768372
+				],
+				[
+					9.44999980926514,
+					-3.59999990463257
+				]
+			],
+			"type": "MOVE"
+		},
+		{
+			"name": "ParrotPath",
+			"nodes": [
+				[
+					-3.0,
+					-7.0
+				],
+				[
+					-3.0,
+					-5.0
+				],
+				[
+					-3.59999990463257,
+					-3.59999990463257
+				],
+				[
+					-4.0,
+					-3.0
+				],
+				[
+					-4.0,
+					-1.0
+				],
+				[
+					-6.0,
+					-1.0
+				],
+				[
+					-7.0,
+					-1.0
+				],
+				[
+					-7.0,
+					-2.0
+				]
+			],
+			"type": "MOVE"
+		},
+		{
+			"name": "ProfessorToParrot",
+			"nodes": [
+				[
+					-3.0,
+					-7.0
+				],
+				[
+					-3.0,
+					-5.0
+				],
+				[
+					-3.59999990463257,
+					-3.59999990463257
+				],
+				[
+					-4.0,
+					-3.0
+				],
+				[
+					-4.0,
+					-1.0
+				],
+				[
+					-6.0,
+					-1.0
+				],
+				[
+					-6.75,
+					-1.0
+				],
+				[
+					-7.0,
+					-2.0
+				]
+			],
+			"type": "MOVE"
+		},
+		{
+			"name": "FishApproach",
+			"nodes": [
+				[
+					0.0,
+					-1.0
+				],
+				[
+					-2.0,
+					-1.0
+				]
+			],
+			"type": "MOVE"
+		}
+	],
+	"script_source": "Block ParrotScript:\n    IfFlag Starter ParrotIdle\n    IfFlag PlayerIsPicking StarterFire\n    Call ParrotIdle\nEnd\n\nBlock ParrotIdle:\n    TextBox \"Squawk!\"\n    MoveSprite NPC2 ParrotMove\nEnd\n\nBlock StarterFire:\n    IfFlag Starter ParrotIdle\n    TextBoxYesNo \"Would you like to choose Scorchick as your starter?\"\n    IfYes ReceiveStarterFire\n    IfNo DeclineStarter\n    Return\nEnd\n\nBlock ReceiveStarterFire:\n    GiveFakemon Scorchick 5\n    SetFlag Starter\n    SetFlag StarterFire\n    HideSprite NPC2\n    TextBox \"Scorchick joined your party!\"\nEnd\n\nBlock AngelfishScript:\n    IfFlag Starter AngelfishIdle\n    IfFlag PlayerIsPicking StarterWater\n    Call AngelfishIdle\nEnd\n\nBlock AngelfishIdle:\n    TextBox \"Sylvafin watches you with curiosity.\"\nEnd\n\nBlock StarterWater:\n    IfFlag Starter AngelfishIdle\n    TextBoxYesNo \"Would you like to choose Sylvafin as your starter?\"\n    IfYes ReceiveStarterWater\n    IfNo DeclineStarter\n    Return\nEnd\n\nBlock ReceiveStarterWater:\n    GiveFakemon Sylvafin 5\n    SetFlag Starter\n    SetFlag StarterWater\n    HideSprite NPC1\n    TextBox \"Sylvafin joined your party!\"\nEnd\n\nBlock OrchidScript:\n    IfFlag Starter OrchidIdle\n    IfFlag PlayerIsPicking StarterGrass\n    Call OrchidIdle\nEnd\n\nBlock OrchidIdle:\n    TextBox \"Keklid watches you with curiosity.\"\nEnd\n\nBlock StarterGrass:\n    IfFlag Starter OrchidIdle\n    TextBoxYesNo \"Would you like to choose Keklid as your starter?\"\n    IfYes ReceiveStarterGrass\n    IfNo DeclineStarter\n    Return\nEnd\n\nBlock ReceiveStarterGrass:\n    GiveFakemon Keklid 5\n    SetFlag Starter\n    SetFlag StarterGrass\n    HideSprite NPC3\n    TextBox \"Keklid joined your party!\"\nEnd\n\nBlock DeclineStarter:\n    Return\nEnd\n\nBlock OutdoorProfessor:\n  Lock\n  TextBox \"This will be so much fun! I wonder how they will think of you.\"\n  MoveSprite NPC11 ProfessorToParrot\n  FollowSprite Player NPC11\n  WaitMovement Player\n  FaceSprite Player Parrot\n TextBox \"Scorchic is a fine choice. The perky little parrot loves to sun itself on it's rock. This one seems energized by your presence.\"\nWait 2\nMoveSprite NPC11 AngelfishPath\nWaitMovement Player\nTextBox \"Sylvafin are such graceful Fakemon, a truly remarkable sight to behold.\"\nMoveSprite 1 FishApproach\nWait 2\nTextBox \"Oh look! This one thinks you are worth its attention!\"\nMoveSprite NPC11 OrchidPath\nResumeMovement 1\nWaitMovement Player\nTextBox \"A wild wonder, perhaps nothing exceplifies abudence and mystery like Keklid. Strange isn't it? The flower seems to understand you. \"\nWait 2\nFaceSprite NPC11 Player\nTextBox \"Take your time. I recognize it can be hard to choose only one of these.\"\nStopFollowing Player\nUnlock\nEnd\nBlock MapEntry1True:\n    // Commands when the flag is true\n    ShowSprite NPC11\n    End\nBlock MapEntry1False:\n    // Commands when false or unset\n    HideSprite NPC11\n    End\n\nBlock StarterFireHidden:\n    HideSprite NPC2\nEnd\nBlock StarterFireVisible:\n    ShowSprite NPC2\nEnd\n\nBlock StarterWaterHidden:\n    HideSprite NPC1\nEnd\nBlock StarterWaterVisible:\n    ShowSprite NPC1\nEnd\n\nBlock StarterGrassHidden:\n    HideSprite NPC3\nEnd\nBlock StarterGrassVisible:\n    ShowSprite NPC3\nEnd\n",
+	"script_sprite_names": {
+		"Parrot": 2
+	},
 	"size": [
 		23.0,
 		20
@@ -3766,7 +4063,8 @@
 			"entrance_map": "jalovea_city.json",
 			"entrance_map_warp_id": 2,
 			"facing": "generic",
-			"id": 1
+			"id": 1,
+			"show_sprite": true
 		},
 		"warp_2": {
 			"entrance_map": "tropical_research_institute_indoor.json",

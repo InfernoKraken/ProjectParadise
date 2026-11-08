@@ -1,0 +1,104 @@
+{
+	"1": {
+		"hidden": false,
+		"interaction_text": "I moved to Jalovea City in search for work. Compared to where I was from, there is more opportunity here.\n\n\\n\nIt will be good to finally stake my claim here, and who knows? Perhaps meet the gal of my dreams and buy this home.",
+		"sprite": "Young Man",
+		"type": "human"
+	},
+	"10": {
+		"hidden": false,
+		"interaction_text": "This is my little birdie. Isn't he soo cute?",
+		"sprite": "Young Girl",
+		"type": "human"
+	},
+	"11": {
+		"hidden": false,
+		"interaction_text": "I'm telling dad you entered our house.",
+		"sprite": "Young Boy",
+		"type": "human"
+	},
+	"2": {
+		"hidden": false,
+		"interaction_text": "I love my children. I really do. But sometimes I wish I had a small break.",
+		"sprite": "Young Woman",
+		"type": "human"
+	},
+	"3": {
+		"hidden": false,
+		"interaction_text": "I wish I could play outside.\n\nBut mommy said the strangers by the water aren't safe.\nThey aren't from here, I heard.",
+		"movement": {
+			"preset": "left_right",
+			"range": [
+				2.0,
+				2.0
+			]
+		},
+		"sprite": "Young Boy",
+		"type": "human"
+	},
+	"4": {
+		"hidden": false,
+		"interaction_text": "I played out side, and now I am so itchy.\n\nSkeeter are mean.",
+		"movement": {
+			"preset": "random",
+			"range": [
+				2.0,
+				2.0
+			]
+		},
+		"sprite": "Young Girl",
+		"type": "human"
+	},
+	"5": {
+		"hidden": false,
+		"interaction_text": "I miss daddy. He works too much.",
+		"movement": {
+			"preset": "random",
+			"range": [
+				2.0,
+				2.0
+			]
+		},
+		"sprite": "Young Boy",
+		"type": "human"
+	},
+	"6": {
+		"hidden": false,
+		"interaction_text": "Nice day today, but I've elected to read this afternoon. What books are you interested in?",
+		"sprite": "Young Man",
+		"type": "human"
+	},
+	"7": {
+		"hidden": false,
+		"interaction_text": "*Sigh*\nI married a bookworm. I do wish he would go to the markets with me more often.",
+		"movement": {
+			"preset": "random",
+			"range": [
+				2.5,
+				3.25
+			]
+		},
+		"sprite": "Young Woman",
+		"type": "human"
+	},
+	"8": {
+		"hidden": false,
+		"interaction_text": "This Dartlet seems to rule the roost around here.",
+		"movement": {
+			"preset": "random",
+			"range": [
+				5.0,
+				5.0
+			]
+		},
+		"sprite": "Dartlet",
+		"type": "fakemon"
+	},
+	"9": {
+		"height_offset": 0.0,
+		"hidden": false,
+		"interaction_text": "Lochip seems content with this arrangement.",
+		"sprite": "Lochirp",
+		"type": "fakemon"
+	}
+}

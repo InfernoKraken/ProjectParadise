@@ -1,0 +1,682 @@
+{
+	"arrival_points": {
+		"entry": [
+			0,
+			0.64999997615814,
+			2.5
+		]
+	},
+	"base_terrain_type": "indoor_floor_tile_00",
+	"entry": [
+		0,
+		0.64999997615814,
+		2.5
+	],
+	"floor_blocks": [],
+	"format_version": 2,
+	"furnishings": [
+		{
+			"height": 2.35,
+			"position": [
+				3.59999990463257,
+				0.0,
+				-1.79999995231628
+			],
+			"type": "bed"
+		},
+		{
+			"height": 2.35,
+			"position": [
+				-3.59999990463257,
+				0.0,
+				-1.79999995231628
+			],
+			"type": "bed"
+		},
+		{
+			"height": 2.05,
+			"position": [
+				2.40000009536743,
+				0.0,
+				-3.29999995231628
+			],
+			"type": "dresser"
+		},
+		{
+			"height": 2.05,
+			"position": [
+				-2.40000009536743,
+				0.0,
+				-3.29999995231628
+			],
+			"type": "dresser"
+		},
+		{
+			"height": 1.85,
+			"position": [
+				3.59999990463257,
+				0.0,
+				-0.44999998807907
+			],
+			"type": "ward_curtain"
+		},
+		{
+			"height": 1.85,
+			"position": [
+				-1.35000002384186,
+				0.0,
+				-3.45000004768372
+			],
+			"type": "ward_wash"
+		},
+		{
+			"height": 1.85,
+			"position": [
+				1.35000004768372,
+				0.0,
+				-3.44999990463257
+			],
+			"type": "ward_wash"
+		},
+		{
+			"height": 2.0,
+			"position": [
+				3.59999990463257,
+				0.0,
+				0.75
+			],
+			"type": "hutch"
+		},
+		{
+			"height": 1.85,
+			"position": [
+				2.35999989509583,
+				0.0,
+				-0.44999998807907
+			],
+			"type": "ward_curtain"
+		},
+		{
+			"height": 1.3,
+			"position": [
+				3.15000009536743,
+				0.0,
+				2.54999995231628
+			],
+			"type": "table"
+		},
+		{
+			"height": 1.0,
+			"position": [
+				-2.84999990463257,
+				0.0,
+				0.60000002384186
+			],
+			"type": "houseplant_2"
+		}
+	],
+	"grass_zones": [],
+	"layout_instances": [
+		{
+			"id": "house_1",
+			"npcs": [
+				{
+					"facing": "down",
+					"id": 1.0,
+					"position": [
+						0.0,
+						0.0,
+						0.0
+					]
+				}
+			],
+			"warp_destinations": {
+				"return_warp": {
+					"entrance_map": "jalovea_city.json",
+					"entrance_map_warp_id": 3
+				}
+			}
+		},
+		{
+			"id": "house_2",
+			"npcs": [
+				{
+					"facing": "down",
+					"id": 2.0,
+					"position": [
+						-2.0,
+						0.0,
+						1.5
+					]
+				},
+				{
+					"facing": "down",
+					"id": 3.0,
+					"position": [
+						-3.0,
+						0.0,
+						-1.0
+					]
+				},
+				{
+					"facing": "down",
+					"id": 4.0,
+					"position": [
+						2.5,
+						0.0,
+						1.0
+					]
+				},
+				{
+					"facing": "down",
+					"id": 5.0,
+					"position": [
+						3.0,
+						0.0,
+						3.5
+					]
+				}
+			],
+			"warp_destinations": {
+				"return_warp": {
+					"entrance_map": "jalovea_city.json",
+					"entrance_map_warp_id": 4
+				}
+			}
+		},
+		{
+			"id": "house_3",
+			"npcs": [
+				{
+					"facing": "down",
+					"id": 6,
+					"position": [
+						-2.75,
+						0.0,
+						1.5
+					]
+				},
+				{
+					"facing": "down",
+					"id": 7,
+					"position": [
+						1.75,
+						0.0,
+						-2.5
+					]
+				}
+			],
+			"warp_destinations": {
+				"return_warp": {
+					"entrance_map_warp_id": 5
+				}
+			}
+		},
+		{
+			"id": "house_4",
+			"npcs": [
+				{
+					"facing": "down",
+					"id": 8,
+					"position": [
+						0.0,
+						0.0,
+						0.5
+					]
+				},
+				{
+					"facing": "down",
+					"id": 10,
+					"position": [
+						-2.5,
+						0.0,
+						-2.5
+					]
+				},
+				{
+					"facing": "down",
+					"id": 11,
+					"position": [
+						-3.25,
+						0.0,
+						2.5
+					]
+				},
+				{
+					"facing": "down",
+					"id": 9,
+					"position": [
+						-3.25,
+						0.0,
+						-2.75
+					]
+				}
+			],
+			"warp_destinations": {
+				"return_warp": {
+					"entrance_map_warp_id": 6
+				}
+			}
+		}
+	],
+	"map_metadata": {
+		"display_name": "jalovea_city_house_standard",
+		"group": "custom",
+		"id": "Jalvoea House 00",
+		"layout_type": "indoor",
+		"tags": []
+	},
+	"map_type": "Rainforest",
+	"npcs": [
+		{
+			"facing": "down",
+			"id": 2,
+			"position": [
+				-2.0,
+				0.0,
+				1.5
+			]
+		},
+		{
+			"facing": "down",
+			"id": 3,
+			"position": [
+				-3.0,
+				0.0,
+				-1.0
+			]
+		},
+		{
+			"facing": "down",
+			"id": 4,
+			"position": [
+				2.5,
+				0.0,
+				1.0
+			]
+		},
+		{
+			"facing": "down",
+			"id": 5,
+			"position": [
+				3.0,
+				0.0,
+				3.5
+			]
+		},
+		{
+			"facing": "down",
+			"id": 6,
+			"position": [
+				-2.75,
+				0.0,
+				1.5
+			]
+		},
+		{
+			"facing": "down",
+			"id": 7,
+			"position": [
+				1.75,
+				0.0,
+				-2.5
+			]
+		},
+		{
+			"facing": "down",
+			"id": 8,
+			"position": [
+				0.0,
+				0.0,
+				0.5
+			]
+		},
+		{
+			"facing": "down",
+			"id": 9,
+			"position": [
+				-3.25,
+				0.0,
+				-2.75
+			]
+		},
+		{
+			"facing": "down",
+			"id": 10,
+			"position": [
+				-2.5,
+				0.0,
+				-2.5
+			]
+		},
+		{
+			"facing": "down",
+			"id": 11,
+			"position": [
+				-3.25,
+				0.0,
+				2.5
+			]
+		}
+	],
+	"objects": [
+		{
+			"asset_path": "res://assets/overworld/indoor_couch_double.png",
+			"height": 1.0,
+			"position": [
+				-2.25,
+				0.0,
+				1.5
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_couch_double"
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_bookshelf_double.png",
+			"height": 1.35,
+			"position": [
+				-3.75,
+				0.0,
+				0.89999997615814
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_bookshelf_double"
+		},
+		{
+			"asset_path": "res://assets/overworld/tile_wall_interior.png",
+			"height": 1.0,
+			"position": [
+				-3.90000009536743,
+				0.0,
+				-4.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.tile_wall_interior"
+		},
+		{
+			"asset_path": "res://assets/overworld/tile_wall_interior.png",
+			"height": 1.0,
+			"position": [
+				-2.90000009536743,
+				0.0,
+				-4.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.tile_wall_interior"
+		},
+		{
+			"asset_path": "res://assets/overworld/tile_wall_interior.png",
+			"height": 1.0,
+			"position": [
+				-2.09999990463257,
+				0.0,
+				-4.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.tile_wall_interior"
+		},
+		{
+			"asset_path": "res://assets/overworld/tile_wall_interior.png",
+			"height": 1.0,
+			"position": [
+				-1.10000002384186,
+				0.0,
+				-4.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.tile_wall_interior"
+		},
+		{
+			"asset_path": "res://assets/overworld/tile_wall_interior.png",
+			"height": 1.0,
+			"position": [
+				-0.30000001192093,
+				0.0,
+				-4.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.tile_wall_interior"
+		},
+		{
+			"asset_path": "res://assets/overworld/tile_wall_interior.png",
+			"height": 1.0,
+			"position": [
+				0.68000000715256,
+				0.0,
+				-4.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.tile_wall_interior"
+		},
+		{
+			"asset_path": "res://assets/overworld/tile_wall_interior.png",
+			"height": 1.0,
+			"position": [
+				1.5,
+				0.0,
+				-4.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.tile_wall_interior"
+		},
+		{
+			"asset_path": "res://assets/overworld/tile_wall_interior.png",
+			"height": 1.0,
+			"position": [
+				2.48000001907349,
+				0.0,
+				-4.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.tile_wall_interior"
+		},
+		{
+			"asset_path": "res://assets/overworld/tile_wall_interior.png",
+			"height": 1.0,
+			"position": [
+				3.27999997138977,
+				0.0,
+				-4.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.tile_wall_interior"
+		},
+		{
+			"asset_path": "res://assets/overworld/tile_wall_interior.png",
+			"height": 1.0,
+			"position": [
+				3.85999989509583,
+				0.0,
+				-4.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.tile_wall_interior"
+		},
+		{
+			"asset_path": "res://assets/overworld/tile_wall_interior.png",
+			"height": 1.0,
+			"position": [
+				3.75,
+				0.0,
+				0.15000000596046
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.tile_wall_interior"
+		},
+		{
+			"asset_path": "res://assets/overworld/tile_wall_interior.png",
+			"height": 1.0,
+			"position": [
+				2.76999998092651,
+				0.0,
+				0.15000000596046
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.tile_wall_interior"
+		},
+		{
+			"asset_path": "res://assets/overworld/tile_wall_interior.png",
+			"height": 1.0,
+			"position": [
+				-3.75,
+				0.0,
+				0.15000000596046
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.tile_wall_interior"
+		},
+		{
+			"asset_path": "res://assets/overworld/tile_wall_interior.png",
+			"height": 1.0,
+			"position": [
+				-2.75,
+				0.0,
+				0.15000000596046
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.tile_wall_interior"
+		},
+		{
+			"asset_path": "res://assets/overworld/tile_wall_interior.png",
+			"height": 1.0,
+			"position": [
+				-1.75,
+				0.0,
+				0.15000000596046
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.tile_wall_interior"
+		},
+		{
+			"asset_path": "res://assets/overworld/tile_wall_interior.png",
+			"height": 1.0,
+			"position": [
+				1.79999995231628,
+				0.0,
+				0.15000000596046
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.tile_wall_interior"
+		}
+	],
+	"orchids": [],
+	"origin": [
+		380,
+		0,
+		0
+	],
+	"outdoor_connections": [],
+	"return_warp": [
+		0,
+		0.11999999731779,
+		3.75
+	],
+	"rocks": [],
+	"sand_blocks": [],
+	"shared_layout": true,
+	"size": [
+		8.5,
+		7.65000009536743
+	],
+	"tall_grass_species": [],
+	"terrain_tiles": [
+		{
+			"terrain_type": "indoor_floor_tile"
+		}
+	],
+	"vines": [],
+	"wall_blocks": [
+		[
+			-0.00999999977648,
+			1.20000004768372,
+			-4.80000019073486,
+			8.69999980926514,
+			0.30000001192093,
+			1.79999995231628
+		]
+	],
+	"warp_metadata": {
+		"return_warp": {
+			"entrance_map": "jalovea_city.json",
+			"entrance_map_warp_id": 3,
+			"facing": "generic",
+			"id": 1,
+			"show_sprite": true
+		}
+	},
+	"water_blocks": [],
+	"water_encounter_chance": 0.0,
+	"water_species": []
+}

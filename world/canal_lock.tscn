@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/canal_lock.gd" id="1"]
+
+[node name="CanalLock" type="Node3D"]
+script = ExtResource("1")
+
+[node name="Visual" type="Sprite3D" parent="."]
+texture_filter = 0
+billboard = 1
+
+[node name="Body" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Body"]

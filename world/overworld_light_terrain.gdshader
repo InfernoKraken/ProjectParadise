@@ -18,7 +18,11 @@ uniform vec2 uv_scale = vec2(1.0);
 uniform vec2 uv_offset = vec2(0.0);
 uniform vec4 base_color : source_color = vec4(1.0);
 uniform bool billboard_enabled = false;
+uniform bool clip_to_border = false;
+uniform vec4 border_rect;
+varying vec2 border_position;
 void vertex() {
+ border_position = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xz;
  if (billboard_enabled) {
   MODELVIEW_MATRIX = VIEW_MATRIX * mat4(
    INV_VIEW_MATRIX[0] * length(MODEL_MATRIX[0].xyz),
@@ -28,6 +32,9 @@ void vertex() {
  }
 }
 void fragment() {
+ if (clip_to_border && (any(lessThan(border_position, border_rect.xy)) || any(greaterThanEqual(border_position, border_rect.zw)))) {
+  discard;
+ }
  vec4 tex = texture(albedo_texture, UV * uv_scale + uv_offset) * base_color;
  ALBEDO = tex.rgb * mix(night_tint.rgb, vec3(1.0), illumination(SCREEN_UV * viewport_size));
  ALPHA = tex.a;

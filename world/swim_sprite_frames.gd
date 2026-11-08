@@ -3,18 +3,19 @@ extends RefCounted
 
 # Explicit crops from the authored, labelled swimming and diving sheets. Keeping
 # these here makes the runtime independent of image-content scanning.
+# Updated swimming sheet: four columns, with separate padded direction rows.
 const SWIM_REGIONS := {
 	"Male": {
-		"down": [Rect2i(180, 5, 350, 105), Rect2i(560, 5, 350, 105), Rect2i(945, 5, 350, 105), Rect2i(1325, 5, 350, 105)],
-		"up": [Rect2i(180, 110, 350, 108), Rect2i(560, 110, 350, 108), Rect2i(945, 110, 350, 108), Rect2i(1325, 110, 350, 108)],
-		"left": [Rect2i(180, 218, 350, 105), Rect2i(560, 218, 350, 105), Rect2i(945, 218, 350, 105), Rect2i(1325, 218, 350, 105)],
-		"right": [Rect2i(180, 323, 350, 107), Rect2i(560, 323, 350, 107), Rect2i(945, 323, 350, 107), Rect2i(1325, 323, 350, 107)],
+		"down": [Rect2i(180, 0, 350, 126), Rect2i(560, 0, 350, 126), Rect2i(945, 0, 350, 126), Rect2i(1325, 0, 350, 126)],
+		"up": [Rect2i(180, 128, 350, 116), Rect2i(560, 128, 350, 116), Rect2i(945, 128, 350, 116), Rect2i(1325, 128, 350, 116)],
+		"left": [Rect2i(180, 250, 350, 126), Rect2i(560, 250, 350, 126), Rect2i(945, 250, 350, 126), Rect2i(1325, 250, 350, 126)],
+		"right": [Rect2i(180, 376, 350, 120), Rect2i(560, 376, 350, 120), Rect2i(945, 376, 350, 120), Rect2i(1325, 376, 350, 120)],
 	},
 	"Female": {
-		"down": [Rect2i(180, 439, 350, 111), Rect2i(560, 439, 350, 111), Rect2i(945, 439, 350, 111), Rect2i(1325, 439, 350, 111)],
-		"up": [Rect2i(180, 550, 350, 99), Rect2i(560, 550, 350, 99), Rect2i(945, 550, 350, 99), Rect2i(1325, 550, 350, 99)],
-		"left": [Rect2i(180, 653, 350, 111), Rect2i(560, 653, 350, 111), Rect2i(945, 653, 350, 111), Rect2i(1325, 653, 350, 111)],
-		"right": [Rect2i(180, 764, 350, 111), Rect2i(560, 764, 350, 111), Rect2i(945, 764, 350, 111), Rect2i(1325, 764, 350, 111)],
+		"down": [Rect2i(180, 684, 350, 132), Rect2i(560, 684, 350, 132), Rect2i(945, 684, 350, 132), Rect2i(1325, 684, 350, 132)],
+		"up": [Rect2i(180, 816, 350, 116), Rect2i(560, 816, 350, 116), Rect2i(945, 816, 350, 116), Rect2i(1325, 816, 350, 116)],
+		"left": [Rect2i(180, 944, 350, 122), Rect2i(560, 944, 350, 122), Rect2i(945, 944, 350, 122), Rect2i(1325, 944, 350, 122)],
+		"right": [Rect2i(180, 1074, 350, 126), Rect2i(560, 1074, 350, 126), Rect2i(945, 1074, 350, 126), Rect2i(1325, 1074, 350, 126)],
 	},
 }
 

@@ -61,8 +61,8 @@
 	],
 	"return_warp": [
 		0,
-		0.12,
-		10.45
+		0.11999999731779,
+		10.0
 	],
 	"size": [
 		26,
@@ -172,5 +172,14 @@
 			8,
 			1
 		]
-	]
+	],
+	"warp_metadata": {
+		"return_warp": {
+			"entrance_map": "canopy_route.json",
+			"entrance_map_warp_id": 1,
+			"facing": "generic",
+			"id": 1,
+			"show_sprite": true
+		}
+	}
 }

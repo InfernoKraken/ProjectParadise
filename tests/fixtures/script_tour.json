@@ -1,0 +1,9 @@
+{
+  "script_sprite_names": {"Professor": 1},
+  "script_paths": [
+    {"name": "ProfessorApproach", "type": "MOVE", "nodes": [[0, 0], [2, 0]]},
+    {"name": "FossilSpeakingPosition", "type": "MOVE", "nodes": [[2, 0], [2, 1]]},
+    {"name": "InstituteTour", "type": "FOLLOW", "nodes": [[0, 0], [2, 0], [2, 4]]}
+  ],
+  "script_source": "Block BeginTour:\n Lock\n TextBox \"Come with me.\"\n MoveSprite Professor ProfessorApproach\n FaceSprite Professor Player\n FollowSprite Professor Player InstituteTour\n Unlock\nEnd\n\nBlock StopAtExhibit:\n Lock\n StopFollowing Professor\n MoveSprite Professor FossilSpeakingPosition\n FaceSprite Professor Player\n TextBox \"This specimen was discovered during excavation.\"\n FollowSprite Professor Player InstituteTour\n Unlock\nEnd"
+}

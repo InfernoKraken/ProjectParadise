@@ -1,5 +1,4 @@
 {
-	"map_type": "Indoor",
 	"door": [
 		-7,
 		0.12,
@@ -15,7 +14,6 @@
 		0.11999999731779,
 		3.5
 	],
-	"staff": [0.0, 0.65, -1.25],
 	"exterior_return": [
 		-7,
 		0.65,
@@ -24,7 +22,7 @@
 	"floor_blocks": [
 		[
 			0,
-			-0.1,
+			-0.10000000149012,
 			0,
 			8,
 			0.2,
@@ -53,16 +51,16 @@
 		{
 			"height": 0.95,
 			"position": [
-				0.0,
+				-3.0,
 				0,
-				-2.0
+				0.0
 			],
 			"type": "ward_table"
 		},
 		{
 			"height": 1.85,
 			"position": [
-				2.95,
+				3.0,
 				0,
 				-1
 			],
@@ -71,7 +69,7 @@
 		{
 			"height": 1.85,
 			"position": [
-				2.0,
+				3.0,
 				0,
 				-2.0
 			],
@@ -81,6 +79,18 @@
 	"interior_size": [
 		8,
 		7
+	],
+	"map_type": "Indoor",
+	"npcs": [
+		{
+			"facing": "down",
+			"id": 1,
+			"position": [
+				0.0,
+				0,
+				-1.25
+			]
+		}
 	],
 	"origin": [
 		40,
@@ -92,6 +102,10 @@
 		1.5,
 		-5
 	],
+	"script_interactions": {
+		"npc:1": "MedicalWardCare"
+	},
+	"script_source": "Block MedicalWardCare:\r\n    Lock\r\n    TextBox \"Welcome to the medical ward.\"\r\n    TextBox \"Leave your Fakemon with me for a moment, and I will restore them to full health.\"\r\n    HealParty\r\n    TextBox \"Your party is fully rested. We hope to see you again!\"\r\n    Unlock\r\n    End\r\n",
 	"size": [
 		5,
 		3,

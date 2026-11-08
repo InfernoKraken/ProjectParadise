@@ -14,6 +14,7 @@ static func load_catalog(path: String) -> AssetCatalog:
 	if json.parse(file.get_as_text()) != OK or not json.data is Dictionary:
 		catalog.error = "Invalid asset catalog JSON."; return catalog
 	catalog.entries = json.data.get("entries", [])
+	catalog.entries.append({"type_id":"structure.canal_lock", "display_name":"Canal Lock (Animated)", "category":"Watercraft & Canal", "preview_texture":"assets/animations/canal_locks_main_frame_0.png", "scale_mode":"target_height", "display_height":4.0, "default_size":[6.0,2.0,0.4], "default_y":0.0, "footprint":"serialized size.xz", "snap":0.1, "collision":{"shape":"box","from_serialized_size":true}, "serialization":{"kind":"object","fields":["objects"],"object_type":"structure.canal_lock"}, "coordinate_space":"map_local"})
 	catalog._append_imported_overworld_sprites(path)
 	catalog._apply_animation_previews(path)
 	for entry in catalog.entries: catalog.by_id[String(entry.get("type_id", ""))] = entry
@@ -61,7 +62,7 @@ func _append_imported_sprite(relative_path:String,filename:String,project_root:S
 	if relative_id.length()>3 and relative_id.substr(relative_id.length()-3,1)=="_" and relative_id.right(2).is_valid_int():
 		family_id=relative_id.left(relative_id.length()-3);variant_value=int(relative_id.right(2))
 	if family_id in ["moss_rose","sunflower_cluster"] and variant_value>=0:family_id+="_small"
-	var is_building:=family_id=="building_tropical_research_lab"
+	var is_building:=family_id=="building_tropical_research_lab" or family_id=="building_shops"
 	var is_stream_tile:=family_id.begins_with("overlay_terrain_stream") or family_id=="overlay_stream_north"
 	var is_overlay:=family_id.begins_with("overlay_") and not is_stream_tile
 	var type_id:=("building." if is_building else ("tile." if is_stream_tile else ("overlay." if is_overlay else "asset.")))+family_id.trim_prefix("overlay_")
@@ -80,6 +81,9 @@ func _append_imported_sprite(relative_path:String,filename:String,project_root:S
 	var entry:={"type_id":type_id,"display_name":labels.name.trim_prefix("Overlay "),"category":"Water Terrain" if is_stream_tile else ("Overlays" if is_overlay else labels.category),"preview_texture":relative_path,"asset_path":"res://"+relative_path,"scale_mode":"explicit_size" if is_stream_tile else ("target_width" if is_building else "target_height"),"display_height":0.45 if is_small_plant else 1.0,"default_size":stream_size if is_stream_tile else null,"default_y":1.5 if is_building else (0.2 if is_small_plant else 0.0),"footprint":"serialized size.xz" if is_building or is_stream_tile else ([0.4,0.3] if is_small_plant else [0.8,0.8]),"front_depth_extension":0.0,"snap":0.5 if is_small_plant else 0.1,"collision":{"shape":"box","from_serialized_size":true,"terrain_layer":"water"} if is_stream_tile else ({"shape":"box","from_serialized_size":true,"anchor":"front"} if is_building else {"shape":"none"}),"supports_rotation":is_overlay or is_stream_tile,"inherits":"block.water" if is_stream_tile else "","variants":[variant_record] if variant_value>=0 else [],"serialization":{"kind":"object","fields":["objects"],"object_type":type_id},"coordinate_space":"map_local"}
 	if not is_stream_tile:entry.erase("default_size")
 	var metadata:=load_metadata(project_root.path_join(relative_path))
+	entry["render_band"]=int(metadata.get("render_band",0))
+	entry["sort_offset_y"]=float(metadata.get("sort_offset_y",0.0))
+	entry["wall_overlay"]=bool(metadata.get("wall_overlay",false))
 	if metadata.get("collision") is Dictionary and String(metadata.collision.get("type",""))=="polygon":entry["collision"]=metadata.collision.duplicate(true)
 	if bool(metadata.get("standardize_scale",false)):
 		entry["display_height"]=float(metadata.get("visual_height",entry.display_height))
@@ -129,7 +133,7 @@ static func validate_polygon_collision(collision:Variant)->Array[String]:
 		var point:Variant=raw[index]
 		if not point is Array or point.size()!=2 or not (point[0] is int or point[0] is float) or not (point[1] is int or point[1] is float):errors.append("Vertex %d must contain two numbers."%(index+1));continue
 		var parsed:=Vector2(float(point[0]),float(point[1]));points.append(parsed)
-		if parsed.x<0.0 or parsed.x>1.0 or parsed.y<0.0 or parsed.y>1.0:errors.append("Vertex %d must stay within normalized 0–1 sprite coordinates."%(index+1))
+		if not parsed.is_finite():errors.append("Vertex %d must contain finite coordinates."%(index+1))
 		if index>0 and parsed.distance_squared_to(points[index-1])<0.000001:errors.append("Consecutive polygon vertices must not be duplicates.")
 	if points.size()!=raw.size():return errors
 	if points[0].distance_squared_to(points[-1])<0.000001:errors.append("The closing vertex is implicit; do not duplicate the first vertex at the end.")

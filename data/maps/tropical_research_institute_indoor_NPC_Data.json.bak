@@ -1,0 +1,70 @@
+{
+	"1": {
+		"interaction_text": "",
+		"sprite": "Young Man",
+		"type": "human"
+	},
+	"2": {
+		"interaction_text": "",
+		"movement": {
+			"preset": "random",
+			"range": [
+				2.0,
+				2.0
+			]
+		},
+		"sprite": "Professor",
+		"type": "human"
+	},
+	"3": {
+		"interaction_text": "The fossil to your right was uncovered when the canal was dug. It was later donated to the Institute by the state.\nWhat's interesting about it? Well, we don't know of any animal or Fakemon with a skeleton quite like this one.\nI'm an optimist, so I'd rather believe we've found something rare or ancient than admit we reconstructed it incorrectly.",
+		"movement": {
+			"preset": "look_around",
+			"range": [
+				2.0,
+				2.0
+			]
+		},
+		"sprite": "Scientist",
+		"type": "human"
+	},
+	"4": {
+		"interaction_text": "Look at all the pretty flowers!",
+		"sprite": "Young Girl",
+		"type": "human"
+	},
+	"5": {
+		"interaction_text": "I want to learn how to preserve flowers like these. They even managed to keep their shape and color!",
+		"sprite": "Young Woman",
+		"type": "human"
+	},
+	"6": {
+		"interaction_text": "We put quite a lot of work into explaining the ecology behind that flower display.\nMost visitors seem to come away wanting to decorate their homes.\nAt least they like the flowers.",
+		"movement": {
+			"preset": "look_around",
+			"range": [
+				2.0,
+				2.0
+			]
+		},
+		"sprite": "Scientist",
+		"type": "human"
+	},
+	"7": {
+		"interaction_text": "Dad says to not run, so I'm walking quickly!",
+		"movement": {
+			"preset": "counterclockwise",
+			"range": [
+				1.0,
+				1.0
+			]
+		},
+		"sprite": "Young Boy",
+		"type": "human"
+	},
+	"8": {
+		"interaction_text": "I subscribe to the Institute's newsletter. I moved down from the mountains a few years ago, so now I can finally see some of these treasures for myself.\nIt's nice being around other Jaloveans here. Tourists aren't always in the mood for conversation.",
+		"sprite": "Young Man",
+		"type": "human"
+	}
+}

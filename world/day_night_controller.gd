@@ -163,6 +163,10 @@ func _install_canvas_lighting(node: Node) -> void:
 	for child in node.get_children():
 		_install_canvas_lighting(child)
 
+func apply_world_material_lighting(material: ShaderMaterial) -> void:
+	var tint := sampled_color(float(clock.get_day_progress())) if is_day_night_enabled() and clock != null else Color.WHITE
+	_update_light_material(material, tint)
+
 func _update_light_material(material: ShaderMaterial, tint: Color) -> void:
 	if int(material.get_meta("light_update_generation", -1)) == material_update_generation:
 		return

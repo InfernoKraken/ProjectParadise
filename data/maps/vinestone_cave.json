@@ -159,5 +159,14 @@
 			0.15,
 			-3.8
 		]
-	]
+	],
+	"warp_metadata": {
+		"exit_warp": {
+			"entrance_map": "eastern_rainforest_route.json",
+			"entrance_map_warp_id": 1,
+			"facing": "generic",
+			"id": 1,
+			"show_sprite": true
+		}
+	}
 }

@@ -1,0 +1,14 @@
+{
+	"2": {
+		"hidden": false,
+		"interaction_text": "",
+		"sprite": "Tug",
+		"type": "vehicle"
+	},
+	"3": {
+		"hidden": false,
+		"interaction_text": "",
+		"sprite": "Tug",
+		"type": "vehicle"
+	}
+}

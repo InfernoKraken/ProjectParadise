@@ -1,0 +1,3772 @@
+{
+	"arrival_points": {
+		"entry": [
+			0,
+			0.64999997615814,
+			7.0
+		]
+	},
+	"base_terrain_type": "forest_floor",
+	"borders": {
+		"east": {
+			"cells": {
+				"0,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,10": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,11": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,12": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,13": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,14": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,15": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,16": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,17": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,18": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,19": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,4": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,5": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,6": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,7": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,8": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,9": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				}
+			},
+			"depth": 1,
+			"enabled": true
+		},
+		"north": {
+			"cells": {
+				"0,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"0,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"1,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"1,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"1,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"1,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"10,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"10,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"10,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"10,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"11,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"11,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"11,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"11,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"12,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"12,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"12,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"12,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"13,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"13,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"13,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"13,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"14,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"14,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"14,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"14,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"15,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"15,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"15,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"15,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"16,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"16,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"16,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"16,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"17,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"17,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"17,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"17,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"18,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"18,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"18,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"18,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"19,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"19,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"19,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"19,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"2,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"2,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"2,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"2,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"20,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"20,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"20,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"20,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"21,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"21,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"21,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"21,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"3,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"3,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"3,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"3,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"4,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"4,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"4,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"4,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"5,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"5,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"5,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"5,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"6,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"6,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"6,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"6,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"7,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"7,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"7,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"7,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"8,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"8,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"8,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"8,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"9,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					}
+				},
+				"9,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"9,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"9,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				}
+			},
+			"depth": 4,
+			"enabled": true
+		},
+		"south": {
+			"cells": {
+				"0,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"1,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"10,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"11,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"12,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"13,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"14,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"15,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"16,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"17,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"18,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"19,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"2,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"20,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"21,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"3,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"4,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"5,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"6,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"7,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"8,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"9,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				}
+			},
+			"depth": 1,
+			"enabled": true
+		},
+		"west": {
+			"cells": {
+				"0,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,10": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,11": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,12": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,13": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,14": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,15": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,16": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,17": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,18": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,19": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,4": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,5": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,6": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,7": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,8": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,9": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				}
+			},
+			"depth": 1,
+			"enabled": true
+		}
+	},
+	"bounds_center": [
+		1.0,
+		0.0
+	],
+	"entry": [
+		0,
+		0.64999997615814,
+		7.0
+	],
+	"floor_blocks": [],
+	"format_version": 2,
+	"furnishings": [],
+	"grass_zones": [],
+	"map_metadata": {
+		"display_name": "Challenger Center",
+		"group": "custom",
+		"id": "challenger_center_jalvoea_city",
+		"layout_type": "indoor",
+		"tags": []
+	},
+	"map_type": "Indoor",
+	"objects": [
+		{
+			"asset_path": "res://assets/overworld/tile_earthy_museum_floor.png",
+			"height": 1.0,
+			"position": [
+				-5.0,
+				0.0,
+				0.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.tile_earthy_museum_floor"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_pen_massive.png",
+			"height": 5.55,
+			"position": [
+				-6.0,
+				0.0,
+				-4.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_pen_massive"
+		},
+		{
+			"asset_path": "res://assets/overworld/museum_pillar.png",
+			"height": 1.0,
+			"position": [
+				-10.0,
+				0.0,
+				-5.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.museum_pillar"
+		},
+		{
+			"asset_path": "res://assets/overworld/museum_pillar.png",
+			"height": 1.0,
+			"position": [
+				-10.0,
+				0.0,
+				-6.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.museum_pillar"
+		}
+	],
+	"orchids": [],
+	"origin": [
+		429.25,
+		0.0,
+		0.0
+	],
+	"outdoor_connections": [],
+	"return_warp": [
+		0,
+		0.11999999731779,
+		9.0
+	],
+	"rocks": [],
+	"sand_blocks": [],
+	"size": [
+		22.0,
+		20
+	],
+	"tall_grass_species": [],
+	"terrain_tiles": [
+		{
+			"positions": [
+				[
+					-1,
+					0
+				],
+				[
+					0,
+					1
+				],
+				[
+					0,
+					0
+				],
+				[
+					1,
+					0
+				],
+				[
+					-1,
+					-1
+				],
+				[
+					0,
+					-1
+				],
+				[
+					1,
+					-1
+				],
+				[
+					1,
+					-2
+				],
+				[
+					0,
+					-2
+				],
+				[
+					-1,
+					-2
+				],
+				[
+					-2,
+					-2
+				],
+				[
+					-2,
+					-1
+				],
+				[
+					-2,
+					0
+				],
+				[
+					-2,
+					1
+				],
+				[
+					-2,
+					2
+				],
+				[
+					-1,
+					2
+				],
+				[
+					-1,
+					1
+				],
+				[
+					0,
+					2
+				],
+				[
+					0,
+					3
+				],
+				[
+					1,
+					3
+				],
+				[
+					1,
+					2
+				],
+				[
+					2,
+					2
+				],
+				[
+					2,
+					1
+				],
+				[
+					1,
+					1
+				],
+				[
+					-1,
+					3
+				],
+				[
+					-2,
+					3
+				],
+				[
+					2,
+					3
+				],
+				[
+					3,
+					3
+				],
+				[
+					2,
+					0
+				],
+				[
+					2,
+					-1
+				],
+				[
+					2,
+					-2
+				],
+				[
+					3,
+					-2
+				],
+				[
+					3,
+					-1
+				],
+				[
+					3,
+					0
+				],
+				[
+					3,
+					1
+				],
+				[
+					3,
+					2
+				]
+			],
+			"terrain_type": "dark_museum_floor"
+		},
+		{
+			"positions": [
+				[
+					-3,
+					-2
+				],
+				[
+					-3,
+					-1
+				],
+				[
+					-2,
+					4
+				],
+				[
+					-1,
+					4
+				],
+				[
+					0,
+					4
+				],
+				[
+					1,
+					4
+				],
+				[
+					4,
+					3
+				],
+				[
+					4,
+					2
+				],
+				[
+					4,
+					1
+				],
+				[
+					5,
+					1
+				],
+				[
+					5,
+					0
+				],
+				[
+					4,
+					0
+				],
+				[
+					4,
+					-1
+				],
+				[
+					4,
+					-2
+				],
+				[
+					5,
+					-2
+				],
+				[
+					5,
+					-1
+				],
+				[
+					5,
+					2
+				],
+				[
+					5,
+					3
+				],
+				[
+					2,
+					-3
+				],
+				[
+					1,
+					-3
+				],
+				[
+					0,
+					-3
+				],
+				[
+					-1,
+					-3
+				],
+				[
+					-2,
+					-3
+				],
+				[
+					-3,
+					-3
+				],
+				[
+					-4,
+					-3
+				],
+				[
+					-4,
+					-2
+				],
+				[
+					-4,
+					-1
+				],
+				[
+					-2,
+					5
+				],
+				[
+					-1,
+					5
+				],
+				[
+					0,
+					5
+				],
+				[
+					1,
+					5
+				],
+				[
+					-4,
+					-4
+				],
+				[
+					-3,
+					-4
+				],
+				[
+					-2,
+					-4
+				],
+				[
+					-1,
+					-4
+				],
+				[
+					0,
+					-4
+				],
+				[
+					1,
+					-4
+				],
+				[
+					2,
+					-4
+				],
+				[
+					-1,
+					-6
+				],
+				[
+					-2,
+					-5
+				],
+				[
+					-2,
+					-6
+				],
+				[
+					-2,
+					-7
+				],
+				[
+					-2,
+					-8
+				],
+				[
+					-2,
+					-9
+				],
+				[
+					-3,
+					-8
+				],
+				[
+					-3,
+					-6
+				],
+				[
+					-3,
+					-5
+				],
+				[
+					-3,
+					-10
+				],
+				[
+					-4,
+					-6
+				],
+				[
+					-4,
+					-9
+				],
+				[
+					-3,
+					-9
+				],
+				[
+					-3,
+					-7
+				],
+				[
+					-4,
+					-10
+				],
+				[
+					-5,
+					-10
+				],
+				[
+					-6,
+					-10
+				],
+				[
+					-7,
+					-10
+				],
+				[
+					-8,
+					-10
+				],
+				[
+					-9,
+					-10
+				],
+				[
+					-10,
+					-9
+				],
+				[
+					-10,
+					-8
+				],
+				[
+					-10,
+					-10
+				],
+				[
+					-10,
+					-7
+				],
+				[
+					-10,
+					-6
+				],
+				[
+					-10,
+					-5
+				],
+				[
+					-9,
+					-4
+				],
+				[
+					-9,
+					-3
+				],
+				[
+					-10,
+					-2
+				],
+				[
+					-10,
+					-1
+				],
+				[
+					-10,
+					-3
+				],
+				[
+					-10,
+					-4
+				],
+				[
+					-8,
+					-3
+				],
+				[
+					-8,
+					-4
+				],
+				[
+					-8,
+					-5
+				],
+				[
+					-9,
+					-5
+				],
+				[
+					-9,
+					-6
+				],
+				[
+					-9,
+					-8
+				],
+				[
+					-9,
+					-9
+				],
+				[
+					-8,
+					-9
+				],
+				[
+					-8,
+					-8
+				],
+				[
+					-6,
+					-8
+				],
+				[
+					-8,
+					-7
+				],
+				[
+					-7,
+					-8
+				],
+				[
+					-9,
+					-7
+				],
+				[
+					-6,
+					-9
+				],
+				[
+					-7,
+					-9
+				],
+				[
+					-5,
+					-9
+				],
+				[
+					-5,
+					-8
+				],
+				[
+					-5,
+					-7
+				],
+				[
+					-4,
+					-8
+				],
+				[
+					-7,
+					-7
+				],
+				[
+					-4,
+					-7
+				],
+				[
+					-7,
+					-6
+				],
+				[
+					-6,
+					-6
+				],
+				[
+					-5,
+					-6
+				],
+				[
+					-6,
+					-7
+				],
+				[
+					-8,
+					-6
+				],
+				[
+					-7,
+					-5
+				],
+				[
+					-4,
+					-5
+				],
+				[
+					-6,
+					-4
+				],
+				[
+					-5,
+					-5
+				],
+				[
+					-6,
+					-5
+				],
+				[
+					-7,
+					-4
+				],
+				[
+					-2,
+					-10
+				],
+				[
+					-1,
+					-10
+				],
+				[
+					-1.0,
+					-5.0
+				],
+				[
+					-1.0,
+					-8.0
+				],
+				[
+					-1.0,
+					-9.0
+				],
+				[
+					-1,
+					-7.0
+				],
+				[
+					9.0,
+					3.0
+				],
+				[
+					9.0,
+					2.0
+				],
+				[
+					9.0,
+					1.0
+				],
+				[
+					9,
+					0.0
+				],
+				[
+					9,
+					-1.0
+				],
+				[
+					9,
+					-2.0
+				],
+				[
+					8.0,
+					-2.0
+				],
+				[
+					7.0,
+					-1
+				],
+				[
+					6.0,
+					-1.0
+				],
+				[
+					6.0,
+					0.0
+				],
+				[
+					6.0,
+					-2.0
+				],
+				[
+					8.0,
+					-1.0
+				],
+				[
+					8.0,
+					0.0
+				],
+				[
+					7.0,
+					-2.0
+				],
+				[
+					7.0,
+					0.0
+				],
+				[
+					6.0,
+					2.0
+				],
+				[
+					6.0,
+					3.0
+				],
+				[
+					6,
+					1.0
+				],
+				[
+					8.0,
+					2.0
+				],
+				[
+					7.0,
+					2.0
+				],
+				[
+					7.0,
+					1.0
+				],
+				[
+					8,
+					1.0
+				],
+				[
+					8.0,
+					3.0
+				],
+				[
+					7,
+					3.0
+				],
+				[
+					1.0,
+					6.0
+				],
+				[
+					0.0,
+					6.0
+				],
+				[
+					-1.0,
+					6.0
+				],
+				[
+					-2.0,
+					6.0
+				],
+				[
+					-2.0,
+					7.0
+				],
+				[
+					-2.0,
+					8.0
+				],
+				[
+					-2.0,
+					9.0
+				],
+				[
+					-2.0,
+					10.0
+				],
+				[
+					-1.0,
+					10.0
+				],
+				[
+					0.0,
+					10.0
+				],
+				[
+					1.0,
+					10.0
+				],
+				[
+					1.0,
+					7.0
+				],
+				[
+					1.0,
+					8.0
+				],
+				[
+					1.0,
+					9.0
+				],
+				[
+					-1.0,
+					7.0
+				],
+				[
+					-1.0,
+					9
+				],
+				[
+					0.0,
+					9.0
+				],
+				[
+					0.0,
+					8.0
+				],
+				[
+					0,
+					7.0
+				],
+				[
+					-1.0,
+					8.0
+				],
+				[
+					-5.0,
+					-3.0
+				],
+				[
+					-5.0,
+					-4.0
+				],
+				[
+					-5.0,
+					-2.0
+				],
+				[
+					-6.0,
+					-1.0
+				],
+				[
+					-6.0,
+					-2.0
+				],
+				[
+					-5.0,
+					-1.0
+				],
+				[
+					-7.0,
+					-1.0
+				],
+				[
+					-7.0,
+					-2.0
+				],
+				[
+					-6.0,
+					-3.0
+				],
+				[
+					-8.0,
+					-1.0
+				],
+				[
+					-9.0,
+					-1.0
+				],
+				[
+					-9.0,
+					-2
+				],
+				[
+					-7.0,
+					-3.0
+				],
+				[
+					-8.0,
+					-2
+				]
+			],
+			"terrain_type": "earthy_museum_floor"
+		},
+		{
+			"positions": [
+				[
+					3,
+					-4
+				],
+				[
+					3,
+					-3
+				],
+				[
+					4,
+					-4
+				],
+				[
+					4,
+					-3
+				],
+				[
+					5,
+					-4
+				],
+				[
+					5,
+					-3
+				],
+				[
+					6,
+					-4
+				],
+				[
+					6,
+					-3
+				],
+				[
+					7,
+					-4
+				],
+				[
+					7,
+					-3
+				],
+				[
+					8,
+					-4
+				],
+				[
+					8,
+					-3
+				],
+				[
+					9,
+					-4
+				],
+				[
+					9,
+					-3
+				]
+			],
+			"terrain_type": "earthy_museum_floor"
+		},
+		{
+			"positions": [
+				[
+					0,
+					-10
+				],
+				[
+					0,
+					-9
+				],
+				[
+					0,
+					-8
+				],
+				[
+					0,
+					-7
+				],
+				[
+					0,
+					-6
+				],
+				[
+					0,
+					-5
+				],
+				[
+					1,
+					-10
+				],
+				[
+					1,
+					-9
+				],
+				[
+					1,
+					-8
+				],
+				[
+					1,
+					-7
+				],
+				[
+					1,
+					-6
+				],
+				[
+					1,
+					-5
+				],
+				[
+					2,
+					-10
+				],
+				[
+					2,
+					-9
+				],
+				[
+					2,
+					-8
+				],
+				[
+					2,
+					-7
+				],
+				[
+					2,
+					-6
+				],
+				[
+					2,
+					-5
+				],
+				[
+					3,
+					-10
+				],
+				[
+					3,
+					-9
+				],
+				[
+					3,
+					-8
+				],
+				[
+					3,
+					-7
+				],
+				[
+					3,
+					-6
+				],
+				[
+					3,
+					-5
+				],
+				[
+					4,
+					-10
+				],
+				[
+					4,
+					-9
+				],
+				[
+					4,
+					-8
+				],
+				[
+					4,
+					-7
+				],
+				[
+					4,
+					-6
+				],
+				[
+					4,
+					-5
+				],
+				[
+					5,
+					-10
+				],
+				[
+					5,
+					-9
+				],
+				[
+					5,
+					-8
+				],
+				[
+					5,
+					-7
+				],
+				[
+					5,
+					-6
+				],
+				[
+					5,
+					-5
+				],
+				[
+					6,
+					-10
+				],
+				[
+					6,
+					-9
+				],
+				[
+					6,
+					-8
+				],
+				[
+					6,
+					-7
+				],
+				[
+					6,
+					-6
+				],
+				[
+					6,
+					-5
+				],
+				[
+					7,
+					-10
+				],
+				[
+					7,
+					-9
+				],
+				[
+					7,
+					-8
+				],
+				[
+					7,
+					-7
+				],
+				[
+					7,
+					-6
+				],
+				[
+					7,
+					-5
+				],
+				[
+					8,
+					-10
+				],
+				[
+					8,
+					-9
+				],
+				[
+					8,
+					-8
+				],
+				[
+					8,
+					-7
+				],
+				[
+					8,
+					-6
+				],
+				[
+					8,
+					-5
+				],
+				[
+					9,
+					-10
+				],
+				[
+					9,
+					-9
+				],
+				[
+					9,
+					-8
+				],
+				[
+					9,
+					-7
+				],
+				[
+					9,
+					-6
+				],
+				[
+					9,
+					-5
+				]
+			],
+			"terrain_type": "earthy_museum_floor"
+		},
+		{
+			"positions": [
+				[
+					-10,
+					0
+				],
+				[
+					-10,
+					1
+				],
+				[
+					-10,
+					2
+				],
+				[
+					-10,
+					3
+				],
+				[
+					-10,
+					4
+				],
+				[
+					-10,
+					5
+				],
+				[
+					-10,
+					6
+				],
+				[
+					-10,
+					7
+				],
+				[
+					-10,
+					8
+				],
+				[
+					-10,
+					9
+				],
+				[
+					-10,
+					10
+				],
+				[
+					-9,
+					0
+				],
+				[
+					-9,
+					1
+				],
+				[
+					-9,
+					2
+				],
+				[
+					-9,
+					3
+				],
+				[
+					-9,
+					4
+				],
+				[
+					-9,
+					5
+				],
+				[
+					-9,
+					6
+				],
+				[
+					-9,
+					7
+				],
+				[
+					-9,
+					8
+				],
+				[
+					-9,
+					9
+				],
+				[
+					-9,
+					10
+				],
+				[
+					-8,
+					0
+				],
+				[
+					-8,
+					1
+				],
+				[
+					-8,
+					2
+				],
+				[
+					-8,
+					3
+				],
+				[
+					-8,
+					4
+				],
+				[
+					-8,
+					5
+				],
+				[
+					-8,
+					6
+				],
+				[
+					-8,
+					7
+				],
+				[
+					-8,
+					8
+				],
+				[
+					-8,
+					9
+				],
+				[
+					-8,
+					10
+				],
+				[
+					-7,
+					0
+				],
+				[
+					-7,
+					1
+				],
+				[
+					-7,
+					2
+				],
+				[
+					-7,
+					3
+				],
+				[
+					-7,
+					4
+				],
+				[
+					-7,
+					5
+				],
+				[
+					-7,
+					6
+				],
+				[
+					-7,
+					7
+				],
+				[
+					-7,
+					8
+				],
+				[
+					-7,
+					9
+				],
+				[
+					-7,
+					10
+				],
+				[
+					-6,
+					0
+				],
+				[
+					-6,
+					1
+				],
+				[
+					-6,
+					2
+				],
+				[
+					-6,
+					3
+				],
+				[
+					-6,
+					4
+				],
+				[
+					-6,
+					5
+				],
+				[
+					-6,
+					6
+				],
+				[
+					-6,
+					7
+				],
+				[
+					-6,
+					8
+				],
+				[
+					-6,
+					9
+				],
+				[
+					-6,
+					10
+				],
+				[
+					-5,
+					0
+				],
+				[
+					-5,
+					1
+				],
+				[
+					-5,
+					2
+				],
+				[
+					-5,
+					3
+				],
+				[
+					-5,
+					4
+				],
+				[
+					-5,
+					5
+				],
+				[
+					-5,
+					6
+				],
+				[
+					-5,
+					7
+				],
+				[
+					-5,
+					8
+				],
+				[
+					-5,
+					9
+				],
+				[
+					-5,
+					10
+				],
+				[
+					-4,
+					0
+				],
+				[
+					-4,
+					1
+				],
+				[
+					-4,
+					2
+				],
+				[
+					-4,
+					3
+				],
+				[
+					-4,
+					4
+				],
+				[
+					-4,
+					5
+				],
+				[
+					-4,
+					6
+				],
+				[
+					-4,
+					7
+				],
+				[
+					-4,
+					8
+				],
+				[
+					-4,
+					9
+				],
+				[
+					-4,
+					10
+				],
+				[
+					-3,
+					0
+				],
+				[
+					-3,
+					1
+				],
+				[
+					-3,
+					2
+				],
+				[
+					-3,
+					3
+				],
+				[
+					-3,
+					4
+				],
+				[
+					-3,
+					5
+				],
+				[
+					-3,
+					6
+				],
+				[
+					-3,
+					7
+				],
+				[
+					-3,
+					8
+				],
+				[
+					-3,
+					9
+				],
+				[
+					-3,
+					10
+				]
+			],
+			"terrain_type": "earthy_museum_floor"
+		},
+		{
+			"positions": [
+				[
+					2,
+					4
+				],
+				[
+					2,
+					5
+				],
+				[
+					2,
+					6
+				],
+				[
+					2,
+					7
+				],
+				[
+					2,
+					8
+				],
+				[
+					2,
+					9
+				],
+				[
+					2,
+					10
+				],
+				[
+					3,
+					4
+				],
+				[
+					3,
+					5
+				],
+				[
+					3,
+					6
+				],
+				[
+					3,
+					7
+				],
+				[
+					3,
+					8
+				],
+				[
+					3,
+					9
+				],
+				[
+					3,
+					10
+				],
+				[
+					4,
+					4
+				],
+				[
+					4,
+					5
+				],
+				[
+					4,
+					6
+				],
+				[
+					4,
+					7
+				],
+				[
+					4,
+					8
+				],
+				[
+					4,
+					9
+				],
+				[
+					4,
+					10
+				],
+				[
+					5,
+					4
+				],
+				[
+					5,
+					5
+				],
+				[
+					5,
+					6
+				],
+				[
+					5,
+					7
+				],
+				[
+					5,
+					8
+				],
+				[
+					5,
+					9
+				],
+				[
+					5,
+					10
+				],
+				[
+					6,
+					4
+				],
+				[
+					6,
+					5
+				],
+				[
+					6,
+					6
+				],
+				[
+					6,
+					7
+				],
+				[
+					6,
+					8
+				],
+				[
+					6,
+					9
+				],
+				[
+					6,
+					10
+				],
+				[
+					7,
+					4
+				],
+				[
+					7,
+					5
+				],
+				[
+					7,
+					6
+				],
+				[
+					7,
+					7
+				],
+				[
+					7,
+					8
+				],
+				[
+					7,
+					9
+				],
+				[
+					7,
+					10
+				],
+				[
+					8,
+					4
+				],
+				[
+					8,
+					5
+				],
+				[
+					8,
+					6
+				],
+				[
+					8,
+					7
+				],
+				[
+					8,
+					8
+				],
+				[
+					8,
+					9
+				],
+				[
+					8,
+					10
+				],
+				[
+					9,
+					4
+				],
+				[
+					9,
+					5
+				],
+				[
+					9,
+					6
+				],
+				[
+					9,
+					7
+				],
+				[
+					9,
+					8
+				],
+				[
+					9,
+					9
+				],
+				[
+					9,
+					10
+				]
+			],
+			"terrain_type": "earthy_museum_floor"
+		},
+		{
+			"positions": [
+				[
+					10,
+					-10
+				],
+				[
+					10,
+					-9
+				],
+				[
+					10,
+					-8
+				],
+				[
+					10,
+					-7
+				],
+				[
+					10,
+					-6
+				],
+				[
+					10,
+					-5
+				],
+				[
+					10,
+					-4
+				],
+				[
+					10,
+					-3
+				],
+				[
+					10,
+					-2
+				],
+				[
+					10,
+					-1
+				],
+				[
+					10,
+					0
+				],
+				[
+					10,
+					1
+				],
+				[
+					10,
+					2
+				],
+				[
+					10,
+					3
+				],
+				[
+					10,
+					4
+				],
+				[
+					10,
+					5
+				],
+				[
+					10,
+					6
+				],
+				[
+					10,
+					7
+				],
+				[
+					10,
+					8
+				],
+				[
+					10,
+					9
+				],
+				[
+					10,
+					10
+				],
+				[
+					11,
+					-10
+				],
+				[
+					11,
+					-9
+				],
+				[
+					11,
+					-8
+				],
+				[
+					11,
+					-7
+				],
+				[
+					11,
+					-6
+				],
+				[
+					11,
+					-5
+				],
+				[
+					11,
+					-4
+				],
+				[
+					11,
+					-3
+				],
+				[
+					11,
+					-2
+				],
+				[
+					11,
+					-1
+				],
+				[
+					11,
+					0
+				],
+				[
+					11,
+					1
+				],
+				[
+					11,
+					2
+				],
+				[
+					11,
+					3
+				],
+				[
+					11,
+					4
+				],
+				[
+					11,
+					5
+				],
+				[
+					11,
+					6
+				],
+				[
+					11,
+					7
+				],
+				[
+					11,
+					8
+				],
+				[
+					11,
+					9
+				],
+				[
+					11,
+					10
+				],
+				[
+					12,
+					-10
+				],
+				[
+					12,
+					-9
+				],
+				[
+					12,
+					-8
+				],
+				[
+					12,
+					-7
+				],
+				[
+					12,
+					-6
+				],
+				[
+					12,
+					-5
+				],
+				[
+					12,
+					-4
+				],
+				[
+					12,
+					-3
+				],
+				[
+					12,
+					-2
+				],
+				[
+					12,
+					-1
+				],
+				[
+					12,
+					0
+				],
+				[
+					12,
+					1
+				],
+				[
+					12,
+					2
+				],
+				[
+					12,
+					3
+				],
+				[
+					12,
+					4
+				],
+				[
+					12,
+					5
+				],
+				[
+					12,
+					6
+				],
+				[
+					12,
+					7
+				],
+				[
+					12,
+					8
+				],
+				[
+					12,
+					9
+				],
+				[
+					12,
+					10
+				]
+			],
+			"terrain_type": "earthy_museum_floor"
+		}
+	],
+	"vines": [],
+	"wall_blocks": [],
+	"warp_metadata": {
+		"return_warp": {
+			"entrance_instance_id": "",
+			"entrance_map": "jalovea_city.json",
+			"entrance_map_warp_id": 8,
+			"facing": "generic",
+			"id": 1,
+			"show_sprite": true
+		}
+	},
+	"water_blocks": [],
+	"water_encounter_chance": 0.0,
+	"water_species": []
+}

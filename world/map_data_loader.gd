@@ -51,10 +51,60 @@ static func load_world(index_path: String) -> Dictionary:
 		map_files[authored_file] = authored
 		authored_file_ids[authored_file]=String(map_id)
 	world["authored_maps"]=authored_maps
+	_expand_shared_layouts(authored_maps, map_files, authored_file_ids)
 	world["_map_files"] = map_files
 	world["_authored_file_ids"] = authored_file_ids
 	_prepare_terrain_recursive(world,"world")
 	return world
+
+
+# Virtual filenames preserve the existing map-local NPC, script and save identities.
+static func instance_file(filename: String, instance_id: String) -> String:
+	return filename + "#" + instance_id if not instance_id.is_empty() else filename
+
+
+static func _expand_shared_layouts(maps: Dictionary, files: Dictionary, file_ids: Dictionary) -> void:
+	var slot := 0
+	for filename: String in file_ids.keys():
+		var template: Dictionary = files[filename]
+		if not bool(template.get("shared_layout", false)): continue
+		var instances: Variant = template.get("layout_instances", [])
+		if not instances is Array:
+			push_error("Shared layout instances must be an array: " + filename); continue
+		var seen := {}
+		for record: Variant in instances:
+			if not record is Dictionary or not record.get("id") is String or String(record.id).is_empty() or String(record.id).contains("#"):
+				push_error("Shared layout instance requires a nonempty ID without #: " + filename); continue
+			var id: String = record.id
+			if seen.has(id):
+				push_error("Duplicate shared layout instance: " + filename + "#" + id); continue
+			seen[id] = true
+			var instance := template.duplicate(true)
+			instance.erase("layout_instances")
+			# Only behavior and placements vary; geometry always comes from the template.
+			for field in ["npcs", "script_source", "script_interactions", "script_sprite_names", "script_paths", "map_script_header", "map_script_headers"]:
+				if record.has(field): instance[field] = record[field].duplicate(true) if record[field] is Array or record[field] is Dictionary else record[field]
+			var warps: Dictionary = instance.get("warp_metadata", {}).duplicate(true)
+			if record.has("warp_destinations") and not record.warp_destinations is Dictionary:
+				push_error("Invalid shared layout warp destinations: " + filename + "#" + id); continue
+			for field: String in Dictionary(record.get("warp_destinations", {})):
+				if warps.has(field) and record.warp_destinations[field] is Dictionary:
+					for key in ["entrance_map", "entrance_map_warp_id", "entrance_instance_id"]:
+						if record.warp_destinations[field].has(key): warps[field][key] = record.warp_destinations[field][key]
+			instance["warp_metadata"] = warps
+			var virtual_file := instance_file(filename, id)
+			var runtime_id := String(file_ids[filename]) + "#" + id
+			# Runtime currently builds maps together: reserve isolated world-space slots.
+			slot += 1
+			instance["origin"] = [10000.0 + slot * 1000.0, 0, 10000.0]
+			instance["_npc_map_file"] = virtual_file
+			var npcs := NpcMapData.new()
+			if template.has("_npc_definitions"): npcs.definitions = template._npc_definitions
+			instance["_resolved_npcs"] = npcs.resolve(instance, _npc_visuals)
+			instance["_npc_issues"] = npcs.issues(instance, _npc_visuals)
+			files[virtual_file] = instance
+			file_ids[virtual_file] = runtime_id
+			maps[runtime_id] = instance
 
 
 static func _prepare_terrain_recursive(value: Dictionary,map_seed:String) -> void:
@@ -89,6 +139,7 @@ static func _load_json_object(path: String) -> Dictionary:
 		if _npc_visuals == null: _npc_visuals = NpcVisualResolver.new(ProjectSettings.globalize_path("res://"))
 		var npcs := NpcMapData.new()
 		npcs.load_for_map(path)
+		map["_npc_definitions"] = npcs.definitions
 		map["_resolved_npcs"] = npcs.resolve(map, _npc_visuals)
 		map["_npc_issues"] = npcs.issues(map, _npc_visuals)
 		map["_npc_map_file"] = path.get_file()

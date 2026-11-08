@@ -11,6 +11,37 @@ func _initialize() -> void:
 	var editor := scene.instantiate()
 	root.add_child(editor)
 	await process_frame
+	# A wall opening disables a single indexed run instead of removing its two
+	# endpoints, so the remaining outline stays editable.
+	editor.document=MapDocumentRef.from_text('{"objects":[{"type":"wall.fence","wall_set":"generic_wall","segment_length":2.0,"points":[[0,0],[2,0],[2,2],[0,2],[0,0]]}]}',"wall_opening.json");editor.identity_by_path.clear();editor.next_identity=1;editor._refresh_all()
+	var opening_wall:Dictionary=editor.editor_objects.filter(func(object):return String(object.get("universal_type",""))=="wall.fence")[0]
+	editor.canvas.select_object(String(opening_wall.id))
+	editor._set_wall_segment_disabled(String(opening_wall.id),1,true)
+	assert(editor.document.data.objects[0].disabled_segments==[1] and editor.document.data.objects[0].baked_segments.size()==3 and editor.inspector.find_child("WallSegmentToggle1",true,false)!=null,"Removing a wall run must preserve both anchors while excluding just that run from baked geometry.")
+	var opening_round_trip:=MapDocumentRef.from_text(editor.document.deterministic_json(),"wall_opening.json")
+	assert(opening_round_trip.data.objects[0].disabled_segments==[1.0],"Wall openings must survive deterministic save/reload.")
+	editor._set_wall_segment_disabled(String(opening_wall.id),1,false)
+	assert(editor.document.data.objects[0].baked_segments.size()==4,"Restoring a removed wall run must rebuild only that segment.")
+	# Fence Edit may split an existing run without starting a new wall. The new
+	# vertex must remain on the shared 2-unit lattice and preserve an opening.
+	editor.document=MapDocumentRef.from_text('{"objects":[{"type":"wall.fence","points":[[0,0],[6,0]]},{"type":"wall.fence","points":[[0,2],[6,2]],"disabled_segments":[0]}]}',"wall_vertex.json");editor.identity_by_path.clear();editor.next_identity=1;editor._refresh_all()
+	var vertex_walls:Array=editor.editor_objects.filter(func(object):return String(object.get("universal_type",""))=="wall.fence")
+	editor._wall_vertex_requested(String(vertex_walls[0].id),0,Vector2(2,0))
+	editor._wall_vertex_requested(String(vertex_walls[1].id),0,Vector2(2,2))
+	assert(editor.document.data.objects[0].points==[[0.0,0.0],[2.0,0.0],[6.0,0.0]] and editor.document.data.objects[0].baked_segments.size()==2,"Inserting a vertex must split an existing wall run into two baked runs.")
+	assert(editor.document.data.objects[1].disabled_segments==[0,1] and editor.document.data.objects[1].baked_segments.is_empty(),"Splitting an opening must keep both replacement runs disabled.")
+	var vertex_round_trip:=MapDocumentRef.from_text(editor.document.deterministic_json(),"wall_vertex.json")
+	assert(vertex_round_trip.data.objects[0].points.size()==3 and vertex_round_trip.data.objects[1].disabled_segments==[0.0,1.0],"Inserted vertices and remapped openings must survive save/reload.")
+	var overlap_wall:Dictionary={"id":"fence-mode-wall","shape":"wall","wall_points":[Vector2(-2,0),Vector2(2,0)],"position":Vector3.ZERO,"size":Vector3.ONE,"field":"objects"}
+	var overlap_flower:Dictionary={"id":"fence-mode-flower","shape":"point","position":Vector3.ZERO,"size":Vector3.ONE,"footprint":Vector2.ONE,"field":"objects"}
+	var fence_overlap_objects:Array[Dictionary]=[overlap_wall,overlap_flower]
+	editor.canvas.set_document_objects(fence_overlap_objects,Vector2(20,20));var overlap_screen:Vector2=editor.canvas.world_to_screen(Vector2.ZERO)
+	editor.canvas.fence_edit_mode=false
+	assert(editor.canvas._hit_test(overlap_screen).id=="fence-mode-flower" and editor.canvas._wall_anchor_hit(overlap_screen).is_empty(),"Objects inside a fence zone must remain selectable while Fence Edit is off.")
+	editor.canvas.fence_edit_mode=true
+	var fence_anchor_screen:Vector2=editor.canvas.world_to_screen(Vector2(-2,0))
+	assert(editor.canvas._hit_test(overlap_screen).id=="fence-mode-wall" and not editor.canvas._wall_anchor_hit(fence_anchor_screen).is_empty(),"Fence Edit must restore wall and anchor selection on demand.")
+	editor._load_path(editor.map_directory.path_join("eastern_rainforest_route.json"))
 	assert(editor._orthogonal_wall_route(Vector2.ZERO,Vector2(6,2),1.0)==[Vector2(2,0),Vector2(2,2),Vector2(6,2)],"A shallow diagonal wall gesture must become an interval-aligned H-V-H route.")
 	assert(editor._orthogonal_wall_route(Vector2.ZERO,Vector2(5,2),1.0).is_empty(),"A route containing a non-integral 2-unit filler interval must be rejected.")
 	assert(editor._orthogonal_wall_route(Vector2.ZERO,Vector2(2,-6),1.0)==[Vector2(0,-2),Vector2(2,-2),Vector2(2,-6)],"A steep diagonal wall gesture must become an interval-aligned V-H-V route.")
@@ -30,7 +61,7 @@ func _initialize() -> void:
 	assert(editor.find_child("TestMapButton",true,false) is Button,"The toolbar must expose a Test Map launch action.")
 	assert(editor.find_child("ImportSpritesButton",true,false) is Button,"The toolbar must expose a reusable overworld sprite importer.")
 	assert(editor.find_child("ObjectSelectionMode",true,false) is Button and editor.find_child("TerrainSelectionMode",true,false) is Button,"The toolbar must expose mutually exclusive object and terrain selection modes.")
-	assert(editor.activity_tabs.tabs_visible==false and editor.activity_buttons.size()==3 and editor.activity_buttons.map(func(button):return button.text)==["OBJECTS","INSPECTOR","MAP"],"The sidebar must expose three prominent custom activity controls instead of generic tabs.")
+	assert(editor.activity_tabs.tabs_visible==false and editor.activity_buttons.size()==4 and editor.activity_buttons.map(func(button):return button.text)==["OBJECTS","INSPECTOR","MAP","SCRIPT"],"The sidebar must expose four prominent custom activity controls instead of generic tabs.")
 	# Selection and sidebar content must not change the canvas layout or view.
 	await process_frame
 	await process_frame

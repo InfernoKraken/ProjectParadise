@@ -1,9 +1,75 @@
 extends Node
 
+# Entry boundary: named map-local Blocks only; no executable script resources.
+func run_map_block(filename: String, block: String) -> bool:
+	if script_runner.running: return false
+	var data: Dictionary = map_data.get("_map_files", {}).get(filename, {})
+	if data.is_empty() or _location_for_map_file(filename) != _current_location(): return false
+	var source: Variant = data.get("script_source", "")
+	if not source is String: return false
+	script_host.map_file = filename
+	var path_data := preload("res://world/scripting/script_paths.gd").inspect(data)
+	# Only validated paths enter the parser pools; unrelated draft paths stay editable.
+	var references := preload("res://world/scripting/script_paths.gd").actor_references(data)
+	references["move_path"] = path_data.move_path; references["follow_path"] = path_data.follow_path
+	return script_runner.start(source, block, filename, game_flags, script_host.execute, script_host.cleanup, references)
+
+func _run_map_headers(location: String) -> void:
+	for filename: String in map_data.get("_map_files", {}):
+		if _location_for_map_file(filename) != location: continue
+		var data: Dictionary = map_data._map_files[filename]
+		if not data.has("map_script_header") and not data.has("map_script_headers"): continue
+		var references := preload("res://world/scripting/script_paths.gd").actor_references(data)
+		var inspected := preload("res://world/scripting/map_header.gd").inspect(data, references)
+		if not inspected.valid:
+			push_warning("Map header rejected: " + JSON.stringify(inspected.diagnostics)); continue
+		for header: Dictionary in inspected.headers:
+			var entry := str(header.true_block if game_flags.has_flag(header.flag) else header.false_block)
+			if not run_map_block(filename, entry): break
+
+func _try_script_npc(npc: Node) -> bool:
+	if script_host.sprite_hidden(npc): return false
+	var filename := str(npc.get_meta("script_map", ""))
+	var key := "npc:" + str(npc.get_meta("script_npc_id", ""))
+	var data: Dictionary = map_data.get("_map_files", {}).get(filename, {})
+	var table: Variant = data.get("script_interactions", {})
+	if not table is Dictionary or not table.has(key): return false
+	run_map_block(filename, str(table[key]))
+	return true
+
+func _interact_placed_npc(npc: Area3D) -> void:
+	if npc.get_meta("npc_definition", {}).get("type") == "vehicle": return
+	if script_runner.running or script_host.sprite_hidden(npc): return
+	_face_npc_toward_player(npc)
+	if _try_script_npc(npc): return
+	var dialogue_data: Dictionary = npc_dialogues.get(npc.get_instance_id(), {})
+	if not dialogue_data.is_empty():
+		_start_dialogue(String(dialogue_data["speaker"]), dialogue_data["pages"], dialogue_data.get("after_dialogue", Callable()))
+
+func _try_script_object_click(screen_position: Vector2) -> bool:
+	for filename: String in map_data.get("_map_files", {}):
+		if _location_for_map_file(filename) != _current_location(): continue
+		var table: Variant = map_data._map_files[filename].get("script_interactions", {})
+		if not table is Dictionary: continue
+		for entries: Array in [object_sort_entries, tree_sort_entries, background_object_sort_entries]:
+			for entry: Dictionary in entries:
+				var key := "object:" + str(entry.get("instance_id", ""))
+				if not table.has(key) or not entry.has("sort_root") or not entry.sort_root.is_visible_in_tree(): continue
+				var art := entry.sort_root.get_node_or_null("Visual") as Sprite2D
+				if art != null and art.get_rect().has_point(art.to_local(screen_position)):
+					run_map_block(filename, str(table[key])); return true
+	return false
+
+# Shared outdoor framing keeps zoom consistent across travel and save loading.
+const OUTDOOR_CAMERA_SIZE := 16.0
 const MAP_DATA_PATH := "res://data/maps/map_index.json"
 const PLATFORM_WALL_LAYER := 4
+const ACTOR_COLLISION_LAYER := 8
 const MapDataLoader := preload("res://world/map_data_loader.gd")
 const TerrainTransitionResolver := preload("res://world/terrain_transition_resolver.gd")
+const MapBounds := preload("res://tools/map_editor/core/map_bounds.gd")
+const MapBorderRenderer := preload("res://world/map_border_renderer.gd")
+const MapBorderLayout := preload("res://tools/map_editor/core/map_border_layout.gd")
 const TerrainTransitionTextureCache := preload("res://world/terrain_transition_texture_cache.gd")
 const PlayerPalette := preload("res://world/player_palette.gd")
 const PlayerSpriteFrames := preload("res://world/player_sprite_frames.gd")
@@ -11,8 +77,11 @@ const SwimSpriteFrames := preload("res://world/swim_sprite_frames.gd")
 const NpcMovement := preload("res://world/npc_movement.gd")
 const WaterDecoration := preload("res://world/water_decoration.gd")
 var npc_movement_states: Dictionary = {}
+var npc_script_movement = preload("res://world/npc_script_movement.gd").new(self)
 var npc_water_surfaces: Dictionary = {}
 var applied_visual_location := ""
+var collision_regions:Dictionary={}
+var collision_regions_dirty:=true
 var collision_diagnostics := false
 var last_collision_diagnostic := ""
 
@@ -20,17 +89,18 @@ const NpcVisualResolver := preload("res://world/npc_visual_resolver.gd")
 var npc_visual_resolver: RefCounted
 # map filename -> map-local integer ID -> mutable live Area3D
 var runtime_npcs: Dictionary = {}
+var patrols = preload("res://world/vehicle_patrols.gd").new(self)
 
 const NpcSpriteLibrary := preload("res://world/npc_sprite_library.gd")
 const DayNightControllerScript := preload("res://world/day_night_controller.gd")
 const AUTO_SAVE_PATH := "user://project_paradise_autosave.json"
 const SAVE_SLOT_COUNT := 5
-const SAVE_VERSION := 1
+const SAVE_VERSION := 2
 const MOVE_SPEED := 5.0
 const PLAYER_VISUAL_HEIGHT := 1.6
 const NPC_ADULT_VISUAL_HEIGHT := 1.65
 const NPC_CHILD_VISUAL_HEIGHT := 1.4
-const NPC_FOOT_COLLISION_SIZE := Vector3(0.55,0.3,0.45)
+const NPC_FOOT_COLLISION_SIZE := NpcMovement.FOOT_SIZE
 const NPC_FOOT_COLLISION_OFFSET := Vector3(0.0,-0.33,0.0)
 const SWIM_VISUAL_HEIGHT := 0.58
 const DIVE_ACTOR_VISUAL_HEIGHT := PLAYER_VISUAL_HEIGHT
@@ -38,7 +108,7 @@ const DIVE_NEUTRAL_TIME := 0.58
 const DIVE_THROW_TIME := 0.59
 const DIVE_BACKPACK_LAND_TIME := 0.57
 const DIVE_JUMP_TIME := 0.50
-const DIVE_SPLASH_TIME := 0.52
+const DIVE_SPLASH_TIME := 0.18
 const DEX_VIEW_SCENE := preload("res://dex/dex_view.tscn")
 const TEX_FLOWER_BLUE := preload("res://assets/overworld/flower_small_blue_generic.png")
 const TEX_FLOWER_RED := preload("res://assets/overworld/flower_tall_redginger.png")
@@ -142,6 +212,11 @@ var player_sort_root: Node2D
 var follower_sort_root: Node2D
 var npc_sort_entries: Array[Dictionary] = []
 var tree_sort_entries: Array[Dictionary] = []
+# Clear this signature after runtime edits to static artwork. Script visibility
+# and camera/map changes are detected by the static pass automatically.
+var static_art_view_signature:Array=[]
+var map_border_renderer: Node3D
+var map_border_location := ""
 var object_sort_entries: Array[Dictionary] = []
 var overlay_sort_entries: Array[Dictionary] = []
 var attached_overlay_entries: Array[Dictionary] = []
@@ -162,6 +237,10 @@ var opponent_fakemon_index := 2
 var opponent_fakemon_indices: Array[int] = []
 var in_battle := false
 var active_battle_is_wild := false
+var game_flags = preload('res://world/scripting/game_flags.gd').new()
+var script_runner = preload('res://world/scripting/script_runner.gd').new()
+var script_host = preload('res://world/scripting/world_script_host.gd').new(self)
+var script_input_locked := false
 var party: Array[Dictionary] = []
 var active_party_index := 0
 var last_grass_tile := ""
@@ -211,7 +290,7 @@ var dialogue_complete_action := Callable()
 var save_status_label: Label
 var startup_panel: PanelContainer
 var player_selection_panel: PanelContainer
-var player_gender := ""
+var player_gender := "Male"
 var player_color_name := ""
 var player_color := Color("#55e36a")
 var player_style := "Medium"
@@ -228,10 +307,16 @@ var dive_atlas: Texture2D
 var swim_transition_effect_root: Node2D
 var swim_transition_effect_position := Vector3.ZERO
 var swim_transition_effect_height := 0.8
+var swim_jump_height := 0.0
 var save_slot_selector: OptionButton
 var selected_save_slot := 1
 var npc_dialogues: Dictionary = {}
 var family_children: Array[Dictionary] = []
+var dialog_choice_row: HBoxContainer
+var dialog_yes_button: Button
+var dialog_no_button: Button
+var dialogue_choice_action := Callable()
+var dialog_choosing := false
 var active_dialogue: Array[String] = []
 var active_dialogue_speaker := "RAINFOREST RESIDENT"
 var pending_move_learning: Array[Dictionary] = []
@@ -254,23 +339,32 @@ var burn_dialogue := [
 
 
 func _ready() -> void:
+	var profile_startup := "--profile-startup" in OS.get_cmdline_user_args()
+	var startup_started := Time.get_ticks_usec()
+	script_runner.failed.connect(func(details): npc_script_movement.release_player(); push_warning('Script runtime error: ' + JSON.stringify(details)))
 	map_data = _load_map_data()
+	var data_loaded := Time.get_ticks_usec()
 	trainer_catalog=MapDataLoader._load_json_object("res://data/trainers.json").get("trainers",{})
 	if map_data.is_empty():
 		return
 	build_rainforest()
+	var world_built := Time.get_ticks_usec()
 	battle.battle_finished.connect(_on_battle_finished)
 	battle.fakemon_selected.connect(_on_fakemon_selected)
 	_build_evolution_screen()
 	_set_overworld_visuals_visible(false)
 	map_ui.visible = false
 	battle.hide()
-	_build_player_selection()
-	if FileAccess.file_exists(AUTO_SAVE_PATH):
-		player_selection_panel.hide()
-		_build_startup_save_prompt()
 	var test_map_filename:=_test_map_filename_from_args(OS.get_cmdline_user_args())
-	if not test_map_filename.is_empty():call_deferred("_start_map_test",test_map_filename)
+	if not test_map_filename.is_empty():
+		call_deferred("_start_map_test",test_map_filename)
+	else:
+		_build_player_selection()
+		if FileAccess.file_exists(AUTO_SAVE_PATH):
+			player_selection_panel.hide()
+			_build_startup_save_prompt()
+	if profile_startup:
+		print("STARTUP_PROFILE data_ms=%.1f world_ms=%.1f ui_ms=%.1f total_ready_ms=%.1f" % [(data_loaded-startup_started)/1000.0,(world_built-data_loaded)/1000.0,(Time.get_ticks_usec()-world_built)/1000.0,(Time.get_ticks_usec()-startup_started)/1000.0])
 
 
 static func _test_map_filename_from_args(arguments:PackedStringArray)->String:
@@ -285,11 +379,13 @@ func _start_map_test(filename:String)->void:
 	if not target is Dictionary or target.is_empty() or location.is_empty():
 		push_error("Test Map could not load a playable map: %s"%filename)
 		return
-	if location.begins_with("authored:") and String(target.get("map_metadata",{}).get("layout_type","outdoor"))!="outdoor":
-		push_error("Test Map does not yet support registered authored interiors: %s"%filename)
-		return
 	if startup_panel!=null:startup_panel.queue_free();startup_panel=null
-	player_selection_panel.hide()
+	if player_selection_panel != null: player_selection_panel.hide()
+	player_gender = "Male"
+	player_style = "Medium"
+	player_palette_preset = PlayerPalette.DEFAULT_PRESET
+	player_color_name = player_style
+	_apply_player_appearance()
 	party.clear()
 	var starter:Dictionary=battle.create_fakemon(battle.battle_data["fakemon"][0])
 	starter["experience"]=int(pow(float(starter["level"]),3.0));starter["current_hp"]=int(starter["max_hp"]);starter["condition"]="";starter["condition_turns"]=0;party.append(starter);active_party_index=0
@@ -307,17 +403,24 @@ func _set_overworld_visuals_visible(is_visible: bool) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if not adventure_started or in_battle or dialog_open or swim_transitioning or player == null or (party_panel != null and party_panel.visible) or (settings_panel != null and settings_panel.visible) or (bag_panel != null and bag_panel.visible) or (dex_panel != null and dex_panel.visible) or (move_learning_panel != null and move_learning_panel.visible) or (evolution_screen != null and evolution_screen.visible):
+	patrols.update(delta)
+	npc_script_movement.update(delta)
+	if script_input_locked and not npc_script_movement.waiters.is_empty(): _update_placed_npcs(delta)
+	if (script_input_locked and not npc_script_movement.player_can_yield()) or not adventure_started or in_battle or dialog_open or swim_transitioning or player == null or (party_panel != null and party_panel.visible) or (settings_panel != null and settings_panel.visible) or (bag_panel != null and bag_panel.visible) or (dex_panel != null and dex_panel.visible) or (move_learning_panel != null and move_learning_panel.visible) or (evolution_screen != null and evolution_screen.visible):
+		# Script movement and facing still update world state while input is locked.
+		# Keep the projected sprites synchronized during locks and dialogue.
+		if adventure_started and player != null: _update_sort_canvas()
 		return
 	_set_active_visual_region(_current_location())
-	var input_vector := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	var guided := npc_script_movement.controls(player)
+	var input_vector := Vector2(player.velocity.x,player.velocity.z) / MOVE_SPEED if guided else Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	if not swimming:
 		_update_traversal_surface(player.position, input_vector)
 	else:
 		_update_platform_collision_mask()
-	player.velocity = _swim_constrained_velocity(Vector3(input_vector.x,0.0,input_vector.y)*MOVE_SPEED, delta) if swimming else _terrain_constrained_velocity(Vector3(input_vector.x,0.0,input_vector.y)*MOVE_SPEED,delta)
+	if not guided: player.velocity = _swim_constrained_velocity(Vector3(input_vector.x,0.0,input_vector.y)*MOVE_SPEED, delta) if swimming else _terrain_constrained_velocity(Vector3(input_vector.x,0.0,input_vector.y)*MOVE_SPEED,delta)
 	var position_before_move := player.position
-	player.move_and_slide()
+	if not guided: player.move_and_slide()
 	if collision_diagnostics:
 		for index in player.get_slide_collision_count():
 			_report_collision_blocker(player.get_slide_collision(index).get_collider())
@@ -332,38 +435,30 @@ func _physics_process(delta: float) -> void:
 	_update_family_children(delta)
 	_update_placed_npcs(delta)
 	if inside_medical_ward:
-		var ward_size: Array = map_data["medical_ward"]["interior_size"]
-		player.position.x = clampf(player.position.x, medical_origin.x - float(ward_size[0]) * 0.5 + 0.5, medical_origin.x + float(ward_size[0]) * 0.5 - 0.5)
-		player.position.z = clampf(player.position.z, medical_origin.z - float(ward_size[1]) * 0.5 + 0.5, medical_origin.z + float(ward_size[1]) * 0.5 - 0.5)
+		_clamp_player_to_region(medical_origin+MapBounds.offset(map_data.medical_ward),map_data.medical_ward.interior_size,0.5)
 	elif inside_house:
-		var house_size: Array = map_data["house"]["interior_size"]
-		player.position.x = clampf(player.position.x, house_origin.x - float(house_size[0]) * 0.5 + 0.5, house_origin.x + float(house_size[0]) * 0.5 - 0.5)
-		player.position.z = clampf(player.position.z, house_origin.z - float(house_size[1]) * 0.5 + 0.5, house_origin.z + float(house_size[1]) * 0.5 - 0.5)
+		_clamp_player_to_region(house_origin+MapBounds.offset(map_data.house),map_data.house.interior_size,0.5)
 	elif inside_route:
-		var route_size: Array = map_data["route"]["size"]
-		player.position.x = clampf(player.position.x, route_origin.x - float(route_size[0]) * 0.5 + 0.6, route_origin.x + float(route_size[0]) * 0.5 - 0.6)
-		player.position.z = clampf(player.position.z, route_origin.z - float(route_size[1]) * 0.5 + 0.6, route_origin.z + float(route_size[1]) * 0.5 - 0.6)
+		_clamp_player_to_region(route_origin+MapBounds.offset(map_data.route),map_data.route.size)
 	elif inside_east_route:
-		_clamp_player_to_region(east_route_origin, map_data["east_route"]["size"])
+		_clamp_player_to_region(east_route_origin+MapBounds.offset(map_data["east_route"]), map_data["east_route"]["size"])
 	elif inside_west_route:
-		_clamp_player_to_region(west_route_origin, map_data["west_route"]["size"])
+		_clamp_player_to_region(west_route_origin+MapBounds.offset(map_data["west_route"]), map_data["west_route"]["size"])
 	elif inside_east_cave:
-		_clamp_player_to_region(east_cave_origin, map_data["east_cave"]["size"])
+		_clamp_player_to_region(east_cave_origin+MapBounds.offset(map_data["east_cave"]), map_data["east_cave"]["size"])
 	elif inside_city:
-		_clamp_player_to_region(city_origin, map_data["rainforest_city"]["size"])
+		_clamp_player_to_region(city_origin+MapBounds.offset(map_data["rainforest_city"]), map_data["rainforest_city"]["size"])
 	elif inside_city_ward:
-		_clamp_player_to_region(city_ward_origin, map_data["rainforest_city"]["medical_ward"]["interior_size"])
+		_clamp_player_to_region(city_ward_origin+MapBounds.offset(map_data["rainforest_city"]["medical_ward"]), map_data["rainforest_city"]["medical_ward"]["interior_size"])
 	elif inside_orchid_house:
-		_clamp_player_to_region(orchid_house_origin, map_data["rainforest_city"]["orchid_house"]["interior_size"])
+		_clamp_player_to_region(orchid_house_origin+MapBounds.offset(map_data["rainforest_city"]["orchid_house"]), map_data["rainforest_city"]["orchid_house"]["interior_size"])
 	elif inside_family_house:
-		_clamp_player_to_region(family_house_origin, map_data["rainforest_city"]["family_house"]["interior_size"])
+		_clamp_player_to_region(family_house_origin+MapBounds.offset(map_data["rainforest_city"]["family_house"]), map_data["rainforest_city"]["family_house"]["interior_size"])
 	elif not active_authored_map_id.is_empty():
 		var authored_region: Dictionary = map_data.get("authored_maps", {}).get(active_authored_map_id, {})
-		_clamp_player_to_region(_array_to_vector3(authored_region.get("origin", [0,0,0])), authored_region.get("size", [20,20]))
+		_clamp_player_to_region(_array_to_vector3(authored_region.get("origin", [0,0,0]))+MapBounds.offset(authored_region), authored_region.get("size", [20,20]),0.5 if _is_authored_indoor_map(authored_region) else 0.6)
 	else:
-		var map_size: Array = map_data["map_size"]
-		player.position.x = clampf(player.position.x, -float(map_size[0]) * 0.5 + 0.6, float(map_size[0]) * 0.5 - 0.6)
-		player.position.z = clampf(player.position.z, -float(map_size[1]) * 0.5 + 0.6, float(map_size[1]) * 0.5 - 0.6)
+		_clamp_player_to_region(MapBounds.offset(map_data),map_data.map_size)
 	_process_poison_steps(position_before_move.distance_to(player.position))
 	_process_water_encounter(position_before_move.distance_to(player.position))
 	camera.position.x = player.position.x
@@ -425,11 +520,15 @@ func _unhandled_input(event: InputEvent) -> void:
 		collision_diagnostics = not collision_diagnostics;last_collision_diagnostic = ""
 		hint_label.text = "Collision diagnostics %s. Walk into a blocker to show its name and position." % ("on" if collision_diagnostics else "off")
 		get_viewport().set_input_as_handled();return
-	if in_battle or dialog_open or not event is InputEventMouseButton:
+	if script_runner.running or in_battle or dialog_open or not event is InputEventMouseButton:
 		return
 	if event.button_index != MOUSE_BUTTON_LEFT or not event.pressed:
 		return
-	if _try_platform_sign_click(event.position):
+	# A failed map load leaves no world camera. Do not turn that primary loading
+	# error into a follow-up null-camera input error.
+	if camera == null or not is_instance_valid(camera) or world == null:
+		return
+	if _try_script_object_click(event.position) or _try_display_text_click(event.position) or _try_platform_sign_click(event.position):
 		get_viewport().set_input_as_handled()
 		return
 	var from := camera.project_ray_origin(event.position)
@@ -447,9 +546,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		_face_npc_toward_player(house_npc)
 		_start_burn_dialogue()
 	elif npc_dialogues.has(hit["collider"].get_instance_id()):
-		_face_npc_toward_player(hit["collider"] as Area3D)
-		var dialogue_data: Dictionary = npc_dialogues[hit["collider"].get_instance_id()]
-		_start_dialogue(String(dialogue_data["speaker"]), dialogue_data["pages"], dialogue_data.get("after_dialogue", Callable()))
+		_interact_placed_npc(hit["collider"] as Area3D)
 
 
 func build_rainforest() -> void:
@@ -468,13 +565,14 @@ func build_rainforest() -> void:
 	var configured_size: Array = map_data["map_size"]
 	ground_mesh.size = Vector3(float(configured_size[0]), 0.2, float(configured_size[1]))
 	ground.mesh = ground_mesh
-	ground.position.y = -0.1
+	ground.position = MapBounds.offset(map_data)+Vector3(0,-0.1,0)
 	ground.material_override = _textured_material(TEX_GRASS, Color("#39734b"), Vector3(float(configured_size[0]), float(configured_size[1]), 1.0))
 	world.add_child(ground)
 
 	spawn_position = _array_to_vector3(map_data["player_spawn"])
 	respawn_position = spawn_position
 	player = CharacterBody3D.new()
+	player.collision_layer = 1 | ACTOR_COLLISION_LAYER
 	player.name = "Player"
 	player.position = spawn_position
 	player_atlas = PlayerPalette.create_texture(PlayerPalette.DEFAULT_PRESET)
@@ -529,7 +627,7 @@ func build_rainforest() -> void:
 	_build_side_route(map_data["west_route"], "West", false)
 	_build_east_cave(map_data["east_cave"])
 	_build_rainforest_city(map_data["rainforest_city"])
-	_build_authored_outdoor_maps()
+	_build_authored_maps()
 	_build_editor_authored_warps()
 	_build_trainers(map_data.get("trainers", []), Vector3.ZERO, "Clearing")
 
@@ -544,7 +642,7 @@ func build_rainforest() -> void:
 	camera = Camera3D.new()
 	camera.name = "RainforestCamera"
 	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
-	camera.size = 24.0
+	camera.size = OUTDOOR_CAMERA_SIZE
 	camera.position = Vector3(0, 18, 18)
 	camera.rotation_degrees = Vector3(-45, 0, 0)
 	camera.current = true
@@ -579,6 +677,9 @@ func _start_battle() -> void:
 
 
 func _open_battle(enemy_index: int, enemy_party_indices: Array = [], enemy_team: Array[Dictionary] = []) -> void:
+	if party.is_empty():
+		hint_label.text = "Choose your starter at the Institute before battling."
+		return
 	if int(party[active_party_index].get("current_hp", party[active_party_index]["max_hp"])) <= 0:
 		var conscious_index := -1
 		for index in party.size():
@@ -605,13 +706,25 @@ func _open_battle(enemy_index: int, enemy_party_indices: Array = [], enemy_team:
 		battle.begin_battle_with_opponent_party(party, active_party_index, trainer_party, false)
 
 
+func _begin_unpartnered_adventure() -> void:
+	script_runner.stop(); npc_script_movement.clear(); script_host.hidden_objects.clear(); script_host.reset_sprites(); game_flags.restore({})
+	party.clear(); active_party_index = 0
+	adventure_started = true; in_battle = false
+	battle.hide(); follower.hide()
+	_set_overworld_visuals_visible(true); map_ui.visible = true
+	hint_label.text = "Visit the Institute to choose your starter. Move with WASD / Arrow Keys."
+	_refresh_party_menu(); _set_active_visual_region(_current_location()); _run_map_headers(_current_location()); _auto_save()
+
+
 func _on_fakemon_selected(index: int) -> void:
+	game_flags.restore({}); script_runner.stop(); npc_script_movement.clear(); script_host.hidden_objects.clear(); script_host.reset_sprites()
 	var starter: Dictionary = battle.create_fakemon(battle.battle_data["fakemon"][index])
 	starter["experience"] = int(pow(float(starter["level"]), 3.0))
 	starter["current_hp"] = int(starter["max_hp"])
 	starter["condition"] = ""
 	starter["condition_turns"] = 0
 	party.append(starter)
+	game_flags.set_flag("Starter",true)
 	active_party_index = 0
 	adventure_started = true
 	_update_follower_appearance()
@@ -621,6 +734,8 @@ func _on_fakemon_selected(index: int) -> void:
 	map_ui.visible = true
 	hint_label.text = "Fakemon chosen! Move with WASD / Arrow Keys. Grass: 20% encounters. Water: 5% encounters."
 	_refresh_party_menu()
+	_set_active_visual_region(_current_location())
+	_run_map_headers(_current_location())
 	_auto_save()
 
 
@@ -691,7 +806,7 @@ func _process_water_encounter(distance_traveled: float) -> void:
 
 
 func _on_exterior_door_entered(body: Node3D) -> void:
-	if body != player or in_battle or not door_warp_ready:
+	if body != player or in_battle or not door_warp_ready or (script_runner.running and npc_script_movement.controls(player)):
 		return
 	_warp_to_medical_ward()
 
@@ -702,7 +817,7 @@ func _on_interior_door_entered(body: Node3D) -> void:
 	inside_medical_ward = false
 	player.position = _array_to_vector3(map_data["medical_ward"].get("exterior_return",[-7.0,0.65,-1.1]))
 	_place_follower_behind_player()
-	camera.size = 24.0
+	camera.size = OUTDOOR_CAMERA_SIZE
 	camera.position = Vector3(player.position.x, 18.0, player.position.z + 18.0)
 	world_environment.background_color = OUTDOOR_BACKGROUND
 	map_title.text = "RAINFOREST CLEARING - PLACEHOLDER MAP"
@@ -735,7 +850,7 @@ func _on_house_interior_door_entered(body: Node3D) -> void:
 	inside_house = false
 	player.position = _array_to_vector3(map_data["house"].get("exterior_return",[8.0,0.65,-3.25]))
 	_place_follower_behind_player()
-	camera.size = 24.0
+	camera.size = OUTDOOR_CAMERA_SIZE
 	camera.position = Vector3(player.position.x, 18.0, player.position.z + 18.0)
 	world_environment.background_color = OUTDOOR_BACKGROUND
 	map_title.text = "RAINFOREST CLEARING - PLACEHOLDER MAP"
@@ -753,7 +868,7 @@ func _on_route_entrance_entered(body: Node3D) -> void:
 	inside_route = true
 	player.position = route_origin + _array_to_vector3(MapDataLoader.arrival_position(map_data, "north_warp", route_data, "entry"))
 	_place_follower_behind_player()
-	camera.size = 24.0
+	camera.size = OUTDOOR_CAMERA_SIZE
 	world_environment.background_color = OUTDOOR_BACKGROUND
 	map_title.text = "CANOPY ROUTE - PLACEHOLDER MAP"
 	hint_label.text = "Dense forest route: water is uncrossable. The trainer waits at the far end."
@@ -767,7 +882,7 @@ func _on_route_exit_entered(body: Node3D) -> void:
 	inside_route = false
 	player.position = _array_to_vector3(MapDataLoader.arrival_position(map_data["route"], "exit_warp", map_data, "north_return"))
 	_place_follower_behind_player()
-	camera.size = 24.0
+	camera.size = OUTDOOR_CAMERA_SIZE
 	world_environment.background_color = OUTDOOR_BACKGROUND
 	map_title.text = "RAINFOREST CLEARING - PLACEHOLDER MAP"
 	hint_label.text = "Returned through the dense forest passage."
@@ -872,8 +987,11 @@ func _return_to_city(exterior_return: Array, hint: String) -> void:
 
 
 func _set_route_location(location: String, destination: Vector3, title: String, hint: String) -> void:
-	inside_medical_ward = false
-	inside_house = false
+	if location != _current_location(): npc_script_movement.clear()
+	if script_runner.running:
+		script_runner.stop(); dialog_open = false; dialogue_complete_action = Callable(); dialog_panel.hide()
+	inside_medical_ward = location=="medical_ward"
+	inside_house = location=="house"
 	inside_route = location == "route"
 	inside_east_route = location == "east_route"
 	inside_west_route = location == "west_route"
@@ -885,11 +1003,13 @@ func _set_route_location(location: String, destination: Vector3, title: String, 
 	active_authored_map_id = location.trim_prefix("authored:") if location.begins_with("authored:") else ""
 	player.position = destination
 	_place_follower_behind_player()
-	camera.size = 24.0
-	var indoors := inside_east_cave or inside_city_ward or inside_orchid_house or inside_family_house
+	camera.size = 9.0 if inside_medical_ward else (8.0 if inside_house else OUTDOOR_CAMERA_SIZE)
+	var indoors := inside_medical_ward or inside_house or inside_east_cave or inside_city_ward or inside_orchid_house or inside_family_house or _is_authored_indoor_map(map_data.get("authored_maps",{}).get(active_authored_map_id,{}))
 	world_environment.background_color = Color("#3d453d") if indoors else OUTDOOR_BACKGROUND
 	map_title.text = title
 	hint_label.text = hint
+	_set_active_visual_region(location)
+	_run_map_headers(location)
 	_start_door_cooldown()
 	_auto_save()
 
@@ -1311,21 +1431,24 @@ func _build_universal_terrain_layers(region_data: Dictionary, origin: Vector3, p
 func _build_canonical_terrain_bases(region_data:Dictionary,origin:Vector3,prefix:String)->void:
 	var grid:Dictionary=region_data.get("_terrain_grid",{})
 	var base_terrain:=String(region_data.get("base_terrain_type","forest_floor"))
-	var positions:Array=grid.keys()
-	positions.sort_custom(func(a:Vector2i,b:Vector2i):return a.y<b.y or (a.y==b.y and a.x<b.x))
-	for position:Vector2i in positions:
-		var terrain_type:=String(grid[position])
-		if terrain_type==base_terrain:continue
+	var batches:Dictionary=preload("res://world/terrain_mesh_batcher.gd").build(grid,base_terrain,region_data.get("objects",[]))
+	for key in batches:
+		var batch:Dictionary=batches[key]
+		var terrain_type:=String(batch.terrain_type)
 		var texture:=TerrainTransitionTextureCache.base_texture(terrain_type)
 		if texture==null:continue
 		var tile:=MeshInstance3D.new()
-		tile.name="%sCanonicalBase_%d_%d_%s"%[prefix,position.x,position.y,terrain_type]
-		var mesh:=PlaneMesh.new();mesh.size=Vector2.ONE;tile.mesh=mesh
-		var material:=_textured_material(texture);material.shading_mode=BaseMaterial3D.SHADING_MODE_UNSHADED;tile.material_override=material
+		tile.name="%sCanonicalBase_%s"%[prefix,key]
+		tile.mesh=batch.mesh
+		var material:=_textured_material(texture)
+		material.shading_mode=BaseMaterial3D.SHADING_MODE_UNSHADED
+		tile.material_override=material
+		tile.position=origin+Vector3(0,0.401,0)
 		tile.add_to_group("day_night_terrain")
-		tile.position=origin+Vector3(position.x,0.401,position.y)
-		tile.set_meta("canonical_terrain_type",terrain_type);tile.set_meta("affects_collision",false);tile.set_meta("affects_elevation",false)
+		tile.set_meta("canonical_terrain_type",terrain_type)
+		tile.set_meta("affects_collision",false);tile.set_meta("affects_elevation",false)
 		world.add_child(tile)
+		OverworldTextureAnimation.register_terrain(texture,tile)
 
 
 func _build_canonical_water_collision(region_data:Dictionary,origin:Vector3,prefix:String)->void:
@@ -1373,7 +1496,7 @@ func _build_canonical_terrain_debug(region_data:Dictionary,origin:Vector3,prefix
 
 
 func _build_terrain_transition_overlays(region_data: Dictionary, origin: Vector3, prefix: String) -> void:
-	# These are visual-only PlaneMesh children. They intentionally create no body,
+	# These are visual-only chunk meshes. They intentionally create no body,
 	# collision shape, traversal surface, or elevation entry.
 	var tile_patches:Dictionary={}
 	for value: Variant in region_data.get("_terrain_transitions", []):
@@ -1385,30 +1508,63 @@ func _build_terrain_transition_overlays(region_data: Dictionary, origin: Vector3
 			if not tile_patches.has(tile):tile_patches[tile]=[]
 			tile_patches[tile].append({"terrain_a":String(value.terrain_a),"terrain_b":String(value.terrain_b),"mask_type":String(value.piece.mask_type),"mask_variant":int(value.piece.get("mask_variant",0)),"orientation":String(value.piece.orientation),"slice":_transition_slice(value,tile_index)})
 	var positions:Array=tile_patches.keys();positions.sort_custom(func(a:Vector2i,b:Vector2i):return a.y<b.y or (a.y==b.y and a.x<b.x));var grid:Dictionary=region_data.get("_terrain_grid",{})
+	var cells:Array[Dictionary]=[]
 	for transition_index in positions.size():
 		var tile:Vector2i=positions[transition_index];var patches:Array=tile_patches[tile]
+		var hard_boundary:=preload("res://tools/map_editor/core/wall_water_clip.gd").near_wall(tile,region_data.get("objects",[]))
+		if TerrainTransitionResolver.solid_sand_fill(String(grid.get(tile,"forest_floor")),patches,hard_boundary):continue
+		if hard_boundary:
+			patches=patches.filter(func(patch:Dictionary)->bool:return String(patch.terrain_a)!="water" and String(patch.terrain_b)!="water")
+			if patches.is_empty():continue
 		var texture := TerrainTransitionTextureCache.texture_for_tile(String(grid.get(tile,"forest_floor")),patches)
 		if texture == null: continue
-		var overlay := MeshInstance3D.new()
-		overlay.name = "%sTerrainOverlay%d" % [prefix, transition_index]
-		var mesh := PlaneMesh.new()
-		mesh.size = Vector2.ONE
-		overlay.mesh = mesh
-		var material := _textured_material(texture)
-		material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-		overlay.material_override = material
-		overlay.add_to_group("day_night_terrain")
 		var highest_priority:=0
 		for patch:Dictionary in patches:highest_priority=maxi(highest_priority,TerrainTransitionResolver.priority(String(patch.terrain_a)))
-		overlay.position = origin + Vector3(tile.x, 0.405+float(highest_priority)*0.002, tile.y)
-		overlay.set_meta("terrain_transition", true)
-		overlay.set_meta("canonical_tile",tile);overlay.set_meta("transition_patches",patches)
-		overlay.set_meta("transition_operation_count", patches.size())
-		overlay.set_meta("affects_collision", false)
-		overlay.set_meta("affects_elevation", false)
+		var rect:=Rect2(Vector2(tile)-Vector2.ONE*0.5,Vector2.ONE)
+		if String(grid.get(tile,""))=="water":rect=preload("res://tools/map_editor/core/wall_water_clip.gd").bounds(tile,grid,region_data.get("objects",[]))
+		cells.append({"tile":tile,"rect":rect,"texture":texture,"priority":highest_priority,"patches":patches})
+	var batches:Array[Dictionary]=preload("res://world/terrain_mesh_batcher.gd").build_transitions(cells)
+	for batch_index in batches.size():
+		var batch:Dictionary=batches[batch_index]
+		var overlay:=MeshInstance3D.new()
+		overlay.name="%sTerrainOverlayBatch_%d_%d_%d"%[prefix,batch.chunk.x,batch.chunk.y,batch_index]
+		overlay.mesh=batch.mesh;overlay.position=origin
+		var texture:Texture2D=batch.texture
+		var material:=_textured_material(texture)
+		material.shading_mode=BaseMaterial3D.SHADING_MODE_UNSHADED
+		material.transparency=BaseMaterial3D.TRANSPARENCY_ALPHA
+		overlay.material_override=material
+		overlay.add_to_group("day_night_terrain")
+		overlay.set_meta("terrain_transition",true)
+		overlay.set_meta("transition_cells",batch.cells)
+		overlay.set_meta("transition_operation_count",batch.operation_count)
+		overlay.set_meta("affects_collision",false);overlay.set_meta("affects_elevation",false)
 		world.add_child(overlay)
+		OverworldTextureAnimation.register_terrain(texture,overlay)
 
+
+func _build_canal_lock(record:Dictionary,position:Vector3,node_name:String,instance_id:String)->void:
+	var gate=preload("res://world/canal_lock.tscn").instantiate()
+	gate.name=node_name
+	gate.position=position
+	gate.rotation.y=deg_to_rad(float(record.get("rotation_degrees",0.0)))
+	gate.gate_scale=float(record.get("gate_scale",1.0))
+	gate.animation_time=float(record.get("animation_time",1.0))
+	gate.visual_height=float(record.get("height",4.0))
+	gate.collider_size=_array_to_vector3(record.get("size",[6.0,2.0,0.4]))
+	gate.autoplay=bool(record.get("autoplay",true))
+	gate.loop=bool(record.get("loop",true))
+	world.add_child(gate)
+	var source:Sprite3D=gate.get_node("Visual")
+	_register_sortable_object(source,node_name+"SortRoot",position,source.global_position,gate.visual_height*gate.gate_scale,float(record.get("sort_offset_y",0.0)),Rect2(),instance_id)
+	var entry:Dictionary=object_sort_entries[-1]
+	entry["gate"]=gate
+	gate.frame_changed.connect(func(_frame:int):
+		entry["texture"]=source.texture
+		if is_instance_valid(entry.get("sort_root")):
+			(entry.sort_root.get_node("Visual") as Sprite2D).texture=source.texture
+		# Animated bounds must refresh even with a stationary camera.
+		static_art_view_signature=[])
 
 func _transition_slice(transition:Dictionary,tile_index:int)->String:
 	if String(transition.boundary_kind)=="corner":return ["corner_northwest","corner_northeast","corner_southwest","corner_southeast"][tile_index]
@@ -1455,6 +1611,8 @@ func _build_universal_objects(region_data: Dictionary, origin: Vector3, prefix: 
 			_add_water_shape_tile(node_name,position,_array_to_vector3(size_data),asset_texture,float(object.get("rotation_degrees",0.0)),String(object.get("asset_path","")))
 		elif type_id == "structure.bridge":
 			_build_traversal_bridge(object, origin, node_name)
+		elif type_id == "structure.canal_lock":
+			_build_canal_lock(object,position,node_name,instance_id)
 		elif CITY_BACKGROUND_TEXTURES.has(type_id):
 			var size_data: Variant = object.get("size", [10.0, 6.0, 4.0])
 			if not size_data is Array or size_data.size() < 3: continue
@@ -1473,8 +1631,11 @@ func _build_universal_objects(region_data: Dictionary, origin: Vector3, prefix: 
 			if texture==null:continue
 			var art := _add_world_billboard(node_name, position, texture, size.x * (1.08 if type_id == "building.medical_ward" else 1.15), 0.0)
 			_register_sortable_object(art, node_name + "SortRoot", position, art.global_position, float(art.texture.get_height()) * art.pixel_size, float(object.get("sort_offset_y", 0.0)),Rect2(),instance_id)
-			_add_building_collision(node_name+"Collision",position,size,"medical_ward" if type_id=="building.medical_ward" else "house")
-			_add_asset_collision_boxes(node_name,position,String(object.get("asset_path","")),size,float(object.get("rotation_degrees",0.0)))
+			# Authored polygons replace the default footprint, including entrance cutouts.
+			var asset_path:=String(object.get("asset_path",""))
+			if not _add_asset_polygon_collision(node_name+"AssetPolygon",position,size,float(object.get("rotation_degrees",0.0)),asset_path):
+				_add_building_collision(node_name+"Collision",position,size,"medical_ward" if type_id=="building.medical_ward" else "house")
+				_add_asset_collision_boxes(node_name,position,asset_path,size,float(object.get("rotation_degrees",0.0)))
 		elif type_id in ["npc.generic", "npc.opponent"]:
 			var character:=_resolved_trainer(object) if type_id=="npc.opponent" else object
 			var speaker := String(character.get("name" if type_id == "npc.opponent" else "speaker", "TRAINER" if type_id == "npc.opponent" else "NPC"))
@@ -1526,6 +1687,8 @@ func _build_universal_objects(region_data: Dictionary, origin: Vector3, prefix: 
 						var width:=float(dimensions[0]) if dimensions is Array and dimensions.size()>=1 else 1.0
 						height=width*float(asset_texture.get_height())/float(asset_texture.get_width())
 					_add_prop_billboard(node_name, position, asset_texture, height,instance_id)
+					object_sort_entries[-1]["sort_offset_y"]+=float(object.get("sort_offset_y",0.0))
+					if type_id in ["asset.indoor_display","asset.indoor_billboard_tropical_research"]:object_sort_entries[-1]["interaction_text"]=String(object.get("interaction_text",""))
 					_add_asset_collision_boxes(node_name,position,asset_path,_array_to_vector3(dimensions) if dimensions is Array and dimensions.size()>=3 else Vector3.ONE,float(object.get("rotation_degrees",0.0)))
 					_add_asset_navigation(node_name,position,asset_path,height)
 				continue
@@ -1546,11 +1709,16 @@ func _build_wall_fence(object:Dictionary,origin:Vector3,node_name:String)->void:
 	# editor-generated collision representation and are not recalculated at runtime.
 	var points:Variant=object.get("points",[])
 	if not points is Array:return
+	var disabled:Dictionary={};var disabled_source:Variant=object.get("disabled_segments",[])
+	if disabled_source is Array:
+		for value:Variant in disabled_source:
+			if (value is int or value is float) and is_equal_approx(float(value),floorf(float(value))):disabled[int(value)]=true
 	for index in range(1,points.size()):
+		if disabled.has(index-1):continue
 		var from:Variant=points[index-1];var to:Variant=points[index]
 		if not from is Array or not to is Array or from.size()<2 or to.size()<2:continue
 		var start:=Vector2(float(from[0]),float(from[1]));var finish:=Vector2(float(to[0]),float(to[1]))
-		_add_wall_filler_run("%sFiller_%d"%[node_name,index-1],origin,start,finish)
+		_add_wall_filler_run("%sFiller_%d"%[node_name,index-1],origin,start,finish,String(object.get("wall_set","generic_wall")))
 	# Fillers are created first.  Each unique coordinate receives one post after
 	# them, so the post artwork conceals endpoints and junction seams.
 	var posted:Dictionary={}
@@ -1579,13 +1747,14 @@ func _build_wall_fence(object:Dictionary,origin:Vector3,node_name:String)->void:
 		_add_wall_collision_segment("%s_%d"%[node_name,index],center,length,thickness,atan2(delta.x,delta.y))
 
 
-func _add_wall_filler_run(name:String,origin:Vector3,start:Vector2,finish:Vector2)->void:
+func _add_wall_filler_run(name:String,origin:Vector3,start:Vector2,finish:Vector2,wall_set:String="generic_wall")->void:
 	var delta:=finish-start
 	var direction:=_wall_direction_for_delta(delta)
 	if direction.is_empty():return
 	var run_length:=delta.length()
 	if run_length<=0.001:return
 	var texture:=_wall_filler_texture(direction)
+	if wall_set=="canal_wall":texture=load("res://assets/overworld/canal_wall_vertical.png" if direction=="vertical" else "res://assets/overworld/canal_wall_close.png")
 	var filler_interval:=WALL_FILLER_INTERVAL
 	# Wall geometry owns repetition spacing. Texture dimensions affect only the
 	# artwork's appearance, never the number or placement of filler intervals.
@@ -1593,7 +1762,7 @@ func _add_wall_filler_run(name:String,origin:Vector3,start:Vector2,finish:Vector
 	var bounded_repeat_count:=floori((run_length+0.0001)/filler_interval)
 	for repeat_index in bounded_repeat_count:
 		var midpoint:=start+run_direction*(filler_interval*(float(repeat_index)+0.5))
-		_add_wall_filler_piece("%s_%d"%[name,repeat_index],origin+Vector3(midpoint.x,0.0,midpoint.y),texture)
+		_add_wall_filler_piece("%s_%d"%[name,repeat_index],origin+Vector3(midpoint.x,0.0,midpoint.y),texture,wall_set=="canal_wall",direction)
 
 
 func _wall_direction_for_delta(delta:Vector2)->String:
@@ -1606,14 +1775,24 @@ func _wall_filler_texture(direction:String)->Texture2D:
 	return TEX_WALL_FILLER_VERTICAL if direction=="vertical" else TEX_WALL_FILLER_HORIZONTAL
 
 
-func _add_wall_filler_piece(name:String,ground_position:Vector3,texture:Texture2D)->void:
+func _add_wall_filler_piece(name:String,ground_position:Vector3,texture:Texture2D,canal:bool=false,direction:String="horizontal")->void:
 	# Fillers retain their full native aspect ratio at the same pixel scale as
 	# posts.  Their dimensions never come from a map-unit or segment length.
 	var visual_height:=float(texture.get_height())*WALL_PIXELS_TO_WORLD
+	if canal:visual_height=2.0*float(texture.get_height())/float(texture.get_width()) if direction=="horizontal" else 2.0*sqrt(0.5)
+	# Raise canal panels to the existing posts without stretching their run span.
+	if canal and direction=="horizontal":visual_height=1.6
 	var sprite:=_billboard_sprite(texture,visual_height,name)
+	if canal and direction=="horizontal":sprite.scale.x=2.0/(visual_height*float(texture.get_width())/float(texture.get_height()))
 	sprite.position=Vector3(ground_position.x,visual_height*0.5,ground_position.z)
+	if canal and direction=="vertical":sprite.position.y=0.0
+	# Vertical artwork represents a run on the ground plane. Its lower end is
+	# half a run south of the midpoint, raised to the horizontal rail's screen
+	# height. Sorting/collision continue to use the authored midpoint.
+	if canal and direction=="vertical":sprite.position.z+=1.0-1.2/sqrt(0.5)
 	world.add_child(sprite)
 	_register_sortable_object(sprite,name+"SortRoot",ground_position,sprite.global_position,visual_height)
+	if canal:object_sort_entries[-1]["wall_scale_x"]=sprite.scale.x
 
 
 func _add_wall_collision_segment(name:String,center:Vector3,length:float,thickness:float,angle:float,physics_layer:int=1)->void:
@@ -1627,10 +1806,11 @@ func _clip_terrain_block(local_position: Vector3, block_size: Vector3, region_da
 	var size_data: Variant = region_data.get("size", region_data.get("map_size", []))
 	if not size_data is Array or size_data.size() < 2: return {"position":local_position, "size":block_size}
 	var half_x := float(size_data[0]) * 0.5; var half_z := float(size_data[1]) * 0.5
-	var min_x := maxf(local_position.x - block_size.x * 0.5, -half_x)
-	var max_x := minf(local_position.x + block_size.x * 0.5, half_x)
-	var min_z := maxf(local_position.z - block_size.z * 0.5, -half_z)
-	var max_z := minf(local_position.z + block_size.z * 0.5, half_z)
+	var center:=MapBounds.center(region_data)
+	var min_x := maxf(local_position.x - block_size.x * 0.5, center.x-half_x)
+	var max_x := minf(local_position.x + block_size.x * 0.5, center.x+half_x)
+	var min_z := maxf(local_position.z - block_size.z * 0.5, center.y-half_z)
+	var max_z := minf(local_position.z + block_size.z * 0.5, center.y+half_z)
 	if max_x - min_x <= 0.0001 or max_z - min_z <= 0.0001: return {}
 	return {"position":Vector3((min_x+max_x)*0.5,local_position.y,(min_z+max_z)*0.5), "size":Vector3(max_x-min_x,block_size.y,max_z-min_z)}
 
@@ -1776,7 +1956,7 @@ func _update_bridge_occlusion_priority() -> void:
 func _build_route(route_data: Dictionary) -> void:
 	route_origin = _array_to_vector3(route_data["origin"])
 	var route_size: Array = route_data["size"]
-	_add_textured_block("CanopyRouteGround", route_origin + Vector3(0, -0.1, 0), Vector3(float(route_size[0]), 0.2, float(route_size[1])), TEX_GRASS, Color("#315f3b"), false)
+	_add_textured_block("CanopyRouteGround", route_origin + MapBounds.offset(route_data) + Vector3(0, -0.1, 0), Vector3(float(route_size[0]), 0.2, float(route_size[1])), TEX_GRASS, Color("#315f3b"), false)
 	_build_forest_warp("CanopyRouteExit", route_origin + _array_to_vector3(route_data["exit_warp"]), _on_route_exit_entered, "north")
 	_build_forest_warp("CanopyRouteEastConnection", route_origin + _array_to_vector3(route_data["east_warp"]), _on_east_route_entered, "east")
 	_build_forest_warp("CanopyRouteWestConnection", route_origin + _array_to_vector3(route_data["west_warp"]), _on_west_route_entered, "west")
@@ -1794,7 +1974,7 @@ func _build_side_route(route_data: Dictionary, prefix: String, is_east: bool) ->
 	else:
 		west_route_origin = origin
 	var route_size: Array = route_data["size"]
-	_add_textured_block(prefix + "RainforestRouteGround", origin + Vector3(0, -0.1, 0), Vector3(float(route_size[0]), 0.2, float(route_size[1])), TEX_GRASS, Color("#376b42"), false)
+	_add_textured_block(prefix + "RainforestRouteGround", origin + MapBounds.offset(route_data) + Vector3(0, -0.1, 0), Vector3(float(route_size[0]), 0.2, float(route_size[1])), TEX_GRASS, Color("#376b42"), false)
 	_build_forest_warp(prefix + "RouteReturnWarp", origin + _array_to_vector3(route_data["return_warp"]), _on_east_route_exited if is_east else _on_west_route_exited, "west" if is_east else "east")
 	_build_outdoor_terrain_assets(route_data, origin, prefix + "Route")
 	for tree_data: Array in route_data["trees"]:
@@ -1823,7 +2003,7 @@ func _build_east_cave(cave_data: Dictionary) -> void:
 func _build_rainforest_city(city_data: Dictionary) -> void:
 	city_origin = _array_to_vector3(city_data["origin"])
 	var city_size: Array = city_data["size"]
-	_add_textured_block("MossvaleCityGround", city_origin + Vector3(0, -0.1, 0), Vector3(float(city_size[0]), 0.2, float(city_size[1])), TEX_GRASS, Color("#47784d"), false)
+	_add_textured_block("MossvaleCityGround", city_origin + MapBounds.offset(city_data) + Vector3(0, -0.1, 0), Vector3(float(city_size[0]), 0.2, float(city_size[1])), TEX_GRASS, Color("#47784d"), false)
 	_add_textured_block("MossvalePlazaPath", city_origin + Vector3(0, 0.02, 2), Vector3(5, 0.08, 16), TEX_STONE, Color("#a7956f"), false)
 	_build_forest_warp("MossvaleCitySouthExit", city_origin + _array_to_vector3(city_data["return_warp"]), _on_city_exited, "north")
 	for tree_data: Array in city_data["trees"]:
@@ -1909,6 +2089,7 @@ func _add_serialized_furnishings(origin:Vector3, furnishings:Array, prefix:Strin
 		var furnishing_name := "%sFurnishing%d" % [prefix, index]
 		var furnishing_position := origin + _array_to_vector3(position)
 		_add_prop_billboard(furnishing_name, furnishing_position, texture, float(item.get("height", 1.0)))
+		object_sort_entries[-1]["furnishing_type"] = furnishing_type
 		var footprint := _furnishing_footprint(furnishing_type)
 		var serialized_footprint: Variant = item.get("footprint", [])
 		if serialized_footprint is Array and serialized_footprint.size() >= 2:
@@ -1933,18 +2114,19 @@ func _furnishing_footprint(furnishing_type: String) -> Vector2:
 	return Vector2.ZERO
 
 
-func _build_colored_warp(warp_name: String, position: Vector3, callback: Callable, color: Color) -> void:
+func _build_colored_warp(warp_name: String, position: Vector3, callback: Callable, color: Color, show_sprite: Variant = null) -> void:
 	var warp := Area3D.new()
 	warp.name = warp_name
 	warp.position = position
 	var size := Vector3(1.5, 0.3, 0.9)
 	warp.add_child(_box_shape(size))
-	_add_warp_rug_visual(warp, size.x)
+	if show_sprite == null: show_sprite = _warp_sprite_visible_at(position)
+	if show_sprite: _add_warp_rug_visual(warp, size.x)
 	warp.body_entered.connect(callback)
 	world.add_child(warp)
 
 
-func _add_talking_npc(npc_name: String, position: Vector3, color: Color, speaker: String, pages: Array, after_dialogue := Callable(), sprite_id:String="") -> Area3D:
+func _add_talking_npc(npc_name: String, position: Vector3, color: Color, speaker: String, pages: Array, after_dialogue := Callable(), sprite_id:String="", patrol_spawn: bool = false) -> Area3D:
 	var npc := Area3D.new()
 	npc.name = npc_name
 	npc.position = position
@@ -1958,6 +2140,7 @@ func _add_talking_npc(npc_name: String, position: Vector3, color: Color, speaker
 	npc.set_meta("visual_height",visual_height)
 	npc.add_child(_box_shape(Vector3(0.8, 1.1, 0.8)))
 	npc.add_child(_npc_foot_body())
+	if patrol_spawn: npc.set_meta("patrol_spawn", true)
 	world.add_child(npc)
 	npc_sort_entries.append({"node": npc, "visual": visual, "height": visual_height, "name": npc_name + "SortRoot"})
 	npc_dialogues[npc.get_instance_id()] = {"speaker": speaker, "pages": pages, "after_dialogue": after_dialogue}
@@ -2028,20 +2211,32 @@ func _add_small_orchid(position: Vector3) -> void:
 	_add_prop_billboard("GroundOrchidBloom", position, TEX_FLOWER_ORCHID_POT, 0.72)
 
 
-func _build_forest_warp(warp_name: String, warp_position: Vector3, callback: Callable, facing: String) -> void:
+func _build_forest_warp(warp_name: String, warp_position: Vector3, callback: Callable, facing: String, show_sprite: Variant = null) -> void:
 	var warp := Area3D.new()
 	warp.name = warp_name
 	warp.position = warp_position
 	var warp_size := Vector3(2.2, 0.4, 1.2)
 	warp.add_child(_box_shape(warp_size))
-	var texture := TEX_WARP_EAST if facing == "east" else (TEX_WARP_WEST if facing == "west" else (TEX_WARP_GENERIC if facing == "generic" else TEX_WARP_NORTH))
-	var visual_height := 1.75 if facing == "north" else 2.1
-	var visual := _billboard_sprite(texture, visual_height, "OutdoorWarpArt_%s" % facing.capitalize())
-	visual.position = Vector3(0, visual_height * 0.5, -0.08)
-	warp.add_child(visual)
 	warp.body_entered.connect(callback)
 	world.add_child(warp)
-	_register_sortable_object(visual, warp_name + "SortRoot", warp_position, visual.global_position, visual_height, 0.0)
+	if show_sprite == null: show_sprite = _warp_sprite_visible_at(warp_position)
+	if show_sprite:
+		var texture := TEX_WARP_EAST if facing == "east" else (TEX_WARP_WEST if facing == "west" else (TEX_WARP_GENERIC if facing == "generic" else TEX_WARP_NORTH))
+		var visual_height := 1.75 if facing == "north" else 2.1
+		var visual := _billboard_sprite(texture, visual_height, "OutdoorWarpArt_%s" % facing.capitalize())
+		visual.position = Vector3(0, visual_height * 0.5, -0.08)
+		warp.add_child(visual)
+		_register_sortable_object(visual, warp_name + "SortRoot", warp_position, visual.global_position, visual_height, 0.0)
+
+
+func _warp_sprite_visible_at(position: Vector3) -> bool:
+	for data: Dictionary in Dictionary(map_data.get("_map_files", {})).values():
+		var origin := _array_to_vector3(data.get("origin", [0, 0, 0]))
+		for field: String in Dictionary(data.get("warp_metadata", {})):
+			var point: Variant = data.get(field, [])
+			if point is Array and point.size() >= 3 and (origin + _array_to_vector3(point)).is_equal_approx(position):
+				return bool(data.warp_metadata[field].get("show_sprite", false))
+	return false
 
 
 func _build_editor_authored_warps() -> void:
@@ -2070,29 +2265,46 @@ func _build_editor_authored_warps() -> void:
 				continue
 			var node_name := "EditorWarp_%s_%s" % [String(filename).get_basename().validate_node_name(), field_name.validate_node_name()]
 			var first_world_child := world.get_child_count()
-			_build_forest_warp(node_name, origin + _array_to_vector3(position), func(body): _on_editor_authored_warp_entered(body, String(filename), field_name, record), String(record.get("facing", "generic")))
+			var first_sort_entry:=object_sort_entries.size()
+			var callback := _on_editor_authored_warp_entered.bind(String(filename), field_name, record)
+			var is_indoor:=_is_authored_indoor_map(authored_map) or _location_for_map_file(String(filename)) in ["medical_ward","house","city_ward","orchid_house","family_house"]
+			if is_indoor:_build_colored_warp(node_name,origin+_array_to_vector3(position),callback,Color.WHITE, bool(record.get("show_sprite", false)))
+			else:_build_forest_warp(node_name, origin + _array_to_vector3(position), callback, String(record.get("facing", "generic")), bool(record.get("show_sprite", false)))
 			var authored_id := String(Dictionary(map_data.get("_authored_file_ids", {})).get(String(filename), ""))
 			if not authored_id.is_empty():
 				var layer := _active_visual_layer("authored:" + authored_id)
 				for index in range(first_world_child, world.get_child_count()): _assign_visual_region(world.get_child(index), layer)
-				for index in range(maxi(0, object_sort_entries.size() - 1), object_sort_entries.size()): object_sort_entries[index]["visual_layer"] = layer
+				for index in range(first_sort_entry, object_sort_entries.size()): object_sort_entries[index]["visual_layer"] = layer
 
 
-func _build_authored_outdoor_maps() -> void:
+func _is_authored_indoor_map(data:Dictionary)->bool:
+	return String(data.get("map_metadata",{}).get("layout_type","outdoor")) in ["indoor","interior"]
+
+
+func _build_authored_maps() -> void:
 	authored_visual_regions.clear()
 	var next_layer := 12
 	for map_id: Variant in map_data.get("authored_maps", {}):
 		var authored: Variant = map_data.authored_maps[map_id]
-		if not authored is Dictionary or String(authored.get("map_metadata", {}).get("layout_type", "outdoor")) != "outdoor":
+		if not authored is Dictionary:
 			continue
-		var origin:=_array_to_vector3(authored.get("origin",[0,0,0]));var size:Variant=authored.get("size",[20,20]);var map_layer:=next_layer
+		var indoors:=_is_authored_indoor_map(authored)
+		if not indoors and String(authored.get("map_metadata",{}).get("layout_type","outdoor"))!="outdoor":continue
+		var origin:=_array_to_vector3(authored.get("origin",[0,0,0]));var size:Variant=authored.get("size",authored.get("interior_size",[20,20]));var map_layer:=next_layer
 		var first_world_child:=world.get_child_count()
 		var first_surface := traversal_surfaces.size()
 		var first_tree:=tree_sort_entries.size();var first_object:=object_sort_entries.size();var first_overlay:=overlay_sort_entries.size();var first_background:=background_object_sort_entries.size();var first_npc:=npc_sort_entries.size();var first_bridge:=bridge_sort_entries.size()
-		if next_layer < DYNAMIC_VISUAL_LAYER and size is Array and size.size()>=2:
-			authored_visual_regions.append({"id":String(map_id),"origin":origin,"size":Vector2(float(size[0]),float(size[1])),"layer":next_layer})
+		if size is Array and size.size()>=2:
+			authored_visual_regions.append({"id":String(map_id),"origin":origin+MapBounds.offset(authored),"size":Vector2(float(size[0]),float(size[1])),"layer":next_layer})
 			next_layer += 1
-		if size is Array and size.size()>=2:_add_textured_block("AuthoredMap_%s_Ground"%String(map_id).validate_node_name(),origin+Vector3(0,-0.1,0),Vector3(float(size[0]),0.2,float(size[1])),TEX_GRASS,Color("#376b42"),false)
+		if size is Array and size.size()>=2:
+			var ground_texture:=TerrainTransitionTextureCache.base_texture(String(authored.get("base_terrain_type","indoor_floor_tile" if indoors else "forest_floor")))
+			_add_textured_block("AuthoredMap_%s_Ground"%String(map_id).validate_node_name(),origin+MapBounds.offset(authored)+Vector3(0,-0.1,0),Vector3(float(size[0]),0.2,float(size[1])),ground_texture if ground_texture!=null else TEX_GRASS,Color.WHITE,false)
+		if indoors:
+			var room_prefix:="AuthoredMap_"+String(map_id).to_pascal_case()
+			_add_map_blocks(origin,authored.get("floor_blocks",[]),room_prefix+"Floor",TEX_INTERIOR_FLOOR,Color.WHITE,false)
+			_add_map_blocks(origin,authored.get("wall_blocks",[]),room_prefix+"Wall",TEX_WALL_GENERIC,Color.WHITE,true)
+			_add_serialized_furnishings(origin,authored.get("furnishings",[]),room_prefix)
 		_build_outdoor_terrain_assets(authored,origin,"AuthoredMap_"+String(map_id).to_pascal_case())
 		# _build_outdoor_terrain_assets already builds universal objects, including
 		# their art and collision. A second call hides platform actors under a copy.
@@ -2112,7 +2324,17 @@ func _build_authored_outdoor_maps() -> void:
 func _on_editor_authored_warp_entered(body: Node3D, _source_file: String, _source_field: String, record: Dictionary) -> void:
 	if body != player or in_battle or not door_warp_ready:
 		return
+	if _current_location() != _location_for_map_file(_source_file):
+		return
+	# Reserve the transition now; change Area3D monitoring after physics signals finish.
+	door_warp_ready = false
+	_complete_editor_authored_warp.call_deferred(record)
+
+
+func _complete_editor_authored_warp(record: Dictionary) -> void:
+	door_warp_ready = true
 	var target_file := String(record.get("entrance_map", "")); var target_id := int(record.get("entrance_map_warp_id", 0))
+	target_file = MapDataLoader.instance_file(target_file, String(record.get("entrance_instance_id", "")))
 	var map_files: Dictionary = map_data.get("_map_files", {})
 	var target: Variant = map_files.get(target_file, {})
 	if not target is Dictionary or target_id < 1:
@@ -2193,10 +2415,23 @@ func _add_water_shape_tile(tile_name:String,ground_position:Vector3,tile_size:Ve
 func _add_map_blocks(origin: Vector3, blocks: Array, block_name: String, texture: Texture2D, color: Color, solid: bool) -> void:
 	for index in blocks.size():
 		var block: Array = blocks[index]
-		if block.size() != 6:
+		if block.size() < 6:
 			continue
 		var name := block_name if blocks.size() == 1 else "%s_%d" % [block_name, index]
-		_add_textured_block(name, origin + Vector3(float(block[0]), float(block[1]), float(block[2])), Vector3(float(block[3]), float(block[4]), float(block[5])), texture, color, solid)
+		var wall:=texture==TEX_WALL_GENERIC and solid
+		_add_textured_block(name, origin + Vector3(float(block[0]), float(block[1]), float(block[2])), Vector3(float(block[3]), float(block[4]), float(block[5])), texture, color, solid and not wall)
+		if wall:
+			var collider:Dictionary=block[6] if block.size()>6 and block[6] is Dictionary else {}
+			if bool(collider.get("enabled",true)):
+				var offset:=_array_to_vector3(collider.get("offset",[0,0,0]))
+				var collision_size:=_array_to_vector3(collider.get("size",[block[3],block[4],block[5]]))
+				_add_static_collision(name+"Collision",origin+Vector3(float(block[0]),float(block[1]),float(block[2]))+offset,collision_size)
+		if texture==TEX_WALL_GENERIC and solid:
+			# Wall art uses the editor's ground footprint; Y remains collision data.
+			var visual:=world.get_node(NodePath(name)) as MeshInstance3D
+			visual.hide()
+			var placement:=origin+Vector3(float(block[0]),0,float(block[2]))
+			object_sort_entries.append({"name":name+"SortRoot","placement":placement,"visual_center":placement,"texture":texture,"height":float(block[5]),"wall_size":Vector2(float(block[3]),float(block[5]))})
 
 
 func _room_wall_blocks(room_size: Array) -> Array:
@@ -2236,6 +2471,9 @@ func _register_sortable_object(source: Sprite3D, node_name: String, placement: V
 	source.visible = false
 	object_sort_entries.append({"name": node_name, "placement": placement, "visual_center": visual_center, "texture": source.texture, "height": visual_height, "sort_offset_y": sort_offset_y, "source_crop": source_crop,"instance_id":instance_id})
 	var metadata := _overworld_asset_metadata(source.texture.resource_path)
+	object_sort_entries[-1]["render_band"]=int(metadata.get("render_band",0))
+	object_sort_entries[-1]["sort_offset_y"]+=float(metadata.get("sort_offset_y",0.0))
+	object_sort_entries[-1]["wall_overlay"]=bool(metadata.get("wall_overlay",false))
 	object_sort_entries[-1]["light_source"] = bool(metadata.get("light_source", false))
 	object_sort_entries[-1]["light_strength"] = float(metadata.get("light_strength", 0.5))
 
@@ -2251,6 +2489,7 @@ func _register_background_object(source: Sprite3D, node_name: String, placement:
 
 
 func _build_sort_canvas() -> void:
+	static_art_view_signature=[]
 	sort_canvas = CanvasLayer.new()
 	sort_canvas.name = "WorldSortCanvas"
 	sort_canvas.layer = 0
@@ -2263,6 +2502,12 @@ func _build_sort_canvas() -> void:
 		entry["sort_root"] = _create_sorted_sprite(String(entry["name"]), entry["texture"])
 	for entry: Dictionary in object_sort_entries:
 		entry["sort_root"] = _create_sorted_sprite(String(entry["name"]), entry["texture"])
+		(entry.sort_root as CanvasItem).z_index=int(entry.get("render_band",0))
+		if entry.has("wall_size"):
+			var art:Sprite2D=entry.sort_root.get_node("Visual")
+			art.texture_repeat=CanvasItem.TEXTURE_REPEAT_ENABLED
+			art.region_enabled=true
+			art.region_rect=Rect2(Vector2.ZERO,entry.texture.get_size()*entry.wall_size)
 		_configure_sorted_region(entry["sort_root"] as Node2D, entry.get("source_crop", Rect2()))
 		if entry.has("foreground_masks"):
 			entry["platform_layers"] = preload("res://world/platform_art_layers.gd").build(entry.sort_root,entry.texture,entry.foreground_masks,entry.get("foreground_depth_lines",[]))
@@ -2286,6 +2531,8 @@ func _build_sort_canvas() -> void:
 		var host:Dictionary=hosts.get(String(entry.get("host_id","")),{})
 		if host.is_empty():
 			var fallback_root:=_create_sorted_sprite(String(entry.name)+"Fallback",entry.texture);fallback_root.rotation_degrees=float(entry.get("rotation_degrees",0.0));overlay_sort_entries.append({"name":String(entry.name)+"Fallback","placement":entry.fallback_position,"visual_center":entry.fallback_position+Vector3(0,float(entry.height)*0.5,0),"texture":entry.texture,"height":entry.height,"rotation_degrees":entry.rotation_degrees,"sort_root":fallback_root});continue
+		var overhang:float=(entry.local_position as Vector2).length()+float(entry.height)*(1.0+float(entry.texture.get_width())/maxf(float(entry.texture.get_height()),1))
+		host["static_overhang"]=maxf(float(host.get("static_overhang",0)),overhang)
 		var pivot:=Node2D.new();pivot.name=String(entry.name);pivot.rotation_degrees=float(entry.get("rotation_degrees",0.0))
 		var art:=Sprite2D.new();art.name="Visual";art.texture=entry.texture;art.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST;pivot.add_child(art);(host.sort_root as Node2D).add_child(pivot);entry["host_entry"]=host;entry["pivot"]=pivot;entry["visual"]=art
 	for entry: Dictionary in npc_sort_entries:
@@ -2323,9 +2570,21 @@ func _update_sort_canvas() -> void:
 	if camera == null or sort_root == null:
 		return
 	var pixels_per_world_unit := get_viewport().get_visible_rect().size.y / camera.size
+	var projection_signature:Array=preload("res://world/terrain_camera_view.gd").signature(camera)
+	if camera.projection==Camera3D.PROJECTION_ORTHOGONAL:projection_signature[1]=camera.global_basis
+	var projection_origin:=camera.unproject_position(Vector3.ZERO)
+	var static_cache:=preload("res://world/static_art_projection_cache.gd")
 	var active_visual_layer := _active_visual_layer()
+	_update_map_borders(active_visual_layer)
+	OverworldTextureAnimation.update_visibility(camera,active_visual_layer)
 	var player_feet := Vector3(player.global_position.x, 0.0, player.global_position.z)
 	_update_sorted_art(player_sort_root, player_feet, player.global_position, SWIM_VISUAL_HEIGHT if swimming else PLAYER_VISUAL_HEIGHT, pixels_per_world_unit)
+	if not swimming and not swim_transitioning:
+		_apply_player_frame_adjustment(pixels_per_world_unit)
+	if swim_transitioning:
+		(player_sort_root.get_node("Visual") as Sprite2D).position.y -= swim_jump_height * pixels_per_world_unit
+	if swim_transition_effect_root != null and swim_transition_effect_root.visible:
+		_update_sorted_art(swim_transition_effect_root, swim_transition_effect_position, swim_transition_effect_position, swim_transition_effect_height, pixels_per_world_unit)
 	var follower_feet:=Vector3(follower.global_position.x,0.0,follower.global_position.z)
 	follower_sort_root.visible=follower.visible
 	if follower.visible:_update_sorted_art(follower_sort_root,follower_feet,follower.global_position,0.9*follower_sprite.scale.y,pixels_per_world_unit)
@@ -2333,75 +2592,71 @@ func _update_sort_canvas() -> void:
 		var npc := entry["node"] as Area3D
 		var npc_visual := entry["visual"] as Sprite3D
 		var npc_sort := entry["sort_root"] as Node2D
-		npc_sort.visible = int(entry["visual_layer"]) == active_visual_layer
+		npc_sort.visible = int(entry["visual_layer"]) == active_visual_layer and not script_host.sprite_hidden(npc)
 		if not npc_sort.visible:
 			continue
 		var art := npc_sort.get_node("Visual") as Sprite2D
 		if art.texture != npc_visual.texture:
 			art.texture = npc_visual.texture
 		var feet := Vector3(npc.global_position.x, 0.0, npc.global_position.z)
+		feet = _npc_bed_sort_position(npc, feet)
 		var center := npc.global_position + Vector3(0.0, float(entry["height"]) * 0.5, 0.0)
 		_update_sorted_art(npc_sort, feet, center, float(entry["height"]), pixels_per_world_unit)
 		if npc.has_meta("movement_mode"):
 			art.position = camera.unproject_position(npc.global_position) - npc_sort.position - Vector2(0,float(entry["height"])*pixels_per_world_unit*0.5)
-			npc_sort.z_index = -2 if npc.get_meta("movement_mode") == "swimming" else 0
+			_set_npc_water_draw_order(npc, npc_sort)
 	_update_npc_water_surfaces(active_visual_layer)
-	for entry: Dictionary in tree_sort_entries:
-		var tree_visible := _sort_entry_layer(entry,entry["placement"]) == active_visual_layer
-		(entry.get("sort_root") as CanvasItem).visible = tree_visible
-		if not tree_visible:
-			continue
-		var placement: Vector3 = entry["placement"]
-		# World Z is this 2.5D map's screen-Y movement axis. The sort point may
-		# move independently while the inverse child offset preserves the artwork.
-		var effective_sort_world := Vector3(placement.x, 0.0, placement.z + float(entry.get("sort_offset_y", 0.0)))
-		var visual_center := Vector3(placement.x, float(entry["height"]) * 0.5, placement.z)
-		_update_sorted_art(entry.get("sort_root"), effective_sort_world, visual_center, float(entry["height"]), pixels_per_world_unit)
-	for entry: Dictionary in object_sort_entries:
-		var object_visible := _sort_entry_layer(entry,entry["placement"]) == active_visual_layer
-		(entry.get("sort_root") as CanvasItem).visible = object_visible
-		if not object_visible:
-			continue
-		var placement: Vector3 = entry["placement"]
-		var effective_sort_world := Vector3(placement.x, 0.0, placement.z + float(entry.get("sort_offset_y", 0.0)))
-		_update_sorted_art(entry.get("sort_root"), effective_sort_world, entry["visual_center"], float(entry["height"]), pixels_per_world_unit)
-	for entry:Dictionary in overlay_sort_entries:
-		var overlay_visible:=_sort_entry_layer(entry,entry.placement)==active_visual_layer
-		(entry.sort_root as CanvasItem).visible=overlay_visible
-		if overlay_visible:
-			var placement:Vector3=entry.placement
-			_update_sorted_art(entry.sort_root,Vector3(placement.x,0,placement.z),entry.visual_center,float(entry.height),pixels_per_world_unit)
-	for entry:Dictionary in attached_overlay_entries:
-		if not entry.has("pivot"):continue
-		var host:Dictionary=entry.host_entry;var host_root:=host.get("sort_root") as Node2D;var pivot:=entry.pivot as Node2D;var visual:=entry.visual as Sprite2D
-		pivot.visible=host_root.visible
-		if not pivot.visible:continue
-		var placement:Vector3=host.placement;var local:Vector2=entry.local_position
-		# Attachments are offsets on the host's billboard, as displayed in the
-		# editor. Project only the ground anchor; projecting the art offset
-		# compresses it with camera pitch and using placement.y raises it again.
-		var contact_screen:=camera.unproject_position(Vector3(placement.x,0,placement.z))
-		var local_screen:=local*pixels_per_world_unit
-		pivot.position=contact_screen-host_root.position+local_screen
-		visual.position=Vector2(0,-float(entry.height)*pixels_per_world_unit*0.5)
-		visual.scale=Vector2.ONE*(float(entry.height)*pixels_per_world_unit/maxf(float(visual.texture.get_height()),1.0))
-	for entry: Dictionary in background_object_sort_entries:
-		var background_visible := _sort_entry_layer(entry,entry["placement"]) == active_visual_layer
-		(entry.get("sort_root") as CanvasItem).visible = background_visible
-		if background_visible:
-			_update_sorted_art(entry.get("sort_root"), entry["placement"], entry["visual_center"], float(entry["height"]), pixels_per_world_unit)
-	for entry: Dictionary in bridge_sort_entries:
-		var bridge_visible := _sort_entry_layer(entry,entry["position"]) == active_visual_layer
-		(entry["sort_root"] as CanvasItem).visible = bridge_visible
-		if not bridge_visible:
-			continue
-		var center: Vector3 = entry["position"]
-		var sort_point := entry["sort_root"] as Node2D
-		var visual := sort_point.get_node("Visual") as Sprite2D
-		sort_point.position = camera.unproject_position(center)
-		visual.position = Vector2.ZERO
-		var tile_size: Vector2 = entry["size"]
-		visual.scale = Vector2(tile_size.x, tile_size.y * 0.72) * pixels_per_world_unit / Vector2(float(visual.texture.get_width()), float(visual.texture.get_height()))
+	var view_signature:Array=preload("res://world/terrain_camera_view.gd").signature(camera)+[active_visual_layer,script_host.hidden_objects.hash(),tree_sort_entries.size(),object_sort_entries.size(),overlay_sort_entries.size(),attached_overlay_entries.size(),background_object_sort_entries.size(),bridge_sort_entries.size()]
+	if view_signature!=static_art_view_signature:
+		static_art_view_signature=view_signature
+		for entry:Dictionary in tree_sort_entries:
+			var enabled:=_sort_entry_layer(entry,entry.placement)==active_visual_layer and not script_host.object_hidden(entry)
+			static_cache.update(entry,camera,enabled,projection_signature,projection_origin,pixels_per_world_unit,func():
+				var placement:Vector3=entry.placement
+				_update_sorted_art(entry.sort_root,Vector3(placement.x,0,placement.z+float(entry.get("sort_offset_y",0))),Vector3(placement.x,float(entry.height)*0.5,placement.z),float(entry.height),pixels_per_world_unit))
+		for entry:Dictionary in object_sort_entries:
+			var enabled:=_sort_entry_layer(entry,entry.placement)==active_visual_layer and not script_host.object_hidden(entry)
+			static_cache.update(entry,camera,enabled,projection_signature,projection_origin,pixels_per_world_unit,func():
+				if entry.has("wall_size"):_update_sorted_wall(entry);return
+				var placement:Vector3=entry.placement
+				var effective:=Vector3(placement.x,0,placement.z+float(entry.get("sort_offset_y",0)))
+				if bool(entry.get("wall_overlay",false)):
+					for wall:Dictionary in object_sort_entries:
+						if not wall.has("wall_size") or _sort_entry_layer(wall,wall.placement)!=active_visual_layer:continue
+						var bounds:=Rect2(Vector2(wall.placement.x,wall.placement.z)-wall.wall_size*0.5,wall.wall_size)
+						if bounds.has_point(Vector2(placement.x,placement.z)):effective.z=maxf(effective.z,wall.placement.z+wall.wall_size.y*0.5+0.001)
+				_update_sorted_art(entry.sort_root,effective,entry.visual_center,float(entry.height),pixels_per_world_unit)
+				if entry.has("wall_scale_x"):(entry.sort_root.get_node("Visual") as Sprite2D).scale.x*=float(entry.wall_scale_x))
+		for entry:Dictionary in overlay_sort_entries:
+			static_cache.update(entry,camera,_sort_entry_layer(entry,entry.placement)==active_visual_layer,projection_signature,projection_origin,pixels_per_world_unit,func():
+				var placement:Vector3=entry.placement
+				_update_sorted_art(entry.sort_root,Vector3(placement.x,0,placement.z),entry.visual_center,float(entry.height),pixels_per_world_unit))
+		for entry:Dictionary in attached_overlay_entries:
+			if not entry.has("pivot"):continue
+			var host:Dictionary=entry.host_entry;var host_root:=host.get("sort_root") as Node2D;var pivot:=entry.pivot as Node2D;var visual:=entry.visual as Sprite2D
+			pivot.visible=host_root.visible
+			if not pivot.visible:continue
+			var attachment_key:Array=[host.get("projection_key",[]),entry.local_position,entry.height,visual.texture,pivot.rotation]
+			if entry.get("attachment_projection_key",[])==attachment_key:continue
+			entry["attachment_projection_key"]=attachment_key
+			var placement:Vector3=host.placement;var local:Vector2=entry.local_position
+			# Attachments are offsets on the host's billboard, as displayed in the
+			# editor. Project only the ground anchor; projecting the art offset
+			# compresses it with camera pitch and using placement.y raises it again.
+			var contact_screen:=camera.unproject_position(Vector3(placement.x,0,placement.z))
+			var local_screen:=local*pixels_per_world_unit
+			pivot.position=contact_screen-host_root.position+local_screen
+			visual.position=Vector2(0,-float(entry.height)*pixels_per_world_unit*0.5)
+			visual.scale=Vector2.ONE*(float(entry.height)*pixels_per_world_unit/maxf(float(visual.texture.get_height()),1.0))
+		for entry:Dictionary in background_object_sort_entries:
+			var enabled:=_sort_entry_layer(entry,entry.placement)==active_visual_layer and not script_host.object_hidden(entry)
+			static_cache.update(entry,camera,enabled,projection_signature,projection_origin,pixels_per_world_unit,func():_update_sorted_art(entry.sort_root,entry.placement,entry.visual_center,float(entry.height),pixels_per_world_unit))
+		for entry:Dictionary in bridge_sort_entries:
+			static_cache.update(entry,camera,_sort_entry_layer(entry,entry.position)==active_visual_layer,projection_signature,projection_origin,pixels_per_world_unit,func():
+				var visual:Sprite2D=entry.sort_root.get_node("Visual")
+				entry.sort_root.position=camera.unproject_position(entry.position)
+				visual.position=Vector2.ZERO
+				visual.scale=Vector2(entry.size.x,entry.size.y*0.72)*pixels_per_world_unit/Vector2(visual.texture.get_size()))
 	_update_bridge_occlusion_priority()
 	_update_platform_art_layers()
 
@@ -2410,26 +2665,64 @@ func _update_sort_canvas() -> void:
 
 
 func _update_platform_art_layers()->void:
-	var actor_visual := player_sort_root.get_node("Visual") as Sprite2D
-	actor_visual.visible = true
-	var claimed := false
+	var actors:Array = [{"node":player,"visual":player_sort_root.get_node("Visual")}]
+	for npc_entry:Dictionary in npc_sort_entries:
+		var visual:Sprite2D = npc_entry.sort_root.get_node("Visual")
+		visual.visible = true
+		if npc_entry.sort_root.visible:actors.append({"node":npc_entry.node,"visual":visual})
+	(player_sort_root.get_node("Visual") as Sprite2D).visible = true
+	var claimed:Dictionary = {}
 	for entry:Dictionary in object_sort_entries:
-		if not entry.has("platform_layers"):continue
-		var polygon:PackedVector2Array = entry.navigation_polygon
-		var occupied := not claimed and (entry.sort_root as CanvasItem).visible and not swimming and active_traversal_layer == 0 and Geometry2D.is_point_in_polygon(Vector2(player.position.x,player.position.z),polygon)
-		preload("res://world/platform_art_layers.gd").update(entry,actor_visual,occupied)
-		if occupied:claimed = true
-	actor_visual.visible = not claimed
+		if not entry.has("platform_layers") or not (entry.sort_root as CanvasItem).visible:continue
+		var occupants:Array = []
+		for actor:Dictionary in actors:
+			var id:int = actor.node.get_instance_id()
+			if claimed.has(id) or not (entry.sort_root as CanvasItem).visible:continue
+			if _platform_at_position(actor.node.position,actor.node) != entry:continue
+			occupants.append(actor)
+			claimed[id] = true
+		preload("res://world/platform_art_layers.gd").update_actors(entry,occupants,player_sort_root.get_node("Visual"))
+	for actor:Dictionary in actors:actor.visual.visible = not claimed.has(actor.node.get_instance_id())
 
 
-func _platform_at_position(position:Vector3)->Dictionary:
-	if swimming or active_traversal_layer > 0:return {}
-	var layer := _active_visual_layer()
+func _platform_at_position(position:Vector3, actor:Node3D = null, margin:float = 0.0)->Dictionary:
+	if actor == null or actor == player:
+		if swimming or active_traversal_layer > 0:return {}
+	elif actor.get_meta("movement_mode","ground") != "ground":return {}
+	var layer := _active_visual_layer() if actor == null or actor == player else int(actor.get_meta("visual_layer",_visual_layer_for_position(position)))
 	for entry:Dictionary in object_sort_entries:
 		if not entry.has("navigation_polygon") or not entry.has("foreground_masks"):continue
 		if int(entry.get("visual_layer",_visual_layer_for_position(entry.placement))) != layer:continue
-		if Geometry2D.is_point_in_polygon(Vector2(position.x,position.z),entry.navigation_polygon):return entry
+		var point := Vector2(position.x,position.z)
+		var polygon:PackedVector2Array = entry.navigation_polygon
+		if Geometry2D.is_point_in_polygon(point,polygon):return entry
+		if margin > 0.0:
+			for index in polygon.size():
+				if point.distance_to(Geometry2D.get_closest_point_to_segment(point,polygon[index],polygon[(index+1)%polygon.size()])) <= margin:return entry
 	return {}
+
+
+func _update_sorted_wall(entry:Dictionary)->void:
+	var center:Vector3=entry.placement
+	var size:Vector2=entry.wall_size
+	var a:=camera.unproject_position(center-Vector3(size.x*0.5,0,size.y*0.5))
+	var b:=camera.unproject_position(center+Vector3(size.x*0.5,0,size.y*0.5))
+	var root_node:Node2D=entry.sort_root
+	root_node.position=camera.unproject_position(center+Vector3(0,0,size.y*0.5))
+	var art:Sprite2D=root_node.get_node("Visual")
+	art.position=(a+b)*0.5-root_node.position
+	art.scale=(b-a).abs()/art.get_rect().size
+
+
+func _try_display_text_click(screen_position:Vector2)->bool:
+	for entry:Dictionary in object_sort_entries:
+		var text:=String(entry.get("interaction_text",""))
+		if text.strip_edges().is_empty() or not (entry.sort_root as CanvasItem).is_visible_in_tree():continue
+		var art:Sprite2D=entry.sort_root.get_node("Visual")
+		if art.get_rect().has_point(art.to_local(screen_position)):
+			_start_dialogue("DISPLAY",[text])
+			return true
+	return false
 
 
 func _try_platform_sign_click(screen_position:Vector2)->bool:
@@ -2472,7 +2765,13 @@ func _warn_platform_overlaps()->void:
 func _update_platform_collision_mask()->void:
 	# A platform occupies the same projected X/Z space as ground props. Its own
 	# rails remain solid while the actor passes over ground-level obstructions.
-	player.collision_mask = PLATFORM_WALL_LAYER if not _platform_at_position(player.position).is_empty() else (1 | PLATFORM_WALL_LAYER)
+	player.collision_mask = _floor_collision_mask(player,player.position,false)
+
+
+func _floor_collision_mask(actor:Node3D, position:Vector3, terrain:bool = true)->int:
+	if not _platform_at_position(position,actor).is_empty():
+		return PLATFORM_WALL_LAYER | ACTOR_COLLISION_LAYER
+	return 1 | PLATFORM_WALL_LAYER | (TERRAIN_OBSTACLE_LAYER if terrain else 0)
 
 
 func _update_sorted_art(sort_point: Node2D, effective_sort_world: Vector3, visual_center_world: Vector3, visual_height: float, pixels_per_world_unit: float) -> void:
@@ -2507,7 +2806,8 @@ func _add_warp_rug_visual(parent: Node3D, width: float) -> MeshInstance3D:
 	var aspect := float(TEX_WARP_BUILDING.get_width()) / float(TEX_WARP_BUILDING.get_height())
 	mesh.size = Vector2(width, width / aspect)
 	visual.mesh = mesh
-	visual.position.y = 0.17
+	# Canonical floor tiles are rendered at world Y=0.4; keep the rug above them.
+	visual.position.y = maxf(0.17, 0.43 - parent.position.y)
 	visual.material_override = _textured_material(TEX_WARP_BUILDING, Color.WHITE)
 	parent.add_child(visual)
 	return visual
@@ -2533,9 +2833,7 @@ func _build_medical_ward_instance(ward_data: Dictionary, prefix: String, exit_ca
 	_add_map_blocks(ward_origin, ward_data.get("wall_blocks", _room_wall_blocks(ward_size)), prefix + "Wall", TEX_WALL_GENERIC, Color("#d6e8e8"), true)
 	_add_serialized_furnishings(ward_origin,ward_data.get("furnishings",[{"type":"ward_counter","position":[0,0,-2.2],"height":1.75},{"type":"ward_shelf","position":[-3,0,-1.7],"height":2.05},{"type":"ward_table","position":[2,0,0.8],"height":0.95},{"type":"ward_curtain","position":[2.95,0,-1],"height":1.85},{"type":"ward_wash","position":[-2.9,0,1.5],"height":1.85}]),prefix)
 	_build_universal_objects(ward_data, ward_origin, prefix)
-	var staff_position := ward_origin + _array_to_vector3(ward_data.get("staff", [0.0, 0.65, -1.25]))
-	var staff := _add_talking_npc(prefix + "Attendant", staff_position, Color("#72cbd0"), "WARD ATTENDANT", ["Welcome to the medical ward.", "Leave your Fakemon with me for a moment, and I will restore them to full health."], _heal_party_at_ward, "woman")
-	_add_static_collision(prefix + "AttendantCollision", staff.position, Vector3(0.8, 1.1, 0.8))
+
 	#var reception := MeshInstance3D.new()
 	#reception.name = "MedicalWardCounterPlaceholder"
 	#var counter_mesh := BoxMesh.new()
@@ -2624,7 +2922,7 @@ func _npc_foot_body()->StaticBody3D:
 	var body:=StaticBody3D.new()
 	body.name="FootCollision"
 	body.position=NPC_FOOT_COLLISION_OFFSET
-	body.collision_layer=1
+	body.collision_layer=1 | ACTOR_COLLISION_LAYER
 	body.collision_mask=1
 	body.add_child(_box_shape(NPC_FOOT_COLLISION_SIZE))
 	return body
@@ -2740,13 +3038,17 @@ func _add_asset_polygon_collision(node_name:String,position:Vector3,size:Vector3
 	if not bool(collision.get("closed",false)) or not raw is Array or raw.size()<3:push_warning("Invalid/unclosed polygon collision for "+asset_path);return true
 	var normalized:=PackedVector2Array()
 	for point:Variant in raw:
-		if not point is Array or point.size()!=2:return true
-		var value:=Vector2(float(point[0]),float(point[1]));if value.x<0.0 or value.x>1.0 or value.y<0.0 or value.y>1.0:return true
+		if not point is Array or point.size()!=2 or not (point[0] is int or point[0] is float) or not (point[1] is int or point[1] is float):return true
+		var value:=Vector2(float(point[0]),float(point[1]));if not value.is_finite():return true
 		normalized.append(value)
 	var triangles:=Geometry2D.triangulate_polygon(normalized)
 	if triangles.is_empty():push_warning("Self-intersecting or degenerate polygon collision for "+asset_path);return true
+	# Polygon authoring may use a catalog footprint larger than the instance size.
+	var reference:Variant=collision.get("reference_size",[size.x,size.z])
+	var polygon_size:=Vector2(size.x,size.z)
+	if reference is Array and reference.size()==2:polygon_size=Vector2(float(reference[0]),float(reference[1]))
 	var local:=PackedVector2Array()
-	for point in normalized:local.append(Vector2((point.x-0.5)*size.x,(point.y-0.5)*size.z))
+	for point in normalized:local.append((point-Vector2(0.5,0.5))*polygon_size)
 	var faces:=PackedVector3Array();var half_height:=1.0
 	for index in range(0,triangles.size(),3):
 		var a:=local[triangles[index]];var b:=local[triangles[index+1]];var c:=local[triangles[index+2]]
@@ -2754,7 +3056,8 @@ func _add_asset_polygon_collision(node_name:String,position:Vector3,size:Vector3
 	for index in local.size():
 		var a:=local[index];var b:=local[(index+1)%local.size()]
 		faces.append_array(PackedVector3Array([Vector3(a.x,-half_height,a.y),Vector3(b.x,-half_height,b.y),Vector3(b.x,half_height,b.y),Vector3(a.x,-half_height,a.y),Vector3(b.x,half_height,b.y),Vector3(a.x,half_height,a.y)]))
-	var shape:=ConcavePolygonShape3D.new();shape.set_faces(faces)
+	# Editor polygons can be authored in either winding direction.
+	var shape:=ConcavePolygonShape3D.new();shape.backface_collision=true;shape.set_faces(faces)
 	var collision_shape:=CollisionShape3D.new();collision_shape.shape=shape
 	var body:=StaticBody3D.new();body.name=node_name+"Collision";body.position=Vector3(position.x,1.0,position.z);body.rotation.y=deg_to_rad(rotation_degrees);body.collision_layer=TERRAIN_OBSTACLE_LAYER;body.collision_mask=1;body.add_child(collision_shape);world.add_child(body)
 	return true
@@ -2919,6 +3222,7 @@ func _reset_to_start() -> void:
 
 func _build_dialog_ui() -> void:
 	dialog_panel = PanelContainer.new()
+	dialog_panel.z_index = 110
 	dialog_panel.position = Vector2(80, 345)
 	dialog_panel.size = Vector2(800, 165)
 	var margin := MarginContainer.new()
@@ -2942,6 +3246,17 @@ func _build_dialog_ui() -> void:
 	dialog_button = Button.new()
 	dialog_button.pressed.connect(_advance_dialogue)
 	content.add_child(dialog_button)
+	dialog_choice_row = HBoxContainer.new()
+	dialog_choice_row.add_theme_constant_override("separation", 16)
+	for yes: bool in [true,false]:
+		var button := Button.new()
+		button.text = "Yes" if yes else "No"
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.pressed.connect(_answer_dialogue_choice.bind(yes))
+		dialog_choice_row.add_child(button)
+		if yes: dialog_yes_button = button
+		else: dialog_no_button = button
+	content.add_child(dialog_choice_row); dialog_choice_row.hide()
 	dialog_panel.hide()
 	map_ui.add_child(dialog_panel)
 
@@ -2950,7 +3265,28 @@ func _start_burn_dialogue() -> void:
 	_start_dialogue("RAINFOREST RESIDENT", burn_dialogue)
 
 
+func _clear_dialogue_choice() -> void:
+	dialog_choosing = false; dialogue_choice_action = Callable()
+	if dialog_choice_row != null: dialog_choice_row.hide()
+	if dialog_button != null: dialog_button.show()
+
+
+func _start_yes_no_dialogue(text: String, answer: Callable) -> void:
+	_start_dialogue("",[text])
+	dialog_choosing = true; dialogue_choice_action = answer
+	dialog_button.hide(); dialog_choice_row.show(); dialog_no_button.grab_focus()
+
+
+func _answer_dialogue_choice(yes: bool) -> void:
+	if not dialog_open or not dialog_choosing: return
+	var answer := dialogue_choice_action
+	_clear_dialogue_choice()
+	dialog_open = false; dialog_panel.hide(); dialogue_complete_action = Callable()
+	if answer.is_valid(): answer.call(yes)
+
+
 func _start_dialogue(speaker: String, pages: Array, after_dialogue := Callable()) -> void:
+	_clear_dialogue_choice()
 	active_dialogue.clear()
 	for page: Variant in pages:
 		active_dialogue.append(String(page))
@@ -2963,6 +3299,7 @@ func _start_dialogue(speaker: String, pages: Array, after_dialogue := Callable()
 
 
 func _advance_dialogue() -> void:
+	if dialog_choosing: return
 	dialog_page += 1
 	if dialog_page >= active_dialogue.size():
 		dialog_open = false
@@ -3027,12 +3364,18 @@ func _set_npc_pose(npc:Area3D,direction:String,walk_frame:int=-1)->void:
 	var visual:=npc.get_child(0) as Sprite3D
 	if visual==null:return
 	visual.texture=texture
+	if npc.get_meta("npc_definition", {}).get("type") == "vehicle":
+		_configure_vehicle_hull(npc, direction)
+		npc.set_meta("visual_height", npc_visual_resolver.display_height("vehicle", sprite_id, direction))
+		for entry: Dictionary in npc_sort_entries:
+			if entry.get("node") == npc: entry["height"] = npc.get_meta("visual_height")
 	visual.pixel_size=float(npc.get_meta("visual_height",NPC_ADULT_VISUAL_HEIGHT))/float(texture.get_height())
 	visual.offset=Vector2(0.0,float(texture.get_height())*0.5)
 	npc.set_meta("facing",direction)
 
 
 func _toggle_party_menu() -> void:
+	if script_runner.running: return
 	if dex_panel.visible:
 		dex_panel.hide()
 	settings_panel.hide()
@@ -3043,6 +3386,7 @@ func _toggle_party_menu() -> void:
 
 
 func _toggle_settings_menu() -> void:
+	if script_runner.running: return
 	party_panel.hide()
 	bag_panel.hide()
 	if dex_panel.visible:
@@ -3051,6 +3395,7 @@ func _toggle_settings_menu() -> void:
 
 
 func _toggle_bag_menu() -> void:
+	if script_runner.running: return
 	party_panel.hide()
 	settings_panel.hide()
 	if dex_panel.visible:
@@ -3080,7 +3425,7 @@ func _use_watch() -> void:
 
 
 func _start_swimming(water_position: Vector3, direction: String) -> void:
-	if _terrain_at(water_position) != "water":
+	if swimming or swim_transitioning or _terrain_at(water_position) != "water":
 		return
 	water_position.y = 0.65
 	swim_transitioning = true
@@ -3099,13 +3444,25 @@ func _start_swimming(water_position: Vector3, direction: String) -> void:
 	_set_dive_player_visual(SwimSpriteFrames.dive_actor_frame(player_gender, direction, 2, dive_atlas), flip_left)
 	_set_swim_transition_effect(SwimSpriteFrames.dive_effect_frame(player_gender, direction, false, dive_atlas), water_position, 0.7, flip_left)
 	await get_tree().create_timer(DIVE_BACKPACK_LAND_TIME).timeout
-	player.position = water_position
 	var water_context := _terrain_context()
 	var water_origin: Vector3 = water_context.get("origin", Vector3.ZERO)
 	last_water_tile = "%s:%d,%d" % [_current_location(), roundi(water_position.x - water_origin.x), roundi(water_position.z - water_origin.z)]
 	_set_dive_player_visual(SwimSpriteFrames.dive_actor_frame(player_gender, direction, 3, dive_atlas), flip_left)
-	await get_tree().create_timer(DIVE_JUMP_TIME).timeout
-	(player_sort_root.get_node("Visual") as Sprite2D).hide()
+	var jump_origin := player.position
+	var jump := create_tween()
+	jump.tween_method(func(progress: float) -> void:
+		var previous_position := player.position
+		player.position = jump_origin.lerp(water_position, progress)
+		# Normal camera following is paused with movement during this transition.
+		camera.position += player.position - previous_position
+		swim_jump_height = sin(progress * PI) * 0.6
+		_update_sort_canvas()
+	, 0.0, 1.0, DIVE_JUMP_TIME)
+	await jump.finished
+	swim_jump_height = 0.0
+	# Platform sorting refreshes child visibility every frame; hide the group
+	# until the splash finishes so it cannot restore the last jump frame.
+	player_sort_root.hide()
 	_set_swim_transition_effect(SwimSpriteFrames.dive_effect_frame(player_gender, direction, true, dive_atlas), water_position, 1.35, flip_left)
 	await get_tree().create_timer(DIVE_SPLASH_TIME).timeout
 	_hide_swim_transition_effect()
@@ -3116,6 +3473,7 @@ func _start_swimming(water_position: Vector3, direction: String) -> void:
 	player_frame_index = 0
 	player_animation_time = 0.0
 	_set_player_visual(SwimSpriteFrames.frames(player_gender, swim_direction, swim_atlas)[0], false)
+	player_sort_root.show()
 	hint_label.text = "Swimming! Each new water tile has a 5% Moach encounter chance; swim onto shore to leave."
 	_update_sort_canvas()
 
@@ -3196,6 +3554,27 @@ func _direction_vector(direction: String) -> Vector3:
 		"up": return Vector3.FORWARD
 		_: return Vector3.BACK
 
+
+func _update_map_borders(layer: int) -> void:
+	var location := _current_location()
+	if map_border_location != location:
+		map_border_location = location
+		var context := _terrain_context()
+		match location:
+			"medical_ward": context = {"data": map_data.medical_ward, "origin": medical_origin}
+			"house": context = {"data": map_data.house, "origin": house_origin}
+			"city_ward": context = {"data": map_data.rainforest_city.medical_ward, "origin": city_ward_origin}
+			"orchid_house": context = {"data": map_data.rainforest_city.orchid_house, "origin": orchid_house_origin}
+			"family_house": context = {"data": map_data.rainforest_city.family_house, "origin": family_house_origin}
+		var region: Dictionary = context.get("data", {})
+		if MapBorderLayout.has_enabled_border(region) and map_border_renderer == null:
+			map_border_renderer = MapBorderRenderer.new()
+			map_border_renderer.name = "MapBorders"
+			world.add_child(map_border_renderer)
+		if map_border_renderer != null:
+			map_border_renderer.configure(region, context.get("origin", Vector3.ZERO), layer)
+	if map_border_renderer != null:
+		map_border_renderer.update_view(camera, day_night_controller)
 
 func _terrain_context() -> Dictionary:
 	var location:=_current_location()
@@ -3362,13 +3741,19 @@ func _place_follower_behind_player() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE: npc_script_movement.release_player()
 	if dialog_open and event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_ENTER or event.keycode == KEY_SPACE:
-			_advance_dialogue()
+			if dialog_choosing:
+				_answer_dialogue_choice(dialog_yes_button.has_focus())
+				get_viewport().set_input_as_handled()
+			else: _advance_dialogue()
 		elif event.keycode == KEY_ESCAPE:
+			script_runner.stop(); dialogue_complete_action = Callable()
 			dialog_open = false
-			dialog_panel.hide()
+			dialog_panel.hide(); _clear_dialogue_choice()
 		return
+	if script_runner.running: return
 	if event.is_action_pressed("party_menu") and not in_battle and map_ui.visible:
 		_toggle_party_menu()
 	if event is InputEventKey and event.pressed and not event.echo and adventure_started and not in_battle:
@@ -3446,7 +3831,7 @@ func _on_player_choice_selected(index: int) -> void:
 	player_color_name = player_style
 	_apply_player_appearance()
 	player_selection_panel.hide()
-	battle.begin_adventure_selection()
+	_begin_unpartnered_adventure()
 
 
 func _apply_player_appearance() -> void:
@@ -3464,6 +3849,14 @@ func _apply_player_appearance() -> void:
 		visual.texture = player_sprite.texture
 		visual.flip_h = false
 	player.name = "%s%sPlayer" % [player_style, player_gender]
+
+
+func _face_script_player(facing: String) -> void:
+	player.velocity = Vector3.ZERO
+	player_animation = "idle_" + facing
+	player_frame_index = 0
+	player_animation_time = 0.0
+	_update_player_animation(Vector2.ZERO, 0.0)
 
 
 func _update_player_animation(input_vector: Vector2, delta: float) -> void:
@@ -3493,6 +3886,18 @@ func _update_player_animation(input_vector: Vector2, delta: float) -> void:
 		var visual := player_sort_root.get_node("Visual") as Sprite2D
 		visual.texture = frame
 		visual.flip_h = player_gender == "Male" and player_animation.ends_with("left")
+
+
+func _apply_player_frame_adjustment(pixels_per_world_unit: float) -> void:
+	var adjustment := PlayerSpriteFrames.frame_adjustment(player_gender, player_animation, player_frame_index)
+	var frame_scale: Vector2 = adjustment["scale"]
+	var frame_offset: Vector2 = adjustment["offset"]
+	var visual := player_sort_root.get_node("Visual") as Sprite2D
+	var height_pixels := PLAYER_VISUAL_HEIGHT * pixels_per_world_unit
+	visual.scale *= frame_scale
+	# Scale around the feet rather than the Sprite2D center. Sorting and the
+	# collision body retain their original world-space contact position.
+	visual.position += Vector2(0.0, height_pixels * (1.0 - frame_scale.y) * 0.5) + frame_offset * height_pixels
 
 
 func _player_animation_frames(animation: String) -> Array[AtlasTexture]:
@@ -3564,13 +3969,14 @@ func _auto_save() -> bool:
 
 
 func _write_save(path: String, show_feedback: bool, success_message: String) -> bool:
-	if not adventure_started or in_battle or swimming or swim_transitioning or party.is_empty():
+	if not adventure_started or in_battle or swimming or swim_transitioning:
 		if show_feedback and save_status_label != null:
 			save_status_label.text = "Return to dry land before saving." if swimming or swim_transitioning else "Saving is available while exploring."
 		return false
 	var location := _current_location()
 	var save_data := {
 		"version": SAVE_VERSION,
+		"game_flags": game_flags.values,
 		"player_gender": player_gender,
 		"player_color_name": player_color_name,
 		"player_color": player_color.to_html(false),
@@ -3617,8 +4023,8 @@ func _load_game(slot: int = -1) -> bool:
 	player_color_name = player_style
 	player_color = Color(String(data.get("player_color", "173f73")))
 	_apply_player_appearance()
-	var loaded_party: Variant = data.get("party", [])
-	if not loaded_party is Array or loaded_party.is_empty() or loaded_party.size() > 7:
+	var loaded_party: Variant = data.get("party")
+	if not loaded_party is Array or loaded_party.size() > 7:
 		if save_status_label != null:
 			save_status_label.text = "Save party is invalid. Start a new adventure."
 		return false
@@ -3626,9 +4032,12 @@ func _load_game(slot: int = -1) -> bool:
 	for saved_mon: Variant in loaded_party:
 		if saved_mon is Dictionary:
 			party.append((saved_mon as Dictionary).duplicate(true))
-	if party.is_empty():
-		return false
-	active_party_index = clampi(int(data.get("active_party_index", 0)), 0, party.size() - 1)
+	if party.size() != loaded_party.size(): return false
+	game_flags.restore(data.get("game_flags", {}))
+	# Before v2 every adventure began with a selected starter.
+	if int(data.get("version",1)) < 2 and not party.is_empty(): game_flags.set_flag("Starter",true)
+	script_runner.stop(); npc_script_movement.clear(); script_host.hidden_objects.clear(); script_host.reset_sprites()
+	active_party_index = clampi(int(data.get("active_party_index", 0)), 0, maxi(0,party.size() - 1))
 	poison_step_distance = clampf(float(data.get("poison_step_distance", 0.0)), 0.0, 0.999)
 	var saved_position: Variant = data.get("player_position", map_data["player_spawn"])
 	player.position = _array_to_vector3(saved_position as Array) if saved_position is Array and saved_position.size() >= 3 else spawn_position
@@ -3653,7 +4062,7 @@ func _load_game(slot: int = -1) -> bool:
 	active_authored_map_id = location.trim_prefix("authored:") if location.begins_with("authored:") else ""
 	dialog_open = false
 	dialog_panel.hide()
-	player_selection_panel.hide()
+	if player_selection_panel != null: player_selection_panel.hide()
 	party_panel.hide()
 	settings_panel.hide()
 	bag_panel.hide()
@@ -3668,7 +4077,7 @@ func _load_game(slot: int = -1) -> bool:
 	_set_overworld_visuals_visible(true)
 	map_ui.visible = true
 	_update_follower_appearance()
-	follower.show()
+	follower.visible = not party.is_empty()
 	_place_follower_behind_player()
 	_refresh_party_menu()
 	if save_status_label != null:
@@ -3680,8 +4089,17 @@ func _apply_loaded_location(location: String) -> void:
 	if location.begins_with("authored:"):
 		active_authored_map_id = location.trim_prefix("authored:")
 		var authored: Dictionary = map_data.get("authored_maps", {}).get(active_authored_map_id, {})
-		camera.size = 24.0
-		world_environment.background_color = OUTDOOR_BACKGROUND
+		camera.size = OUTDOOR_CAMERA_SIZE
+		# Editor relocation preserves local coordinates, but older saves contain
+		# absolute positions. Recover at the entry if that room has moved.
+		if _is_authored_indoor_map(authored):
+			var origin := _array_to_vector3(authored.get("origin", [0, 0, 0]))
+			var dimensions: Array = authored.get("size", authored.get("interior_size", [20, 20]))
+			var local := player.position - origin
+			var center:=MapBounds.center(authored)
+			if absf(local.x-center.x) > float(dimensions[0]) * 0.5 or absf(local.z-center.y) > float(dimensions[1]) * 0.5:
+				player.position = origin + _array_to_vector3(authored.get("entry", [0, 0.65, 0]))
+		world_environment.background_color = Color("#3d453d") if _is_authored_indoor_map(authored) else OUTDOOR_BACKGROUND
 		map_title.text = String(authored.get("map_metadata", {}).get("display_name", active_authored_map_id.replace("_", " ").to_upper()))
 		hint_label.text = "Loaded in %s." % map_title.text
 	elif location == "medical_ward":
@@ -3695,17 +4113,17 @@ func _apply_loaded_location(location: String) -> void:
 		map_title.text = "RAINFOREST HOUSE - PLACEHOLDER INTERIOR"
 		hint_label.text = "Loaded inside the house. Click the orange resident to talk."
 	elif location == "route":
-		camera.size = 24.0
+		camera.size = OUTDOOR_CAMERA_SIZE
 		world_environment.background_color = OUTDOOR_BACKGROUND
 		map_title.text = "CANOPY ROUTE - PLACEHOLDER MAP"
 		hint_label.text = "Loaded on Canopy Route. Water is uncrossable; the trainer waits at the far end."
 	elif location == "east_route":
-		camera.size = 24.0
+		camera.size = OUTDOOR_CAMERA_SIZE
 		world_environment.background_color = OUTDOOR_BACKGROUND
 		map_title.text = "EASTERN RAINFOREST ROUTE"
 		hint_label.text = "Loaded on the eastern route. The cave lies deeper in the rainforest."
 	elif location == "west_route":
-		camera.size = 24.0
+		camera.size = OUTDOOR_CAMERA_SIZE
 		world_environment.background_color = OUTDOOR_BACKGROUND
 		map_title.text = "WESTERN RAINFOREST ROUTE"
 		hint_label.text = "Loaded on the western rainforest route."
@@ -3715,7 +4133,7 @@ func _apply_loaded_location(location: String) -> void:
 		map_title.text = "VINESTONE CAVE - PLACEHOLDER MAP"
 		hint_label.text = "Loaded in Vinestone Cave. Blue flowers and vines grow among the rocks."
 	elif location == "city":
-		camera.size = 24.0
+		camera.size = OUTDOOR_CAMERA_SIZE
 		world_environment.background_color = OUTDOOR_BACKGROUND
 		map_title.text = "MOSSVALE RAINFOREST CITY"
 		hint_label.text = "Loaded in Mossvale City. Visit the ward or either home."
@@ -3745,12 +4163,14 @@ func _apply_loaded_location(location: String) -> void:
 		inside_city_ward = false
 		inside_orchid_house = false
 		inside_family_house = false
-		camera.size = 24.0
+		camera.size = OUTDOOR_CAMERA_SIZE
 		world_environment.background_color = OUTDOOR_BACKGROUND
 		map_title.text = "RAINFOREST CLEARING - PLACEHOLDER MAP"
 		hint_label.text = "Adventure loaded. Move with WASD / Arrow Keys."
 	var is_inside := inside_medical_ward or inside_house or inside_east_cave or inside_city_ward or inside_orchid_house or inside_family_house
 	camera.position = Vector3(player.position.x, 7.0 if is_inside else 18.0, player.position.z + (7.0 if is_inside else 18.0))
+	_set_active_visual_region(location)
+	_run_map_headers(location)
 
 
 func _current_location() -> String:
@@ -3781,6 +4201,10 @@ func _current_location() -> String:
 
 func _configure_visual_regions() -> void:
 	applied_visual_location = ""
+	collision_regions_dirty=true
+	if not world.child_entered_tree.is_connected(_on_world_collision_changed):
+		world.child_entered_tree.connect(_on_world_collision_changed)
+		world.child_exiting_tree.connect(_on_world_collision_changed)
 	var dynamic_mask := 1 << (DYNAMIC_VISUAL_LAYER - 1)
 	for node: Node in world.find_children("*", "GeometryInstance3D", true, false):
 		var visual := node as GeometryInstance3D
@@ -3788,7 +4212,7 @@ func _configure_visual_regions() -> void:
 			visual.layers = dynamic_mask
 			continue
 		var layer := int(visual.get_meta("visual_layer", _visual_layer_for_position(visual.global_position)))
-		visual.layers = 1 << (layer - 1)
+		visual.layers = 1 << (mini(layer, DYNAMIC_VISUAL_LAYER - 1) - 1)
 	for node: Node in world.find_children("*", "CollisionObject3D", true, false):
 		var collision := node as CollisionObject3D
 		if collision == player: continue
@@ -3799,7 +4223,9 @@ func _configure_visual_regions() -> void:
 func _assign_visual_region(node: Node, layer: int) -> void:
 	node.set_meta("visual_layer", layer)
 	if node is GeometryInstance3D:
-		(node as GeometryInstance3D).layers = 1 << (layer - 1)
+		# Keep logical collision/sorting regions independent beyond Godot's render
+		# layer budget. Distant shared-layout instances can reuse the last map bit.
+		(node as GeometryInstance3D).layers = 1 << (mini(layer, DYNAMIC_VISUAL_LAYER - 1) - 1)
 	for child: Node in node.get_children(): _assign_visual_region(child, layer)
 
 
@@ -3827,21 +4253,54 @@ func _visual_layer_for_position(position: Vector3) -> int:
 	return closest_layer
 
 
+func _on_world_collision_changed(node:Node)->void:
+	if node is CollisionObject3D and not node.get_meta("patrol_spawn", false): collision_regions_dirty = true
+
+
+# Traffic actors enter the current region and already have their authored masks.
+func _track_patrol_collision(npc: Area3D, added: bool) -> void:
+	var layer := int(npc.get_meta("visual_layer"))
+	if not collision_regions.has(layer): collision_regions[layer] = []
+	var colliders: Array = [npc]
+	colliders.append_array(npc.find_children("*", "CollisionObject3D", true, false))
+	for collider in colliders:
+		if added: collision_regions[layer].append(collider)
+		else: collision_regions[layer].erase(collider)
+
+
+func _set_collision_region_active(layer:int,enabled:bool)->void:
+	for collision:CollisionObject3D in collision_regions.get(layer,[]):
+		if not is_instance_valid(collision):continue
+		var npc_enabled := enabled and not bool(collision.get_meta("script_hidden", false))
+		if collision.has_meta("gate_open"): collision.set_meta("region_collision_enabled", npc_enabled)
+		collision.collision_layer = int(collision.get_meta("base_collision_layer", 1)) if npc_enabled and not collision.get_meta("gate_open", false) else 0
+		if collision is Area3D:
+			var authored: Dictionary = collision.get_meta("npc_authored_collision", {"monitoring":true,"monitorable":true})
+			collision.set_deferred("monitoring", npc_enabled and authored.monitoring)
+			collision.set_deferred("monitorable", npc_enabled and authored.monitorable)
+
+
 func _set_active_visual_region(location: String) -> void:
-	if camera == null or applied_visual_location == location:
+	if camera == null or (applied_visual_location == location and not collision_regions_dirty):
 		return
+	var previous_layer:=_active_visual_layer(applied_visual_location) if not applied_visual_location.is_empty() else -1
 	applied_visual_location = location
 	var active_layer := _active_visual_layer(location)
-	camera.cull_mask = (1 << (active_layer - 1)) | (1 << (DYNAMIC_VISUAL_LAYER - 1))
-	for node: Node in world.find_children("*", "CollisionObject3D", true, false):
-		var collision := node as CollisionObject3D
-		if collision == player: continue
-		if not collision.has_meta("visual_layer"): continue
-		var is_active := int(collision.get_meta("visual_layer")) == active_layer
-		collision.collision_layer = int(collision.get_meta("base_collision_layer", collision.collision_layer)) if is_active else 0
-		if collision is Area3D:
-			(collision as Area3D).monitoring = is_active
-			(collision as Area3D).monitorable = is_active
+	camera.cull_mask = (1 << (mini(active_layer, DYNAMIC_VISUAL_LAYER - 1) - 1)) | (1 << (DYNAMIC_VISUAL_LAYER - 1))
+	if collision_regions_dirty:
+		collision_regions.clear()
+		for node:Node in world.find_children("*","CollisionObject3D",true,false):
+			var collision:=node as CollisionObject3D
+			if collision==player or not collision.has_meta("visual_layer"):continue
+			var layer:=int(collision.get_meta("visual_layer"))
+			if not collision.has_meta("base_collision_layer"):collision.set_meta("base_collision_layer",collision.collision_layer)
+			if not collision_regions.has(layer):collision_regions[layer]=[]
+			collision_regions[layer].append(collision)
+		for layer:int in collision_regions:_set_collision_region_active(layer,layer==active_layer)
+		collision_regions_dirty=false
+	else:
+		_set_collision_region_active(previous_layer,false)
+		_set_collision_region_active(active_layer,true)
 	if day_night_controller != null:
 		day_night_controller.set_map_type(_map_type_for_location(location))
 
@@ -3849,6 +4308,7 @@ func _map_type_for_location(location: String) -> String:
 	var region: Variant = map_data
 	if location.begins_with("authored:"):
 		region = map_data.get("authored_maps", {}).get(location.trim_prefix("authored:"), {})
+		if _is_authored_indoor_map(region):return "Indoor"
 		return String(region.get("map_type", "Rainforest")) if region is Dictionary else "Rainforest"
 	match location:
 		"medical_ward": region = map_data.get("medical_ward", {})
@@ -3886,9 +4346,9 @@ func _active_visual_layer(location: String = "") -> int:
 	return int(location_layers.get(resolved_location, 1))
 
 
-func _clamp_player_to_region(origin: Vector3, region_size: Array) -> void:
-	player.position.x = clampf(player.position.x, origin.x - float(region_size[0]) * 0.5 + 0.6, origin.x + float(region_size[0]) * 0.5 - 0.6)
-	player.position.z = clampf(player.position.z, origin.z - float(region_size[1]) * 0.5 + 0.6, origin.z + float(region_size[1]) * 0.5 - 0.6)
+func _clamp_player_to_region(origin: Vector3, region_size: Array,margin:float=0.6) -> void:
+	player.position.x = clampf(player.position.x, origin.x - float(region_size[0]) * 0.5 + margin, origin.x + float(region_size[0]) * 0.5 - margin)
+	player.position.z = clampf(player.position.z, origin.z - float(region_size[1]) * 0.5 + margin, origin.z + float(region_size[1]) * 0.5 - margin)
 
 
 func _load_map_data() -> Dictionary:
@@ -3967,33 +4427,56 @@ func _build_placed_npcs(region_data: Dictionary, origin: Vector3) -> void:
 	var instances := {}
 	runtime_npcs[map_file] = instances
 	for record: Dictionary in region_data.get("_resolved_npcs", []):
-		var texture:Texture2D = npc_visual_resolver.texture_for(String(record.type), String(record.sprite), String(record.facing))
-		if texture == null:
-			push_warning("NPC %s/%d could not resolve art." % [map_file, int(record.id)])
-			continue
-		var npc := _add_talking_npc("PlacedNPC_%s_%d" % [map_file.get_basename(), int(record.id)], origin + _array_to_vector3(record.position) + Vector3(0,NpcMovement.elevation(record),0), Color("#67c46a"), String(record.sprite), [String(record.interaction_text)])
-		var height := NPC_ADULT_VISUAL_HEIGHT if String(record.type) == "human" else 0.9
-		var visual := npc.get_child(0) as Sprite3D
-		visual.texture = texture
-		visual.pixel_size = height / float(texture.get_height())
-		visual.offset = Vector2(0, float(texture.get_height()) * 0.5)
-		npc.set_meta("sprite_id", String(record.sprite))
-		npc.set_meta("npc_definition", {"type":record.type,"sprite":record.sprite,"interaction_text":record.interaction_text})
-		npc.set_meta("movement_mode", String(record.get("movement_mode","ground")))
-		npc.set_meta("base_elevation", origin.y + float(record.position[1]))
-		npc.set_meta("water_grid", region_data.get("_terrain_grid",{}))
-		npc.set_meta("map_origin", origin)
-		if record.get("movement_mode","ground") == "swimming":
-			if not _npc_in_water(npc,npc.position): push_warning("Swimming NPC %d is outside canonical water; movement is paused." % int(record.id))
-			_ensure_water_surface(region_data,origin,map_file)
-		npc.set_meta("npc_id", int(record.id))
-		npc.set_meta("facing", String(record.facing))
-		npc.set_meta("visual_height", height)
-		npc_sort_entries[-1]["height"] = height
-		# Placed NPC coordinates are ground anchors, unlike legacy character centers.
-		(npc.get_node("FootCollision") as StaticBody3D).position.y = NPC_FOOT_COLLISION_SIZE.y * 0.5
-		instances[int(record.id)] = npc
-		npc_movement_states[npc.get_instance_id()] = NpcMovement.new(npc.position, NpcMovement.settings(record), hash(map_file+str(int(record.id))))
+		_spawn_placed_npc(region_data, origin, record)
+	patrols.register(region_data, origin)
+
+func _spawn_placed_npc(region_data: Dictionary, origin: Vector3, record: Dictionary, patrol_spawn: bool = false) -> Area3D:
+	var map_file := String(region_data.get("_npc_map_file", ""))
+	var texture:Texture2D = npc_visual_resolver.texture_for(String(record.type), String(record.sprite), String(record.facing))
+	if texture == null:
+		push_warning("NPC %s/%d could not resolve art." % [map_file, int(record.id)])
+		return null
+	var npc := _add_talking_npc("PlacedNPC_%s_%d" % [map_file.get_basename(), int(record.id)], origin + _array_to_vector3(record.position) + Vector3(0,NpcMovement.elevation(record),0), Color("#67c46a"), String(record.sprite), [String(record.get("interaction_text", ""))], Callable(), "", patrol_spawn)
+	npc.set_meta('script_map', map_file); npc.set_meta('script_npc_id', str(int(record.id)))
+	var height: float = npc_visual_resolver.display_height(String(record.type), String(record.sprite), String(record.facing)) if record.type == "vehicle" else NPC_ADULT_VISUAL_HEIGHT if record.type == "human" else 0.9
+	var visual := npc.get_child(0) as Sprite3D
+	visual.texture = texture
+	visual.pixel_size = height / float(texture.get_height())
+	visual.offset = Vector2(0, float(texture.get_height()) * 0.5)
+	if record.type == "vehicle":
+		npc_dialogues.erase(npc.get_instance_id())
+		npc.input_ray_pickable = false
+	npc.set_meta("authored_hidden", bool(record.get("hidden", false)))
+	npc.set_meta("sprite_id", String(record.sprite))
+	npc.set_meta("npc_definition", {"type":record.type,"sprite":record.sprite,"interaction_text":record.get("interaction_text", "")})
+	npc.set_meta("movement_mode", "swimming" if record.type == "vehicle" else String(record.get("movement_mode","ground")))
+	npc.set_meta("base_elevation", origin.y + float(record.position[1]))
+	npc.set_meta("water_grid", region_data.get("_terrain_grid",{}))
+	npc.set_meta("map_origin", origin)
+	var map_size: Array = region_data.get("size", region_data.get("interior_size", []))
+	if map_size.size() >= 2:
+		npc.set_meta("wander_bounds", Rect2(Vector2(origin.x, origin.z)+MapBounds.center(region_data) - Vector2(float(map_size[0]), float(map_size[1])) * 0.5, Vector2(float(map_size[0]), float(map_size[1]))))
+	if MapBorderLayout.has_enabled_border(region_data):
+		var bounds := MapBounds.rect(region_data)
+		bounds.position += Vector2(origin.x, origin.z)
+		npc.set_meta("border_playable_bounds", bounds)
+	if npc.get_meta("movement_mode") == "swimming":
+		if not _npc_in_water(npc,npc.position): push_warning("Swimming NPC %d is outside canonical water; movement is paused." % int(record.id))
+		_ensure_water_surface(region_data,origin,map_file)
+	npc.set_meta("script_movement_owned", preload("res://world/scripting/script_paths.gd").movement_actors(region_data).has(int(record.id)))
+	npc.set_meta("npc_id", int(record.id))
+	npc.set_meta("facing", String(record.facing))
+	npc.set_meta("visual_height", height)
+	npc_sort_entries[-1]["height"] = height
+	# Placed NPC coordinates are ground anchors, unlike legacy character centers.
+	(npc.get_node("FootCollision") as StaticBody3D).position.y = NPC_FOOT_COLLISION_SIZE.y * 0.5
+	if record.type == "vehicle": _configure_vehicle_hull(npc, String(record.facing))
+	script_host.remember_sprite_collision(npc)
+	runtime_npcs[map_file][int(record.id)] = npc
+	if npc.get_meta("authored_hidden"): script_host.set_sprite_hidden(npc, true, false)
+	npc_movement_states[npc.get_instance_id()] = NpcMovement.new(npc.position, NpcMovement.settings(record), hash(map_file+str(int(record.id))))
+
+	return npc
 
 
 func _update_placed_npcs(delta: float) -> void:
@@ -4001,29 +4484,95 @@ func _update_placed_npcs(delta: float) -> void:
 	var active_layer := _active_visual_layer()
 	for instances: Dictionary in runtime_npcs.values():
 		for npc: Area3D in instances.values():
+			if script_input_locked and not npc_script_movement.waiters.has(npc.get_instance_id()): continue
+			if script_host.sprite_hidden(npc) or npc.get_meta("script_movement_owned", false) or npc_script_movement.controls(npc): continue
 			if int(npc.get_meta("visual_layer", _visual_layer_for_position(npc.global_position))) != active_layer: continue
 			var state: RefCounted = npc_movement_states.get(npc.get_instance_id())
 			if state == null: continue
 			var planned: Dictionary = state.step(npc.position, String(npc.get_meta("facing","down")), delta)
+			if npc.has_meta("wander_bounds"):
+				var bounds: Rect2 = npc.get_meta("wander_bounds")
+				bounds = bounds.grow_individual(-NPC_FOOT_COLLISION_SIZE.x * 0.5, -NPC_FOOT_COLLISION_SIZE.z * 0.5, -NPC_FOOT_COLLISION_SIZE.x * 0.5, -NPC_FOOT_COLLISION_SIZE.z * 0.5)
+				var bounded: Vector3 = planned.position
+				# A scripted placement outside the floor may walk back in without
+				# teleporting, but autonomous movement cannot take it farther out.
+				bounded.x = clampf(bounded.x, minf(npc.position.x, bounds.position.x), maxf(npc.position.x, bounds.end.x))
+				bounded.z = clampf(bounded.z, minf(npc.position.z, bounds.position.y), maxf(npc.position.z, bounds.end.y))
+				if not bounded.is_equal_approx(planned.position): state.blocked(bounded)
+				planned.position = bounded
 			var previous_position := npc.position
 			var requested: Vector3 = planned.position - npc.position
 			if requested.length_squared() > 0.000001:
-				var fraction := _npc_motion_fraction(npc, requested)
+				var fraction := _move_vehicle_fraction(npc, requested)
 				npc.position += requested * fraction
 				if fraction < 0.999: state.blocked(npc.position)
-			var walk_frame := -1
-			var definition: Dictionary = npc.get_meta("npc_definition", {})
-			if definition.get("type", "") == "human" and npc.position.distance_squared_to(previous_position) > 0.000001:
-				var frame_count := NpcSpriteLibrary.walk_frame_count(String(definition.sprite))
-				if frame_count > 0:
-					var animation_time := float(npc.get_meta("walk_animation_time", 0.0)) + delta
-					npc.set_meta("walk_animation_time", fmod(animation_time, 0.16 * frame_count))
-					walk_frame = int(animation_time / 0.16) % frame_count
-			else:
-				npc.set_meta("walk_animation_time", 0.0)
-			_set_npc_pose(npc, String(planned.facing), walk_frame)
+			_animate_placed_npc(npc, previous_position, String(planned.facing), delta)
 
-func _npc_motion_fraction(npc: Area3D, motion: Vector3) -> float:
+func _npc_bed_sort_position(npc: Area3D, feet: Vector3) -> Vector3:
+	if npc.get_meta("npc_definition", {}).get("type", "") != "fakemon" or npc.get_meta("movement_mode", "ground") == "swimming": return feet
+	var layer := int(npc.get_meta("visual_layer", _visual_layer_for_position(npc.global_position)))
+	for entry: Dictionary in object_sort_entries:
+		if entry.get("furnishing_type", "") != "bed" or _sort_entry_layer(entry, entry.placement) != layer or script_host.object_hidden(entry): continue
+		var placement: Vector3 = entry.placement
+		var height := float(entry.height)
+		var texture: Texture2D = entry.texture
+		var width := height * float(texture.get_width()) / float(texture.get_height())
+		# Beds extend north from their foot anchor. Keep occupants above the bed
+		# while retaining ordinary Y sorting against the rest of the room.
+		if absf(feet.x - placement.x) <= width * 0.5 and feet.z >= placement.z - height and feet.z <= placement.z:
+			feet.z = maxf(feet.z, placement.z + float(entry.get("sort_offset_y", 0.0)) + 0.001)
+	return feet
+
+
+func _move_script_player(motion: Vector3, delta: float) -> void:
+	if delta <= 0 or player == null: return
+	player.velocity = _swim_constrained_velocity(motion / delta, delta) if swimming else _terrain_constrained_velocity(motion / delta, delta)
+	player.move_and_slide()
+	if script_input_locked: _update_player_animation(Vector2(player.velocity.x,player.velocity.z).normalized(), delta)
+	if follower != null:
+		follower_target = player.position - motion.normalized()*1.25
+
+func _animate_placed_npc(npc: Area3D, previous_position: Vector3, facing: String, delta: float) -> void:
+	var walk_frame := -1
+	var definition: Dictionary = npc.get_meta("npc_definition", {})
+	if definition.get("type") == "vehicle":
+		walk_frame = 0 if npc.position.distance_squared_to(previous_position) > 0.000001 else -1
+	elif definition.get("type", "") == "human" and npc.position.distance_squared_to(previous_position) > 0.000001:
+		var frame_count := NpcSpriteLibrary.walk_frame_count(String(definition.sprite))
+		if frame_count > 0:
+			var animation_time := float(npc.get_meta("walk_animation_time", 0.0)) + delta
+			npc.set_meta("walk_animation_time", fmod(animation_time, 0.16 * frame_count))
+			walk_frame = int(animation_time / 0.16) % frame_count
+	else: npc.set_meta("walk_animation_time", 0.0)
+	_set_npc_pose(npc, facing, walk_frame)
+
+func _npc_motion_fraction(npc: Area3D, motion: Vector3, from_position: Variant = null, ignore: Array[RID] = []) -> float:
+	var start:Vector3 = npc.position if from_position == null else from_position
+	var limit := _npc_playable_motion_fraction(npc, start, motion)
+	if limit <= 0.0: return 0.0
+	motion *= limit
+	var steps := maxi(1,ceili(motion.length()/0.05))
+	for index in steps:
+		var fraction := _npc_floor_motion_fraction(npc,motion/steps,start+motion*float(index)/steps,ignore)
+		if fraction < 0.999:return limit * (float(index)+fraction)/steps
+	return limit
+
+func _npc_playable_motion_fraction(npc: Area3D, start: Vector3, motion: Vector3) -> float:
+	if not npc.has_meta("border_playable_bounds"): return 1.0
+	var bounds: Rect2 = npc.get_meta("border_playable_bounds")
+	var half := Vector2(NPC_FOOT_COLLISION_SIZE.x, NPC_FOOT_COLLISION_SIZE.z) * 0.5
+	var point := Vector2(start.x, start.z)
+	var travel := Vector2(motion.x, motion.z)
+	# An NPC placed outside the bounds can return without walking farther out.
+	var lower := (bounds.position + half).min(point)
+	var upper := (bounds.end - half).max(point)
+	var fraction := 1.0
+	for axis in 2:
+		if travel[axis] > 0: fraction = minf(fraction, (upper[axis] - point[axis]) / travel[axis])
+		if travel[axis] < 0: fraction = minf(fraction, (lower[axis] - point[axis]) / travel[axis])
+	return fraction
+
+func _npc_floor_motion_fraction(npc: Area3D, motion: Vector3, from_position: Variant = null, ignore: Array[RID] = []) -> float:
 	var foot: StaticBody3D
 	for child in npc.get_children():
 		if child is StaticBody3D: foot = child; break
@@ -4033,30 +4582,69 @@ func _npc_motion_fraction(npc: Area3D, motion: Vector3) -> float:
 	var query := PhysicsShapeQueryParameters3D.new()
 	query.shape = shape.shape
 	query.transform = shape.global_transform
+	var start: Vector3 = npc.position if from_position == null else from_position
+	query.transform.origin += start - npc.position
 	query.motion = motion
 	query.margin = 0.001
-	query.collision_mask = 1 | TERRAIN_OBSTACLE_LAYER | PLATFORM_WALL_LAYER
+	query.collision_mask = _floor_collision_mask(npc,start)
 	if npc.get_meta("movement_mode","ground") == "swimming":
 		var steps := maxi(1,ceili(motion.length()/0.1))
 		for index in range(steps+1):
-			if not _npc_in_water(npc,npc.position+motion*float(index)/float(steps)): return 0.0
+			if not _npc_in_water(npc,start+motion*float(index)/float(steps)): return 0.0
 		query.collision_mask = 1 | PLATFORM_WALL_LAYER
-		query.transform.origin.y = float(npc.get_meta("base_elevation",0.0)) + NPC_FOOT_COLLISION_SIZE.y*0.5
+		if npc.get_meta("npc_definition", {}).get("type") != "vehicle":
+			query.transform.origin.y = float(npc.get_meta("base_elevation",0.0)) + NPC_FOOT_COLLISION_SIZE.y*0.5
 	# Water walls are ground-traversal barriers, not physical two-unit walls.
 	if npc.get_meta("movement_mode","ground") == "flying": query.collision_mask = 1 | PLATFORM_WALL_LAYER
 	query.exclude = [npc.get_rid(),foot.get_rid()]
-	var fraction := npc.get_world_3d().direct_space_state.cast_motion(query)
-	return float(fraction[0]) if fraction.size() == 2 else 0.0
+	query.exclude += ignore
+	var space := npc.get_world_3d().direct_space_state
+	# Sweeps alone ignore colliders already overlapping the starting shape.
+	query.motion = Vector3.ZERO
+	if not space.intersect_shape(query,1).is_empty(): return 0.0
+	# Leave room between queued hulls. At exact contact the overlap check
+	# can otherwise pin both boats, even when the lead boat moves away.
+	var clearance := 0.0
+	if npc.get_meta("patrol_spawn", false) and not motion.is_zero_approx():
+		clearance = 0.05
+		query.motion = motion + motion.normalized() * clearance
+	else:
+		query.motion = motion
+	var fraction := space.cast_motion(query)
+	if fraction.size() != 2: return 0.0
+	if clearance == 0.0 or fraction[0] >= 1.0: return float(fraction[0])
+	return clampf((float(fraction[0]) * query.motion.length() - clearance) / motion.length(), 0.0, 1.0)
 
 
 func _npc_in_water(npc: Area3D, candidate: Vector3) -> bool:
 	var grid: Dictionary = npc.get_meta("water_grid",{})
 	var origin: Vector3 = npc.get_meta("map_origin",Vector3.ZERO)
-	for dx in [-NPC_FOOT_COLLISION_SIZE.x*0.5,NPC_FOOT_COLLISION_SIZE.x*0.5]:
-		for dz in [-NPC_FOOT_COLLISION_SIZE.z*0.5,NPC_FOOT_COLLISION_SIZE.z*0.5]:
-			var cell := Vector2i(floori(candidate.x-origin.x+float(dx)+0.5),floori(candidate.z-origin.z+float(dz)+0.5))
-			if grid.get(cell,"") != "water": return false
+	var footprint: Rect2 = npc.get_meta("hull_footprint",Rect2(Vector2(-NPC_FOOT_COLLISION_SIZE.x,-NPC_FOOT_COLLISION_SIZE.z)*0.5,Vector2(NPC_FOOT_COLLISION_SIZE.x,NPC_FOOT_COLLISION_SIZE.z)))
+	return _water_covers_footprint(grid, candidate - origin, footprint)
+
+func _water_covers_footprint(grid: Dictionary, local: Vector3, footprint: Rect2) -> bool:
+	# Check every covered cell, including land holes inside a long hull.
+	var first := Vector2i(floori(local.x+footprint.position.x+0.5),floori(local.z+footprint.position.y+0.5))
+	var last := Vector2i(floori(local.x+footprint.end.x+0.5),floori(local.z+footprint.end.y+0.5))
+	for x in range(first.x,last.x+1):
+		for z in range(first.y,last.y+1):
+			if grid.get(Vector2i(x,z),"") != "water": return false
 	return true
+
+func _vehicle_spawn_clear(anchor: Vector3, footprint: Rect2) -> bool:
+	var center := footprint.get_center()
+	var query := PhysicsShapeQueryParameters3D.new()
+	query.shape = _vehicle_hull_shape(footprint)
+	query.transform.origin = anchor + Vector3(center.x, 0.3, center.y)
+	query.margin = 0.001
+	query.collision_mask = 1 | PLATFORM_WALL_LAYER
+	return world.get_world_3d().direct_space_state.intersect_shape(query, 1).is_empty()
+
+func _vehicle_hull_shape(footprint: Rect2) -> BoxShape3D:
+	var box := BoxShape3D.new()
+	box.size = Vector3(footprint.size.x, 0.6, footprint.size.y)
+	return box
+
 
 func _overworld_asset_metadata(asset_path: String) -> Dictionary:
 	var path := asset_path.get_basename()+".json"
@@ -4073,25 +4661,48 @@ func _water_surface_key(region_data: Dictionary, prefix: String) -> String:
 func _ensure_water_surface(region_data: Dictionary, origin: Vector3, prefix: String) -> void:
 	var key := _water_surface_key(region_data,prefix)
 	if not npc_water_surfaces.has(key):
-		npc_water_surfaces[key] = {"grid":region_data.get("_terrain_grid",{}),"origin":origin,"node":null,"visual_layer":_visual_layer_for_position(origin)}
+		npc_water_surfaces[key] = {"grid":region_data.get("_terrain_grid",{}),"origin":origin,"node":null,"walls":region_data.get("objects",[]),"visual_layer":_visual_layer_for_position(origin)}
 
 
 func _update_npc_water_surfaces(active_layer: int) -> void:
+	var view_cache:=preload("res://world/terrain_camera_view.gd")
+	var signature:Array=view_cache.signature(camera)
+	# Camera translation only moves the common parent. Local polygon vertices
+	# depend on projection/basis/viewport, so moving never retriangulates water.
+	var geometry_signature:Array=signature.duplicate()
+	geometry_signature[1]=camera.global_basis
+	var view:Rect2=view_cache.ground_rect(camera)
 	for surface: Dictionary in npc_water_surfaces.values():
-		var container := surface.node as Node2D
+		var container:Node2D = surface.node if is_instance_valid(surface.node) else null
 		if container == null:
 			container = Node2D.new();container.name = "NpcWaterSurface";container.z_index = -1;sort_root.add_child(container);surface.node = container
 			for cell: Vector2i in surface.grid:
 				if surface.grid[cell] != "water": continue
-				var patch := Polygon2D.new();patch.color = Color(0.12,0.52,0.72,0.32);patch.set_meta("cell",cell);container.add_child(patch)
+				for region:Rect2 in preload("res://tools/map_editor/core/wall_water_clip.gd").regions(cell,surface.grid,surface.get("walls",[])):
+					var patch := Polygon2D.new();patch.color = Color(0.12,0.52,0.72,0.32);patch.set_meta("cell",cell);patch.set_meta("region",region);container.add_child(patch)
 		container.visible = int(surface.visual_layer) == active_layer
 		if not container.visible: continue
+		var anchor:Vector3=surface.origin+Vector3(0,0.401,0)
+		var projected_origin:=camera.unproject_position(anchor)
+		container.position=projected_origin
+		# Perspective projection changes shape with translation; orthographic is
+		# the game's normal camera and uses the cheaper translation-only path.
+		var geometry_key:Array=geometry_signature if camera.projection==Camera3D.PROJECTION_ORTHOGONAL else signature
+		var rebuild:bool=surface.get("geometry_signature",[])!=geometry_key
+		var recull:bool=rebuild or surface.get("view_signature",[])!=signature
+		if not recull:continue
 		for patch: Polygon2D in container.get_children():
 			var cell: Vector2i = patch.get_meta("cell")
-			var corners := PackedVector2Array()
-			for corner: Vector2 in [Vector2(-0.5,-0.5),Vector2(0.5,-0.5),Vector2(0.5,0.5),Vector2(-0.5,0.5)]:
-				corners.append(camera.unproject_position(surface.origin+Vector3(cell.x+corner.x,0.401,cell.y+corner.y)))
-			patch.polygon = corners
+			if rebuild:
+				var corners := PackedVector2Array()
+				var rect:Rect2=patch.get_meta("region")
+				for corner:Vector2 in [rect.position,Vector2(rect.end.x,rect.position.y),rect.end,Vector2(rect.position.x,rect.end.y)]:
+					corners.append(camera.unproject_position(anchor+Vector3(corner.x,0,corner.y))-projected_origin)
+				patch.polygon=corners
+			var cell_rect:=Rect2(Vector2(surface.origin.x+cell.x-0.5,surface.origin.z+cell.y-0.5),Vector2.ONE)
+			patch.visible=view.intersects(cell_rect,true)
+		surface.geometry_signature=geometry_key
+		surface.view_signature=signature
 
 func _overworld_light_species(species_name: String) -> Dictionary:
 	for species: Dictionary in battle.battle_data.get("fakemon", []):
@@ -4145,3 +4756,67 @@ func _report_collision_blocker(collider: Object) -> void:
 func _sort_entry_layer(entry: Dictionary, position: Vector3) -> int:
 	if not entry.has("visual_layer"): entry["visual_layer"] = _visual_layer_for_position(position)
 	return int(entry.visual_layer)
+
+# Used by both autonomous and scripted movers; planning queries stay side-effect free.
+func _move_vehicle_fraction(npc: Area3D, motion: Vector3) -> float:
+	if npc.get_meta("npc_definition", {}).get("type") == "vehicle" and not motion.is_zero_approx():
+		_configure_vehicle_hull(npc, npc_script_movement.direction(motion, str(npc.get_meta("facing", "down"))))
+	var fraction := _npc_motion_fraction(npc, motion)
+	if npc.get_meta("npc_definition", {}).get("type") != "vehicle" or player == null or fraction >= 0.999: return fraction
+	var ignored: Array[RID] = [player.get_rid()]
+	var clear_fraction := _npc_motion_fraction(npc, motion, null, ignored)
+	if clear_fraction <= fraction: return fraction
+	# A boat may push only as far as the player's own physics permits.
+	var foot := npc.get_node("FootCollision") as StaticBody3D
+	player.add_collision_exception_with(foot)
+	var before := player.position
+	var push := motion * clear_fraction
+	# Starting overlaps (including collision margins) can be on the broadside.
+	# Resolve those outward, rather than dragging the swimmer along the route.
+	var side_push := _vehicle_side_separation(npc, motion)
+	if not side_push.is_zero_approx(): push = side_push
+	player.move_and_collide(push)
+	player.remove_collision_exception_with(foot)
+	var moved := player.position - before
+	if not side_push.is_zero_approx():
+		# The hull can pass only if the lateral separation actually succeeded.
+		return _npc_motion_fraction(npc,motion)
+	var pushed_fraction := clampf(moved.dot(motion)/motion.length_squared(),0.0,clear_fraction)
+	return minf(clear_fraction, pushed_fraction)
+
+
+func _configure_vehicle_hull(npc: Area3D, facing: String) -> void:
+	var footprint: Rect2 = npc_visual_resolver.hull_footprint(String(npc.get_meta("sprite_id")),facing)
+	if npc.get_meta("hull_footprint", Rect2()) == footprint: return
+	npc.set_meta("hull_footprint",footprint)
+	var foot := npc.get_node("FootCollision") as StaticBody3D
+	var center := footprint.get_center()
+	foot.position = Vector3(center.x,float(npc.get_meta("base_elevation",0.0))-npc.position.y+0.3,center.y)
+	var shape := foot.get_child(0) as CollisionShape3D
+	shape.shape = _vehicle_hull_shape(footprint)
+
+func _set_npc_water_draw_order(npc: Area3D, npc_sort: Node2D) -> void:
+	# Water traversal does not imply submersion: boats float above the surface
+	# at z=-1 and keep ordinary Y sorting with other above-water sprites.
+	var submerged: bool = npc.get_meta("movement_mode", "ground") == "swimming" and npc.get_meta("npc_definition", {}).get("type") != "vehicle"
+	npc_sort.z_index = -2 if submerged else 0
+
+func _vehicle_side_separation(npc: Area3D, motion: Vector3) -> Vector3:
+	var half_size := Vector2.ZERO
+	for child in player.get_children():
+		if child is CollisionShape3D and child.shape is BoxShape3D:
+			half_size = Vector2(child.shape.size.x,child.shape.size.z)*0.5
+			break
+	if half_size.is_zero_approx(): return Vector3.ZERO
+	var hull: Rect2 = npc.get_meta("hull_footprint")
+	var expanded := Rect2(hull.position-half_size,hull.size+half_size*2.0).grow(player.safe_margin+0.002)
+	var relative := Vector2(player.position.x-npc.position.x,player.position.z-npc.position.z)
+	if not expanded.has_point(relative): return Vector3.ZERO
+	var distances := [relative.x-expanded.position.x,expanded.end.x-relative.x,relative.y-expanded.position.y,expanded.end.y-relative.y]
+	var normals := [Vector3.LEFT,Vector3.RIGHT,Vector3.FORWARD,Vector3.BACK]
+	var nearest := 0
+	for i in range(1,4):
+		if distances[i] < distances[nearest]: nearest = i
+	var normal: Vector3 = normals[nearest]
+	if motion.normalized().dot(normal) > 0.5: return Vector3.ZERO
+	return normal * (float(distances[nearest])+0.002)

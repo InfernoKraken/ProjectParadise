@@ -1,6 +1,38 @@
 class_name MapGraph
 extends RefCounted
 
+# All maps are built in one runtime world. Allocate new maps beyond occupied
+# bounds rather than reusing (0, 0, 0); local object/warp coordinates do not move.
+static func layout_bounds(data: Dictionary) -> Rect2:
+	var dimensions: Variant = data.get("interior_size", data.get("map_size", data.get("size", [])))
+	var origin: Variant = data.get("origin", [0, 0, 0])
+	if not dimensions is Array or dimensions.size() < 2 or not origin is Array or origin.size() < 3: return Rect2()
+	var size := Vector2(float(dimensions[0]), float(dimensions[1]))
+	if size.x <= 0 or size.y <= 0: return Rect2()
+	return Rect2(Vector2(float(origin[0]), float(origin[2])) + preload("res://core/map_bounds.gd").center(data) - size * 0.5, size)
+
+static func occupied_layouts(map_directory: String, excluded_filename: String = "") -> Dictionary:
+	var result := {}
+	for filename: String in DirAccess.get_files_at(map_directory):
+		if not filename.ends_with(".json") or filename == excluded_filename or filename.ends_with("_NPC_Data.json"): continue
+		var doc := MapDocument.load_file(map_directory.path_join(filename))
+		if not doc.parse_error.is_empty(): continue
+		var bounds := layout_bounds(doc.data)
+		if bounds.has_area(): result[filename] = bounds
+	return result
+
+static func available_origin(map_directory: String, data: Dictionary, excluded_filename: String = "") -> Array:
+	var right := 0.0
+	for bounds: Rect2 in occupied_layouts(map_directory, excluded_filename).values(): right = maxf(right, bounds.end.x)
+	var current: Array = data.get("origin", [0, 0, 0])
+	return [right + 10.0 + layout_bounds(data).size.x * 0.5-preload("res://core/map_bounds.gd").center(data).x, float(current[1]), 0.0]
+
+static func has_layout_overlap(map_directory: String, data: Dictionary, excluded_filename: String) -> bool:
+	var own_bounds := layout_bounds(data)
+	for bounds: Rect2 in occupied_layouts(map_directory, excluded_filename).values():
+		if own_bounds.intersects(bounds): return true
+	return false
+
 const CONNECTIONS := [
 	["rainforest_clearing.json", "canopy_route.json", "north_warp", "entry", "exit_warp", "north_return"],
 	["canopy_route.json", "eastern_rainforest_route.json", "east_warp", "entry", "return_warp", "east_return"],
@@ -104,7 +136,8 @@ static func scan(map_directory: String) -> Dictionary:
 		var origin: Variant = data.get("origin", [])
 		var size: Variant = data.get("size", data.get("interior_size", data.get("map_size", [])))
 		if origin is Array and origin.size() >= 3 and size is Array and size.size() >= 2:
-			bounded_maps.append({"file":filename, "min_x":float(origin[0])-float(size[0])*0.5, "max_x":float(origin[0])+float(size[0])*0.5, "min_z":float(origin[2])-float(size[1])*0.5, "max_z":float(origin[2])+float(size[1])*0.5})
+			var bounds:=layout_bounds(data)
+			bounded_maps.append({"file":filename,"min_x":bounds.position.x,"max_x":bounds.end.x,"min_z":bounds.position.y,"max_z":bounds.end.y})
 	for left_index in bounded_maps.size():
 		for right_index in range(left_index + 1, bounded_maps.size()):
 			var left: Dictionary = bounded_maps[left_index]

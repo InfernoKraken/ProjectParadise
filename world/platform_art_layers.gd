@@ -49,4 +49,35 @@ static func update(entry:Dictionary, actor_visual:Sprite2D, occupied:bool)->void
 		proxy.flip_h = actor_visual.flip_h
 		proxy.flip_v = actor_visual.flip_v
 		proxy.modulate = actor_visual.modulate
+		proxy.material = actor_visual.material
 		proxy.global_transform = actor_visual.global_transform
+
+# Each occupant gets its own rail pass so front/back depth remains correct even
+# when a player and several NPCs share the stairs.
+static func update_actors(entry:Dictionary, occupants:Array, player_visual:Sprite2D)->void:
+	var layers:Dictionary = entry.platform_layers
+	if not layers.has("npc_layers"):layers.npc_layers = {}
+	for extra:Dictionary in layers.npc_layers.values():
+		extra.actor.visible = false
+		extra.foreground.visible = false
+	occupants.sort_custom(func(a,b):return a.node.position.z < b.node.position.z)
+	var player_present := false
+	for occupant:Dictionary in occupants:
+		var visual:Sprite2D = occupant.visual
+		var actor_layers:Dictionary = layers
+		if visual == player_visual:player_present = true
+		else:
+			var id:int = occupant.node.get_instance_id()
+			if not layers.npc_layers.has(id):
+				layers.npc_layers[id] = build(entry.sort_root,entry.texture,entry.foreground_masks,entry.get("foreground_depth_lines",[]))
+			actor_layers = layers.npc_layers[id]
+		actor_layers.foreground.visible = true
+		entry.sort_root.move_child(actor_layers.actor,-1)
+		entry.sort_root.move_child(actor_layers.foreground,-1)
+		var actor_entry := entry.duplicate()
+		actor_entry.platform_layers = actor_layers
+		update(actor_entry,visual,true)
+	if not player_present:
+		update(entry,player_visual,false)
+		# The first rail pass supplies the unoccupied platform foreground.
+		entry.sort_root.move_child(layers.foreground,1)

@@ -69,12 +69,30 @@ func _initialize() -> void:
 	main.dialog_open=false;npc.set_meta("visual_layer",999);main._update_placed_npcs(2);assert(npc.position==paused)
 	npc.set_meta("visual_layer",main._active_visual_layer());main.in_battle=true;main._update_placed_npcs(2);assert(npc.position==paused);main.in_battle=false
 	# Existing foot collider and shape-cast stop at a wall, with no pathfinding.
-	var wall:=StaticBody3D.new();wall.position=start+Vector3(0.9,0.3,0)
+	var wall:=StaticBody3D.new();wall.position=npc.position+Vector3(0.9,0.3,0)
 	var collider:=CollisionShape3D.new();var box:=BoxShape3D.new();box.size=Vector3(0.2,1,2);collider.shape=box;wall.add_child(collider);main.world.add_child(wall)
 	await physics_frame
 	for frame in 20:main._update_placed_npcs(0.1)
 	assert(npc.position.x<wall.position.x-0.3,"NPCs must stop before walls.")
 	assert(fixture==before,"Movement must not modify authored placement or definitions.")
+	# Open map edges must contain autonomous wandering, even with oversized ranges.
+	var bounded_record := record.duplicate(true)
+	bounded_record.movement = {"preset":"random", "range":[20,20]}
+	main._build_placed_npcs({"_npc_map_file":"bounded_fixture.json", "size":[4,4], "_resolved_npcs":[bounded_record]}, Vector3(700,0,0))
+	var bounded_npc: Area3D = main.runtime_npcs["bounded_fixture.json"][1]
+	bounded_npc.set_meta("visual_layer", main._active_visual_layer())
+	for frame in 300:
+		main._update_placed_npcs(0.1)
+		assert(absf(bounded_npc.position.x-700) <= 2-Movement.FOOT_SIZE.x*0.5+0.0001)
+		assert(absf(bounded_npc.position.z) <= 2-Movement.FOOT_SIZE.z*0.5+0.0001)
+		await physics_frame
+	# The house Lochirp's anchor lies north of its bed's foot anchor.
+	main._add_serialized_furnishings(Vector3(800,0,0), [{"type":"bed", "position":[-3.6,0,-1.8], "height":2.35}], "BedSortFixture")
+	main.object_sort_entries[-1]["visual_layer"] = int(follower.get_meta("visual_layer"))
+	var bed_feet := Vector3(796.75,0,-2.75)
+	assert(main._npc_bed_sort_position(follower, bed_feet).z > -1.8, "Fakemon on beds must sort above the bed.")
+	assert(main._npc_bed_sort_position(npc, bed_feet) == bed_feet, "Human sorting must remain unchanged.")
+	assert(main._npc_bed_sort_position(follower, bed_feet+Vector3(3,0,0)) == bed_feet+Vector3(3,0,0), "Nearby Fakemon must retain ordinary sorting.")
 	# Traversal elevation uses authored height plus mode and manual offsets.
 	assert(Movement.elevation({}) == 0.0)
 	assert(Movement.elevation({"movement_mode":"flying"}) == 2.0)

@@ -20,6 +20,8 @@ static var SPRITES := {
 
 	"man": {"grid_path":"res://assets/trainers/Male Citizen.png", "columns":5, "walk_sequence":[0,1,0,2,0,3,0,4], "x_edges":[0,215,395,580,760,962], "y_edges":[0,335,630,930,1235]},
 	"woman": {"grid_path":"res://assets/trainers/Female Citizen.png", "columns":5, "walk_sequence":[0,1,0,2,0,3,0,4], "x_edges":[0,215,395,580,760,962], "y_edges":[0,335,640,950,1260]},
+	"Professor": {"grid_path":"res://assets/trainers/Professor.png", "columns":5, "walk_sequence":[0,1,0,2,0,3,0,4], "x_edges":[0,235,445,650,860,1082], "y_edges":[0,375,720,1060,1410]},
+	"Scientist": {"grid_path":"res://assets/trainers/Scientist.png", "columns":5, "walk_sequence":[0,1,0,2,0,3,0,4], "x_edges":[0,235,445,650,860,1082], "y_edges":[0,375,720,1060,1410]},
 	"boy": {"grid_path":"res://assets/trainers/Boy.png"},
 	"girl": {"grid_path":"res://assets/trainers/Girl.png"},
 }

@@ -1,0 +1,5 @@
+{
+  "standardize_scale": true,
+  "visual_height": 2.0,
+  "collision_boxes": [{"offset": [0.0, -0.3], "size": [2.3, 1.0, 0.6]}]
+}

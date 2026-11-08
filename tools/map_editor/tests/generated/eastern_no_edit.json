@@ -1,31 +1,31 @@
 {
 	"arrival_points": {
 		"cave_return": [
-			7.0,
+			6.0,
 			0.64999997615814,
-			-4.0
+			-2.0
 		],
 		"entry": [
-			-8.0,
+			-6.75,
 			0.64999997615814,
-			-1.0
+			-1.5
 		]
 	},
 	"base_terrain_type": "forest_floor",
 	"cave_return": [
-		7.0,
+		6.0,
 		0.64999997615814,
-		-4.0
+		-2.0
 	],
 	"cave_warp": [
 		8.0,
 		0.11999999731779,
-		-4.0
+		-2.0
 	],
 	"entry": [
-		-8.0,
+		-6.75,
 		0.64999997615814,
-		-1.0
+		-1.5
 	],
 	"grass_zones": [
 		{
@@ -44,9 +44,9 @@
 		{
 			"encounter_chance": 0.2,
 			"position": [
-				3.5,
-				0.12,
-				-2.0
+				3.0,
+				0.11999999731779,
+				-6.0
 			],
 			"size": [
 				5.0,
@@ -134,9 +134,9 @@
 		]
 	],
 	"return_warp": [
-		-9.0,
+		-8.25,
 		0.11999999731779,
-		-1.0
+		-1.5
 	],
 	"sand_blocks": [
 		[
@@ -578,7 +578,7 @@
 			1.0
 		],
 		[
-			8.2,
+			8.0,
 			1.5,
 			-9.0,
 			0.0
@@ -608,10 +608,26 @@
 		-2.0
 	],
 	"warp_metadata": {
+		"cave_warp": {
+			"entrance_map": "vinestone_cave.json",
+			"entrance_map_warp_id": 1,
+			"facing": "generic",
+			"id": 1,
+			"show_sprite": true
+		},
+		"return_warp": {
+			"entrance_map": "canopy_route.json",
+			"entrance_map_warp_id": 1,
+			"facing": "generic",
+			"id": 2,
+			"show_sprite": true
+		},
 		"warp_3": {
 			"entrance_map": "jalovea_city.json",
 			"entrance_map_warp_id": 1,
-			"id": 3
+			"facing": "generic",
+			"id": 3,
+			"show_sprite": true
 		}
 	},
 	"water_blocks": [

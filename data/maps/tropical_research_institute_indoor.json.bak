@@ -2,29 +2,421 @@
 	"arrival_points": {
 		"entry": [
 			0,
-			0.65,
-			8
+			0.64999997615814,
+			3.04999995231628
 		]
 	},
-	"base_terrain_type": "stone",
+	"base_terrain_type": "indoor_floor_tile_00",
 	"entry": [
 		0,
-		0.65,
-		8
+		0.64999997615814,
+		3.04999995231628
 	],
 	"floor_blocks": [],
 	"format_version": 2,
-	"furnishings": [],
+	"furnishings": [
+		{
+			"height": 1.05,
+			"position": [
+				-7.30000019073486,
+				0.0,
+				-2.25
+			],
+			"type": "houseplant_1"
+		}
+	],
 	"grass_zones": [],
 	"map_metadata": {
 		"display_name": "Tropical Research Institute",
 		"group": "custom",
-		"id": "new_map",
-		"layout_type": "outdoor",
+		"id": "tropical_research_institute_indoor",
+		"layout_type": "indoor",
 		"tags": []
 	},
 	"map_type": "Rainforest",
-	"objects": [],
+	"npcs": [
+		{
+			"facing": "down",
+			"id": 1,
+			"position": [
+				-6.0,
+				0.0,
+				-2.40000009536743
+			]
+		},
+		{
+			"facing": "down",
+			"id": 2,
+			"position": [
+				7.0,
+				0.0,
+				-4.19999980926514
+			]
+		},
+		{
+			"facing": "down",
+			"id": 3,
+			"position": [
+				3.0,
+				0.0,
+				-3.0
+			]
+		},
+		{
+			"facing": "down",
+			"id": 4,
+			"position": [
+				4.25,
+				0.0,
+				3.0
+			]
+		},
+		{
+			"facing": "down",
+			"id": 5,
+			"position": [
+				5.0,
+				0.0,
+				2.75
+			]
+		},
+		{
+			"facing": "down",
+			"id": 6,
+			"position": [
+				8.25,
+				0.0,
+				2.25
+			]
+		},
+		{
+			"facing": "down",
+			"id": 7,
+			"position": [
+				-5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"facing": "up",
+			"id": 8,
+			"position": [
+				-5.25,
+				0.0,
+				-1.5
+			]
+		}
+	],
+	"objects": [
+		{
+			"asset_path": "res://assets/overworld/props_indoor_reception.png",
+			"height": 1.0,
+			"position": [
+				-6.0,
+				0.0,
+				-2.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.props_indoor_reception"
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_table_round_small.png",
+			"height": 1.0,
+			"position": [
+				-6.0,
+				0.0,
+				3.20000004768372
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_table_round_small"
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_fishtank.png",
+			"height": 1.75,
+			"position": [
+				-0.75,
+				0.0,
+				0.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_fishtank"
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_organizer_tall.png",
+			"height": 1.2,
+			"position": [
+				-8.10000038146973,
+				0.0,
+				-4.69999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_organizer_tall"
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_organizer_tall.png",
+			"height": 1.2,
+			"position": [
+				-7.59999990463257,
+				0.0,
+				-4.69999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_organizer_tall"
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_display_00.png",
+			"height": 1.0,
+			"interaction_text": "Jalovea is home an immense number of plant and animal species, some of which are the creatures known as Fakemon. The Tropical Research Institute conducts studies and develops solutions related to the preservation and care of this complex ecosystem.",
+			"position": [
+				4.0,
+				0.0,
+				0.5
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_display",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_display_01.png",
+			"height": 1.0,
+			"interaction_text": "Jalovea is home to an incredible variety of plant and insect species. Some non-insect or plant species may mimic insects or plants as a key survival strategy.",
+			"position": [
+				5.75,
+				0.0,
+				0.5
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_display",
+			"variant": 1
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_doors_double.png",
+			"height": 1.8,
+			"position": [
+				0.0,
+				0.0,
+				-4.30000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_doors_double"
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_couch_small.png",
+			"height": 1.0,
+			"position": [
+				-6.0,
+				0.0,
+				1.79999995231628
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_couch_small"
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_bookshelf_double.png",
+			"height": 1.5,
+			"position": [
+				-3.70000004768372,
+				0.0,
+				-4.59999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_bookshelf_double"
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_billboard_tropical_research.png",
+			"height": 2.0,
+			"interaction_text": "A collection of charts, data, and academic writing. There are even p-values comparing different variables.\nYou decide you don't miss school that much.",
+			"position": [
+				5.25,
+				0.0,
+				-4.30000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_billboard_tropical_research"
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_display_02.png",
+			"height": 1.0,
+			"interaction_text": "Located as a isthmus between two large oceans, Jalovea's ecology is further stressed in some regions by imported species. Though poaching native species has long been made illegal, restoration efforts face additional pressures from hardier, externally native species. Thanks in part to the efforts of this institute, conservation has been widely successful in the regions around Jalovea City.",
+			"position": [
+				7.5,
+				0.0,
+				0.5
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_display",
+			"variant": 2
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_display_fossil.png",
+			"height": 2.0,
+			"position": [
+				5.30000019073486,
+				0.0,
+				-1.95000004768372
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_display_fossil"
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_couch_l_facing.png",
+			"height": 1.0,
+			"position": [
+				-4.25,
+				0.0,
+				3.25
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_couch_l_facing"
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_couch_r_facing.png",
+			"height": 1.0,
+			"position": [
+				-7.75,
+				0.0,
+				3.25
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_couch_r_facing"
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_aquarium_long.png",
+			"height": 1.4,
+			"position": [
+				-6.0,
+				0.0,
+				5.25
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_aquarium_long"
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_display_flowers_long.png",
+			"height": 1.65,
+			"position": [
+				5.5,
+				0.0,
+				4.25
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_display_flowers_long"
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_lab_table_specimen.png",
+			"height": 2.5,
+			"position": [
+				-0.75,
+				0.0,
+				0.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_lab_table_specimen"
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_museum_railing.png",
+			"height": 0.8,
+			"position": [
+				-0.75,
+				0.0,
+				0.25
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_museum_railing"
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_lab_desk_small.png",
+			"height": 1.0,
+			"position": [
+				-6.0,
+				0.0,
+				-4.25
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_lab_desk_small"
+		}
+	],
 	"orchids": [],
 	"origin": [
 		0,
@@ -34,14 +426,83 @@
 	"outdoor_connections": [],
 	"return_warp": [
 		0,
-		0.12,
-		9.5
+		0.11999999731779,
+		5.0
 	],
 	"rocks": [],
 	"sand_blocks": [],
+	"script_interactions": {
+		"npc:2": "ProfessorIndoor"
+	},
+	"script_paths": [
+		{
+			"name": "ScientistToProfessor",
+			"nodes": [
+				[
+					3.0,
+					-3.20000004768372
+				],
+				[
+					4.0,
+					-4.0
+				],
+				[
+					6.40000009536743,
+					-4.0
+				]
+			],
+			"type": "MOVE"
+		},
+		{
+			"name": "ProfessorLeave",
+			"nodes": [
+				[
+					7.0,
+					-4.40000009536743
+				],
+				[
+					7.0,
+					-2.40000009536743
+				],
+				[
+					7.0,
+					-1.60000002384186
+				],
+				[
+					3.20000004768372,
+					-1.60000002384186
+				],
+				[
+					2.20000004768372,
+					-1.39999997615814
+				],
+				[
+					1.79999995231628,
+					2.79999995231628
+				],
+				[
+					0.60000002384186,
+					3.20000004768372
+				],
+				[
+					0.0,
+					3.59999990463257
+				],
+				[
+					0.0,
+					4.59999990463257
+				]
+			],
+			"type": "MOVE"
+		}
+	],
+	"script_source": "Block ProfessorIndoor:\nLock\nTextBox \"Hello [player], we've been expecting you. As you may know, our insitute studies  Jalovea's many varied and complex ecosystems. This is no little task, and we still have so much to discover.\"\nFaceSprite Professor Player\nMoveSprite NPC3 ScientistToProfessor\nWaitMovement NPC3\nFaceSprite NPC3 Professor\nTextBox \"Professor, everything is ready for our new field consultant.\"\nFaceSprite Professor NPC3\nTextBox \"Splendid! Now for the fun part!\"\nFaceSprite Professor Player\nTextBox \"Our Institute has successfully raised three rare species of Fakemon. They're not easy to care for, but we've learned quite a lot from them!\"\nTextBox \"Each comes from a different part of our rainforest. We've prepared one of each for you to meet.\"\nTextBox \"Come along! Let's see which one takes a liking to you!\"\nUnlock\nMoveSprite Professor ProfessorLeave\nHideSprite Professor\nSetFlag PlayerIsPicking\nEnd",
+	"script_sprite_names": {
+		"Professor": 2
+	},
 	"size": [
-		20,
-		20
+		17.0,
+		11.0
 	],
 	"tall_grass_species": [],
 	"terrain_tiles": [
@@ -52,11 +513,90 @@
 		{
 			"positions": [],
 			"terrain_type": "rock"
+		},
+		{
+			"positions": [],
+			"terrain_type": "indoor_floor_tile"
 		}
 	],
 	"vines": [],
-	"wall_blocks": [],
-	"warp_metadata": {},
+	"wall_blocks": [
+		[
+			-9.0,
+			1.20000004768372,
+			0.0,
+			1.0,
+			0.30000001192093,
+			13.0
+		],
+		[
+			9.0,
+			1.20000004768372,
+			0.0,
+			1.0,
+			0.30000001192093,
+			13.0
+		],
+		[
+			0.0,
+			1.20000004768372,
+			-5.94999980926514,
+			18.8999996185303,
+			0.30000001192093,
+			2.09999990463257
+		],
+		[
+			0.0,
+			1.20000004768372,
+			6.0,
+			18.8999996185303,
+			0.30000001192093,
+			2.09999990463257,
+			{
+				"enabled": true,
+				"offset": [
+					0.0,
+					0.69999998807907,
+					0.0
+				],
+				"size": [
+					18.8999996185303,
+					0.30000001192093,
+					2.09999990463257
+				]
+			}
+		],
+		[
+			6.0,
+			1.20000004768372,
+			0.0,
+			6.0,
+			0.30000001192093,
+			3.0,
+			{
+				"enabled": true,
+				"offset": [
+					0.0,
+					0.0,
+					0.27000001072884
+				],
+				"size": [
+					6.0,
+					0.30000001192093,
+					2.70000004768372
+				]
+			}
+		]
+	],
+	"warp_metadata": {
+		"return_warp": {
+			"entrance_map": "tropical_research_lab.json",
+			"entrance_map_warp_id": 2,
+			"facing": "generic",
+			"id": 1,
+			"show_sprite": true
+		}
+	},
 	"water_blocks": [],
 	"water_encounter_chance": 0.0,
 	"water_species": []

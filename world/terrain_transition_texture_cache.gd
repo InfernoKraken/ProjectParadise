@@ -8,6 +8,8 @@ static var _bake_frame := -1
 
 static var _cache: Dictionary = {}
 static var _base_cache: Dictionary = {}
+static var _image_cache: Dictionary = {}
+static var _terrain_image_cache: Dictionary = {}
 
 static func base_texture(terrain_type:String)->Texture2D:
 	if not Resolver.TERRAIN.has(terrain_type):return null
@@ -96,6 +98,7 @@ static func texture_for_tile(base_terrain:String,patches:Array)->Texture2D:
 	var texture:=ImageTexture.create_from_image(output);_cache[key]=texture;return texture
 
 static func _apply_slice(output:Image,source:Image,slice:String)->void:
+	if source.get_format()!=output.get_format():source=source.duplicate();source.convert(output.get_format())
 	if source.get_size()!=output.get_size():source.resize(output.get_width(),output.get_height(),Image.INTERPOLATE_NEAREST)
 	var w:=output.get_width();var h:=output.get_height();var hw:=w/2;var hh:=h/2;var source_rect:=Rect2i();var destination:=Vector2i.ZERO
 	match slice:
@@ -124,20 +127,32 @@ static func cache_size() -> int:
 static func clear() -> void:
 	_cache.clear()
 	_base_cache.clear()
+	_image_cache.clear()
+	_terrain_image_cache.clear()
 	TextureAnimation.bindings.clear()
 
 static func _imported_image(path: String) -> Image:
+	# Keep CPU images alive so baking another recipe does not reload the texture
+	# from disk or read it back again. Callers mutate their own copy.
+	if _image_cache.has(path): return _image_cache[path].duplicate()
 	var texture := ResourceLoader.load(path) as Texture2D
-	return texture.get_image().duplicate() if texture != null else null
+	if texture == null: return null
+	var image := texture.get_image()
+	if image == null: return null
+	_image_cache[path] = image
+	return image.duplicate()
 
 static func _terrain_image(terrain_type: String) -> Image:
 	var definition: Dictionary = Resolver.TERRAIN.get(terrain_type, {})
 	if definition.is_empty(): return null
 	var path := String(definition.texture)
 	var animation := TextureAnimation.definition(String(definition.get("animation", ""))) if definition.has("animation") else {}
+	var frame: int = maxi(_bake_frame, 0) % animation.frames.size() if not animation.is_empty() else -1
+	var image_key := terrain_type + "|" + str(frame)
+	if _terrain_image_cache.has(image_key): return _terrain_image_cache[image_key].duplicate()
 	var image: Image
 	if not animation.is_empty():
-		image = animation.frames[maxi(_bake_frame, 0) % animation.frames.size()].get_image().duplicate()
+		image = animation.frames[frame].get_image().duplicate()
 	else:
 		image = _imported_image(path)
 	if image == null or image.is_empty(): return image
@@ -146,7 +161,8 @@ static func _terrain_image(terrain_type: String) -> Image:
 	if tint != Color.WHITE:
 		for y in image.get_height():
 			for x in image.get_width(): image.set_pixel(x, y, image.get_pixel(x, y) * tint)
-	return image
+	_terrain_image_cache[image_key] = image
+	return image.duplicate()
 
 static func _orient_mask(mask: Image, mask_type: String, orientation: String) -> void:
 	if mask_type == "vertical_edge":
