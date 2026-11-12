@@ -17,3 +17,6 @@ Map data lives in `data/maps/`. Edit an individual JSON file to change that map;
 `map_index.json` declares how those files are assembled into the current world.
 Positions are `[x, y, z]`, sizes are generally `[width, height, depth]`, and map
 `origin` values keep simultaneously loaded 2.5D regions separated in 3D space.
+
+
+Current goals: Finish Jalvoea City, work on NPCs.
