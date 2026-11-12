@@ -77,7 +77,9 @@ static func update_actors(entry:Dictionary, occupants:Array, player_visual:Sprit
 		var actor_entry := entry.duplicate()
 		actor_entry.platform_layers = actor_layers
 		update(actor_entry,visual,true)
+		actor_layers.foreground.visible = bool(occupant.get("show_foreground", true))
 	if not player_present:
+		layers.foreground.visible = true
 		update(entry,player_visual,false)
 		# The first rail pass supplies the unoccupied platform foreground.
 		entry.sort_root.move_child(layers.foreground,1)

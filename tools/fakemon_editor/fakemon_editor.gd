@@ -16,6 +16,8 @@ var fields: Dictionary = {}
 var stat_spins: Dictionary = {}
 var light_source_box: CheckButton
 var light_strength_spin: SpinBox
+var habitat_box: OptionButton
+var movement_box: OptionButton
 var bst_label: Label
 var egg_boxes: Array[OptionButton] = []
 var type_boxes: Array[OptionButton] = []
@@ -120,6 +122,24 @@ func _build_stats_tab() -> void:
 	_row(box, "Light Strength (radius in map units)", light_strength_spin)
 	var light_hint := Label.new(); light_hint.text = "Low: 0.5 · Medium: 1 · Huge: 2. Only affects overworld lighting."; box.add_child(light_hint)
 
+	habitat_box = OptionButton.new()
+	for habitat in model.habitat_types:
+		habitat_box.add_item(habitat.capitalize())
+	habitat_box.item_selected.connect(func(index: int):
+		if not suppress:
+			model.draft["habitat"] = model.habitat_types[index]
+			_dirty())
+	_row(box, "Habitat", habitat_box)
+	movement_box = OptionButton.new()
+	for mode in Model.MOVEMENT_MODES:
+		movement_box.add_item(Model.MOVEMENT_MODES[mode])
+		movement_box.set_item_metadata(movement_box.item_count - 1, mode)
+	movement_box.item_selected.connect(func(index: int):
+		if not suppress:
+			model.draft["movement_mode"] = movement_box.get_item_metadata(index)
+			_dirty())
+	_row(box, "Movement", movement_box)
+
 func _build_art_tab() -> void:
 	var scroll:=ScrollContainer.new();scroll.name="Art";scroll.size_flags_vertical=Control.SIZE_EXPAND_FILL;tabs.add_child(scroll)
 	art_tab=ArtTab.new();art_tab.size_flags_horizontal=Control.SIZE_EXPAND_FILL;art_tab.setup(model.game_root);art_tab.changed.connect(_art_changed);art_tab.message.connect(_message);scroll.add_child(art_tab)
@@ -175,6 +195,8 @@ func _select(name: String) -> void:
 	light_source_box.button_pressed = bool(model.draft.get("light_source", false))
 	light_strength_spin.value = float(model.draft.get("light_strength", 0.5))
 	light_strength_spin.editable = light_source_box.button_pressed
+	habitat_box.select(model.habitat_types.find(model.draft.get("habitat", Model.DEFAULT_HABITAT)))
+	movement_box.select(Model.MOVEMENT_MODES.keys().find(model.draft.get("movement_mode", "ground")))
 	_update_bst(); suppress = false; _dirty(); _message("Loaded without changing the source schema.")
 
 func _populate_options() -> void:

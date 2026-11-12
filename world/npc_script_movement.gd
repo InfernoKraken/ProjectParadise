@@ -180,7 +180,7 @@ func update(delta: float) -> void:
 		# Use the existing traversal surface's low ramp before turning off its side.
 		if npc == game.player and mode.type == "FOLLOW":
 			for surface: Dictionary in game.traversal_surfaces:
-				if int(surface.get("visual_layer",-1)) != game._active_visual_layer(): continue
+				if surface.has("recessed_outline") or int(surface.get("visual_layer",-1)) != game._active_visual_layer(): continue
 				var here: Vector2 = game._surface_coordinates(surface,npc.position)
 				var coordinate: Vector2 = game._surface_coordinates(surface,destination)
 				var half := float(surface.length)*0.5
@@ -366,7 +366,7 @@ func _follow_hint_blocked(npc: Node3D, point: Vector3, guide:Node3D = null) -> b
 	# Ground-only guides can pass under deck edges. Do not steer the player onto
 	# a raised deck to chase that ground-level sample, then back off it repeatedly.
 	for surface: Dictionary in game.traversal_surfaces:
-		if int(surface.get("visual_layer",-1)) != game._active_visual_layer(): continue
+		if surface.has("recessed_outline") or int(surface.get("visual_layer",-1)) != game._active_visual_layer(): continue
 		var coordinate: Vector2 = game._surface_coordinates(surface,point)
 		var half := float(surface.length)*0.5
 		var ramp := float(surface.entrance_length)

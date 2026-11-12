@@ -61,12 +61,14 @@ func _try_script_object_click(screen_position: Vector2) -> bool:
 	return false
 
 # Shared outdoor framing keeps zoom consistent across travel and save loading.
-const OUTDOOR_CAMERA_SIZE := 16.0
+const OUTDOOR_CAMERA_SIZE := 14.0
 const MAP_DATA_PATH := "res://data/maps/map_index.json"
 const PLATFORM_WALL_LAYER := 4
 const ACTOR_COLLISION_LAYER := 8
+const FENCE_COLLISION_LAYER := 16
 const MapDataLoader := preload("res://world/map_data_loader.gd")
 const TerrainTransitionResolver := preload("res://world/terrain_transition_resolver.gd")
+const PolygonColliders := preload("res://tools/map_editor/core/polygon_colliders.gd")
 const MapBounds := preload("res://tools/map_editor/core/map_bounds.gd")
 const MapBorderRenderer := preload("res://world/map_border_renderer.gd")
 const MapBorderLayout := preload("res://tools/map_editor/core/map_border_layout.gd")
@@ -95,9 +97,10 @@ const NpcSpriteLibrary := preload("res://world/npc_sprite_library.gd")
 const DayNightControllerScript := preload("res://world/day_night_controller.gd")
 const AUTO_SAVE_PATH := "user://project_paradise_autosave.json"
 const SAVE_SLOT_COUNT := 5
-const SAVE_VERSION := 2
+const SAVE_VERSION := 3
 const MOVE_SPEED := 5.0
 const PLAYER_VISUAL_HEIGHT := 1.6
+const PLAYER_GROUND_HEIGHT := 0.65
 const NPC_ADULT_VISUAL_HEIGHT := 1.65
 const NPC_CHILD_VISUAL_HEIGHT := 1.4
 const NPC_FOOT_COLLISION_SIZE := NpcMovement.FOOT_SIZE
@@ -177,6 +180,7 @@ const TEX_TREE_MAIN := preload("res://assets/overworld/tree_main.png")
 const TEX_TREE_PALM := preload("res://assets/overworld/tree_palm.png")
 const TEX_VINES := preload("res://assets/overworld/vines.png")
 const TEX_PASSION_VINE_HORIZONTAL := preload("res://assets/overworld/vines_horizontal_flower_passion.png")
+const WarpSpriteCatalog := preload("res://tools/map_editor/core/warp_sprite_catalog.gd")
 const TEX_WARP_BUILDING := preload("res://assets/overworld/warp_building_generic.png")
 const TEX_WARP_EAST := preload("res://assets/overworld/warp_outdoor_facing_east.png")
 const TEX_WARP_GENERIC := preload("res://assets/overworld/warp_outdoor_generic.png")
@@ -241,7 +245,17 @@ var game_flags = preload('res://world/scripting/game_flags.gd').new()
 var script_runner = preload('res://world/scripting/script_runner.gd').new()
 var script_host = preload('res://world/scripting/world_script_host.gd').new(self)
 var script_input_locked := false
-var party: Array[Dictionary] = []
+const FakemonStorage = preload("res://world/fakemon_storage.gd")
+const CloudDialog = preload("res://world/cloud_dialog.gd")
+
+const HabitatExhibits := preload("res://world/habitat_exhibits.gd")
+var exhibits := HabitatExhibits.new(self)
+var exhibit_menu: PopupMenu
+var exhibit_transition := false
+var fakemon_storage := FakemonStorage.new()
+var party: Array[Dictionary] = fakemon_storage.party
+var cloud: Array[Dictionary] = fakemon_storage.cloud
+var cloud_dialog: CloudDialog
 var active_party_index := 0
 var last_grass_tile := ""
 var last_water_tile := ""
@@ -386,6 +400,7 @@ func _start_map_test(filename:String)->void:
 	player_palette_preset = PlayerPalette.DEFAULT_PRESET
 	player_color_name = player_style
 	_apply_player_appearance()
+	cloud.clear()
 	party.clear()
 	var starter:Dictionary=battle.create_fakemon(battle.battle_data["fakemon"][0])
 	starter["experience"]=int(pow(float(starter["level"]),3.0));starter["current_hp"]=int(starter["max_hp"]);starter["condition"]="";starter["condition_turns"]=0;party.append(starter);active_party_index=0
@@ -406,7 +421,7 @@ func _physics_process(delta: float) -> void:
 	patrols.update(delta)
 	npc_script_movement.update(delta)
 	if script_input_locked and not npc_script_movement.waiters.is_empty(): _update_placed_npcs(delta)
-	if (script_input_locked and not npc_script_movement.player_can_yield()) or not adventure_started or in_battle or dialog_open or swim_transitioning or player == null or (party_panel != null and party_panel.visible) or (settings_panel != null and settings_panel.visible) or (bag_panel != null and bag_panel.visible) or (dex_panel != null and dex_panel.visible) or (move_learning_panel != null and move_learning_panel.visible) or (evolution_screen != null and evolution_screen.visible):
+	if (script_input_locked and not npc_script_movement.player_can_yield()) or not adventure_started or in_battle or dialog_open or exhibit_transition or (exhibit_menu != null and exhibit_menu.visible) or swim_transitioning or player == null or (party_panel != null and party_panel.visible) or (settings_panel != null and settings_panel.visible) or (bag_panel != null and bag_panel.visible) or (cloud_dialog != null and cloud_dialog.visible) or (dex_panel != null and dex_panel.visible) or (move_learning_panel != null and move_learning_panel.visible) or (evolution_screen != null and evolution_screen.visible):
 		# Script movement and facing still update world state while input is locked.
 		# Keep the projected sprites synchronized during locks and dialogue.
 		if adventure_started and player != null: _update_sort_canvas()
@@ -483,7 +498,11 @@ func _terrain_foot_blocked(candidate:Vector3)->bool:
 	if not _platform_at_position(candidate).is_empty():return false
 	if terrain_foot_shape==null:terrain_foot_shape=BoxShape3D.new();terrain_foot_shape.size=TERRAIN_FOOTPRINT_SIZE
 	var query:=PhysicsShapeQueryParameters3D.new();query.shape=terrain_foot_shape
-	query.transform=Transform3D(Basis.IDENTITY,candidate+Vector3(0,TERRAIN_FOOTPRINT_OFFSET_Y,0))
+	# Terrain obstacles describe the authored ground footprint. A recessed floor
+	# lowers the actor, but the probe must still intersect these obstacles.
+	var probe_position := candidate
+	probe_position.y = maxf(candidate.y, PLAYER_GROUND_HEIGHT) + TERRAIN_FOOTPRINT_OFFSET_Y
+	query.transform = Transform3D(Basis.IDENTITY, probe_position)
 	query.collision_mask=TERRAIN_OBSTACLE_LAYER;query.collide_with_bodies=true;query.collide_with_areas=false;query.exclude=[player.get_rid()]
 	var hits := world.get_world_3d().direct_space_state.intersect_shape(query,1)
 	if not hits.is_empty() and collision_diagnostics: _report_collision_blocker(hits[0].collider)
@@ -510,9 +529,21 @@ func _safe_shore_exit(first_land_cell: Vector3, outward: Vector3) -> Vector3:
 	# collision check, so every facing (especially north) can walk away freely.
 	for distance in 3:
 		var candidate := _terrain_cell_center(first_land_cell + outward * float(distance))
-		if _terrain_at(candidate) != "" and _terrain_at(candidate) != "water" and not _terrain_foot_blocked(candidate):
+		if _terrain_at(candidate) != "" and _terrain_at(candidate) != "water" and not _surf_crosses_fence(candidate) and not _terrain_foot_blocked(candidate):
 			return candidate
 	return Vector3.ZERO
+
+
+func _surf_crosses_fence(destination: Vector3) -> bool:
+	# Surf transitions reposition the player directly, so check the crossing
+	# against the same fence bodies that block ordinary movement.
+	var from := player.global_position
+	var to := from + Vector3(destination.x - player.position.x, 0.0, destination.z - player.position.z)
+	if from.is_equal_approx(to):
+		return false
+	var query := PhysicsRayQueryParameters3D.create(from, to, FENCE_COLLISION_LAYER)
+	query.hit_from_inside = true
+	return not world.get_world_3d().direct_space_state.intersect_ray(query).is_empty()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -520,7 +551,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		collision_diagnostics = not collision_diagnostics;last_collision_diagnostic = ""
 		hint_label.text = "Collision diagnostics %s. Walk into a blocker to show its name and position." % ("on" if collision_diagnostics else "off")
 		get_viewport().set_input_as_handled();return
-	if script_runner.running or in_battle or dialog_open or not event is InputEventMouseButton:
+	if script_runner.running or in_battle or dialog_open or exhibit_transition or not event is InputEventMouseButton:
 		return
 	if event.button_index != MOUSE_BUTTON_LEFT or not event.pressed:
 		return
@@ -708,7 +739,9 @@ func _open_battle(enemy_index: int, enemy_party_indices: Array = [], enemy_team:
 
 func _begin_unpartnered_adventure() -> void:
 	script_runner.stop(); npc_script_movement.clear(); script_host.hidden_objects.clear(); script_host.reset_sprites(); game_flags.restore({})
+	cloud.clear()
 	party.clear(); active_party_index = 0
+	exhibits.restore([], {})
 	adventure_started = true; in_battle = false
 	battle.hide(); follower.hide()
 	_set_overworld_visuals_visible(true); map_ui.visible = true
@@ -724,6 +757,7 @@ func _on_fakemon_selected(index: int) -> void:
 	starter["condition"] = ""
 	starter["condition_turns"] = 0
 	party.append(starter)
+	exhibits.record(starter)
 	game_flags.set_flag("Starter",true)
 	active_party_index = 0
 	adventure_started = true
@@ -1049,7 +1083,7 @@ func _start_door_cooldown() -> void:
 
 
 func _on_battle_finished(player_won: bool, escaped: bool, captured_mon: Dictionary, experience_earned: int, experience_recipients: Array[int], _final_active_index: int, final_party_hp: Array[int], final_party_conditions: Array[Dictionary]) -> void:
-	var capture_added := false
+	var sent_to_cloud := false
 	if experience_earned > 0 and not experience_recipients.is_empty():
 		var valid_recipients: Array[int] = []
 		for recipient in experience_recipients:
@@ -1067,13 +1101,10 @@ func _on_battle_finished(player_won: bool, escaped: bool, captured_mon: Dictiona
 		party[index]["condition"] = final_party_conditions[index]["condition"]
 		party[index]["condition_turns"] = final_party_conditions[index]["condition_turns"]
 	if not captured_mon.is_empty():
-		if party.size() < 7:
-			captured_mon["condition"] = String(captured_mon.get("condition", ""))
-			captured_mon["condition_turns"] = int(captured_mon.get("condition_turns", 0))
-			party.append(captured_mon)
-			capture_added = true
-		else:
-			capture_added = false
+		captured_mon["condition"] = String(captured_mon.get("condition", ""))
+		captured_mon["condition_turns"] = int(captured_mon.get("condition_turns", 0))
+		sent_to_cloud = fakemon_storage.add_capture(captured_mon)
+		exhibits.record(captured_mon)
 	in_battle = false
 	if not player_won and not escaped:
 		_restore_respawn_checkpoint()
@@ -1084,10 +1115,10 @@ func _on_battle_finished(player_won: bool, escaped: bool, captured_mon: Dictiona
 		hint_label.text = "Escaped from the wild encounter."
 	else:
 		hint_label.text = ("Victory in the %s! You remain where the battle began." % battle_kind if player_won else "Defeat! Returned to the most recently visited medical ward.")
-	if capture_added:
+	if not captured_mon.is_empty():
 		hint_label.text += " Captured %s." % captured_mon["name"]
-	elif not captured_mon.is_empty():
-		hint_label.text += " Party full; storage is needed before another capture can be kept."
+		if sent_to_cloud:
+			hint_label.text += " Party full. Sent to the Cloud."
 	_refresh_party_menu()
 	_auto_save()
 	if not pending_evolutions.is_empty():
@@ -1268,7 +1299,9 @@ func _apply_evolution(mon: Dictionary, target: Dictionary) -> void:
 		evolved[stat_name] = int(evolved[stat_name]) + levels_gained * increase
 	evolved["current_hp"] = clampi(roundi(float(evolved["max_hp"]) * hp_ratio), 0, int(evolved["max_hp"]))
 	mon.clear()
+	exhibits.record(mon)
 	mon.merge(evolved, true)
+	exhibits.record(mon)
 	hint_label.text = "%s evolved into %s!" % [previous_name, mon["name"]]
 
 
@@ -1431,7 +1464,7 @@ func _build_universal_terrain_layers(region_data: Dictionary, origin: Vector3, p
 func _build_canonical_terrain_bases(region_data:Dictionary,origin:Vector3,prefix:String)->void:
 	var grid:Dictionary=region_data.get("_terrain_grid",{})
 	var base_terrain:=String(region_data.get("base_terrain_type","forest_floor"))
-	var batches:Dictionary=preload("res://world/terrain_mesh_batcher.gd").build(grid,base_terrain,region_data.get("objects",[]))
+	var batches:Dictionary=preload("res://world/terrain_mesh_batcher.gd").build(grid,base_terrain,region_data.get("objects",[]),region_data.get("_habitat_floor_clip", PackedVector2Array()), region_data.has("habitat_type"))
 	for key in batches:
 		var batch:Dictionary=batches[key]
 		var terrain_type:=String(batch.terrain_type)
@@ -1523,7 +1556,7 @@ func _build_terrain_transition_overlays(region_data: Dictionary, origin: Vector3
 		var rect:=Rect2(Vector2(tile)-Vector2.ONE*0.5,Vector2.ONE)
 		if String(grid.get(tile,""))=="water":rect=preload("res://tools/map_editor/core/wall_water_clip.gd").bounds(tile,grid,region_data.get("objects",[]))
 		cells.append({"tile":tile,"rect":rect,"texture":texture,"priority":highest_priority,"patches":patches})
-	var batches:Array[Dictionary]=preload("res://world/terrain_mesh_batcher.gd").build_transitions(cells)
+	var batches:Array[Dictionary]=preload("res://world/terrain_mesh_batcher.gd").build_transitions(cells, region_data.get("_habitat_floor_clip", PackedVector2Array()))
 	for batch_index in batches.size():
 		var batch:Dictionary=batches[batch_index]
 		var overlay:=MeshInstance3D.new()
@@ -1604,6 +1637,16 @@ func _build_universal_objects(region_data: Dictionary, origin: Vector3, prefix: 
 			var texture := TerrainTransitionTextureCache.base_texture("water") if type_id == "block.water" else (TEX_SAND if type_id == "block.sand" else TEX_STONE)
 			var color := Color.WHITE if type_id == "block.water" else (Color.WHITE if type_id == "block.sand" else Color("#777970"))
 			_add_textured_block(node_name, position, size, texture, color, type_id != "block.sand", TERRAIN_OBSTACLE_LAYER if type_id == "block.water" else 1)
+		elif type_id.begins_with("decal."):
+			var texture:=load(String(object.get("asset_path",""))) as Texture2D
+			if texture==null:continue
+			var dimensions:Variant=object.get("size",[2.0,0.02,2.0])
+			var visual:=MeshInstance3D.new();visual.name=node_name
+			var plane:=PlaneMesh.new();plane.size=Vector2(float(dimensions[0]),float(dimensions[2]));visual.mesh=plane
+			visual.position=Vector3(position.x,maxf(position.y,origin.y+0.43),position.z)
+			visual.rotation.y=deg_to_rad(float(object.get("rotation_degrees",0.0)))
+			visual.material_override=_textured_material(texture)
+			visual.add_to_group("day_night_terrain");visual.set_meta("ground_decal",true);world.add_child(visual)
 		elif type_id.begins_with("tile."):
 			var asset_texture:=load(String(object.get("asset_path",""))) as Texture2D
 			var size_data:Variant=object.get("size",[1.0,0.2,1.0])
@@ -1680,15 +1723,26 @@ func _build_universal_objects(region_data: Dictionary, origin: Vector3, prefix: 
 					var dimensions:Variant=object.get("size",[])
 					var height:=float(object.get("height",0.0))
 					var metadata_path:=asset_path.trim_suffix(".png")+".json"
-					if FileAccess.file_exists(metadata_path):
-						var metadata_file:=FileAccess.open(metadata_path,FileAccess.READ);var scale_metadata:Variant=JSON.parse_string(metadata_file.get_as_text()) if metadata_file!=null else null
-						if scale_metadata is Dictionary and bool(scale_metadata.get("standardize_scale",false)):height=float(scale_metadata.get("visual_height",height))
+					var metadata_file := FileAccess.open(metadata_path, FileAccess.READ)
+					var metadata: Variant = JSON.parse_string(metadata_file.get_as_text()) if metadata_file != null else null
+					if metadata is Dictionary and bool(metadata.get("standardize_scale", false)):
+						height = float(metadata.get("visual_height", height))
 					if height<=0.0:
 						var width:=float(dimensions[0]) if dimensions is Array and dimensions.size()>=1 else 1.0
 						height=width*float(asset_texture.get_height())/float(asset_texture.get_width())
 					_add_prop_billboard(node_name, position, asset_texture, height,instance_id)
+					if object.get("habitat_exhibit") is Dictionary:
+						object_sort_entries[-1]["habitat_exhibit"] = object.habitat_exhibit
 					object_sort_entries[-1]["sort_offset_y"]+=float(object.get("sort_offset_y",0.0))
-					if type_id in ["asset.indoor_display","asset.indoor_billboard_tropical_research"]:object_sort_entries[-1]["interaction_text"]=String(object.get("interaction_text",""))
+					if prefix == "AuthoredMap_ChallengerCenterJalvoeaCity" and asset_path == "res://assets/overworld/habitat_pen_massive.png":
+						_split_habitat_pen_art(object_sort_entries[-1])
+					var is_signpost: bool = metadata is Dictionary and bool(metadata.get("signpost", false))
+					if is_signpost or type_id in ["asset.indoor_display", "asset.indoor_billboard_tropical_research"]:
+						object_sort_entries[-1]["interaction_text"] = String(object.get("interaction_text", ""))
+					if is_signpost and metadata.has("active_texture"):
+						var active_path := String(metadata.active_texture).replace("\\", "/")
+						if ResourceLoader.exists(active_path):
+							object_sort_entries[-1]["active_texture"] = load(active_path) as Texture2D
 					_add_asset_collision_boxes(node_name,position,asset_path,_array_to_vector3(dimensions) if dimensions is Array and dimensions.size()>=3 else Vector3.ONE,float(object.get("rotation_degrees",0.0)))
 					_add_asset_navigation(node_name,position,asset_path,height)
 				continue
@@ -1744,7 +1798,7 @@ func _build_wall_fence(object:Dictionary,origin:Vector3,node_name:String)->void:
 		var normal:=Vector2(-delta.y,delta.x).normalized()*offset
 		var center:=origin+Vector3((start.x+finish.x)*0.5+normal.x,0.5,(start.y+finish.y)*0.5+normal.y)
 		var thickness:=float(collision[index].get("thickness",0.22)) if index<collision.size() and collision[index] is Dictionary else 0.22
-		_add_wall_collision_segment("%s_%d"%[node_name,index],center,length,thickness,atan2(delta.x,delta.y))
+		_add_wall_collision_segment("%s_%d"%[node_name,index],center,length,thickness,atan2(delta.x,delta.y),1 | FENCE_COLLISION_LAYER)
 
 
 func _add_wall_filler_run(name:String,origin:Vector3,start:Vector2,finish:Vector2,wall_set:String="generic_wall")->void:
@@ -1904,6 +1958,14 @@ func _update_traversal_surface(world_position: Vector3, input_vector: Vector2 = 
 	var chosen_height := 0.0
 	for surface: Dictionary in traversal_surfaces:
 		if int(surface.get("visual_layer",_visual_layer_for_position(surface.center))) != _active_visual_layer(): continue
+		if surface.has("recessed_outline"):
+			if not Geometry2D.is_point_in_polygon(Vector2(world_position.x, world_position.z), surface.recessed_outline):
+				continue
+			var north_progress := inverse_lerp(float(surface.north_entry), float(surface.north_landing), world_position.z)
+			var south_progress := inverse_lerp(float(surface.south_entry), float(surface.south_landing), world_position.z)
+			chosen = surface
+			chosen_height = -float(surface.depth) * clampf(minf(north_progress, south_progress), 0.0, 1.0)
+			break
 		var coordinate := _surface_coordinates(surface, world_position)
 		var half_length := float(surface["length"]) * 0.5
 		var half_width := float(surface["width"]) * 0.5
@@ -1922,11 +1984,11 @@ func _update_traversal_surface(world_position: Vector3, input_vector: Vector2 = 
 	if not chosen.is_empty() and (active_traversal_layer > 0 or chosen_height < 0.35 or _is_entering_surface_end(chosen, world_position, input_vector)):
 		active_traversal_layer = int(chosen["traversal_layer"]) if chosen_height > 0.35 else 0
 		active_traversal_surface = chosen if active_traversal_layer > 0 else {}
-		player.position.y = 0.65 + chosen_height
+		player.position.y = PLAYER_GROUND_HEIGHT + chosen_height
 	else:
 		active_traversal_layer = 0
 		active_traversal_surface = {}
-		player.position.y = 0.65
+		player.position.y = PLAYER_GROUND_HEIGHT
 	_update_platform_collision_mask()
 	_update_bridge_occlusion_priority()
 
@@ -2114,14 +2176,14 @@ func _furnishing_footprint(furnishing_type: String) -> Vector2:
 	return Vector2.ZERO
 
 
-func _build_colored_warp(warp_name: String, position: Vector3, callback: Callable, color: Color, show_sprite: Variant = null) -> void:
+func _build_colored_warp(warp_name: String, position: Vector3, callback: Callable, color: Color, show_sprite: Variant = null, sprite: String = "") -> void:
 	var warp := Area3D.new()
 	warp.name = warp_name
 	warp.position = position
 	var size := Vector3(1.5, 0.3, 0.9)
 	warp.add_child(_box_shape(size))
 	if show_sprite == null: show_sprite = _warp_sprite_visible_at(position)
-	if show_sprite: _add_warp_rug_visual(warp, size.x)
+	if show_sprite: _add_warp_rug_visual(warp, size.x, sprite if not sprite.is_empty() else _warp_sprite_at(position))
 	warp.body_entered.connect(callback)
 	world.add_child(warp)
 
@@ -2229,6 +2291,16 @@ func _build_forest_warp(warp_name: String, warp_position: Vector3, callback: Cal
 		_register_sortable_object(visual, warp_name + "SortRoot", warp_position, visual.global_position, visual_height, 0.0)
 
 
+func _warp_sprite_at(position: Vector3) -> String:
+	for data: Dictionary in Dictionary(map_data.get("_map_files", {})).values():
+		var origin := _array_to_vector3(data.get("origin", [0, 0, 0]))
+		for field: String in Dictionary(data.get("warp_metadata", {})):
+			var point: Variant = data.get(field, [])
+			if point is Array and point.size() >= 3 and (origin + _array_to_vector3(point)).is_equal_approx(position):
+				return String(data.warp_metadata[field].get("sprite", WarpSpriteCatalog.DEFAULT))
+	return WarpSpriteCatalog.DEFAULT
+
+
 func _warp_sprite_visible_at(position: Vector3) -> bool:
 	for data: Dictionary in Dictionary(map_data.get("_map_files", {})).values():
 		var origin := _array_to_vector3(data.get("origin", [0, 0, 0]))
@@ -2268,7 +2340,7 @@ func _build_editor_authored_warps() -> void:
 			var first_sort_entry:=object_sort_entries.size()
 			var callback := _on_editor_authored_warp_entered.bind(String(filename), field_name, record)
 			var is_indoor:=_is_authored_indoor_map(authored_map) or _location_for_map_file(String(filename)) in ["medical_ward","house","city_ward","orchid_house","family_house"]
-			if is_indoor:_build_colored_warp(node_name,origin+_array_to_vector3(position),callback,Color.WHITE, bool(record.get("show_sprite", false)))
+			if is_indoor:_build_colored_warp(node_name,origin+_array_to_vector3(position),callback,Color.WHITE, bool(record.get("show_sprite", false)), String(record.get("sprite", WarpSpriteCatalog.DEFAULT)))
 			else:_build_forest_warp(node_name, origin + _array_to_vector3(position), callback, String(record.get("facing", "generic")), bool(record.get("show_sprite", false)))
 			var authored_id := String(Dictionary(map_data.get("_authored_file_ids", {})).get(String(filename), ""))
 			if not authored_id.is_empty():
@@ -2299,7 +2371,18 @@ func _build_authored_maps() -> void:
 			next_layer += 1
 		if size is Array and size.size()>=2:
 			var ground_texture:=TerrainTransitionTextureCache.base_texture(String(authored.get("base_terrain_type","indoor_floor_tile" if indoors else "forest_floor")))
-			_add_textured_block("AuthoredMap_%s_Ground"%String(map_id).validate_node_name(),origin+MapBounds.offset(authored)+Vector3(0,-0.1,0),Vector3(float(size[0]),0.2,float(size[1])),ground_texture if ground_texture!=null else TEX_GRASS,Color.WHITE,false)
+			if indoors:
+				var ground:=MeshInstance3D.new()
+				ground.name="AuthoredMap_%s_Ground"%String(map_id).validate_node_name()
+				var plane:=PlaneMesh.new();plane.size=Vector2(float(size[0]),float(size[1]));ground.mesh=plane
+				ground.position=origin+MapBounds.offset(authored)+Vector3(0,0.4,0)
+				var material:=_textured_material(ground_texture if ground_texture!=null else TEX_GRASS,Color.WHITE,Vector3(plane.size.x,plane.size.y,1))
+				# Canonical cells are centered on integer coordinates, not the map edge.
+				var phase:=MapBounds.rect(authored).position+Vector2.ONE*0.5
+				material.uv1_offset=Vector3(phase.x,phase.y,0)
+				ground.material_override=material;ground.add_to_group("day_night_terrain");world.add_child(ground)
+			else:
+				_add_textured_block("AuthoredMap_%s_Ground"%String(map_id).validate_node_name(),origin+MapBounds.offset(authored)+Vector3(0,-0.1,0),Vector3(float(size[0]),0.2,float(size[1])),ground_texture if ground_texture!=null else TEX_GRASS,Color.WHITE,false)
 		if indoors:
 			var room_prefix:="AuthoredMap_"+String(map_id).to_pascal_case()
 			_add_map_blocks(origin,authored.get("floor_blocks",[]),room_prefix+"Floor",TEX_INTERIOR_FLOOR,Color.WHITE,false)
@@ -2310,7 +2393,11 @@ func _build_authored_maps() -> void:
 		# their art and collision. A second call hides platform actors under a copy.
 		_build_trainers(authored.get("trainers",[]),origin,"AuthoredMap_"+String(map_id).to_pascal_case())
 		for index in range(first_tree,tree_sort_entries.size()):tree_sort_entries[index]["visual_layer"]=map_layer
-		for index in range(first_object,object_sort_entries.size()):object_sort_entries[index]["visual_layer"]=map_layer
+		for index in range(first_object,object_sort_entries.size()):
+			var entry := object_sort_entries[index]
+			entry["visual_layer"] = map_layer
+			if String(map_id) == "challenger_center_jalvoea_city" and entry.has("habitat_exhibit"):
+				exhibits.register(entry, authored, map_layer)
 		for index in range(first_overlay,overlay_sort_entries.size()):overlay_sort_entries[index]["visual_layer"]=map_layer
 		for index in range(first_background,background_object_sort_entries.size()):background_object_sort_entries[index]["visual_layer"]=map_layer
 		for index in range(first_npc,npc_sort_entries.size()):npc_sort_entries[index]["visual_layer"]=map_layer
@@ -2472,7 +2559,7 @@ func _register_sortable_object(source: Sprite3D, node_name: String, placement: V
 	object_sort_entries.append({"name": node_name, "placement": placement, "visual_center": visual_center, "texture": source.texture, "height": visual_height, "sort_offset_y": sort_offset_y, "source_crop": source_crop,"instance_id":instance_id})
 	var metadata := _overworld_asset_metadata(source.texture.resource_path)
 	object_sort_entries[-1]["render_band"]=int(metadata.get("render_band",0))
-	object_sort_entries[-1]["sort_offset_y"]+=float(metadata.get("sort_offset_y",0.0))
+	object_sort_entries[-1]["sort_offset_y"]+=preload("res://world/building_sorting.gd").offset(source.texture.resource_path,metadata) if is_zero_approx(sort_offset_y) else float(metadata.get("sort_offset_y",0.0))
 	object_sort_entries[-1]["wall_overlay"]=bool(metadata.get("wall_overlay",false))
 	object_sort_entries[-1]["light_source"] = bool(metadata.get("light_source", false))
 	object_sort_entries[-1]["light_strength"] = float(metadata.get("light_strength", 0.5))
@@ -2498,9 +2585,17 @@ func _build_sort_canvas() -> void:
 	sort_root.name = "WorldYSortRoot"
 	sort_root.y_sort_enabled = true
 	sort_canvas.add_child(sort_root)
+	_attach_sorted_world_entries()
+	_warn_platform_overlaps()
+	_update_sort_canvas()
+
+
+func _attach_sorted_world_entries() -> void:
 	for entry: Dictionary in tree_sort_entries:
+		if entry.has("sort_root"): continue
 		entry["sort_root"] = _create_sorted_sprite(String(entry["name"]), entry["texture"])
 	for entry: Dictionary in object_sort_entries:
+		if entry.has("sort_root"): continue
 		entry["sort_root"] = _create_sorted_sprite(String(entry["name"]), entry["texture"])
 		(entry.sort_root as CanvasItem).z_index=int(entry.get("render_band",0))
 		if entry.has("wall_size"):
@@ -2512,14 +2607,17 @@ func _build_sort_canvas() -> void:
 		if entry.has("foreground_masks"):
 			entry["platform_layers"] = preload("res://world/platform_art_layers.gd").build(entry.sort_root,entry.texture,entry.foreground_masks,entry.get("foreground_depth_lines",[]))
 	for entry:Dictionary in overlay_sort_entries:
+		if entry.has("sort_root"): continue
 		entry["sort_root"]=_create_sorted_sprite(String(entry.name),entry.texture)
 		(entry.sort_root as Node2D).rotation_degrees=float(entry.get("rotation_degrees",0.0))
 		(entry.sort_root as CanvasItem).z_index=int(entry.get("render_band",0))
-	player_sort_root = _create_sorted_sprite("PlayerSortRoot", player_sprite.texture)
-	follower_sort_root = _create_sorted_sprite("FollowerSortRoot", follower_sprite.texture)
-	player_sprite.visible = false
-	follower_sprite.visible = false
+	if player_sort_root == null:
+		player_sort_root = _create_sorted_sprite("PlayerSortRoot", player_sprite.texture)
+		follower_sort_root = _create_sorted_sprite("FollowerSortRoot", follower_sprite.texture)
+		player_sprite.visible = false
+		follower_sprite.visible = false
 	for entry: Dictionary in background_object_sort_entries:
+		if entry.has("sort_root"): continue
 		entry["sort_root"] = _create_sorted_sprite(String(entry["name"]), entry["texture"])
 		(entry["sort_root"] as CanvasItem).z_index = -10
 	var hosts:Dictionary={}
@@ -2528,24 +2626,25 @@ func _build_sort_canvas() -> void:
 			if not String(entry.get("instance_id","")).is_empty():hosts[String(entry.instance_id)]=entry
 	attached_overlay_entries.sort_custom(func(a,b):return int(a.get("attachment_order",0))<int(b.get("attachment_order",0)) if String(a.get("host_id",""))==String(b.get("host_id","")) else String(a.get("host_id",""))<String(b.get("host_id","")))
 	for entry:Dictionary in attached_overlay_entries:
+		if entry.has("pivot") or entry.get("fallback_built", false): continue
 		var host:Dictionary=hosts.get(String(entry.get("host_id","")),{})
 		if host.is_empty():
-			var fallback_root:=_create_sorted_sprite(String(entry.name)+"Fallback",entry.texture);fallback_root.rotation_degrees=float(entry.get("rotation_degrees",0.0));overlay_sort_entries.append({"name":String(entry.name)+"Fallback","placement":entry.fallback_position,"visual_center":entry.fallback_position+Vector3(0,float(entry.height)*0.5,0),"texture":entry.texture,"height":entry.height,"rotation_degrees":entry.rotation_degrees,"sort_root":fallback_root});continue
+			entry["fallback_built"] = true
+			var fallback_root:=_create_sorted_sprite(String(entry.name)+"Fallback",entry.texture);fallback_root.rotation_degrees=float(entry.get("rotation_degrees",0.0));overlay_sort_entries.append({"name":String(entry.name)+"Fallback","placement":entry.fallback_position,"visual_center":entry.fallback_position+Vector3(0,float(entry.height)*0.5,0),"texture":entry.texture,"height":entry.height,"rotation_degrees":entry.rotation_degrees,"sort_root":fallback_root,"visual_layer":entry.get("visual_layer",_visual_layer_for_position(entry.fallback_position))});entry["fallback_entry"] = overlay_sort_entries[-1];continue
 		var overhang:float=(entry.local_position as Vector2).length()+float(entry.height)*(1.0+float(entry.texture.get_width())/maxf(float(entry.texture.get_height()),1))
 		host["static_overhang"]=maxf(float(host.get("static_overhang",0)),overhang)
 		var pivot:=Node2D.new();pivot.name=String(entry.name);pivot.rotation_degrees=float(entry.get("rotation_degrees",0.0))
 		var art:=Sprite2D.new();art.name="Visual";art.texture=entry.texture;art.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST;pivot.add_child(art);(host.sort_root as Node2D).add_child(pivot);entry["host_entry"]=host;entry["pivot"]=pivot;entry["visual"]=art
 	for entry: Dictionary in npc_sort_entries:
+		if entry.has("sort_root"): continue
 		var npc_visual := entry["visual"] as Sprite3D
 		if not entry.has("visual_layer"):entry["visual_layer"] = _visual_layer_for_position((entry["node"] as Area3D).global_position)
 		entry["sort_root"] = _create_sorted_sprite(String(entry["name"]), npc_visual.texture)
 		npc_visual.hide()
 	for entry: Dictionary in bridge_sort_entries:
+		if entry.has("sort_root"): continue
 		entry["sort_root"] = _create_sorted_sprite(String(entry["name"]), entry["texture"])
 		(entry["sort_root"] as CanvasItem).z_index = 5
-	_warn_platform_overlaps()
-	_update_sort_canvas()
-
 
 func _create_sorted_sprite(node_name: String, texture: Texture2D) -> Node2D:
 	var sort_point := Node2D.new()
@@ -2578,7 +2677,8 @@ func _update_sort_canvas() -> void:
 	_update_map_borders(active_visual_layer)
 	OverworldTextureAnimation.update_visibility(camera,active_visual_layer)
 	var player_feet := Vector3(player.global_position.x, 0.0, player.global_position.z)
-	_update_sorted_art(player_sort_root, player_feet, player.global_position, SWIM_VISUAL_HEIGHT if swimming else PLAYER_VISUAL_HEIGHT, pixels_per_world_unit)
+	var contact_elevation := minf(0.0, player.global_position.y - PLAYER_GROUND_HEIGHT) if not swimming and not swim_transitioning else 0.0
+	_update_sorted_art(player_sort_root, player_feet, player.global_position, SWIM_VISUAL_HEIGHT if swimming else PLAYER_VISUAL_HEIGHT, pixels_per_world_unit, contact_elevation)
 	if not swimming and not swim_transitioning:
 		_apply_player_frame_adjustment(pixels_per_world_unit)
 	if swim_transitioning:
@@ -2587,7 +2687,8 @@ func _update_sort_canvas() -> void:
 		_update_sorted_art(swim_transition_effect_root, swim_transition_effect_position, swim_transition_effect_position, swim_transition_effect_height, pixels_per_world_unit)
 	var follower_feet:=Vector3(follower.global_position.x,0.0,follower.global_position.z)
 	follower_sort_root.visible=follower.visible
-	if follower.visible:_update_sorted_art(follower_sort_root,follower_feet,follower.global_position,0.9*follower_sprite.scale.y,pixels_per_world_unit)
+	if follower.visible:
+		_update_sorted_art(follower_sort_root, follower_feet, follower.global_position, 0.9 * follower_sprite.scale.y, pixels_per_world_unit, contact_elevation)
 	for entry: Dictionary in npc_sort_entries:
 		var npc := entry["node"] as Area3D
 		var npc_visual := entry["visual"] as Sprite3D
@@ -2604,6 +2705,8 @@ func _update_sort_canvas() -> void:
 		_update_sorted_art(npc_sort, feet, center, float(entry["height"]), pixels_per_world_unit)
 		if npc.has_meta("movement_mode"):
 			art.position = camera.unproject_position(npc.global_position) - npc_sort.position - Vector2(0,float(entry["height"])*pixels_per_world_unit*0.5)
+			if npc.has_meta("habitat_flight_frame"):
+				_bound_habitat_flight_art(npc, art)
 			_set_npc_water_draw_order(npc, npc_sort)
 	_update_npc_water_surfaces(active_visual_layer)
 	var view_signature:Array=preload("res://world/terrain_camera_view.gd").signature(camera)+[active_visual_layer,script_host.hidden_objects.hash(),tree_sort_entries.size(),object_sort_entries.size(),overlay_sort_entries.size(),attached_overlay_entries.size(),background_object_sort_entries.size(),bridge_sort_entries.size()]
@@ -2671,6 +2774,8 @@ func _update_platform_art_layers()->void:
 		visual.visible = true
 		if npc_entry.sort_root.visible:actors.append({"node":npc_entry.node,"visual":visual})
 	(player_sort_root.get_node("Visual") as Sprite2D).visible = true
+	if follower != null and follower.visible and follower_sort_root != null:
+		actors.append({"node": follower, "visual": follower_sort_root.get_node("Visual"), "render_only": true})
 	var claimed:Dictionary = {}
 	for entry:Dictionary in object_sort_entries:
 		if not entry.has("platform_layers") or not (entry.sort_root as CanvasItem).visible:continue
@@ -2678,11 +2783,37 @@ func _update_platform_art_layers()->void:
 		for actor:Dictionary in actors:
 			var id:int = actor.node.get_instance_id()
 			if claimed.has(id) or not (entry.sort_root as CanvasItem).visible:continue
-			if _platform_at_position(actor.node.position,actor.node) != entry:continue
+			if entry.has("actor_render_polygon"):
+				var position: Vector3 = actor.node.position
+				var feet := Vector2(position.x, position.z)
+				if not Geometry2D.is_point_in_polygon(feet, entry.actor_render_polygon):
+					if not _is_in_front_of_arena_rail(entry, feet):
+						continue
+					occupants.append({"node": actor.node, "visual": actor.visual, "show_foreground": false})
+					claimed[id] = true
+					continue
+			elif actor.get("render_only", false) or _platform_at_position(actor.node.position, actor.node) != entry:
+				continue
 			occupants.append(actor)
 			claimed[id] = true
 		preload("res://world/platform_art_layers.gd").update_actors(entry,occupants,player_sort_root.get_node("Visual"))
 	for actor:Dictionary in actors:actor.visual.visible = not claimed.has(actor.node.get_instance_id())
+
+
+func _is_in_front_of_arena_rail(entry: Dictionary, feet: Vector2) -> bool:
+	# Past the sprite anchor, normal Y-sort already draws the actor in front.
+	if feet.y >= float(entry.placement.z) + float(entry.get("sort_offset_y", 0.0)):
+		return false
+	var front_edge := -INF
+	for polygon: PackedVector2Array in entry.get("render_rail_polygons", []):
+		for index in polygon.size():
+			var a := polygon[index]
+			var b := polygon[(index + 1) % polygon.size()]
+			if feet.x < minf(a.x, b.x) or feet.x > maxf(a.x, b.x):
+				continue
+			var edge_z := maxf(a.y, b.y) if is_equal_approx(a.x, b.x) else lerpf(a.y, b.y, inverse_lerp(a.x, b.x, feet.x))
+			front_edge = maxf(front_edge, edge_z)
+	return is_finite(front_edge) and feet.y >= front_edge
 
 
 func _platform_at_position(position:Vector3, actor:Node3D = null, margin:float = 0.0)->Dictionary:
@@ -2717,10 +2848,21 @@ func _update_sorted_wall(entry:Dictionary)->void:
 func _try_display_text_click(screen_position:Vector2)->bool:
 	for entry:Dictionary in object_sort_entries:
 		var text:=String(entry.get("interaction_text",""))
-		if text.strip_edges().is_empty() or not (entry.sort_root as CanvasItem).is_visible_in_tree():continue
+		var slot := String(entry.get("exhibit_slot", ""))
+		if (slot.is_empty() and text.strip_edges().is_empty()) or not (entry.sort_root as CanvasItem).is_visible_in_tree():continue
 		var art:Sprite2D=entry.sort_root.get_node("Visual")
 		if art.get_rect().has_point(art.to_local(screen_position)):
-			_start_dialogue("DISPLAY",[text])
+			if not slot.is_empty() and adventure_started and _active_visual_layer() == int(entry.visual_layer):
+				_open_habitat_exhibit(slot)
+				return true
+			_start_dialogue("DISPLAY", [text])
+			var active_texture: Texture2D = entry.get("active_texture")
+			if active_texture != null:
+				var idle_texture := art.texture
+				art.texture = active_texture
+				var restore_idle := func():
+					if is_instance_valid(art): art.texture = idle_texture
+				dialog_panel.visibility_changed.connect(restore_idle, CONNECT_ONE_SHOT)
 			return true
 	return false
 
@@ -2774,7 +2916,7 @@ func _floor_collision_mask(actor:Node3D, position:Vector3, terrain:bool = true)-
 	return 1 | PLATFORM_WALL_LAYER | (TERRAIN_OBSTACLE_LAYER if terrain else 0)
 
 
-func _update_sorted_art(sort_point: Node2D, effective_sort_world: Vector3, visual_center_world: Vector3, visual_height: float, pixels_per_world_unit: float) -> void:
+func _update_sorted_art(sort_point: Node2D, effective_sort_world: Vector3, visual_center_world: Vector3, visual_height: float, pixels_per_world_unit: float, contact_elevation: float = 0.0) -> void:
 	if sort_point == null:
 		return
 	var visual := sort_point.get_node("Visual") as Sprite2D
@@ -2782,7 +2924,7 @@ func _update_sorted_art(sort_point: Node2D, effective_sort_world: Vector3, visua
 	# Sprite2D height is camera-facing screen space, so projecting a world-Y
 	# midpoint through the tilted camera introduces a height-dependent drift.
 	# Anchor the bottom of the full texture directly to its saved X/Z contact.
-	var contact_screen := camera.unproject_position(Vector3(visual_center_world.x, 0.0, visual_center_world.z))
+	var contact_screen := camera.unproject_position(Vector3(visual_center_world.x, contact_elevation, visual_center_world.z))
 	sort_point.position = sort_screen
 	var scale := visual_height * pixels_per_world_unit / float(visual.texture.get_height())
 	visual.scale = Vector2(scale, scale)
@@ -2799,16 +2941,24 @@ func _build_building_door_warp(building_art: Node3D, warp_name: String, global_p
 	return warp
 
 
-func _add_warp_rug_visual(parent: Node3D, width: float) -> MeshInstance3D:
+func _add_warp_rug_visual(parent: Node3D, width: float, sprite: String = "") -> MeshInstance3D:
+	if sprite.is_empty(): sprite = _warp_sprite_at(parent.position)
+	var texture: Texture2D = load("res://" + WarpSpriteCatalog.texture_path(sprite))
 	var visual := MeshInstance3D.new()
 	visual.name = "WarpRugArt"
 	var mesh := PlaneMesh.new()
-	var aspect := float(TEX_WARP_BUILDING.get_width()) / float(TEX_WARP_BUILDING.get_height())
+	var aspect := float(texture.get_width()) / float(texture.get_height())
 	mesh.size = Vector2(width, width / aspect)
 	visual.mesh = mesh
 	# Canonical floor tiles are rendered at world Y=0.4; keep the rug above them.
 	visual.position.y = maxf(0.17, 0.43 - parent.position.y)
-	visual.material_override = _textured_material(TEX_WARP_BUILDING, Color.WHITE)
+	var material:=_textured_material(texture, Color.WHITE)
+	# Ground decals stay above canonical terrain and decorative border art.
+	material.transparency=BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.no_depth_test=true
+	material.depth_draw_mode=BaseMaterial3D.DEPTH_DRAW_DISABLED
+	material.render_priority=2
+	visual.material_override=material
 	parent.add_child(visual)
 	return visual
 
@@ -2942,11 +3092,68 @@ func _asset_navigation_point(point:Array,position:Vector3,height:float,image_siz
 	return position + Vector3((float(point[0])-float(image_size[0])*0.5)*scale,0.0,(float(point[1])-float(image_size[1]))*scale*sqrt(2.0))
 
 
+func _add_recessed_floor(node_name: String, position: Vector3, height: float, profile: Dictionary) -> void:
+	var image_size: Variant = profile.get("image_size")
+	var outline: Variant = profile.get("outline")
+	if not _valid_navigation_point(image_size) or float(image_size[0]) <= 0.0 or float(image_size[1]) <= 0.0:
+		return
+	if not outline is Array or outline.size() < 3:
+		return
+	var polygon := PackedVector2Array()
+	var north_entry := INF
+	var south_entry := -INF
+	for point in outline:
+		if not _valid_navigation_point(point):
+			return
+		var mapped := _asset_navigation_point(point, position, height, image_size)
+		polygon.append(Vector2(mapped.x, mapped.z))
+		north_entry = minf(north_entry, mapped.z)
+		south_entry = maxf(south_entry, mapped.z)
+	var north_landing := _asset_navigation_point([0, profile.get("north_landing", 0.0)], position, height, image_size).z
+	var south_landing := _asset_navigation_point([0, profile.get("south_landing", 0.0)], position, height, image_size).z
+	var depth := float(profile.get("depth", 0.0))
+	if depth <= 0.0 or not (north_entry < north_landing and north_landing <= south_landing and south_landing < south_entry):
+		return
+	traversal_surfaces.append({
+		"name": node_name,
+		"center": position,
+		"visual_layer": _visual_layer_for_position(position),
+		"recessed_outline": polygon,
+		"north_entry": north_entry,
+		"north_landing": north_landing,
+		"south_landing": south_landing,
+		"south_entry": south_entry,
+		"depth": depth,
+	})
+	var masks: Array = profile.get("foreground_masks", [])
+	if masks.is_empty():
+		return
+	var render_polygon := polygon.duplicate()
+	var approach_row: Variant = profile.get("south_render_entry")
+	if approach_row is float or approach_row is int:
+		var approach_z := _asset_navigation_point([0, approach_row], position, height, image_size).z
+		if approach_z > south_entry:
+			# The player can overlap the stair art before reaching the physical ramp.
+			for index in render_polygon.size():
+				if is_equal_approx(render_polygon[index].y, south_entry):
+					render_polygon[index].y = approach_z
+	for entry in object_sort_entries:
+		if entry.name == node_name + "SortRoot":
+			entry["actor_render_polygon"] = render_polygon
+			var rail := world.get_node_or_null(NodePath(node_name + "AssetPolygonCollision")) as StaticBody3D
+			if rail != null:
+				entry["render_rail_polygons"] = rail.get_meta("ground_polygons", [])
+			entry["foreground_masks"] = masks
+			break
+
+
 func _add_asset_navigation(node_name:String,position:Vector3,asset_path:String,height:float)->void:
 	var file := FileAccess.open(asset_path.trim_suffix(".png")+".json",FileAccess.READ)
 	if file == null:return
 	var metadata:Variant = JSON.parse_string(file.get_as_text())
 	if not metadata is Dictionary:return
+	if metadata.get("recessed_floor") is Dictionary:
+		_add_recessed_floor(node_name, position, height, metadata.recessed_floor)
 	var navigation_data:Variant = metadata.get("navigation",{})
 	if not navigation_data is Dictionary:return
 	var navigation:Dictionary = navigation_data
@@ -3030,25 +3237,61 @@ func _add_asset_polygon_collision(node_name:String,position:Vector3,size:Vector3
 	if asset_path.is_empty():return false
 	var file:=FileAccess.open(asset_path.trim_suffix(".png")+".json",FileAccess.READ)
 	if file==null:return false
-	var parsed:Variant=JSON.parse_string(file.get_as_text())
-	if not parsed is Dictionary or not parsed.get("collision") is Dictionary:return false
-	var collision:Dictionary=parsed.collision
-	if String(collision.get("type",""))!="polygon":return false
-	var raw:Variant=collision.get("points",[])
-	if not bool(collision.get("closed",false)) or not raw is Array or raw.size()<3:push_warning("Invalid/unclosed polygon collision for "+asset_path);return true
-	var normalized:=PackedVector2Array()
-	for point:Variant in raw:
-		if not point is Array or point.size()!=2 or not (point[0] is int or point[0] is float) or not (point[1] is int or point[1] is float):return true
-		var value:=Vector2(float(point[0]),float(point[1]));if not value.is_finite():return true
-		normalized.append(value)
-	var triangles:=Geometry2D.triangulate_polygon(normalized)
-	if triangles.is_empty():push_warning("Self-intersecting or degenerate polygon collision for "+asset_path);return true
-	# Polygon authoring may use a catalog footprint larger than the instance size.
-	var reference:Variant=collision.get("reference_size",[size.x,size.z])
-	var polygon_size:=Vector2(size.x,size.z)
-	if reference is Array and reference.size()==2:polygon_size=Vector2(float(reference[0]),float(reference[1]))
-	var local:=PackedVector2Array()
-	for point in normalized:local.append((point-Vector2(0.5,0.5))*polygon_size)
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	if not parsed is Dictionary:
+		return false
+	var polygons := PolygonColliders.read(parsed.get("collision"))
+	if polygons.is_empty():
+		return false
+
+	var body := StaticBody3D.new()
+	body.name = node_name + "Collision"
+	body.position = Vector3(position.x, 1.0, position.z)
+	body.rotation.y = deg_to_rad(rotation_degrees)
+	body.collision_layer = TERRAIN_OBSTACLE_LAYER
+	body.collision_mask = 1
+	var ground_polygons: Array[PackedVector2Array] = []
+	for polygon: Dictionary in polygons:
+		var outline := _asset_polygon_outline(polygon, size)
+		var shape := _asset_polygon_shape(outline)
+		if shape == null:
+			push_warning("Invalid or unclosed polygon collision for " + asset_path)
+			continue
+		var collision_shape := CollisionShape3D.new()
+		collision_shape.shape = shape
+		body.add_child(collision_shape)
+		var ground_polygon := PackedVector2Array()
+		for point in outline:
+			var mapped := body.transform * Vector3(point.x, 0.0, point.y)
+			ground_polygon.append(Vector2(mapped.x, mapped.z))
+		ground_polygons.append(ground_polygon)
+	if body.get_child_count() > 0:
+		body.set_meta("ground_polygons", ground_polygons)
+		world.add_child(body)
+	else:
+		body.free()
+	# Authored polygons override box collision, including while a draft is open.
+	return true
+
+func _asset_polygon_outline(collision: Dictionary, size: Vector3) -> PackedVector2Array:
+	var raw: Variant = collision.get("points", [])
+	if not bool(collision.get("closed", false)) or not raw is Array or raw.size() < 3:
+		return PackedVector2Array()
+	var reference := PolygonColliders.reference_size(collision, Vector2(size.x, size.z))
+	var outline := PackedVector2Array()
+	for point in raw:
+		if not _valid_navigation_point(point):
+			return PackedVector2Array()
+		outline.append((Vector2(float(point[0]), float(point[1])) - Vector2(0.5, 0.5)) * reference)
+	return outline
+
+
+func _asset_polygon_shape(local: PackedVector2Array) -> ConcavePolygonShape3D:
+	if local.size() < 3:
+		return null
+	var triangles := Geometry2D.triangulate_polygon(local)
+	if triangles.is_empty():
+		return null
 	var faces:=PackedVector3Array();var half_height:=1.0
 	for index in range(0,triangles.size(),3):
 		var a:=local[triangles[index]];var b:=local[triangles[index+1]];var c:=local[triangles[index+2]]
@@ -3058,9 +3301,7 @@ func _add_asset_polygon_collision(node_name:String,position:Vector3,size:Vector3
 		faces.append_array(PackedVector3Array([Vector3(a.x,-half_height,a.y),Vector3(b.x,-half_height,b.y),Vector3(b.x,half_height,b.y),Vector3(a.x,-half_height,a.y),Vector3(b.x,half_height,b.y),Vector3(a.x,half_height,a.y)]))
 	# Editor polygons can be authored in either winding direction.
 	var shape:=ConcavePolygonShape3D.new();shape.backface_collision=true;shape.set_faces(faces)
-	var collision_shape:=CollisionShape3D.new();collision_shape.shape=shape
-	var body:=StaticBody3D.new();body.name=node_name+"Collision";body.position=Vector3(position.x,1.0,position.z);body.rotation.y=deg_to_rad(rotation_degrees);body.collision_layer=TERRAIN_OBSTACLE_LAYER;body.collision_mask=1;body.add_child(collision_shape);world.add_child(body)
-	return true
+	return shape
 
 
 func _on_grass_tile_exited(body: Node3D, tile_id: String) -> void:
@@ -3178,6 +3419,15 @@ func _build_party_menu() -> void:
 	watch_button.tooltip_text = "Check the shared world clock."
 	watch_button.pressed.connect(_use_watch)
 	key_items_list.add_child(watch_button)
+	var cloud_button := Button.new()
+	cloud_button.name = "CloudButton"
+	cloud_button.text = "Cloud"
+	cloud_button.pressed.connect(_use_cloud)
+	key_items_list.add_child(cloud_button)
+	cloud_dialog = CloudDialog.new()
+	cloud_dialog.storage = fakemon_storage
+	map_ui.add_child(cloud_dialog)
+	fakemon_storage.transferred.connect(_on_fakemon_transferred)
 	var outfits_label := Label.new()
 	outfits_label.name = "OutfitsCategory"
 	outfits_label.text = "Outfits\n  Nothing here yet."
@@ -3411,8 +3661,25 @@ func _use_swimgear() -> void:
 	var water_position := _terrain_cell_center(player.position + direction_vector)
 	if _terrain_at(water_position) != "water":
 		return
-	bag_panel.hide()
 	_start_swimming(water_position, direction)
+
+
+func _use_cloud() -> void:
+	if in_battle or dialog_open or script_runner.running or swimming or swim_transitioning:
+		hint_label.text = "Open the Cloud while exploring on dry land."
+		return
+	bag_panel.hide()
+	cloud_dialog.open()
+
+
+func _on_fakemon_transferred(removed_index: int) -> void:
+	if removed_index == active_party_index:
+		active_party_index = 0
+	elif removed_index >= 0 and removed_index < active_party_index:
+		active_party_index -= 1
+	_refresh_party_menu()
+	_update_follower_appearance()
+	_auto_save()
 
 
 func _use_watch() -> void:
@@ -3425,8 +3692,9 @@ func _use_watch() -> void:
 
 
 func _start_swimming(water_position: Vector3, direction: String) -> void:
-	if swimming or swim_transitioning or _terrain_at(water_position) != "water":
+	if swimming or swim_transitioning or _terrain_at(water_position) != "water" or _surf_crosses_fence(water_position):
 		return
+	bag_panel.hide()
 	water_position.y = 0.65
 	swim_transitioning = true
 	active_traversal_layer = 0
@@ -3572,7 +3840,7 @@ func _update_map_borders(layer: int) -> void:
 			map_border_renderer.name = "MapBorders"
 			world.add_child(map_border_renderer)
 		if map_border_renderer != null:
-			map_border_renderer.configure(region, context.get("origin", Vector3.ZERO), layer)
+			map_border_renderer.configure(region, context.get("origin", Vector3.ZERO), layer, sort_canvas)
 	if map_border_renderer != null:
 		map_border_renderer.update_view(camera, day_night_controller)
 
@@ -3618,7 +3886,7 @@ func _refresh_party_menu() -> void:
 	for child in party_list.get_children():
 		child.queue_free()
 	var title := Label.new()
-	title.text = "PARTY (%d / 7) - click a mon to make active" % party.size()
+	title.text = "PARTY (%d / %d) - click a mon to make active" % [party.size(), FakemonStorage.PARTY_CAPACITY]
 	party_list.add_child(title)
 	for index in party.size():
 		var mon: Dictionary = party[index]
@@ -3741,6 +4009,7 @@ func _place_follower_behind_player() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if exhibit_transition or (exhibit_menu != null and exhibit_menu.visible): return
 	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE: npc_script_movement.release_player()
 	if dialog_open and event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_ENTER or event.keycode == KEY_SPACE:
@@ -3974,7 +4243,10 @@ func _write_save(path: String, show_feedback: bool, success_message: String) -> 
 			save_status_label.text = "Return to dry land before saving." if swimming or swim_transitioning else "Saving is available while exploring."
 		return false
 	var location := _current_location()
+	exhibits.record_owned()
 	var save_data := {
+		"exhibit_species": exhibits.discovered.keys(),
+		"habitat_exhibits": exhibits.assignments,
 		"version": SAVE_VERSION,
 		"game_flags": game_flags.values,
 		"player_gender": player_gender,
@@ -3983,6 +4255,7 @@ func _write_save(path: String, show_feedback: bool, success_message: String) -> 
 		"player_style": player_style,
 		"player_palette_preset": player_palette_preset,
 		"party": party,
+		"cloud": cloud,
 		"active_party_index": active_party_index,
 		"location": location,
 		"player_position": [player.position.x, player.position.y, player.position.z],
@@ -4010,6 +4283,10 @@ func _load_game(slot: int = -1) -> bool:
 		if save_status_label != null:
 			save_status_label.text = "No autosave is available." if loading_auto_save else "Manual state %d is empty." % effective_slot
 		return false
+	return _restore_save(path)
+
+
+func _restore_save(path: String) -> bool:
 	var file := FileAccess.open(path, FileAccess.READ)
 	var parsed: Variant = JSON.parse_string(file.get_as_text()) if file != null else null
 	if not parsed is Dictionary:
@@ -4017,22 +4294,16 @@ func _load_game(slot: int = -1) -> bool:
 			save_status_label.text = "Save file is invalid. Start a new adventure."
 		return false
 	var data := parsed as Dictionary
+	if not fakemon_storage.restore(data.get("party"), data.get("cloud", [])):
+		if save_status_label != null:
+			save_status_label.text = "Save party or Cloud data is invalid."
+		return false
 	player_gender = String(data.get("player_gender", "Male"))
 	player_style = String(data.get("player_style", "Medium"))
 	player_palette_preset = String(data.get("player_palette_preset", PlayerPalette.DEFAULT_PRESET))
 	player_color_name = player_style
 	player_color = Color(String(data.get("player_color", "173f73")))
 	_apply_player_appearance()
-	var loaded_party: Variant = data.get("party")
-	if not loaded_party is Array or loaded_party.size() > 7:
-		if save_status_label != null:
-			save_status_label.text = "Save party is invalid. Start a new adventure."
-		return false
-	party.clear()
-	for saved_mon: Variant in loaded_party:
-		if saved_mon is Dictionary:
-			party.append((saved_mon as Dictionary).duplicate(true))
-	if party.size() != loaded_party.size(): return false
 	game_flags.restore(data.get("game_flags", {}))
 	# Before v2 every adventure began with a selected starter.
 	if int(data.get("version",1)) < 2 and not party.is_empty(): game_flags.set_flag("Starter",true)
@@ -4069,6 +4340,7 @@ func _load_game(slot: int = -1) -> bool:
 	dex_panel.hide()
 	last_grass_tile = ""
 	last_water_tile = ""
+	exhibits.restore(data.get("exhibit_species", []), data.get("habitat_exhibits", {}))
 	_apply_loaded_location(location)
 	player.velocity = Vector3.ZERO
 	adventure_started = true
@@ -4208,6 +4480,7 @@ func _configure_visual_regions() -> void:
 	var dynamic_mask := 1 << (DYNAMIC_VISUAL_LAYER - 1)
 	for node: Node in world.find_children("*", "GeometryInstance3D", true, false):
 		var visual := node as GeometryInstance3D
+		if visual.get_meta("border_foreground_source", false): continue
 		if visual == player_sprite or visual == follower_sprite:
 			visual.layers = dynamic_mask
 			continue
@@ -4661,7 +4934,7 @@ func _water_surface_key(region_data: Dictionary, prefix: String) -> String:
 func _ensure_water_surface(region_data: Dictionary, origin: Vector3, prefix: String) -> void:
 	var key := _water_surface_key(region_data,prefix)
 	if not npc_water_surfaces.has(key):
-		npc_water_surfaces[key] = {"grid":region_data.get("_terrain_grid",{}),"origin":origin,"node":null,"walls":region_data.get("objects",[]),"visual_layer":_visual_layer_for_position(origin)}
+		npc_water_surfaces[key] = {"grid":region_data.get("_terrain_grid",{}),"origin":origin,"node":null,"walls":region_data.get("objects",[]),"floor_clip":region_data.get("_habitat_floor_clip",PackedVector2Array()),"visual_layer":_visual_layer_for_position(origin)}
 
 
 func _update_npc_water_surfaces(active_layer: int) -> void:
@@ -4675,11 +4948,12 @@ func _update_npc_water_surfaces(active_layer: int) -> void:
 	for surface: Dictionary in npc_water_surfaces.values():
 		var container:Node2D = surface.node if is_instance_valid(surface.node) else null
 		if container == null:
-			container = Node2D.new();container.name = "NpcWaterSurface";container.z_index = -1;sort_root.add_child(container);surface.node = container
+			container = Node2D.new();container.name = "NpcWaterSurface";container.z_index = -1 if surface.floor_clip.is_empty() else 1;sort_root.add_child(container);surface.node = container
 			for cell: Vector2i in surface.grid:
 				if surface.grid[cell] != "water": continue
 				for region:Rect2 in preload("res://tools/map_editor/core/wall_water_clip.gd").regions(cell,surface.grid,surface.get("walls",[])):
-					var patch := Polygon2D.new();patch.color = Color(0.12,0.52,0.72,0.32);patch.set_meta("cell",cell);patch.set_meta("region",region);container.add_child(patch)
+					for polygon in HabitatExhibits.water_tint_polygons(cell, region, surface.grid, surface.floor_clip):
+						var patch := Polygon2D.new();patch.color = Color(0.12,0.52,0.72,0.32);patch.set_meta("cell",cell);patch.set_meta("region_polygon",polygon);container.add_child(patch)
 		container.visible = int(surface.visual_layer) == active_layer
 		if not container.visible: continue
 		var anchor:Vector3=surface.origin+Vector3(0,0.401,0)
@@ -4695,8 +4969,7 @@ func _update_npc_water_surfaces(active_layer: int) -> void:
 			var cell: Vector2i = patch.get_meta("cell")
 			if rebuild:
 				var corners := PackedVector2Array()
-				var rect:Rect2=patch.get_meta("region")
-				for corner:Vector2 in [rect.position,Vector2(rect.end.x,rect.position.y),rect.end,Vector2(rect.position.x,rect.end.y)]:
+				for corner:Vector2 in patch.get_meta("region_polygon"):
 					corners.append(camera.unproject_position(anchor+Vector3(corner.x,0,corner.y))-projected_origin)
 				patch.polygon=corners
 			var cell_rect:=Rect2(Vector2(surface.origin.x+cell.x-0.5,surface.origin.z+cell.y-0.5),Vector2.ONE)
@@ -4799,7 +5072,7 @@ func _set_npc_water_draw_order(npc: Area3D, npc_sort: Node2D) -> void:
 	# Water traversal does not imply submersion: boats float above the surface
 	# at z=-1 and keep ordinary Y sorting with other above-water sprites.
 	var submerged: bool = npc.get_meta("movement_mode", "ground") == "swimming" and npc.get_meta("npc_definition", {}).get("type") != "vehicle"
-	npc_sort.z_index = -2 if submerged else 0
+	npc_sort.z_index = -2 if submerged and not npc.has_meta("habitat_occupant") else 0
 
 func _vehicle_side_separation(npc: Area3D, motion: Vector3) -> Vector3:
 	var half_size := Vector2.ZERO
@@ -4820,3 +5093,115 @@ func _vehicle_side_separation(npc: Area3D, motion: Vector3) -> Vector3:
 	var normal: Vector3 = normals[nearest]
 	if motion.normalized().dot(normal) > 0.5: return Vector3.ZERO
 	return normal * (float(distances[nearest])+0.002)
+
+
+func _open_habitat_exhibit(slot: String) -> void:
+	if exhibit_menu != null:
+		exhibit_menu.queue_free()
+	exhibit_menu = PopupMenu.new()
+	exhibit_menu.name = "HabitatExhibitMenu"
+	add_child(exhibit_menu)
+	var occupant := String(exhibits.assignments.get(slot, ""))
+	exhibit_menu.add_separator("Current exhibit: " + ("Empty" if occupant.is_empty() else occupant))
+	var species := exhibits.available(slot)
+	for index in species.size():
+		exhibit_menu.add_item(species[index], index)
+	if species.is_empty():
+		exhibit_menu.add_separator("No eligible species")
+	if not occupant.is_empty():
+		exhibit_menu.add_item("Clear exhibit", species.size())
+	exhibit_menu.add_item("Cancel", species.size() + 1)
+	exhibit_menu.id_pressed.connect(func(id: int):
+		if id == species.size() and not occupant.is_empty():
+			_change_habitat_exhibit(slot, "")
+		elif id >= 0 and id < species.size():
+			_change_habitat_exhibit(slot, species[id])
+	)
+	exhibit_menu.popup_centered(Vector2i(280, 0))
+
+
+func _change_habitat_exhibit(slot: String, species: String) -> void:
+	if exhibit_transition or exhibits.assignments.get(slot, "") == species:
+		return
+	var prepared := exhibits.prepare(slot, species)
+	if prepared.has("error"):
+		_start_dialogue("EXHIBIT", [prepared.error])
+		return
+	exhibit_transition = true
+	var fade := ColorRect.new()
+	fade.color = Color.BLACK
+	fade.z_index = 100
+	fade.mouse_filter = Control.MOUSE_FILTER_STOP
+	fade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	fade.modulate.a = 0
+	map_ui.add_child(fade)
+	var tween := create_tween()
+	tween.tween_property(fade, "modulate:a", 1.0, 0.25)
+	await tween.finished
+	var installed := exhibits.install(slot, species, prepared)
+	tween = create_tween()
+	tween.tween_property(fade, "modulate:a", 0.0, 0.25)
+	await tween.finished
+	fade.queue_free()
+	exhibit_transition = false
+	if installed:
+		_auto_save()
+	else:
+		_start_dialogue("EXHIBIT", ["This species could not be displayed."])
+
+
+func _build_habitat_layout(layout: Dictionary, origin: Vector3, prefix: String) -> void:
+	if layout.has("habitat_type"):
+		_add_map_blocks(origin, layout.get("floor_blocks", []), prefix + "Floor", TEX_INTERIOR_FLOOR, Color.WHITE, false)
+		_add_map_blocks(origin, layout.get("wall_blocks", []), prefix + "Wall", TEX_WALL_GENERIC, Color.WHITE, true)
+		_add_map_blocks(origin, layout.get("water_blocks", []), prefix + "Water", TerrainTransitionTextureCache.base_texture("water"), Color.WHITE, true)
+		_add_map_blocks(origin, layout.get("sand_blocks", []), prefix + "Sand", TEX_SAND, Color.WHITE, false)
+		_add_map_blocks(origin, layout.get("rocks", []), prefix + "Rock", TEX_STONE, Color.WHITE, true)
+		_add_serialized_furnishings(origin, layout.get("furnishings", []), prefix)
+		for tree: Array in layout.get("trees", []):
+			if tree.size() >= 4:
+				_add_tree(origin + _array_to_vector3(tree), int(tree[3]), prefix + "Tree")
+		for vine: Array in layout.get("vines", []):
+			if vine.size() >= 3:
+				_add_prop_billboard(prefix + "Vine", origin + _array_to_vector3(vine), TEX_VINES, 1.25)
+		for orchid: Array in layout.get("orchids", []):
+			if orchid.size() >= 3:
+				_add_small_orchid(origin + _array_to_vector3(orchid))
+	_build_outdoor_terrain_assets(layout, origin, prefix)
+
+
+func _split_habitat_pen_art(front: Dictionary) -> void:
+	var texture: Texture2D = front.texture
+	var dimensions := texture.get_size()
+	var split := floorf(dimensions.y * 0.5)
+	var back := front.duplicate()
+	back["name"] = String(front.name) + "Rear"
+	back["instance_id"] = ""
+	# The rear rim sits behind the full interior. The front retains its
+	# original depth so it still occludes actors standing south of the pen.
+	back["sort_offset_y"] = -4.95
+	back["texture"] = _habitat_pen_texture_band(texture, 0, split)
+	front["texture"] = _habitat_pen_texture_band(texture, split, dimensions.y - split)
+	object_sort_entries.insert(object_sort_entries.size() - 1, back)
+
+
+func _habitat_pen_texture_band(texture: Texture2D, top: float, height: float) -> AtlasTexture:
+	var band := AtlasTexture.new()
+	band.atlas = texture
+	band.region = Rect2(0, top, texture.get_width(), height)
+	band.margin = Rect2(0, top, 0, texture.get_height() - height)
+	band.filter_clip = true
+	return band
+
+
+func _bound_habitat_flight_art(npc: Area3D, art: Sprite2D) -> void:
+	# Keep the flight elevation for collision. In the tilted view, projecting
+	# that elevation directly can put the entire sprite above the rear wall.
+	var frame: Rect2 = npc.get_meta("habitat_flight_frame")
+	var floor_y := float(npc.get_meta("base_elevation"))
+	var a := camera.unproject_position(Vector3(frame.position.x, floor_y, frame.position.y))
+	var b := camera.unproject_position(Vector3(frame.end.x, floor_y, frame.end.y))
+	var low := a.min(b)
+	var high := a.max(b)
+	var half_art := (art.get_rect().size * art.scale.abs() * 0.5).min((high - low) * 0.5)
+	art.global_position = art.global_position.clamp(low + half_art, high - half_art)

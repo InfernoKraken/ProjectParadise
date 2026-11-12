@@ -33,7 +33,8 @@ North and South follow the map width, and East and West follow the map height.
 Set each side's outward **Depth** in tiles, then paint terrain and visual assets
 on separate layers. The asset brush supports scale and rotation. **Preview**
 hides the grid, and **Enabled in game** controls whether that side appears.
-**Corner priority** chooses which pair repeats into the corners. It defaults to
+Enable **Covers player** on sides whose artwork should draw in front of overworld
+sprites, such as a south wall. **Corner priority** chooses which pair repeats into the corners. It defaults to
 North / South. Save the map to keep these settings. Shrinking a canvas hides
 cropped cells so they can be recovered by expanding it again.
 
@@ -280,3 +281,19 @@ bounds so tall/rotated props and attached overlays stay visible. Selected edit
 handles remain available. Ordinary terrain labels disappear below a 24-pixel
 cell width (default zoom 0.75); selected or invalid terrain keeps its label.
 This only affects canvas presentation, not map data or hit testing.
+
+The map canvas uses the gameplay camera’s 45-degree ground projection in normal editing, collider editing, and Placement Preview. Ground X/Z tools share the same projection; upright sprite artwork keeps its original proportions. Placement Preview hides editing aids rather than changing the camera angle.
+
+## Museum habitat templates
+
+Use **New Habitat** in the Map Editor and enter a template ID, display name, and habitat type. The pen artwork and gold outline preview the footprint of `habitat_pen_massive`. The cyan rectangle and dot show the wander area and spawn point. Adjust these in **Habitat Settings**.
+
+Drag objects from **Objects** onto the canvas, including furnishings, plants, water and rock blocks, bridges, and fences. Choose a base terrain in **Habitat Settings**. Use the terrain palette and **Paint** or **Erase** to add or remove individual terrain cells, including water, stone, sand, and mud. Terrain cells and blocks must fit inside the pen. Sprite anchors must sit inside the pen. Drag placed objects to move them and use **Inspector** for dimensions, visual height, and rotation where the asset supports it. **Save** writes the template to `data/habitats/<id>.json`. Use **Open Habitat** to edit it again. Each habitat type accepts one template. The Fakemon Editor's **Habitat** dropdown uses the same classification list in `data/habitat_types.json`.
+
+Template positions use local X/Y/Z, with the enclosure footprint centered at local X/Z zero. Spawn and wander coordinates use local X/Z. The museum pen remains part of the museum map. NPCs and map transition markers are authored separately from the habitat layout.
+
+### Ecological Monument lecterns
+
+Select a habitat control display in the Map Editor and open **Configure Exhibit** in the Inspector. The slot ID identifies the exhibit in save files. Keep it stable when moving the lectern or pen. The placement origin uses map-local X/Y/Z. The interior rectangle uses X/Z relative to that origin and limits the template's wander area.
+
+In game, select a species at the lectern to display it, or choose **Clear exhibit** to empty the pen. Captures, starters, gifts, and evolutions qualify, including species in Cloud storage. A species can occupy one slot. The save records species and slot IDs, and the game recreates the exhibit from its template.

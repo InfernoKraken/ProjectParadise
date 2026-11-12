@@ -57,6 +57,8 @@ func _append_imported_directory(directory_path: String, project_root: String) ->
 func _append_imported_sprite(relative_path:String,filename:String,project_root:String)->void:
 	# These assets need a separate future split-surface implementation.
 	if filename.begins_with("semi_submerged_"): return
+	var metadata := load_metadata(project_root.path_join(relative_path))
+	var is_signpost := bool(metadata.get("signpost", false))
 	var relative_id:=relative_path.trim_prefix("assets/overworld/").get_basename().replace("/","_").replace(" ","_").to_lower()
 	var family_id:=relative_id;var variant_value:=-1
 	if relative_id.length()>3 and relative_id.substr(relative_id.length()-3,1)=="_" and relative_id.right(2).is_valid_int():
@@ -80,11 +82,13 @@ func _append_imported_sprite(relative_path:String,filename:String,project_root:S
 		if image!=null and not image.is_empty():stream_size=[float(image.get_width())/maxf(float(image.get_height()),1.0),0.2,1.0]
 	var entry:={"type_id":type_id,"display_name":labels.name.trim_prefix("Overlay "),"category":"Water Terrain" if is_stream_tile else ("Overlays" if is_overlay else labels.category),"preview_texture":relative_path,"asset_path":"res://"+relative_path,"scale_mode":"explicit_size" if is_stream_tile else ("target_width" if is_building else "target_height"),"display_height":0.45 if is_small_plant else 1.0,"default_size":stream_size if is_stream_tile else null,"default_y":1.5 if is_building else (0.2 if is_small_plant else 0.0),"footprint":"serialized size.xz" if is_building or is_stream_tile else ([0.4,0.3] if is_small_plant else [0.8,0.8]),"front_depth_extension":0.0,"snap":0.5 if is_small_plant else 0.1,"collision":{"shape":"box","from_serialized_size":true,"terrain_layer":"water"} if is_stream_tile else ({"shape":"box","from_serialized_size":true,"anchor":"front"} if is_building else {"shape":"none"}),"supports_rotation":is_overlay or is_stream_tile,"inherits":"block.water" if is_stream_tile else "","variants":[variant_record] if variant_value>=0 else [],"serialization":{"kind":"object","fields":["objects"],"object_type":type_id},"coordinate_space":"map_local"}
 	if not is_stream_tile:entry.erase("default_size")
-	var metadata:=load_metadata(project_root.path_join(relative_path))
+	if is_signpost:
+		entry["category"] = "Markers"
+		entry["signpost"] = true
 	entry["render_band"]=int(metadata.get("render_band",0))
-	entry["sort_offset_y"]=float(metadata.get("sort_offset_y",0.0))
+	entry["sort_offset_y"]=load(project_root.path_join("world/building_sorting.gd")).offset(relative_path,metadata)
 	entry["wall_overlay"]=bool(metadata.get("wall_overlay",false))
-	if metadata.get("collision") is Dictionary and String(metadata.collision.get("type",""))=="polygon":entry["collision"]=metadata.collision.duplicate(true)
+	if metadata.get("collision") is Dictionary and String(metadata.collision.get("type","")) in ["polygon", "polygons"]:entry["collision"]=metadata.collision.duplicate(true)
 	if bool(metadata.get("standardize_scale",false)):
 		entry["display_height"]=float(metadata.get("visual_height",entry.display_height))
 		var shared_size:Variant=metadata.get("size",[])
@@ -104,8 +108,8 @@ func _palette_labels_for(relative_path:String, filename:String)->Dictionary:
 	var category:="Props"
 	if lower.begins_with("building") or lower.begins_with("citybuilding"): category="Buildings"
 	elif lower.begins_with("boat") or lower.begins_with("canal"): category="Watercraft & Canal"
-	elif lower.begins_with("rocks_"): category="Rocks"
-	elif lower.begins_with("tree") or lower.begins_with("flower") or lower.begins_with("vines") or lower.begins_with("habitat") or lower.begins_with("sunflower") or lower.begins_with("aloe") or lower.begins_with("desert_rose") or lower.begins_with("moss_rose"): category="Vegetation"
+	elif lower.begins_with("rocks_") or lower.begins_with("props_rocks_"): category="Rocks"
+	elif lower.begins_with("vegetation_") or lower.begins_with("tree") or lower.begins_with("flower") or lower.begins_with("vines") or lower.begins_with("habitat") or lower.begins_with("sunflower") or lower.begins_with("aloe") or lower.begins_with("desert_rose") or lower.begins_with("moss_rose"): category="Vegetation"
 	elif lower.begins_with("tile") or relative_path.contains("terrain_masks/"): category="Terrain"
 	elif lower.begins_with("wall"): category="Walls & Fences"
 	elif lower.begins_with("warp") or lower.begins_with("sign"): category="Markers"
@@ -134,7 +138,7 @@ static func validate_polygon_collision(collision:Variant)->Array[String]:
 		if not point is Array or point.size()!=2 or not (point[0] is int or point[0] is float) or not (point[1] is int or point[1] is float):errors.append("Vertex %d must contain two numbers."%(index+1));continue
 		var parsed:=Vector2(float(point[0]),float(point[1]));points.append(parsed)
 		if not parsed.is_finite():errors.append("Vertex %d must contain finite coordinates."%(index+1))
-		if index>0 and parsed.distance_squared_to(points[index-1])<0.000001:errors.append("Consecutive polygon vertices must not be duplicates.")
+		if points.size()>1 and parsed.distance_squared_to(points[-2])<0.000001:errors.append("Consecutive polygon vertices must not be duplicates.")
 	if points.size()!=raw.size():return errors
 	if points[0].distance_squared_to(points[-1])<0.000001:errors.append("The closing vertex is implicit; do not duplicate the first vertex at the end.")
 	var twice_area:=0.0

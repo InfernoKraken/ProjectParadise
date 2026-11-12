@@ -104,6 +104,7 @@ func _editor_snapshot() -> String:
 	return JSON.stringify({"__npc_editor_snapshot":true,"map":document.deterministic_json(),"definitions":npc_data.definitions})
 
 func _add_npc() -> void:
+	if _is_habitat(): return
 	if document == null or _is_world_index_document(document):return
 	if not npc_data.load_error.is_empty() or (document.data.has("npcs") and not document.data.npcs is Array):
 		status_label.text="Repair NPC data errors before adding an NPC.";return
@@ -228,10 +229,12 @@ func _save_npc_pair(path:String,validation:Array)->Error:
 		else:DirAccess.remove_absolute(companion)
 	return map_error
 
+const WarpSpriteCatalogRef := preload("res://core/warp_sprite_catalog.gd")
 const MapDocumentRef := preload("res://core/map_document.gd")
 const MapSchemaRef := preload("res://core/map_schema.gd")
 const MapValidatorRef := preload("res://core/map_validator.gd")
 const MapGraphRef := preload("res://core/map_graph.gd")
+const PolygonColliders := preload("res://core/polygon_colliders.gd")
 const AssetCatalogRef := preload("res://core/asset_catalog.gd")
 const WallGeometryRef := preload("res://core/wall_geometry.gd")
 const CanvasRef := preload("res://ui/editor_canvas.gd")
@@ -242,6 +245,7 @@ var npc_data: RefCounted
 var npc_visuals: RefCounted
 var npc_companion_doc: MapDocument
 var project_root := ""
+var habitat_templates: Script
 var map_directory := ""
 var document: MapDocument
 var catalog: AssetCatalog
@@ -300,12 +304,14 @@ var activity_buttons: Array[Button] = []
 var active_wall_id := ""
 var attachment_overlay_id := ""
 var polygon_asset_path:=""
+var polygon_index := 0
 var polygon_undo_stack:Array[Dictionary]=[]
 var polygon_redo_stack:Array[Dictionary]=[]
 
 func _ready() -> void:
 	project_root = ProjectSettings.globalize_path("res://").simplify_path().get_base_dir().get_base_dir()
 	map_directory = project_root.path_join("data/maps")
+	habitat_templates = load(project_root.path_join("world/habitat_template.gd"))
 	npc_movement = load(project_root.path_join("world/npc_movement.gd"))
 	npc_data = load(project_root.path_join("world/npc_map_data.gd")).new()
 	npc_visuals = load(project_root.path_join("world/npc_visual_resolver.gd")).new(project_root)
@@ -320,6 +326,9 @@ func _build_ui() -> void:
 	var root_v := VBoxContainer.new(); root_v.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT); add_child(root_v)
 	var toolbar := HFlowContainer.new(); toolbar.name="DocumentToolbar"; toolbar.custom_minimum_size.y = 42; root_v.add_child(toolbar)
 	_add_button(toolbar, "New", _request_new)
+	_add_button(toolbar, "New Habitat", func(): _run_after_discard_check(_new_habitat))
+	_add_button(toolbar, "Open Habitat", func(): _run_after_discard_check(_open_habitat))
+	_add_button(toolbar, "Habitat Settings", _habitat_settings)
 	_add_button(toolbar, "Open", _request_open)
 	_add_button(toolbar, "Save", _save)
 	_add_button(toolbar, "Add NPC", _add_npc)
@@ -416,9 +425,10 @@ func _populate_palette()->void:
 
 func _set_activity(index:int)->void:
 	if activity_tabs==null or canvas==null or not is_instance_valid(canvas):return
+	if _is_habitat() and index > 1: index = 0
 	activity_tabs.current_tab=clampi(index,0,activity_tabs.get_tab_count()-1)
 	canvas.cancel_map_resize()
-	canvas.map_resize_enabled=activity_tabs.current_tab==2 and not _map_size_field().is_empty()
+	canvas.map_resize_enabled=not _is_habitat() and activity_tabs.current_tab==2 and not _map_size_field().is_empty()
 	canvas.script_read_only = activity_tabs.current_tab == 3
 	canvas.script_drag_node = -1; canvas.queue_redraw()
 	if canvas.script_read_only:
@@ -463,6 +473,9 @@ func _run_after_discard_check(action: Callable) -> void:
 var test_map_process_id := -1
 
 func _test_current_map()->void:
+	if _is_habitat():
+		status_label.text = "Preview the habitat on the editor canvas."
+		return
 	if test_map_process_id > 0 and OS.is_process_running(test_map_process_id):
 		status_label.text="A map test is already running. Close its game window before starting another."
 		return
@@ -484,19 +497,36 @@ func _new_document() -> void:
 	npc_data.definitions={};npc_data.load_error="";npc_companion_doc=MapDocumentRef.from_text("{}");document=MapDocumentRef.from_text(JSON.stringify(template),"new_map.json");document.dirty=true;undo_stack.clear();redo_stack.clear();identity_by_path.clear();next_identity=1;_refresh_all();status_label.text="New universal outdoor map"
 
 func _load_path(path: String) -> void:
+	if path.get_base_dir().simplify_path() == project_root.path_join(habitat_templates.DIRECTORY).simplify_path():
+		var candidate := MapDocumentRef.load_file(path)
+		var problem: String = candidate.parse_error
+		if problem.is_empty():
+			problem = habitat_templates.problem(candidate.data, project_root)
+		if not problem.is_empty():
+			status_label.text = problem
+			return
 	terrain_stroke_changed=false
 	if path.ends_with("_NPC_Data.json"):status_label.text="Open the owning map JSON.";return
+	if canvas.collision_polygon_active: _finish_polygon_collision_editor()
 	npc_data.load_for_map(path)
 	var companion:String=npc_data.companion_path(path)
 	npc_companion_doc=MapDocumentRef.load_file(companion) if FileAccess.file_exists(companion) else MapDocumentRef.from_text("{}",companion)
 	document=MapDocumentRef.load_file(path);undo_stack.clear();redo_stack.clear();selected_id="";identity_by_path.clear();next_identity=1
+	if _is_habitat():
+		habitat_templates.ensure_collections(document.data)
+		_set_activity(0)
+		canvas.terrain_brush_mode = "select"
+		canvas.set_selection_mode("objects")
+		_clear_palette_selection()
 	var repaired:=_normalize_document_walls()
 	repaired=_normalize_overlay_attachments() or repaired
 	if repaired:document.dirty=true
 	_refresh_all()
+	if _is_habitat(): canvas.frame_all()
 	if repaired:status_label.text="Opened map and repaired redundant sub-minimum wall anchors. Review and save to persist."
 
 func _open_border_editor() -> void:
+	if _is_habitat(): return
 	if document == null or not document.parse_error.is_empty() or _map_size_field().is_empty():
 		status_label.text = "Open a map with playable bounds to edit its borders."
 		return
@@ -529,10 +559,19 @@ func _refresh_all() -> void:
 		border_editor.refresh_map(document.data)
 	if canvas!=null:canvas.map_resize_enabled=activity_tabs.current_tab==2 and not _map_size_field().is_empty()
 	canvas.set_border_preview(document.data)
+	canvas.habitat_preview = document.data if _is_habitat() else {}
+	canvas.habitat_pen_texture = habitat_templates.PEN_TEXTURE
+	for index in [2, 3]:
+		activity_buttons[index].disabled = _is_habitat()
 	editor_objects=_extract_objects();_refresh_script_panel();canvas.base_terrain_texture_path=_base_terrain_texture_path();canvas.base_terrain_type=String(document.data.get("base_terrain_type","forest_floor"));canvas.set_document_objects(editor_objects,_map_size(),_map_center());canvas.selected_id=selected_id
 	issues=MapValidatorRef.validate(document);issues.append_array(npc_data.issues(document.data,npc_visuals));issues.append_array(_header_issues())
 	for graph_issue in _cached_graph().issues:
 		if String(graph_issue.get("message","")).begins_with("World-space bounds overlap") and String(graph_issue.get("path","")).begins_with(document.path.get_file()+"."):issues.append(graph_issue)
+	if _is_habitat():
+		var problem: String = habitat_templates.problem(document.data, project_root)
+		issues.clear()
+		if not problem.is_empty():
+			issues.append({"severity":"error","path":"$","message":problem})
 	_refresh_palette_compatibility();_refresh_validation();_refresh_canvas_validation();_refresh_raw();_refresh_metadata();_refresh_inspector();_refresh_graph()
 	var document_name:=document.path.get_file()
 	if _is_world_index_document(document) and document.data.get("index_metadata") is Dictionary:
@@ -695,7 +734,7 @@ func _append_universal_object(result:Array[Dictionary],path:String,value:Diction
 		fp=[absf(cos(angle))*float(s[0])+absf(sin(angle))*float(s[2]),absf(sin(angle))*float(s[0])+absf(cos(angle))*float(s[2])]
 	if (type_id.begins_with("asset.") or type_id.begins_with("overlay.")) and String(value.get("asset_path","")).begins_with("res://assets/overworld/"):
 		var scale_metadata:=AssetCatalogRef.load_metadata(project_root.path_join(String(value.asset_path).trim_prefix("res://")))
-		if bool(scale_metadata.get("standardize_scale",false)):
+		if not _is_habitat() and bool(scale_metadata.get("standardize_scale",false)):
 			display_height=float(scale_metadata.get("visual_height",display_height))
 			var shared_size:Variant=scale_metadata.get("size",[])
 			if shared_size is Array and shared_size.size()>=3:s=shared_size
@@ -753,7 +792,7 @@ func _entry_for(field:String,variant:int)->Dictionary:
 	if field in ["player_spawn"]:return catalog.by_id.get("marker.player_spawn",{})
 	if _uses_indoor_warp_rugs() and field in MapGraphRef.warp_fields(document.data):
 		var rug:Dictionary=catalog.by_id.get("marker.warp",{}).duplicate(true)
-		rug["preview_texture"]="assets/overworld/warp_building_generic.png"
+		rug["preview_texture"]=WarpSpriteCatalogRef.texture_path(String(_warp_metadata_record(field).sprite))
 		rug["footprint"]=[1.5,0.9]
 		rug["display_height"]=0.9
 		return rug
@@ -764,7 +803,9 @@ func _uses_indoor_warp_rugs()->bool:
 	return document!=null and document.kind in ["interior","clearing_ward","clearing_house","city_ward","orchid_house","family_house"]
 
 func _on_object_selected(id:String)->void:
-	if id != selected_id: script_edit_checkpoint = false
+	if id != selected_id:
+		script_edit_checkpoint = false
+		if canvas.collision_polygon_active: _finish_polygon_collision_editor()
 	selected_id=id;_refresh_inspector()
 	if activity_tabs.current_tab == 3: _select_script_association()
 	elif not id.is_empty():_set_activity(1)
@@ -866,6 +907,7 @@ func _on_map_bounds_resized(new:Vector2,new_center:Vector2)->void:
 	status_label.text="Map resized to %.1f × %.1f. Removed %d out-of-bounds placements. Undo restores the resize and removed content."%[new.x,new.y,removed]
 
 func _wall_anchor_requested(point:Vector2)->void:
+	if _is_habitat() and not habitat_templates.footprint().has_point(point): return
 	if document==null:return
 	var rejection_message:=""
 	# Wall anchors always use the wall grid. A free diagonal mouse gesture is
@@ -1112,6 +1154,14 @@ func _sync_host_attachments(host_id:String,host_position:Vector3)->void:
 			if local is Array and local.size()>=2:record["position"]=[host_position.x+float(local[0]),float(record.get("position",[0,host_position.y,0])[1]),host_position.z+float(local[1])]
 
 func _write_object_position(object:Dictionary,value:Vector3)->void:
+	if _is_habitat():
+		var anchor := Vector2(value.x, value.z)
+		if not habitat_templates.footprint().has_point(anchor) or (object.field == "terrain_tiles" and not habitat_templates.contains_cell(anchor.round())):
+			return
+		if object.field in habitat_templates.BLOCK_COLLECTIONS:
+			var dimensions := Vector2(object.size.x, object.size.z)
+			if not habitat_templates.footprint().encloses(Rect2(anchor - dimensions * 0.5, dimensions)):
+				return
 	var path:=String(object.path)
 	if object.field=="objects":
 		document.set_value(path+".position",[value.x,value.y,value.z])
@@ -1137,6 +1187,11 @@ func _write_object_position(object:Dictionary,value:Vector3)->void:
 		if document.data.get("arrival_points") is Dictionary and document.data.arrival_points.has(field):document.set_value("$.arrival_points."+field,[value.x,value.y,value.z])
 
 func _write_object_size(object:Dictionary,value:Vector3)->void:
+	if _is_habitat() and object.field in habitat_templates.BLOCK_COLLECTIONS:
+		var anchor := Vector2(object.position.x, object.position.z)
+		var dimensions := Vector2(value.x, value.z)
+		if dimensions.x <= 0 or dimensions.y <= 0 or not habitat_templates.footprint().encloses(Rect2(anchor - dimensions * 0.5, dimensions)):
+			return
 	var path:=String(object.path)
 	if object.field=="objects":document.set_value(path+".size",[value.x,value.y,value.z])
 	elif object.field in ["grass_zones","wild_zone"]:document.set_value(path+".size",[value.x,value.y,value.z])
@@ -1158,6 +1213,8 @@ func _populate_terrain_options(option:OptionButton)->void:
 func _terrain_fill_requested(cell:Vector2i)->void:
 	if document==null or terrain_type_option.selected<0:return
 	var bounds:Rect2=preload("res://core/map_bounds.gd").rect(document.data)
+	if _is_habitat():
+		bounds = bounds.grow(-0.5)
 	var occupied:Dictionary={}
 	for object in editor_objects:
 		if not canvas._is_terrain_object(object):continue
@@ -1182,6 +1239,7 @@ func _terrain_stroke_started()->void:
 
 func _terrain_cell_changed(cell:Vector2i,erase:bool)->void:
 	if document==null or not document.data.get("terrain_tiles") is Array:return
+	if _is_habitat() and not habitat_templates.contains_cell(Vector2(cell)): return
 	var terrain_type:=String(terrain_type_option.get_item_metadata(terrain_type_option.selected))
 	var owners:Array[Dictionary]=[]
 	for entry_index in document.data.terrain_tiles.size():
@@ -1283,6 +1341,7 @@ func _detach_for_deleted_host(object:Dictionary)->void:
 			record["is_attached"]=false;record.erase("host_id");record.erase("local_position");record.erase("attachment_order")
 
 func _add_warp()->void:
+	if _is_habitat(): return
 	if document == null: return
 	var used_ids := {}; var highest_id := 0
 	for field in MapGraphRef.warp_fields(document.data):
@@ -1449,7 +1508,7 @@ func _palette_selected(index:int)->void:
 
 func _refresh_palette_compatibility()->void:
 	if document==null:return
-	palette_help.text="Universal buildings, vegetation, and terrain use the shared 'objects' collection when this map has no legacy field. Only map-specific gameplay markers remain restricted."
+	palette_help.text="Paint terrain or drag map objects into the pen." if _is_habitat() else "Universal buildings, vegetation, and terrain use the shared 'objects' collection when this map has no legacy field. Only map-specific gameplay markers remain restricted."
 	for type_id in palette_index_by_type:
 		var index:int=int(palette_index_by_type[type_id]);var entry:Dictionary=catalog.by_id.get(type_id,{})
 		var compatible:=_compatible_array_field(entry)
@@ -1460,6 +1519,10 @@ func _refresh_palette_compatibility()->void:
 
 func _compatible_array_field(entry:Dictionary)->String:
 	var type_id:=String(entry.get("type_id",""))
+	if _is_habitat() and (type_id.begins_with("npc.") or entry.get("asset_path") == "res://" + habitat_templates.PEN_TEXTURE):
+		return ""
+	if _is_habitat() and type_id in ["wall.generic", "wall.canal", "structure.canal_lock"]:
+		return "objects"
 	if type_id=="area.grass":return "grass_zones"
 	if type_id.begins_with("terrain."):return "terrain_tiles"
 	if selected_palette_entry in ["wall.generic","wall.canal"]:return "objects"
@@ -1471,7 +1534,7 @@ func _compatible_array_field(entry:Dictionary)->String:
 
 func _universal_type(entry:Dictionary)->String:
 	var type_id:=String(entry.get("type_id",""))
-	return type_id if type_id.begins_with("asset.") or type_id.begins_with("overlay.") or type_id.begins_with("tile.") or type_id.begins_with("building.") or type_id.begins_with("tree.") or type_id.begins_with("flower.") or type_id.begins_with("background.citybuilding") or type_id=="cave.vine" or type_id in ["structure.bridge","block.water","block.sand","block.rock","npc.opponent","npc.generic","wall.generic"] else ""
+	return type_id if type_id.begins_with("decal.") or type_id.begins_with("asset.") or type_id.begins_with("overlay.") or type_id.begins_with("tile.") or type_id.begins_with("building.") or type_id.begins_with("tree.") or type_id.begins_with("flower.") or type_id.begins_with("background.citybuilding") or type_id=="cave.vine" or type_id in ["structure.bridge","block.water","block.sand","block.rock","npc.opponent","npc.generic","wall.generic"] else ""
 
 func _incompatible_palette_reason(entry:Dictionary)->String:
 	var fields:Array=entry.get("serialization",{}).get("fields",[])
@@ -1551,6 +1614,7 @@ func _add_palette_object()->void:
 func _add_palette_object_at(world_xz: Vector2,type_id:String="",record_undo:bool=true,select_created:bool=true)->void:
 	var placement_type:=selected_palette_entry if type_id.is_empty() else type_id
 	if placement_type.is_empty() or document==null:return
+	if _is_habitat() and _compatible_array_field(catalog.by_id.get(placement_type, {})).is_empty(): return
 	if placement_type in ["wall.generic","wall.canal"]:
 		selected_palette_entry=placement_type;canvas.wall_tool_active=true;active_wall_id=""
 		_wall_anchor_requested(world_xz);return
@@ -1567,16 +1631,22 @@ func _add_palette_object_at(world_xz: Vector2,type_id:String="",record_undo:bool
 	if not placement_type.begins_with("building.") and not placement_type.begins_with("background.") and not placement_type.begins_with("npc."):
 		if chosen.is_empty():
 			for f in fields:if document.data.has(String(f)) and document.data[String(f)] is Array:chosen=String(f);break
-	if chosen.is_empty() and not _universal_type(entry).is_empty():
+	if chosen.is_empty() and (not _universal_type(entry).is_empty() or (_is_habitat() and _compatible_array_field(entry) == "objects")):
 		chosen="objects"
 		if not document.data.get(chosen) is Array:document.data[chosen]=[]
 	if chosen.is_empty():status_label.text="This object type has no compatible array in the current schema.";return
 	var x := world_xz.x;var z := world_xz.y
 	if snap_check.button_pressed:x=snappedf(x,grid_spin.value);z=snappedf(z,grid_spin.value)
+	if _is_habitat():
+		var anchor := Vector2(x, z)
+		if not habitat_templates.footprint().has_point(anchor) or (chosen == "terrain_tiles" and not habitat_templates.contains_cell(anchor.round())):
+			status_label.text = "Place objects and terrain inside the pen."
+			return
 	if record_undo:_push_undo()
 	var y:=float(entry.get("default_y",0.0));var kind:=String(serialization.get("kind",""));var shape:=String(serialization.get("shape",""));var value:Variant
 	if chosen=="objects":
 		var default_size:Variant=entry.get("default_size",[10.0,6.0,4.0] if placement_type.begins_with("background.") else ([5.0,3.0,4.0] if placement_type.begins_with("building.") else ([2.0,0.3,2.0] if String(entry.get("scale_mode",""))=="explicit_size" else [1.0,1.0,1.0])))
+		if _is_habitat() and default_size == null: default_size = [1.0, 1.0, 1.0]
 		value={"type":placement_type,"position":[x,y,z],"size":default_size}
 		if entry.has("asset_path"):
 			var asset_variants:Variant=entry.get("variants",[])
@@ -1593,7 +1663,11 @@ func _add_palette_object_at(world_xz: Vector2,type_id:String="",record_undo:bool
 	elif kind=="zone":value={"position":[x,y,z],"size":[3,0.25,3],"encounter_chance":0.2}
 	elif kind=="furnishing":value={"type":String(serialization.get("prop_type","")),"position":[x,y,z],"height":float(entry.get("display_height",1.0))}
 	elif kind=="terrain_tile":value={"terrain_type":String(serialization.get("terrain_type","")),"position":[roundi(x),roundi(z)]}
-	elif kind=="block6":value=[x,y,z,2,0.3,2]
+	elif kind=="block6":
+		if _is_habitat() and not habitat_templates.footprint().encloses(Rect2(Vector2(x, z) - Vector2.ONE, Vector2(2, 2))):
+			status_label.text = "Place the entire block inside the pen."
+			return
+		value=[x,y,z,2,0.3,2]
 	elif shape.contains("variant"):value=[x,y,z,0 if placement_type=="tree.main" else 1]
 	else:value=[x,y,z]
 	var new_index: int=document.data[chosen].size();document.data[chosen].append(value);document.dirty=true
@@ -1654,10 +1728,10 @@ func _refresh_inspector()->void:
 	elif String(object.get("universal_type","")).begins_with("npc."):_add_character_editor(object)
 	elif object.field=="objects" and object.shape=="point":
 		var standardize:CheckBox=null
-		if String(object.get("universal_type","")).begins_with("asset."):standardize=_add_asset_scale_standardizer(object)
+		if not _is_habitat() and String(object.get("universal_type","")).begins_with("asset."):standardize=_add_asset_scale_standardizer(object)
 		var height:=SpinBox.new();height.min_value=0.05;height.max_value=20;height.step=0.05;height.value=float(object.display_height);height.prefix="Visual height ";height.value_changed.connect(func(v):_set_asset_visual_height(object,float(v),standardize!=null and standardize.button_pressed));inspector.add_child(height)
 		_add_vector_editor("Dimensions",object.size,func(v):_set_asset_dimensions(object,v,standardize!=null and standardize.button_pressed))
-		if String(object.get("universal_type","")).begins_with("overlay.") or object.has("water_kind"):
+		if String(object.get("universal_type","")).begins_with("overlay.") or String(object.get("universal_type","")).begins_with("decal.") or object.has("water_kind"):
 			var rotation:=SpinBox.new();rotation.name="OverlayRotationDegrees";rotation.min_value=-3600.0;rotation.max_value=3600.0;rotation.step=1.0;rotation.allow_greater=true;rotation.allow_lesser=true;rotation.value=float(object.get("rotation_degrees",0.0));rotation.prefix="Rotation ";rotation.suffix="°";rotation.value_changed.connect(func(value):_set_overlay_rotation(object,float(value)));inspector.add_child(rotation)
 			if not object.has("water_kind"): _add_attachment_editor(object)
 	if object.shape=="rectangle":_add_vector_editor("Size",object.size,func(v):
@@ -1673,7 +1747,10 @@ func _refresh_inspector()->void:
 		_add_vector_editor("Collider offset (relative X / Y / Z)",Vector3(config.offset[0],config.offset[1],config.offset[2]),func(value):_set_wall_collision(object,"offset",[value.x,value.y,value.z]))
 		_add_vector_editor("Collider size (X / Y / Z)",Vector3(config.size[0],config.size[1],config.size[2]),func(value):_set_wall_collision(object,"size",[maxf(value.x,0.01),maxf(value.y,0.01),maxf(value.z,0.01)]))
 		var reset:=Button.new();reset.text="Reset collider to wall dimensions";reset.pressed.connect(func():_push_undo();source_record.resize(6);document.dirty=true;_after_edit());inspector.add_child(reset)
-	if String(object.get("universal_type","")) in ["asset.indoor_display","asset.indoor_billboard_tropical_research"] and source_record is Dictionary:
+	var object_type := String(object.get("universal_type", ""))
+	if source_record is Dictionary and object_type.begins_with("asset.habitat_control_display_"):
+		_add_exhibit_editor(source_record)
+	if source_record is Dictionary and (object_type in ["asset.indoor_display", "asset.indoor_billboard_tropical_research"] or bool(catalog.by_id.get(object_type, {}).get("signpost", false))):
 		var textbox_label:=Label.new();textbox_label.text="Textbox (click display in game)";inspector.add_child(textbox_label)
 		var textbox:=TextEdit.new();textbox.name="IndoorDisplayTextbox";textbox.custom_minimum_size.y=120;textbox.text=String(source_record.get("interaction_text",""));inspector.add_child(textbox)
 		textbox.focus_exited.connect(func():
@@ -1835,6 +1912,15 @@ func _add_warp_destination_editor(object: Dictionary, destination: Dictionary) -
 		facing_select.add_item(facing.capitalize()); facing_select.set_item_metadata(facing_select.item_count - 1, facing)
 		if facing == String(record.facing): facing_select.select(facing_select.item_count - 1)
 	facing_select.item_selected.connect(func(index): _set_warp_metadata(field, "facing", String(facing_select.get_item_metadata(index)))); inspector.add_child(facing_select)
+	if _uses_indoor_warp_rugs():
+		var sprite_label := Label.new(); sprite_label.text = "Warp Sprite"; inspector.add_child(sprite_label)
+		var sprite_select := OptionButton.new(); sprite_select.name = "WarpSprite"
+		for variation: String in WarpSpriteCatalogRef.INDOOR:
+			sprite_select.add_item(String(WarpSpriteCatalogRef.INDOOR[variation].label))
+			sprite_select.set_item_metadata(sprite_select.item_count - 1, variation)
+			if variation == String(record.sprite): sprite_select.select(sprite_select.item_count - 1)
+		sprite_select.item_selected.connect(func(index): _set_warp_metadata(field, "sprite", String(sprite_select.get_item_metadata(index))))
+		inspector.add_child(sprite_select)
 	var map_label := Label.new(); map_label.text = "Entrance Map"; inspector.add_child(map_label)
 	var map_select := OptionButton.new(); map_select.name = "WarpEntranceMap"; map_select.fit_to_longest_item = false; map_select.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var maps := _available_map_files(); map_select.add_item("None"); map_select.set_item_metadata(0, "")
@@ -1875,7 +1961,7 @@ func _add_warp_destination_editor(object: Dictionary, destination: Dictionary) -
 func _warp_metadata_record(field: String, destination: Dictionary = {}) -> Dictionary:
 	var metadata: Variant = document.data.get("warp_metadata", {})
 	var existing: Dictionary = metadata.get(field, {}) if metadata is Dictionary and metadata.get(field) is Dictionary else {}
-	return {"id":maxi(1, int(existing.get("id", MapGraphRef.warp_id_for(document.data, field)))), "entrance_map":String(existing.get("entrance_map", destination.get("map", ""))), "entrance_instance_id":String(existing.get("entrance_instance_id", "")), "entrance_map_warp_id":maxi(1, int(existing.get("entrance_map_warp_id", 1))), "facing":String(existing.get("facing", "generic")), "show_sprite":bool(existing.get("show_sprite", false))}
+	return {"id":maxi(1, int(existing.get("id", MapGraphRef.warp_id_for(document.data, field)))), "entrance_map":String(existing.get("entrance_map", destination.get("map", ""))), "entrance_instance_id":String(existing.get("entrance_instance_id", "")), "entrance_map_warp_id":maxi(1, int(existing.get("entrance_map_warp_id", 1))), "sprite":String(existing.get("sprite", WarpSpriteCatalogRef.DEFAULT)), "facing":String(existing.get("facing", "generic")), "show_sprite":bool(existing.get("show_sprite", false))}
 
 func _is_universal_warp_visual(object: Dictionary) -> bool:
 	return String(object.get("field", "")) == "objects" and String(object.get("universal_type", "")).begins_with("asset.warp_")
@@ -2054,61 +2140,164 @@ func _add_asset_collision_editor(asset_path:String)->void:
 		offset.text_submitted.connect(func(text):var v:=_collision_numbers(text,2);if v.size()==2:box["offset"]=v;AssetCatalogRef.save_metadata(asset_path,metadata))
 		dimensions.text_submitted.connect(func(text):var v:=_collision_numbers(text,3);if v.size()==3:box["size"]=v;AssetCatalogRef.save_metadata(asset_path,metadata))
 	var add:=Button.new();add.text="Add Collision";add.pressed.connect(func():boxes.append({"offset":[0.0,0.0],"size":[1.0,1.0,1.0]});AssetCatalogRef.save_metadata(asset_path,metadata);_refresh_all());inspector.add_child(add)
-	var collision:Variant=metadata.get("collision",{})
-	var polygon_errors:=AssetCatalogRef.validate_polygon_collision(collision)
-	var polygon_state:=Label.new();polygon_state.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-	polygon_state.text="Polygon: none" if not collision is Dictionary or String(collision.get("type",""))!="polygon" else ("Polygon: valid (%d vertices)"%collision.get("points",[]).size() if polygon_errors.is_empty() else "Polygon needs attention: "+" ".join(polygon_errors))
-	polygon_state.add_theme_color_override("font_color",Color("#8ee59b") if polygon_errors.is_empty() and collision is Dictionary and String(collision.get("type",""))=="polygon" else Color("#ffb46b"));inspector.add_child(polygon_state)
-	var editing_this_polygon:=canvas.collision_polygon_active and polygon_asset_path==asset_path
-	var edit_polygon:=Button.new();edit_polygon.name="EditPolygonCollider";edit_polygon.text="Finish Editing Polygon Collider" if editing_this_polygon else "Edit Polygon Collider";edit_polygon.pressed.connect(_toggle_polygon_collision_editor.bind(asset_path));inspector.add_child(edit_polygon)
-	var clear_polygon:=Button.new();clear_polygon.name="ClearPolygonCollider";clear_polygon.text="Clear / Reset Polygon";clear_polygon.pressed.connect(func():
-		if canvas.collision_polygon_active and polygon_asset_path==asset_path:canvas.clear_collision_polygon()
-		else:
-			var current:=AssetCatalogRef.load_metadata(asset_path);var before:Variant=current.get("collision",{});polygon_undo_stack.append({"asset_path":asset_path,"collision":before.duplicate(true) if before is Dictionary else {}});polygon_redo_stack.clear();current["collision"]={"type":"polygon","points":[],"closed":false};AssetCatalogRef.save_metadata(asset_path,current);_refresh_all());inspector.add_child(clear_polygon)
+	var polygons := PolygonColliders.read(metadata.get("collision"))
+	for index in polygons.size():
+		_add_polygon_collider_row(asset_path, index, polygons[index])
+	if polygons.is_empty() and canvas.collision_polygon_active and polygon_asset_path == asset_path:
+		var finish := Button.new()
+		finish.text = "Finish Editing"
+		finish.pressed.connect(_finish_polygon_collision_editor)
+		inspector.add_child(finish)
 
-func _begin_polygon_collision_editor(asset_path:String)->void:
-	polygon_asset_path=asset_path;polygon_undo_stack.clear();polygon_redo_stack.clear()
-	var collision:Variant=AssetCatalogRef.load_metadata(asset_path).get("collision",{})
-	var points:Array=collision.get("points",[]) if collision is Dictionary and String(collision.get("type",""))=="polygon" else []
-	var closed:=bool(collision.get("closed",false)) if collision is Dictionary else false
-	canvas.begin_collision_polygon_editor(points,closed);status_label.text="Polygon collider mode: click anywhere, including outside the footprint, to add; click the first vertex to close, drag vertices, click edges to insert, Delete removes the selected vertex."
+	var add_polygon := Button.new()
+	add_polygon.name = "AddPolygonCollider"
+	add_polygon.text = "Add Polygon Collider"
+	add_polygon.pressed.connect(_add_polygon_collider.bind(asset_path))
+	inspector.add_child(add_polygon)
+
+func _add_polygon_collider_row(asset_path: String, index: int, polygon: Dictionary) -> void:
+	var errors := AssetCatalogRef.validate_polygon_collision(polygon)
+	var label := Label.new()
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var points: Variant = polygon.get("points", [])
+	label.text = "Polygon %d: %s" % [index + 1, "valid (%d vertices)" % points.size() if errors.is_empty() else " ".join(errors)]
+	label.add_theme_color_override("font_color", Color("#8ee59b") if errors.is_empty() else Color("#ffb46b"))
+	inspector.add_child(label)
+
+	var editing := canvas.collision_polygon_active and polygon_asset_path == asset_path and polygon_index == index
+	var row := HBoxContainer.new()
+	inspector.add_child(row)
+	var edit := Button.new()
+	edit.name = "EditPolygonCollider%d" % index
+	edit.text = "Finish Editing" if editing else "Edit Polygon %d" % (index + 1)
+	edit.pressed.connect(_toggle_polygon_collision_editor.bind(asset_path, index))
+	row.add_child(edit)
+	if editing:
+		var clear := Button.new()
+		clear.text = "Reset"
+		clear.tooltip_text = "Clear the vertices of this polygon."
+		clear.pressed.connect(canvas.clear_collision_polygon)
+		row.add_child(clear)
+	var remove := Button.new()
+	remove.name = "RemovePolygonCollider%d" % index
+	remove.text = "Remove"
+	remove.tooltip_text = "Remove this polygon collider."
+	remove.pressed.connect(_remove_polygon_collider.bind(asset_path, index))
+	row.add_child(remove)
+
+func _add_polygon_collider(asset_path: String) -> void:
+	var metadata := AssetCatalogRef.load_metadata(asset_path)
+	var polygons := PolygonColliders.read(metadata.get("collision"))
+	var index := polygons.size()
+	polygons.append({"type": "polygon", "points": [], "closed": false})
+	if _save_polygon_colliders(asset_path, metadata, polygons, index):
+		_begin_polygon_collision_editor(asset_path, index)
+
+func _remove_polygon_collider(asset_path: String, index: int) -> void:
+	var metadata := AssetCatalogRef.load_metadata(asset_path)
+	var polygons := PolygonColliders.read(metadata.get("collision"))
+	if index >= polygons.size():
+		return
+	polygons.remove_at(index)
+	if not _save_polygon_colliders(asset_path, metadata, polygons, index):
+		return
+	if canvas.collision_polygon_active and polygon_asset_path == asset_path:
+		var next_index := polygon_index - 1 if index < polygon_index else polygon_index
+		_begin_polygon_collision_editor(asset_path, clampi(next_index, 0, maxi(0, polygons.size() - 1)))
+	else:
+		_refresh_inspector()
+
+func _begin_polygon_collision_editor(asset_path: String, index: int = 0) -> void:
+	if polygon_asset_path != asset_path:
+		polygon_undo_stack.clear()
+		polygon_redo_stack.clear()
+	polygon_asset_path = asset_path
+	polygon_index = index
+	var polygons := PolygonColliders.read(AssetCatalogRef.load_metadata(asset_path).get("collision"))
+	_show_active_polygon(polygons)
+	status_label.text = "Polygon %d: click to add vertices and click the first vertex to close. Drag to move, click an edge to insert, or press Delete to remove a vertex." % (index + 1)
+
+func _show_active_polygon(polygons: Array) -> void:
+	var polygon: Dictionary = polygons[polygon_index] if polygon_index < polygons.size() else {}
+	var other_polygons := polygons.duplicate()
+	if polygon_index < other_polygons.size():
+		other_polygons.remove_at(polygon_index)
+	var points: Variant = polygon.get("points", [])
+	var reference := PolygonColliders.reference_size(polygon, Vector2.ZERO)
+	canvas.begin_collision_polygon_editor(points if points is Array else [], bool(polygon.get("closed", false)), other_polygons, reference)
 	_refresh_inspector()
 
-func _toggle_polygon_collision_editor(asset_path:String)->void:
-	if canvas.collision_polygon_active and polygon_asset_path==asset_path:
+func _toggle_polygon_collision_editor(asset_path: String, index: int = 0) -> void:
+	if canvas.collision_polygon_active and polygon_asset_path == asset_path and polygon_index == index:
 		_finish_polygon_collision_editor()
-	else:_begin_polygon_collision_editor(asset_path)
+	else:
+		_begin_polygon_collision_editor(asset_path, index)
 
 func _finish_polygon_collision_editor()->void:
-	canvas.end_collision_polygon_editor();polygon_asset_path="";status_label.text="Polygon collider saved. Selection mode restored.";_refresh_inspector()
+	canvas.end_collision_polygon_editor()
+	polygon_asset_path = ""
+	status_label.text = "Selection mode restored."
+	_refresh_inspector()
 
-func _on_collision_polygon_changed(points:Array,closed:bool,action:String)->void:
-	if polygon_asset_path.is_empty():return
-	var metadata:=AssetCatalogRef.load_metadata(polygon_asset_path);var before:Variant=metadata.get("collision",{})
-	polygon_undo_stack.append({"asset_path":polygon_asset_path,"collision":before.duplicate(true) if before is Dictionary else {}});polygon_redo_stack.clear()
-	metadata["collision"]={"type":"polygon","points":points,"closed":closed}
-	var selected:Dictionary=canvas._selected()
+func _on_collision_polygon_changed(points: Array, closed: bool, action: String) -> void:
+	if polygon_asset_path.is_empty():
+		return
+	var metadata := AssetCatalogRef.load_metadata(polygon_asset_path)
+	var polygons := PolygonColliders.read(metadata.get("collision"))
+	var polygon: Dictionary = polygons[polygon_index] if polygon_index < polygons.size() else {"type": "polygon"}
+	polygon["points"] = points
+	polygon["closed"] = closed
+	var selected: Dictionary = canvas._selected()
 	if not selected.is_empty():
-		var reference:Vector2=selected.get("footprint",Vector2.ONE)
-		if canvas._is_scalable(selected):reference=Vector2(selected.size.x,selected.size.z)
-		metadata.collision["reference_size"]=[reference.x,reference.y]
-	if AssetCatalogRef.save_metadata(polygon_asset_path,metadata)!=OK:status_label.text="Could not save polygon collision metadata.";return
-	var errors:=AssetCatalogRef.validate_polygon_collision(metadata.collision)
-	status_label.text=action+". Polygon collider saved for every instance." if errors.is_empty() else action+". "+" ".join(errors)
+		var reference: Vector2 = canvas._active_polygon_reference_size(selected)
+		polygon["reference_size"] = [reference.x, reference.y]
+	if polygon_index == polygons.size():
+		polygons.append(polygon)
+	else:
+		polygons[polygon_index] = polygon
+	if not _save_polygon_colliders(polygon_asset_path, metadata, polygons, polygon_index):
+		_show_active_polygon(PolygonColliders.read(AssetCatalogRef.load_metadata(polygon_asset_path).get("collision")))
+		return
+	var errors := AssetCatalogRef.validate_polygon_collision(polygon)
+	status_label.text = action + ". " + ("Polygon saved for every instance." if errors.is_empty() else " ".join(errors))
+	_refresh_inspector()
 
-func _apply_polygon_history(entry:Dictionary,target_stack:Array[Dictionary])->void:
-	var asset_path:=String(entry.get("asset_path",""));if asset_path.is_empty():return
-	var metadata:=AssetCatalogRef.load_metadata(asset_path);var current:Variant=metadata.get("collision",{})
-	target_stack.append({"asset_path":asset_path,"collision":current.duplicate(true) if current is Dictionary else {}});metadata["collision"]=entry.get("collision",{}).duplicate(true);AssetCatalogRef.save_metadata(asset_path,metadata)
-	var collision:Variant=metadata.collision;canvas.begin_collision_polygon_editor(collision.get("points",[]) if collision is Dictionary else [],bool(collision.get("closed",false)) if collision is Dictionary else false);status_label.text="Polygon collision history restored."
+func _save_polygon_colliders(asset_path: String, metadata: Dictionary, polygons: Array, index: int) -> bool:
+	var before: Variant = metadata.get("collision")
+	PolygonColliders.write(metadata, polygons)
+	if AssetCatalogRef.save_metadata(asset_path, metadata) != OK:
+		status_label.text = "Could not save polygon collision metadata."
+		return false
+	if asset_path == polygon_asset_path:
+		polygon_undo_stack.append({"collision": before, "index": index})
+		polygon_redo_stack.clear()
+	return true
 
-func _polygon_undo()->void:
-	if polygon_undo_stack.is_empty():return
-	_apply_polygon_history(polygon_undo_stack.pop_back(),polygon_redo_stack)
+func _apply_polygon_history(source: Array[Dictionary], destination: Array[Dictionary]) -> void:
+	if source.is_empty() or polygon_asset_path.is_empty():
+		return
+	var entry: Dictionary = source.back()
+	var metadata := AssetCatalogRef.load_metadata(polygon_asset_path)
+	var before: Variant = metadata.get("collision")
+	if entry.collision == null:
+		metadata.erase("collision")
+	else:
+		metadata["collision"] = entry.collision
+	if AssetCatalogRef.save_metadata(polygon_asset_path, metadata) != OK:
+		status_label.text = "Could not save polygon collision metadata."
+		return
+	source.pop_back()
+	destination.append({"collision": before, "index": entry.index})
+	var polygons := PolygonColliders.read(metadata.get("collision"))
+	polygon_index = clampi(int(entry.index), 0, maxi(0, polygons.size() - 1))
+	_show_active_polygon(polygons)
+	status_label.text = "Polygon collision history restored."
 
-func _polygon_redo()->void:
-	if polygon_redo_stack.is_empty():return
-	_apply_polygon_history(polygon_redo_stack.pop_back(),polygon_undo_stack)
+func _polygon_undo() -> void:
+	_apply_polygon_history(polygon_undo_stack, polygon_redo_stack)
+
+func _polygon_redo() -> void:
+	_apply_polygon_history(polygon_redo_stack, polygon_undo_stack)
 
 func _open_collision_box_editor(asset_path:String,metadata:Dictionary,boxes:Array,index:int)->void:
 	if index<0 or index>=boxes.size() or not boxes[index] is Dictionary:return
@@ -2514,11 +2703,17 @@ func _refresh_graph()->void:
 	graph_text.text=text
 
 func _save()->void:
+	if _is_habitat():
+		_save_habitat()
+		return
 	_commit_map_metadata_focus()
 	if document.path.is_empty() or document.path.get_file().begins_with("new_"):_save_as();return
 	_save_to(document.path)
 
 func _save_as()->void:
+	if _is_habitat():
+		_habitat_settings()
+		return
 	_commit_map_metadata_focus()
 	if _is_world_index_document(document):status_label.text="The world manifest always saves as map_index.json. Use Rename to change only its display name.";return
 	save_dialog.current_dir=map_directory;save_dialog.current_file=document.path.get_file();save_dialog.popup_centered_ratio(0.75)
@@ -2528,6 +2723,9 @@ func _is_world_index_document(doc:MapDocument)->bool:
 	return doc.data.has("root") and doc.data.get("sections") is Dictionary and doc.data.get("nested_sections") is Dictionary
 
 func _request_rename()->void:
+	if _is_habitat():
+		_habitat_settings()
+		return
 	if document==null or document.path.is_empty():return
 	if document.dirty:status_label.text="Save the map before renaming it.";return
 	if _is_world_index_document(document):
@@ -2666,6 +2864,7 @@ func _add_npc_movement_inspector(definition: Dictionary) -> void:
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART;inspector.add_child(note)
 
 func _edit_patrols(add_new: bool = true) -> void:
+	if _is_habitat(): return
 	if document == null: return
 	var dialog := AcceptDialog.new(); dialog.title = "Patrols"; dialog.size = Vector2i(640, 780); add_child(dialog)
 	var split := HSplitContainer.new()
@@ -2804,3 +3003,189 @@ func _edit_patrols(add_new: bool = true) -> void:
 	dialog.canceled.connect(func(): dialog.queue_free())
 	show_config.call(configs.size()-1 if add_new else 0)
 	dialog.popup_centered_ratio(0.9)
+
+func _is_habitat() -> bool:
+	return document != null and document.data.has("habitat_template_version")
+
+func _new_habitat() -> void:
+	if canvas.collision_polygon_active:
+		_finish_polygon_collision_editor()
+	npc_data.definitions = {}
+	npc_data.load_error = ""
+	npc_companion_doc = MapDocumentRef.from_text("{}")
+	undo_stack.clear()
+	redo_stack.clear()
+	identity_by_path.clear()
+	next_identity = 1
+	selected_id = ""
+	document = MapDocumentRef.from_text(JSON.stringify(habitat_templates.create()))
+	document.dirty = true
+	_set_activity(0)
+	canvas.terrain_brush_mode = "select"
+	canvas.set_selection_mode("objects")
+	_clear_palette_selection()
+	_refresh_all()
+	canvas.frame_all()
+	_habitat_settings()
+
+func _open_habitat() -> void:
+	var directory: String = project_root.path_join(habitat_templates.DIRECTORY)
+	if not DirAccess.dir_exists_absolute(directory):
+		status_label.text = "Save a habitat template first."
+		return
+	open_dialog.current_dir = directory
+	open_dialog.popup_centered_ratio(0.75)
+
+func _habitat_settings() -> void:
+	if not _is_habitat():
+		status_label.text = "Create or open a habitat template first."
+		return
+	var dialog := ConfirmationDialog.new()
+	dialog.title = "Habitat Settings"
+	var fields := GridContainer.new()
+	fields.columns = 2
+	dialog.add_child(fields)
+	var edits: Dictionary = {}
+	for field in ["id", "name"]:
+		var label := Label.new()
+		label.text = "Template " + field
+		fields.add_child(label)
+		var edit := LineEdit.new()
+		edit.text = document.data[field]
+		edit.editable = field != "id" or document.path.is_empty()
+		edit.custom_minimum_size.x = 240
+		fields.add_child(edit)
+		edits[field] = edit
+	var type_label := Label.new()
+	type_label.text = "Habitat type"
+	fields.add_child(type_label)
+	var types: Array = habitat_templates.habitat_types(project_root)
+	var dropdown := OptionButton.new()
+	for type in types:
+		dropdown.add_item(type.capitalize())
+	dropdown.select(types.find(document.data.habitat_type))
+	fields.add_child(dropdown)
+	var ground_label := Label.new()
+	ground_label.text = "Base terrain"
+	fields.add_child(ground_label)
+	var ground := OptionButton.new()
+	_populate_terrain_options(ground)
+	for index in ground.item_count:
+		if ground.get_item_metadata(index) == document.data.get("base_terrain_type", "forest_floor"):
+			ground.select(index)
+			break
+	fields.add_child(ground)
+	var coordinates: Array[SpinBox] = []
+	var values: Array = document.data.npc_spawn + document.data.wander_bounds
+	var names := ["Spawn X", "Spawn Z", "Wander left X", "Wander top Z", "Wander width", "Wander depth"]
+	for index in names.size():
+		var label := Label.new()
+		label.text = names[index]
+		fields.add_child(label)
+		var spin := SpinBox.new()
+		spin.min_value = -10
+		spin.max_value = 10
+		spin.step = 0.01
+		spin.value = values[index]
+		fields.add_child(spin)
+		coordinates.append(spin)
+	dialog.confirmed.connect(func():
+		_push_undo()
+		for field in edits:
+			document.data[field] = edits[field].text.strip_edges()
+		document.data.habitat_type = types[dropdown.selected] if dropdown.selected >= 0 else ""
+		document.data.base_terrain_type = ground.get_item_metadata(ground.selected)
+		document.data.npc_spawn = [coordinates[0].value, coordinates[1].value]
+		document.data.wander_bounds = [coordinates[2].value, coordinates[3].value, coordinates[4].value, coordinates[5].value]
+		document.dirty = true
+		_refresh_all()
+		dialog.queue_free()
+	)
+	dialog.canceled.connect(dialog.queue_free)
+	add_child(dialog)
+	dialog.popup_centered()
+
+func _save_habitat() -> void:
+	var problem: String = habitat_templates.problem(document.data, project_root)
+	if not problem.is_empty():
+		status_label.text = problem
+		return
+	var directory: String = project_root.path_join(habitat_templates.DIRECTORY)
+	var path := directory.path_join(String(document.data.id) + ".json")
+	if path != document.path and FileAccess.file_exists(path):
+		status_label.text = "A template already uses that ID. Open it or choose another ID."
+		return
+	var filenames := DirAccess.get_files_at(directory) if DirAccess.dir_exists_absolute(directory) else PackedStringArray()
+	for filename in filenames:
+		if filename.get_extension() != "json" or directory.path_join(filename) == path:
+			continue
+		var existing := MapDocumentRef.load_file(directory.path_join(filename))
+		if existing.data.get("habitat_type") == document.data.habitat_type:
+			status_label.text = "This habitat type already has a template: " + filename
+			return
+	var error := DirAccess.make_dir_recursive_absolute(directory)
+	if error == OK:
+		error = document.save_atomic(path)
+	status_label.text = "Saved habitat " + path.get_file() if error == OK else error_string(error)
+
+func _add_exhibit_editor(lectern: Dictionary) -> void:
+	var button := _add_button(inspector, "Configure Exhibit", func(): _configure_exhibit(lectern))
+	button.tooltip_text = "Set the stable slot ID and the map-local placement region for this lectern."
+
+func _configure_exhibit(lectern: Dictionary) -> void:
+	var slot: Dictionary = lectern.get("habitat_exhibit", {})
+	var dialog := ConfirmationDialog.new()
+	dialog.title = "Exhibit Placement"
+	var fields := GridContainer.new()
+	fields.columns = 2
+	dialog.add_child(fields)
+	var id_label := Label.new()
+	id_label.text = "Persistent slot ID"
+	fields.add_child(id_label)
+	var id_edit := LineEdit.new()
+	id_edit.text = String(slot.get("id", ""))
+	id_edit.placeholder_text = "exhibit_01"
+	fields.add_child(id_edit)
+	var origin: Array = slot.get("origin", lectern.position)
+	var bounds: Array = slot.get("bounds", [-2, -1.5, 4, 3])
+	var values := origin + bounds
+	var names := ["Map-local origin X", "Map-local origin Y", "Map-local origin Z",
+		"Interior left X", "Interior top Z", "Interior width", "Interior depth"]
+	var coordinates: Array[SpinBox] = []
+	for index in names.size():
+		var label := Label.new()
+		label.text = names[index]
+		fields.add_child(label)
+		var spin := SpinBox.new()
+		spin.min_value = -1000
+		spin.max_value = 1000
+		spin.step = 0.01
+		spin.value = values[index]
+		fields.add_child(spin)
+		coordinates.append(spin)
+	dialog.confirmed.connect(func():
+		var id := id_edit.text.strip_edges()
+		var region := Rect2(coordinates[3].value, coordinates[4].value, coordinates[5].value, coordinates[6].value)
+		if not id.is_empty() and (not habitat_templates.valid_id(id) or not region.has_area() or not habitat_templates.footprint().encloses(region)):
+			status_label.text = "Use a valid slot ID and bounds inside the pen footprint."
+			dialog.queue_free()
+			return
+		for other: Variant in document.data.get("objects", []):
+			if not id.is_empty() and other is Dictionary and not is_same(other, lectern) and other.get("habitat_exhibit", {}).get("id") == id:
+				status_label.text = "Another lectern already uses slot " + id
+				dialog.queue_free()
+				return
+		_push_undo()
+		if id.is_empty():
+			lectern.erase("habitat_exhibit")
+		else:
+			lectern["habitat_exhibit"] = {"id": id,
+				"origin": [coordinates[0].value, coordinates[1].value, coordinates[2].value],
+				"bounds": [region.position.x, region.position.y, region.size.x, region.size.y]}
+		document.dirty = true
+		_refresh_all()
+		dialog.queue_free()
+	)
+	dialog.canceled.connect(dialog.queue_free)
+	add_child(dialog)
+	dialog.popup_centered()

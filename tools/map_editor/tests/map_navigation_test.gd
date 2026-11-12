@@ -42,6 +42,8 @@ func _initialize() -> void:
 		if object.path == "$.warp_3": warp = object
 		if object.path == "$.objects[28]": house = object
 	assert(not warp.is_empty() and not house.is_empty())
+	# Keep the overlap fixture independent of changes to the authored city map.
+	house.position=warp.position
 	var canvas: Control = editor.canvas
 	var screen: Vector2 = canvas.world_to_screen(Vector2(warp.position.x, warp.position.z))
 	assert(canvas._screen_rect(house).grow(5).has_point(screen), "Fixture must reproduce a house covering the warp.")

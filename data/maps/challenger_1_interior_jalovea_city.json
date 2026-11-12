@@ -1,9 +1,9 @@
 {
 	"arrival_points": {
 		"entry": [
-			0,
+			0.5,
 			0.64999997615814,
-			7.0
+			11.75
 		]
 	},
 	"base_terrain_type": "earthy_museum_floor",
@@ -19,7 +19,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,1": {
 					"art": {
@@ -30,7 +31,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,10": {
 					"art": {
@@ -41,7 +43,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,11": {
 					"art": {
@@ -52,7 +55,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,12": {
 					"art": {
@@ -63,7 +67,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,13": {
 					"art": {
@@ -74,7 +79,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,14": {
 					"art": {
@@ -85,7 +91,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,15": {
 					"art": {
@@ -96,7 +103,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,16": {
 					"art": {
@@ -107,7 +115,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,17": {
 					"art": {
@@ -118,7 +127,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,18": {
 					"art": {
@@ -129,7 +139,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,19": {
 					"art": {
@@ -140,9 +151,93 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"0,20": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"0,21": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"0,22": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"0,23": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"0,24": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"0,25": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"0,26": {
 					"art": {
 						"flat": false,
 						"rotation": 0.0,
@@ -162,7 +257,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,4": {
 					"art": {
@@ -173,7 +269,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,5": {
 					"art": {
@@ -184,7 +281,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,6": {
 					"art": {
@@ -195,7 +293,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,7": {
 					"art": {
@@ -206,7 +305,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,8": {
 					"art": {
@@ -217,7 +317,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,9": {
 					"art": {
@@ -228,7 +329,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				}
 			},
 			"depth": 1,
@@ -245,7 +347,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_top.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,1": {
 					"art": {
@@ -256,7 +359,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,2": {
 					"art": {
@@ -267,7 +371,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,3": {
 					"art": {
@@ -278,7 +383,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"1,0": {
 					"art": {
@@ -289,18 +395,22 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_top.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"1,1": {
 					"art": {
 						"flat": false,
+						"overlay": true,
 						"rotation": 0.0,
 						"size": [
-							1.0,
+							1.67307686805725,
 							1.0
 						],
-						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+						"texture": "assets/overworld/museum_wall_windows.png",
+						"type_id": "overlay.museum_wall_windows"
+					},
+					"terrain": "dark_museum_floor"
 				},
 				"1,2": {
 					"art": {
@@ -311,7 +421,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"1,3": {
 					"art": {
@@ -322,7 +433,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"10,0": {
 					"art": {
@@ -333,7 +445,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_top.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"10,1": {
 					"art": {
@@ -344,7 +457,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"10,2": {
 					"art": {
@@ -355,7 +469,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"10,3": {
 					"art": {
@@ -366,7 +481,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"11,0": {
 					"art": {
@@ -377,7 +493,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_top.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"11,1": {
 					"art": {
@@ -388,7 +505,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"11,2": {
 					"art": {
@@ -399,7 +517,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"11,3": {
 					"art": {
@@ -410,18 +529,22 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"12,0": {
 					"art": {
 						"flat": false,
+						"overlay": true,
 						"rotation": 0.0,
 						"size": [
-							1.0,
+							1.67307686805725,
 							1.0
 						],
-						"texture": "assets/overworld/museum_wall_top.png"
-					}
+						"texture": "assets/overworld/museum_wall_windows.png",
+						"type_id": "overlay.museum_wall_windows"
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"12,1": {
 					"art": {
@@ -432,18 +555,22 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"12,2": {
 					"art": {
 						"flat": false,
+						"overlay": true,
 						"rotation": 0.0,
 						"size": [
-							1.0,
-							1.0
+							1.24526309967041,
+							1.29999995231628
 						],
-						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+						"texture": "assets/overworld/overlay_banner_jalvoea.png",
+						"type_id": "overlay.banner_jalvoea"
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"12,3": {
 					"art": {
@@ -454,7 +581,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"13,0": {
 					"art": {
@@ -465,7 +593,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_top.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"13,1": {
 					"art": {
@@ -476,7 +605,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"13,2": {
 					"art": {
@@ -487,7 +617,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"13,3": {
 					"art": {
@@ -498,7 +629,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"14,0": {
 					"art": {
@@ -509,7 +641,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_top.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"14,1": {
 					"art": {
@@ -520,7 +653,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"14,2": {
 					"art": {
@@ -531,7 +665,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"14,3": {
 					"art": {
@@ -542,18 +677,22 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"15,0": {
 					"art": {
 						"flat": false,
+						"overlay": true,
 						"rotation": 0.0,
 						"size": [
-							1.0,
+							1.67307686805725,
 							1.0
 						],
-						"texture": "assets/overworld/museum_wall_top.png"
-					}
+						"texture": "assets/overworld/museum_wall_windows.png",
+						"type_id": "overlay.museum_wall_windows"
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"15,1": {
 					"art": {
@@ -564,7 +703,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"15,2": {
 					"art": {
@@ -575,7 +715,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"15,3": {
 					"art": {
@@ -586,7 +727,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"16,0": {
 					"art": {
@@ -597,7 +739,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_top.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"16,1": {
 					"art": {
@@ -608,7 +751,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"16,2": {
 					"art": {
@@ -619,7 +763,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"16,3": {
 					"art": {
@@ -630,7 +775,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"17,0": {
 					"art": {
@@ -641,7 +787,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_top.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"17,1": {
 					"art": {
@@ -652,7 +799,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"17,2": {
 					"art": {
@@ -663,7 +811,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"17,3": {
 					"art": {
@@ -674,7 +823,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"18,0": {
 					"art": {
@@ -685,7 +835,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_top.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"18,1": {
 					"art": {
@@ -696,7 +847,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"18,2": {
 					"art": {
@@ -707,7 +859,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"18,3": {
 					"art": {
@@ -718,7 +871,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"19,0": {
 					"art": {
@@ -729,18 +883,22 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_top.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"19,1": {
 					"art": {
 						"flat": false,
+						"overlay": true,
 						"rotation": 0.0,
 						"size": [
-							1.0,
+							1.67307686805725,
 							1.0
 						],
-						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+						"texture": "assets/overworld/museum_wall_windows.png",
+						"type_id": "overlay.museum_wall_windows"
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"19,2": {
 					"art": {
@@ -751,7 +909,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"19,3": {
 					"art": {
@@ -762,7 +921,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"2,0": {
 					"art": {
@@ -773,7 +933,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_top.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"2,1": {
 					"art": {
@@ -784,7 +945,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "dark_museum_floor"
 				},
 				"2,2": {
 					"art": {
@@ -795,7 +957,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"2,3": {
 					"art": {
@@ -806,7 +969,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"20,0": {
 					"art": {
@@ -817,7 +981,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_top.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"20,1": {
 					"art": {
@@ -828,7 +993,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"20,2": {
 					"art": {
@@ -839,7 +1005,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"20,3": {
 					"art": {
@@ -850,7 +1017,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"21,0": {
 					"art": {
@@ -861,7 +1029,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_top.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"21,1": {
 					"art": {
@@ -872,7 +1041,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"21,2": {
 					"art": {
@@ -883,7 +1053,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"21,3": {
 					"art": {
@@ -894,7 +1065,154 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"22,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"22,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"22,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"22,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"23,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"23,1": {
+					"art": {
+						"flat": false,
+						"overlay": true,
+						"rotation": 0.0,
+						"size": [
+							1.67307686805725,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_windows.png",
+						"type_id": "overlay.museum_wall_windows"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"23,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"23,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"24,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_top.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"24,1": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"24,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"24,3": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"3,0": {
 					"art": {
@@ -905,7 +1223,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_top.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"3,1": {
 					"art": {
@@ -916,7 +1235,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"3,2": {
 					"art": {
@@ -927,7 +1247,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"3,3": {
 					"art": {
@@ -938,7 +1259,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"4,0": {
 					"art": {
@@ -949,7 +1271,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_top.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"4,1": {
 					"art": {
@@ -960,7 +1283,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"4,2": {
 					"art": {
@@ -971,7 +1295,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"4,3": {
 					"art": {
@@ -982,7 +1307,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"5,0": {
 					"art": {
@@ -993,18 +1319,22 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_top.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"5,1": {
 					"art": {
 						"flat": false,
+						"overlay": true,
 						"rotation": 0.0,
 						"size": [
-							1.0,
+							1.67307686805725,
 							1.0
 						],
-						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+						"texture": "assets/overworld/museum_wall_windows.png",
+						"type_id": "overlay.museum_wall_windows"
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"5,2": {
 					"art": {
@@ -1015,7 +1345,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"5,3": {
 					"art": {
@@ -1026,7 +1357,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"6,0": {
 					"art": {
@@ -1037,7 +1369,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_top.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"6,1": {
 					"art": {
@@ -1048,7 +1381,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"6,2": {
 					"art": {
@@ -1059,7 +1393,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"6,3": {
 					"art": {
@@ -1070,7 +1405,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"7,0": {
 					"art": {
@@ -1081,7 +1417,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_top.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"7,1": {
 					"art": {
@@ -1092,7 +1429,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"7,2": {
 					"art": {
@@ -1103,7 +1441,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"7,3": {
 					"art": {
@@ -1114,7 +1453,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"8,0": {
 					"art": {
@@ -1125,7 +1465,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_top.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"8,1": {
 					"art": {
@@ -1136,7 +1477,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"8,2": {
 					"art": {
@@ -1147,7 +1489,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"8,3": {
 					"art": {
@@ -1158,18 +1501,22 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"9,0": {
 					"art": {
 						"flat": false,
+						"overlay": true,
 						"rotation": 0.0,
 						"size": [
-							1.0,
+							1.67307686805725,
 							1.0
 						],
-						"texture": "assets/overworld/museum_wall_top.png"
-					}
+						"texture": "assets/overworld/museum_wall_windows.png",
+						"type_id": "overlay.museum_wall_windows"
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"9,1": {
 					"art": {
@@ -1180,7 +1527,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"9,2": {
 					"art": {
@@ -1191,7 +1539,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"9,3": {
 					"art": {
@@ -1202,7 +1551,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				}
 			},
 			"depth": 4,
@@ -1375,6 +1725,39 @@
 						"texture": "assets/overworld/museum_wall_fill.png"
 					}
 				},
+				"22,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"23,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
+				"24,0": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					}
+				},
 				"3,0": {
 					"art": {
 						"flat": false,
@@ -1453,6 +1836,7 @@
 					}
 				}
 			},
+			"covers_player": true,
 			"depth": 1,
 			"enabled": true
 		},
@@ -1467,7 +1851,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,1": {
 					"art": {
@@ -1478,7 +1863,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,10": {
 					"art": {
@@ -1489,7 +1875,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,11": {
 					"art": {
@@ -1500,7 +1887,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,12": {
 					"art": {
@@ -1511,7 +1899,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,13": {
 					"art": {
@@ -1522,7 +1911,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,14": {
 					"art": {
@@ -1533,7 +1923,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,15": {
 					"art": {
@@ -1544,7 +1935,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,16": {
 					"art": {
@@ -1555,7 +1947,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,17": {
 					"art": {
@@ -1566,7 +1959,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,18": {
 					"art": {
@@ -1577,7 +1971,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,19": {
 					"art": {
@@ -1588,9 +1983,94 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,2": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"0,20": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"0,21": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"0,22": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"0,23": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"0,24": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"0,25": {
+					"art": {
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.0,
+							1.0
+						],
+						"texture": "assets/overworld/museum_wall_fill.png"
+					},
+					"terrain": "earthy_museum_floor"
+				},
+				"0,26": {
 					"art": {
 						"flat": false,
 						"rotation": 0.0,
@@ -1610,7 +2090,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,4": {
 					"art": {
@@ -1621,7 +2102,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,5": {
 					"art": {
@@ -1632,7 +2114,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,6": {
 					"art": {
@@ -1643,7 +2126,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,7": {
 					"art": {
@@ -1654,7 +2138,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,8": {
 					"art": {
@@ -1665,7 +2150,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				},
 				"0,9": {
 					"art": {
@@ -1676,7 +2162,8 @@
 							1.0
 						],
 						"texture": "assets/overworld/museum_wall_fill.png"
-					}
+					},
+					"terrain": "earthy_museum_floor"
 				}
 			},
 			"depth": 1,
@@ -1684,13 +2171,13 @@
 		}
 	},
 	"bounds_center": [
-		1.0,
-		0.0
+		0.5,
+		1.5
 	],
 	"entry": [
-		0,
+		0.5,
 		0.64999997615814,
-		7.0
+		11.75
 	],
 	"floor_blocks": [],
 	"format_version": 2,
@@ -1704,6 +2191,7 @@
 		"tags": []
 	},
 	"map_type": "Indoor",
+	"npcs": [],
 	"objects": [
 		{
 			"asset_path": "res://assets/overworld/tile_earthy_museum_floor.png",
@@ -1724,9 +2212,9 @@
 			"asset_path": "res://assets/overworld/habitat_pen_massive.png",
 			"height": 5.55,
 			"position": [
-				-6.0,
+				-2.0,
 				0.0,
-				-4.0
+				-7.0
 			],
 			"size": [
 				1.0,
@@ -1736,12 +2224,162 @@
 			"type": "asset.habitat_pen_massive"
 		},
 		{
-			"asset_path": "res://assets/overworld/museum_pillar.png",
-			"height": 1.0,
+			"asset_path": "res://assets/overworld/habitat_pen_massive.png",
+			"height": 5.55,
 			"position": [
-				-10.0,
+				3.0,
 				0.0,
-				-5.0
+				-7.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_pen_massive"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_pen_massive.png",
+			"height": 5.55,
+			"position": [
+				-7.65000009536743,
+				0.0,
+				-4.05000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_pen_massive"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_pen_massive.png",
+			"height": 5.55,
+			"position": [
+				-9.0,
+				0.0,
+				2.25
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_pen_massive"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_pen_massive.png",
+			"height": 5.55,
+			"position": [
+				-9.0,
+				0.0,
+				8.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_pen_massive"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_pen_massive.png",
+			"height": 5.55,
+			"position": [
+				-7.19999980926514,
+				0.0,
+				14.3999996185303
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_pen_massive"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_pen_massive.png",
+			"height": 5.55,
+			"position": [
+				8.55000019073486,
+				0.0,
+				-4.05000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_pen_massive"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_pen_massive.png",
+			"height": 5.55,
+			"position": [
+				9.89999961853027,
+				0.0,
+				2.25
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_pen_massive"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_pen_massive.png",
+			"height": 5.55,
+			"position": [
+				9.89999961853027,
+				0.0,
+				8.10000038146973
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_pen_massive"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_pen_massive.png",
+			"height": 5.55,
+			"position": [
+				8.10000038146973,
+				0.0,
+				14.3999996185303
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_pen_massive"
+		},
+		{
+			"asset_path": "res://assets/overworld/tile_dark_museum_floor_icon.png",
+			"position": [
+				0.5,
+				0.43,
+				1.0
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				2.0,
+				0.02,
+				2.0
+			],
+			"type": "decal.dark_museum_floor_icon"
+		},
+		{
+			"asset_path": "res://assets/overworld/museum_pillar.png",
+			"height": 2.1,
+			"position": [
+				0.5,
+				0.0,
+				-8.0
 			],
 			"size": [
 				1.0,
@@ -1752,11 +2390,11 @@
 		},
 		{
 			"asset_path": "res://assets/overworld/museum_pillar.png",
-			"height": 1.0,
+			"height": 2.1,
 			"position": [
-				-10.0,
+				-11.3999996185303,
 				0.0,
-				-6.0
+				-11.0
 			],
 			"size": [
 				1.0,
@@ -1764,6 +2402,428 @@
 				1.0
 			],
 			"type": "asset.museum_pillar"
+		},
+		{
+			"asset_path": "res://assets/overworld/museum_pillar.png",
+			"height": 2.1,
+			"position": [
+				-11.3999996185303,
+				0.0,
+				-6.40000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.museum_pillar"
+		},
+		{
+			"asset_path": "res://assets/overworld/museum_pillar.png",
+			"height": 2.1,
+			"position": [
+				12.3999996185303,
+				0.0,
+				-6.40000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.museum_pillar"
+		},
+		{
+			"asset_path": "res://assets/overworld/museum_pillar.png",
+			"height": 2.1,
+			"position": [
+				12.3999996185303,
+				0.0,
+				-11.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.museum_pillar"
+		},
+		{
+			"asset_path": "res://assets/overworld/arena_general.png",
+			"height": 11.0,
+			"position": [
+				0.5,
+				0.0,
+				8.5
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.arena_general"
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_museum_railing.png",
+			"height": 0.8,
+			"position": [
+				-10.6000003814697,
+				0.0,
+				-4.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_museum_railing"
+		},
+		{
+			"asset_path": "res://assets/overworld/indoor_museum_railing.png",
+			"height": 0.8,
+			"position": [
+				11.6000003814697,
+				0.0,
+				-4.59999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.indoor_museum_railing"
+		},
+		{
+			"asset_path": "res://assets/overworld/banner_jalvoea.png",
+			"height": 1.0,
+			"position": [
+				-1.25,
+				0.0,
+				8.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"sort_offset_y": 0.55,
+			"type": "asset.banner_jalvoea"
+		},
+		{
+			"asset_path": "res://assets/overworld/banner_jalvoea.png",
+			"height": 1.0,
+			"position": [
+				2.25,
+				0.0,
+				8.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"sort_offset_y": 0.55,
+			"type": "asset.banner_jalvoea"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_control_display_north_facing.png",
+			"habitat_exhibit": {
+				"bounds": [
+					-2,
+					-1.5,
+					4,
+					3
+				],
+				"id": "exhibit_01",
+				"origin": [
+					-2.0,
+					0.0,
+					-10.5
+				]
+			},
+			"height": 1.0,
+			"interaction_text": "You did not start the fire....",
+			"position": [
+				-3.15000009536743,
+				0.0,
+				-7.65000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_control_display_north_facing"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_control_display_east_facing.png",
+			"habitat_exhibit": {
+				"bounds": [
+					-2,
+					-1.5,
+					4,
+					3
+				],
+				"id": "exhibit_02",
+				"origin": [
+					3.0,
+					0.0,
+					-10.5
+				]
+			},
+			"height": 1.0,
+			"interaction_text": "You did not start the fire...",
+			"position": [
+				5.84999990463257,
+				0.0,
+				-5.84999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_control_display_east_facing"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_control_display_east_facing.png",
+			"habitat_exhibit": {
+				"bounds": [
+					-2,
+					-1.5,
+					4,
+					3
+				],
+				"id": "exhibit_07",
+				"origin": [
+					8.55,
+					0.0,
+					-7.55
+				]
+			},
+			"height": 1.0,
+			"interaction_text": "You did not start the fire...",
+			"position": [
+				7.19999980926514,
+				0.0,
+				-2.25
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_control_display_east_facing"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_control_display_east_facing.png",
+			"habitat_exhibit": {
+				"bounds": [
+					-2,
+					-1.5,
+					4,
+					3
+				],
+				"id": "exhibit_09",
+				"origin": [
+					9.9,
+					0.0,
+					4.6
+				]
+			},
+			"height": 1.0,
+			"interaction_text": "You did not start the fire...",
+			"position": [
+				7.19999980926514,
+				0.0,
+				6.75
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_control_display_east_facing"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_control_display_east_facing.png",
+			"habitat_exhibit": {
+				"bounds": [
+					-2,
+					-1.5,
+					4,
+					3
+				],
+				"id": "exhibit_10",
+				"origin": [
+					8.1,
+					0.0,
+					10.9
+				]
+			},
+			"height": 1.0,
+			"interaction_text": "You did not start the fire...",
+			"position": [
+				5.40000009536743,
+				0.0,
+				9.44999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_control_display_east_facing"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_control_display_west_facing.png",
+			"habitat_exhibit": {
+				"bounds": [
+					-2,
+					-1.5,
+					4,
+					3
+				],
+				"id": "exhibit_06",
+				"origin": [
+					-7.2,
+					0.0,
+					10.9
+				]
+			},
+			"height": 1.0,
+			"interaction_text": "Meh.",
+			"position": [
+				-4.5,
+				0.0,
+				9.44999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_control_display_west_facing"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_control_display_west_facing.png",
+			"habitat_exhibit": {
+				"bounds": [
+					-2,
+					-1.5,
+					4,
+					3
+				],
+				"id": "exhibit_05",
+				"origin": [
+					-9.0,
+					0.0,
+					4.5
+				]
+			},
+			"height": 1.0,
+			"interaction_text": "Meh.",
+			"position": [
+				-6.30000019073486,
+				0.0,
+				6.30000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_control_display_west_facing"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_control_display_west_facing.png",
+			"habitat_exhibit": {
+				"bounds": [
+					-2,
+					-1.5,
+					4,
+					3
+				],
+				"id": "exhibit_04",
+				"origin": [
+					-9.0,
+					0.0,
+					-1.25
+				]
+			},
+			"height": 1.0,
+			"interaction_text": "Meh.",
+			"position": [
+				-6.30000019073486,
+				0.0,
+				-2.70000004768372
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_control_display_west_facing"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_control_display_west_facing.png",
+			"habitat_exhibit": {
+				"bounds": [
+					-2,
+					-1.5,
+					4,
+					3
+				],
+				"id": "exhibit_03",
+				"origin": [
+					-7.65,
+					0.0,
+					-7.55
+				]
+			},
+			"height": 1.0,
+			"interaction_text": "Meh.",
+			"position": [
+				-4.94999980926514,
+				0.0,
+				-5.84999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_control_display_west_facing"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_control_display_east_facing.png",
+			"habitat_exhibit": {
+				"bounds": [
+					-2,
+					-1.5,
+					4,
+					3
+				],
+				"id": "exhibit_08",
+				"origin": [
+					9.9,
+					0.0,
+					-1.25
+				]
+			},
+			"height": 1.0,
+			"interaction_text": "You did not start the fire...",
+			"position": [
+				7.2,
+				0.0,
+				1.8
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_control_display_east_facing"
 		}
 	],
 	"orchids": [],
@@ -1774,15 +2834,15 @@
 	],
 	"outdoor_connections": [],
 	"return_warp": [
-		0,
+		0.5,
 		0.11999999731779,
-		9.0
+		13.75
 	],
 	"rocks": [],
 	"sand_blocks": [],
 	"size": [
-		22.0,
-		20
+		25.0,
+		27.0
 	],
 	"tall_grass_species": [],
 	"terrain_tiles": [
@@ -1931,6 +2991,278 @@
 				[
 					3,
 					2
+				],
+				[
+					-2,
+					-3
+				],
+				[
+					-1,
+					-3
+				],
+				[
+					0,
+					-3
+				],
+				[
+					1,
+					-3
+				],
+				[
+					2,
+					-3
+				],
+				[
+					3,
+					-3
+				],
+				[
+					3,
+					-4
+				],
+				[
+					2,
+					-4
+				],
+				[
+					1,
+					-4
+				],
+				[
+					0,
+					-4
+				],
+				[
+					-1,
+					-4
+				],
+				[
+					-2,
+					-4
+				],
+				[
+					-2,
+					4
+				],
+				[
+					-1,
+					4
+				],
+				[
+					0,
+					4
+				],
+				[
+					1,
+					4
+				],
+				[
+					2,
+					4
+				],
+				[
+					3,
+					4
+				],
+				[
+					-2,
+					5
+				],
+				[
+					-1,
+					5
+				],
+				[
+					0,
+					5
+				],
+				[
+					1,
+					5
+				],
+				[
+					2,
+					5
+				],
+				[
+					3,
+					5
+				],
+				[
+					-2,
+					6
+				],
+				[
+					-1,
+					6
+				],
+				[
+					0,
+					6
+				],
+				[
+					1,
+					6
+				],
+				[
+					3,
+					6
+				],
+				[
+					2,
+					6
+				],
+				[
+					-3,
+					-1
+				],
+				[
+					-3,
+					0
+				],
+				[
+					-3,
+					1
+				],
+				[
+					-3,
+					2
+				],
+				[
+					-3,
+					3
+				],
+				[
+					-3,
+					4
+				],
+				[
+					4,
+					-1
+				],
+				[
+					4,
+					0
+				],
+				[
+					4,
+					1
+				],
+				[
+					4,
+					2
+				],
+				[
+					4,
+					3
+				],
+				[
+					4,
+					4
+				],
+				[
+					4,
+					5
+				],
+				[
+					4,
+					-2
+				],
+				[
+					-3,
+					-2
+				],
+				[
+					-3,
+					5
+				],
+				[
+					4,
+					-3
+				],
+				[
+					-3,
+					-3
+				],
+				[
+					-1,
+					-5
+				],
+				[
+					2.0,
+					-5
+				],
+				[
+					-1.0,
+					7.0
+				],
+				[
+					0.0,
+					7.0
+				],
+				[
+					1.0,
+					7
+				],
+				[
+					2.0,
+					7
+				],
+				[
+					5.0,
+					-2.0
+				],
+				[
+					5.0,
+					-1.0
+				],
+				[
+					5,
+					0.0
+				],
+				[
+					5,
+					1.0
+				],
+				[
+					5,
+					2.0
+				],
+				[
+					5,
+					3.0
+				],
+				[
+					5,
+					4.0
+				],
+				[
+					-4.0,
+					-1.0
+				],
+				[
+					-4.0,
+					0.0
+				],
+				[
+					-4,
+					1.0
+				],
+				[
+					-4,
+					2.0
+				],
+				[
+					-4,
+					3.0
+				],
+				[
+					-4,
+					-2.0
+				],
+				[
+					-4,
+					4.0
 				]
 			],
 			"terrain_type": "dark_museum_floor"
@@ -1938,424 +3270,280 @@
 		{
 			"positions": [
 				[
-					-3,
-					-2
+					-4.0,
+					-3.0
 				],
 				[
-					-3,
-					-1
+					-4.0,
+					-4.0
 				],
 				[
-					-2,
-					4
-				],
-				[
-					-1,
-					4
-				],
-				[
-					0,
-					4
-				],
-				[
-					1,
-					4
-				],
-				[
-					4,
-					3
-				],
-				[
-					4,
-					2
-				],
-				[
-					4,
-					1
-				],
-				[
-					5,
-					1
-				],
-				[
-					5,
-					0
-				],
-				[
-					4,
-					0
-				],
-				[
-					4,
-					-1
-				],
-				[
-					4,
-					-2
-				],
-				[
-					5,
-					-2
-				],
-				[
-					5,
-					-1
-				],
-				[
-					5,
-					2
-				],
-				[
-					5,
-					3
-				],
-				[
-					2,
-					-3
-				],
-				[
-					1,
-					-3
-				],
-				[
-					0,
-					-3
-				],
-				[
-					-1,
-					-3
-				],
-				[
-					-2,
-					-3
-				],
-				[
-					-3,
-					-3
-				],
-				[
-					-4,
-					-3
-				],
-				[
-					-4,
-					-2
-				],
-				[
-					-4,
-					-1
-				],
-				[
-					-2,
-					5
-				],
-				[
-					-1,
-					5
-				],
-				[
-					0,
-					5
-				],
-				[
-					1,
-					5
-				],
-				[
-					-4,
-					-4
-				],
-				[
-					-3,
-					-4
-				],
-				[
-					-2,
-					-4
-				],
-				[
-					-1,
-					-4
-				],
-				[
-					0,
-					-4
-				],
-				[
-					1,
-					-4
-				],
-				[
-					2,
-					-4
-				],
-				[
-					-1,
-					-6
-				],
-				[
-					-2,
-					-5
-				],
-				[
-					-2,
-					-6
-				],
-				[
-					-2,
-					-7
-				],
-				[
-					-2,
-					-8
-				],
-				[
-					-2,
-					-9
-				],
-				[
-					-3,
-					-8
-				],
-				[
-					-3,
-					-6
-				],
-				[
-					-3,
-					-5
-				],
-				[
-					-3,
-					-10
-				],
-				[
-					-4,
-					-6
-				],
-				[
-					-4,
-					-9
-				],
-				[
-					-3,
-					-9
-				],
-				[
-					-3,
-					-7
-				],
-				[
-					-4,
-					-10
-				],
-				[
-					-5,
-					-10
-				],
-				[
-					-6,
-					-10
-				],
-				[
-					-7,
-					-10
-				],
-				[
-					-8,
-					-10
-				],
-				[
-					-9,
-					-10
-				],
-				[
-					-10,
-					-9
-				],
-				[
-					-10,
-					-8
-				],
-				[
-					-10,
-					-10
-				],
-				[
-					-10,
-					-7
-				],
-				[
-					-10,
-					-6
-				],
-				[
-					-10,
-					-5
-				],
-				[
-					-9,
-					-4
-				],
-				[
-					-9,
-					-3
-				],
-				[
-					-10,
-					-2
-				],
-				[
-					-10,
-					-1
-				],
-				[
-					-10,
-					-3
-				],
-				[
-					-10,
-					-4
-				],
-				[
-					-8,
-					-3
-				],
-				[
-					-8,
-					-4
-				],
-				[
-					-8,
-					-5
-				],
-				[
-					-9,
-					-5
-				],
-				[
-					-9,
-					-6
-				],
-				[
-					-9,
-					-8
-				],
-				[
-					-9,
-					-9
-				],
-				[
-					-8,
-					-9
-				],
-				[
-					-8,
-					-8
-				],
-				[
-					-6,
-					-8
-				],
-				[
-					-8,
-					-7
-				],
-				[
-					-7,
-					-8
-				],
-				[
-					-9,
-					-7
-				],
-				[
-					-6,
-					-9
-				],
-				[
-					-7,
-					-9
-				],
-				[
-					-5,
-					-9
-				],
-				[
-					-5,
-					-8
-				],
-				[
-					-5,
-					-7
-				],
-				[
-					-4,
-					-8
-				],
-				[
-					-7,
-					-7
-				],
-				[
-					-4,
-					-7
-				],
-				[
-					-7,
-					-6
-				],
-				[
-					-6,
-					-6
-				],
-				[
-					-5,
-					-6
-				],
-				[
-					-6,
-					-7
-				],
-				[
-					-8,
-					-6
-				],
-				[
-					-7,
-					-5
-				],
-				[
-					-4,
-					-5
-				],
-				[
-					-6,
-					-4
-				],
-				[
-					-5,
-					-5
-				],
-				[
-					-6,
-					-5
-				],
-				[
-					-7,
-					-4
-				],
-				[
-					-2,
-					-10
-				],
-				[
-					-1,
-					-10
+					-3.0,
+					-4.0
 				],
 				[
 					-1.0,
+					-6.0
+				],
+				[
+					-2.0,
 					-5.0
+				],
+				[
+					-2.0,
+					-6.0
+				],
+				[
+					-2.0,
+					-7.0
+				],
+				[
+					-2.0,
+					-8.0
+				],
+				[
+					-2.0,
+					-9.0
+				],
+				[
+					-3.0,
+					-8.0
+				],
+				[
+					-3.0,
+					-6.0
+				],
+				[
+					-3.0,
+					-5.0
+				],
+				[
+					-3.0,
+					-10.0
+				],
+				[
+					-4.0,
+					-6.0
+				],
+				[
+					-4.0,
+					-9.0
+				],
+				[
+					-3.0,
+					-9.0
+				],
+				[
+					-3.0,
+					-7.0
+				],
+				[
+					-4.0,
+					-10.0
+				],
+				[
+					-5.0,
+					-10.0
+				],
+				[
+					-6.0,
+					-10.0
+				],
+				[
+					-7.0,
+					-10.0
+				],
+				[
+					-8.0,
+					-10.0
+				],
+				[
+					-9.0,
+					-10.0
+				],
+				[
+					-10.0,
+					-9.0
+				],
+				[
+					-10.0,
+					-8.0
+				],
+				[
+					-10.0,
+					-10.0
+				],
+				[
+					-10.0,
+					-7.0
+				],
+				[
+					-10.0,
+					-6.0
+				],
+				[
+					-10.0,
+					-5.0
+				],
+				[
+					-9.0,
+					-4.0
+				],
+				[
+					-9.0,
+					-3.0
+				],
+				[
+					-10.0,
+					-2.0
+				],
+				[
+					-10.0,
+					-1.0
+				],
+				[
+					-10.0,
+					-3.0
+				],
+				[
+					-10.0,
+					-4.0
+				],
+				[
+					-8.0,
+					-3.0
+				],
+				[
+					-8.0,
+					-4.0
+				],
+				[
+					-8.0,
+					-5.0
+				],
+				[
+					-9.0,
+					-5.0
+				],
+				[
+					-9.0,
+					-6.0
+				],
+				[
+					-9.0,
+					-8.0
+				],
+				[
+					-9.0,
+					-9.0
+				],
+				[
+					-8.0,
+					-9.0
+				],
+				[
+					-8.0,
+					-8.0
+				],
+				[
+					-6.0,
+					-8.0
+				],
+				[
+					-8.0,
+					-7.0
+				],
+				[
+					-7.0,
+					-8.0
+				],
+				[
+					-9.0,
+					-7.0
+				],
+				[
+					-6.0,
+					-9.0
+				],
+				[
+					-7.0,
+					-9.0
+				],
+				[
+					-5.0,
+					-9.0
+				],
+				[
+					-5.0,
+					-8.0
+				],
+				[
+					-5.0,
+					-7.0
+				],
+				[
+					-4.0,
+					-8.0
+				],
+				[
+					-7.0,
+					-7.0
+				],
+				[
+					-4.0,
+					-7.0
+				],
+				[
+					-7.0,
+					-6.0
+				],
+				[
+					-6.0,
+					-6.0
+				],
+				[
+					-5.0,
+					-6.0
+				],
+				[
+					-6.0,
+					-7.0
+				],
+				[
+					-8.0,
+					-6.0
+				],
+				[
+					-7.0,
+					-5.0
+				],
+				[
+					-4.0,
+					-5.0
+				],
+				[
+					-6.0,
+					-4.0
+				],
+				[
+					-5.0,
+					-5.0
+				],
+				[
+					-6.0,
+					-5.0
+				],
+				[
+					-7.0,
+					-4.0
+				],
+				[
+					-2.0,
+					-10.0
+				],
+				[
+					-1.0,
+					-10.0
 				],
 				[
 					-1.0,
@@ -2366,7 +3554,7 @@
 					-9.0
 				],
 				[
-					-1,
+					-1.0,
 					-7.0
 				],
 				[
@@ -2382,15 +3570,15 @@
 					1.0
 				],
 				[
-					9,
+					9.0,
 					0.0
 				],
 				[
-					9,
+					9.0,
 					-1.0
 				],
 				[
-					9,
+					9.0,
 					-2.0
 				],
 				[
@@ -2399,7 +3587,7 @@
 				],
 				[
 					7.0,
-					-1
+					-1.0
 				],
 				[
 					6.0,
@@ -2438,7 +3626,7 @@
 					3.0
 				],
 				[
-					6,
+					6.0,
 					1.0
 				],
 				[
@@ -2454,7 +3642,7 @@
 					1.0
 				],
 				[
-					8,
+					8.0,
 					1.0
 				],
 				[
@@ -2462,26 +3650,10 @@
 					3.0
 				],
 				[
-					7,
+					7.0,
 					3.0
 				],
 				[
-					1.0,
-					6.0
-				],
-				[
-					0.0,
-					6.0
-				],
-				[
-					-1.0,
-					6.0
-				],
-				[
-					-2.0,
-					6.0
-				],
-				[
 					-2.0,
 					7.0
 				],
@@ -2494,26 +3666,6 @@
 					9.0
 				],
 				[
-					-2.0,
-					10.0
-				],
-				[
-					-1.0,
-					10.0
-				],
-				[
-					0.0,
-					10.0
-				],
-				[
-					1.0,
-					10.0
-				],
-				[
-					1.0,
-					7.0
-				],
-				[
 					1.0,
 					8.0
 				],
@@ -2523,23 +3675,7 @@
 				],
 				[
 					-1.0,
-					7.0
-				],
-				[
-					-1.0,
-					9
-				],
-				[
-					0.0,
 					9.0
-				],
-				[
-					0.0,
-					8.0
-				],
-				[
-					0,
-					7.0
 				],
 				[
 					-1.0,
@@ -2591,7 +3727,7 @@
 				],
 				[
 					-9.0,
-					-2
+					-2.0
 				],
 				[
 					-7.0,
@@ -2599,7 +3735,315 @@
 				],
 				[
 					-8.0,
-					-2
+					-2.0
+				],
+				[
+					12.0,
+					13.0
+				],
+				[
+					12.0,
+					10.0
+				],
+				[
+					12.0,
+					11.0
+				],
+				[
+					12.0,
+					12.0
+				],
+				[
+					12.0,
+					14.0
+				],
+				[
+					-10.0,
+					-11.0
+				],
+				[
+					-9.0,
+					-11.0
+				],
+				[
+					-9.0,
+					-12.0
+				],
+				[
+					-10.0,
+					-12.0
+				],
+				[
+					-8.0,
+					-12.0
+				],
+				[
+					-7.0,
+					-12.0
+				],
+				[
+					-7.0,
+					-11.0
+				],
+				[
+					-8.0,
+					-11.0
+				],
+				[
+					-6.0,
+					-11.0
+				],
+				[
+					-5.0,
+					-11.0
+				],
+				[
+					-4.0,
+					-11.0
+				],
+				[
+					-3.0,
+					-11.0
+				],
+				[
+					-2.0,
+					-11.0
+				],
+				[
+					-1.0,
+					-11.0
+				],
+				[
+					0.0,
+					-11.0
+				],
+				[
+					1.0,
+					-11.0
+				],
+				[
+					2.0,
+					-11.0
+				],
+				[
+					3.0,
+					-11.0
+				],
+				[
+					4.0,
+					-11.0
+				],
+				[
+					5.0,
+					-11.0
+				],
+				[
+					6.0,
+					-11.0
+				],
+				[
+					7.0,
+					-11
+				],
+				[
+					8.0,
+					-11
+				],
+				[
+					9.0,
+					-11.0
+				],
+				[
+					10.0,
+					-11.0
+				],
+				[
+					11.0,
+					-11.0
+				],
+				[
+					12.0,
+					-11.0
+				],
+				[
+					12.0,
+					-12.0
+				],
+				[
+					11.0,
+					-12.0
+				],
+				[
+					10.0,
+					-12.0
+				],
+				[
+					9.0,
+					-12.0
+				],
+				[
+					8.0,
+					-12.0
+				],
+				[
+					7.0,
+					-12.0
+				],
+				[
+					6.0,
+					-12.0
+				],
+				[
+					5.0,
+					-12.0
+				],
+				[
+					4.0,
+					-12.0
+				],
+				[
+					3.0,
+					-12.0
+				],
+				[
+					2,
+					-12.0
+				],
+				[
+					1.0,
+					-12.0
+				],
+				[
+					0.0,
+					-12.0
+				],
+				[
+					-1.0,
+					-12.0
+				],
+				[
+					-2.0,
+					-12.0
+				],
+				[
+					-3.0,
+					-12.0
+				],
+				[
+					-4.0,
+					-12.0
+				],
+				[
+					-5.0,
+					-12.0
+				],
+				[
+					-6.0,
+					-12.0
+				],
+				[
+					4.0,
+					6.0
+				],
+				[
+					-10.0,
+					15.0
+				],
+				[
+					-9.0,
+					15.0
+				],
+				[
+					-8.0,
+					15.0
+				],
+				[
+					-7.0,
+					15.0
+				],
+				[
+					-6.0,
+					15.0
+				],
+				[
+					-5.0,
+					15.0
+				],
+				[
+					-4.0,
+					15.0
+				],
+				[
+					-3.0,
+					15.0
+				],
+				[
+					-2.0,
+					15.0
+				],
+				[
+					-1.0,
+					15.0
+				],
+				[
+					0.0,
+					15.0
+				],
+				[
+					1.0,
+					15.0
+				],
+				[
+					2.0,
+					15.0
+				],
+				[
+					3.0,
+					15.0
+				],
+				[
+					4.0,
+					15.0
+				],
+				[
+					5.0,
+					15.0
+				],
+				[
+					6.0,
+					15.0
+				],
+				[
+					7.0,
+					15.0
+				],
+				[
+					8.0,
+					15.0
+				],
+				[
+					9.0,
+					15.0
+				],
+				[
+					10.0,
+					15.0
+				],
+				[
+					11.0,
+					15
+				],
+				[
+					12.0,
+					15
+				],
+				[
+					0,
+					-5
+				],
+				[
+					1,
+					-5
 				]
 			],
 			"terrain_type": "earthy_museum_floor"
@@ -2607,60 +4051,48 @@
 		{
 			"positions": [
 				[
-					3,
+					4.0,
 					-4
 				],
 				[
-					3,
-					-3
+					5.0,
+					-4.0
 				],
 				[
-					4,
-					-4
+					5.0,
+					-3.0
 				],
 				[
-					4,
-					-3
+					6.0,
+					-4.0
 				],
 				[
-					5,
-					-4
+					6.0,
+					-3.0
 				],
 				[
-					5,
-					-3
+					7.0,
+					-4.0
 				],
 				[
-					6,
-					-4
+					7.0,
+					-3.0
 				],
 				[
-					6,
-					-3
+					8.0,
+					-4.0
 				],
 				[
-					7,
-					-4
+					8.0,
+					-3.0
 				],
 				[
-					7,
-					-3
+					9.0,
+					-4.0
 				],
 				[
-					8,
-					-4
-				],
-				[
-					8,
-					-3
-				],
-				[
-					9,
-					-4
-				],
-				[
-					9,
-					-3
+					9.0,
+					-3.0
 				]
 			],
 			"terrain_type": "earthy_museum_floor"
@@ -2688,224 +4120,212 @@
 					-6
 				],
 				[
-					0,
-					-5
+					1.0,
+					-10.0
 				],
 				[
 					1,
-					-10
+					-9.0
 				],
 				[
 					1,
-					-9
+					-8.0
 				],
 				[
 					1,
-					-8
+					-7.0
 				],
 				[
 					1,
-					-7
+					-6.0
 				],
 				[
-					1,
-					-6
+					2.0,
+					-10.0
 				],
 				[
-					1,
-					-5
-				],
-				[
-					2,
-					-10
+					2.0,
+					-9.0
 				],
 				[
 					2,
-					-9
+					-8.0
 				],
 				[
 					2,
-					-8
+					-7.0
 				],
 				[
 					2,
-					-7
+					-6.0
 				],
 				[
-					2,
-					-6
+					3.0,
+					-10.0
 				],
 				[
-					2,
-					-5
+					3.0,
+					-9.0
 				],
 				[
-					3,
-					-10
-				],
-				[
-					3,
-					-9
+					3.0,
+					-8.0
 				],
 				[
 					3,
-					-8
+					-7.0
 				],
 				[
 					3,
-					-7
+					-6.0
 				],
 				[
 					3,
-					-6
+					-5.0
 				],
 				[
-					3,
-					-5
+					4.0,
+					-10.0
 				],
 				[
-					4,
-					-10
+					4.0,
+					-9.0
 				],
 				[
-					4,
-					-9
-				],
-				[
-					4,
-					-8
+					4.0,
+					-8.0
 				],
 				[
 					4,
-					-7
+					-7.0
 				],
 				[
 					4,
-					-6
+					-6.0
 				],
 				[
 					4,
-					-5
+					-5.0
+				],
+				[
+					5.0,
+					-10.0
+				],
+				[
+					5.0,
+					-9.0
+				],
+				[
+					5.0,
+					-8.0
 				],
 				[
 					5,
-					-10
+					-7.0
 				],
 				[
 					5,
-					-9
+					-6.0
 				],
 				[
 					5,
-					-8
+					-5.0
 				],
 				[
-					5,
-					-7
+					6.0,
+					-10.0
 				],
 				[
-					5,
-					-6
+					6.0,
+					-9.0
 				],
 				[
-					5,
-					-5
-				],
-				[
-					6,
-					-10
+					6.0,
+					-8.0
 				],
 				[
 					6,
-					-9
+					-7.0
 				],
 				[
 					6,
-					-8
+					-6.0
 				],
 				[
 					6,
-					-7
+					-5.0
 				],
 				[
-					6,
-					-6
+					7.0,
+					-10.0
 				],
 				[
-					6,
-					-5
+					7.0,
+					-9.0
 				],
 				[
-					7,
-					-10
-				],
-				[
-					7,
-					-9
+					7.0,
+					-8.0
 				],
 				[
 					7,
-					-8
+					-7.0
 				],
 				[
 					7,
-					-7
+					-6.0
 				],
 				[
 					7,
-					-6
+					-5.0
 				],
 				[
-					7,
-					-5
+					8.0,
+					-10.0
 				],
 				[
-					8,
-					-10
+					8.0,
+					-9.0
 				],
 				[
-					8,
-					-9
-				],
-				[
-					8,
-					-8
+					8.0,
+					-8.0
 				],
 				[
 					8,
-					-7
+					-7.0
 				],
 				[
 					8,
-					-6
+					-6.0
 				],
 				[
 					8,
-					-5
+					-5.0
+				],
+				[
+					9.0,
+					-10.0
+				],
+				[
+					9.0,
+					-9.0
+				],
+				[
+					9.0,
+					-8.0
 				],
 				[
 					9,
-					-10
+					-7.0
 				],
 				[
 					9,
-					-9
+					-6.0
 				],
 				[
 					9,
-					-8
-				],
-				[
-					9,
-					-7
-				],
-				[
-					9,
-					-6
-				],
-				[
-					9,
-					-5
+					-5.0
 				]
 			],
 			"terrain_type": "earthy_museum_floor"
@@ -2953,316 +4373,240 @@
 					9
 				],
 				[
-					-10,
-					10
+					-9.0,
+					0.0
 				],
 				[
 					-9,
-					0
+					1.0
 				],
 				[
 					-9,
-					1
+					2.0
 				],
 				[
 					-9,
-					2
+					3.0
 				],
 				[
 					-9,
-					3
+					4.0
 				],
 				[
 					-9,
-					4
+					5.0
 				],
 				[
 					-9,
-					5
+					6.0
 				],
 				[
 					-9,
-					6
+					7.0
 				],
 				[
 					-9,
-					7
+					8.0
 				],
 				[
 					-9,
-					8
+					9.0
 				],
 				[
-					-9,
-					9
+					-8.0,
+					0.0
 				],
 				[
-					-9,
-					10
-				],
-				[
-					-8,
-					0
+					-8.0,
+					1.0
 				],
 				[
 					-8,
-					1
+					2.0
 				],
 				[
 					-8,
-					2
+					3.0
 				],
 				[
 					-8,
-					3
+					4.0
 				],
 				[
 					-8,
-					4
+					5.0
 				],
 				[
 					-8,
-					5
+					6.0
 				],
 				[
 					-8,
-					6
+					7.0
 				],
 				[
 					-8,
-					7
+					8.0
 				],
 				[
 					-8,
-					8
+					9.0
 				],
 				[
-					-8,
-					9
+					-7.0,
+					0.0
 				],
 				[
-					-8,
-					10
+					-7.0,
+					1.0
 				],
 				[
-					-7,
-					0
-				],
-				[
-					-7,
-					1
+					-7.0,
+					2.0
 				],
 				[
 					-7,
-					2
+					3.0
 				],
 				[
 					-7,
-					3
+					4.0
 				],
 				[
 					-7,
-					4
+					5.0
 				],
 				[
 					-7,
-					5
+					6.0
 				],
 				[
 					-7,
-					6
+					7.0
 				],
 				[
 					-7,
-					7
+					8.0
 				],
 				[
 					-7,
-					8
+					9.0
 				],
 				[
-					-7,
-					9
+					-6.0,
+					0.0
 				],
 				[
-					-7,
-					10
+					-6.0,
+					1.0
 				],
 				[
-					-6,
-					0
+					-6.0,
+					2.0
 				],
 				[
-					-6,
-					1
-				],
-				[
-					-6,
-					2
+					-6.0,
+					3.0
 				],
 				[
 					-6,
-					3
+					4.0
 				],
 				[
 					-6,
-					4
+					5.0
 				],
 				[
 					-6,
-					5
+					6.0
 				],
 				[
 					-6,
-					6
+					7.0
 				],
 				[
 					-6,
-					7
+					8.0
 				],
 				[
 					-6,
-					8
+					9.0
 				],
 				[
-					-6,
-					9
+					-5.0,
+					0.0
 				],
 				[
-					-6,
-					10
+					-5.0,
+					1.0
 				],
 				[
-					-5,
-					0
+					-5.0,
+					2.0
 				],
 				[
-					-5,
-					1
+					-5.0,
+					3.0
 				],
 				[
-					-5,
-					2
-				],
-				[
-					-5,
-					3
+					-5.0,
+					4.0
 				],
 				[
 					-5,
-					4
+					5.0
 				],
 				[
 					-5,
-					5
+					6.0
 				],
 				[
 					-5,
-					6
+					7.0
 				],
 				[
 					-5,
-					7
+					8.0
 				],
 				[
 					-5,
-					8
+					9.0
 				],
 				[
-					-5,
-					9
+					-4.0,
+					5.0
 				],
 				[
-					-5,
-					10
+					-4.0,
+					6.0
 				],
 				[
-					-4,
-					0
+					-4.0,
+					7.0
 				],
 				[
-					-4,
-					1
+					-4.0,
+					8.0
 				],
 				[
-					-4,
-					2
+					-4.0,
+					9.0
 				],
 				[
-					-4,
-					3
+					-3.0,
+					6.0
 				],
 				[
-					-4,
-					4
+					-3.0,
+					7.0
 				],
 				[
-					-4,
-					5
+					-3.0,
+					8.0
 				],
 				[
-					-4,
-					6
-				],
-				[
-					-4,
-					7
-				],
-				[
-					-4,
-					8
-				],
-				[
-					-4,
-					9
-				],
-				[
-					-4,
-					10
-				],
-				[
-					-3,
-					0
-				],
-				[
-					-3,
-					1
-				],
-				[
-					-3,
-					2
-				],
-				[
-					-3,
-					3
-				],
-				[
-					-3,
-					4
-				],
-				[
-					-3,
-					5
-				],
-				[
-					-3,
-					6
-				],
-				[
-					-3,
-					7
-				],
-				[
-					-3,
-					8
-				],
-				[
-					-3,
-					9
-				],
-				[
-					-3,
-					10
+					-3.0,
+					9.0
 				]
 			],
 			"terrain_type": "earthy_museum_floor"
@@ -3271,227 +4615,151 @@
 			"positions": [
 				[
 					2,
-					4
+					8.0
 				],
 				[
 					2,
-					5
+					9.0
 				],
 				[
-					2,
-					6
+					3.0,
+					7.0
 				],
 				[
-					2,
-					7
+					3.0,
+					8.0
 				],
 				[
-					2,
-					8
+					3.0,
+					9.0
 				],
 				[
-					2,
-					9
+					4.0,
+					7.0
 				],
 				[
-					2,
-					10
+					4.0,
+					8.0
 				],
 				[
-					3,
-					4
+					4.0,
+					9.0
 				],
 				[
-					3,
-					5
+					5.0,
+					5.0
 				],
 				[
-					3,
-					6
+					5.0,
+					6.0
 				],
 				[
-					3,
-					7
+					5.0,
+					7.0
 				],
 				[
-					3,
-					8
+					5.0,
+					8.0
 				],
 				[
-					3,
-					9
+					5.0,
+					9.0
 				],
 				[
-					3,
-					10
+					6.0,
+					4.0
 				],
 				[
-					4,
-					4
+					6.0,
+					5.0
 				],
 				[
-					4,
-					5
+					6.0,
+					6.0
 				],
 				[
-					4,
-					6
+					6.0,
+					7.0
 				],
 				[
-					4,
-					7
+					6.0,
+					8.0
 				],
 				[
-					4,
-					8
+					6.0,
+					9.0
 				],
 				[
-					4,
-					9
+					7.0,
+					4.0
 				],
 				[
-					4,
-					10
+					7.0,
+					5.0
 				],
 				[
-					5,
-					4
+					7.0,
+					6.0
 				],
 				[
-					5,
-					5
+					7.0,
+					7.0
 				],
 				[
-					5,
-					6
+					7.0,
+					8.0
 				],
 				[
-					5,
-					7
+					7.0,
+					9.0
 				],
 				[
-					5,
-					8
+					8.0,
+					4.0
 				],
 				[
-					5,
-					9
+					8.0,
+					5.0
 				],
 				[
-					5,
-					10
+					8.0,
+					6.0
 				],
 				[
-					6,
-					4
+					8.0,
+					7.0
 				],
 				[
-					6,
-					5
+					8.0,
+					8.0
 				],
 				[
-					6,
-					6
+					8.0,
+					9.0
 				],
 				[
-					6,
-					7
+					9.0,
+					4.0
 				],
 				[
-					6,
-					8
+					9.0,
+					5.0
 				],
 				[
-					6,
-					9
+					9.0,
+					6.0
 				],
 				[
-					6,
-					10
+					9.0,
+					7.0
 				],
 				[
-					7,
-					4
+					9.0,
+					8.0
 				],
 				[
-					7,
-					5
-				],
-				[
-					7,
-					6
-				],
-				[
-					7,
-					7
-				],
-				[
-					7,
-					8
-				],
-				[
-					7,
-					9
-				],
-				[
-					7,
-					10
-				],
-				[
-					8,
-					4
-				],
-				[
-					8,
-					5
-				],
-				[
-					8,
-					6
-				],
-				[
-					8,
-					7
-				],
-				[
-					8,
-					8
-				],
-				[
-					8,
-					9
-				],
-				[
-					8,
-					10
-				],
-				[
-					9,
-					4
-				],
-				[
-					9,
-					5
-				],
-				[
-					9,
-					6
-				],
-				[
-					9,
-					7
-				],
-				[
-					9,
-					8
-				],
-				[
-					9,
-					9
-				],
-				[
-					9,
-					10
+					9.0,
+					9.0
 				]
 			],
 			"terrain_type": "earthy_museum_floor"
@@ -3579,179 +4847,629 @@
 					9
 				],
 				[
+					11.0,
+					-10.0
+				],
+				[
+					11,
+					-9.0
+				],
+				[
+					11,
+					-8.0
+				],
+				[
+					11,
+					-7.0
+				],
+				[
+					11,
+					-6.0
+				],
+				[
+					11,
+					-5.0
+				],
+				[
+					11,
+					-4.0
+				],
+				[
+					11,
+					-3.0
+				],
+				[
+					11,
+					-2.0
+				],
+				[
+					11,
+					-1.0
+				],
+				[
+					11,
+					0.0
+				],
+				[
+					11,
+					1.0
+				],
+				[
+					11,
+					2.0
+				],
+				[
+					11,
+					3.0
+				],
+				[
+					11,
+					4.0
+				],
+				[
+					11,
+					5.0
+				],
+				[
+					11,
+					6.0
+				],
+				[
+					11,
+					7.0
+				],
+				[
+					11,
+					8.0
+				],
+				[
+					11,
+					9.0
+				],
+				[
+					12.0,
+					-10.0
+				],
+				[
+					12.0,
+					-9.0
+				],
+				[
+					12,
+					-8.0
+				],
+				[
+					12,
+					-7.0
+				],
+				[
+					12,
+					-6.0
+				],
+				[
+					12,
+					-5.0
+				],
+				[
+					12,
+					-4.0
+				],
+				[
+					12,
+					-3.0
+				],
+				[
+					12,
+					-2.0
+				],
+				[
+					12,
+					-1.0
+				],
+				[
+					12,
+					0.0
+				],
+				[
+					12,
+					1.0
+				],
+				[
+					12,
+					2.0
+				],
+				[
+					12,
+					3.0
+				],
+				[
+					12,
+					4.0
+				],
+				[
+					12,
+					5.0
+				],
+				[
+					12,
+					6.0
+				],
+				[
+					12,
+					7.0
+				],
+				[
+					12,
+					8.0
+				],
+				[
+					12,
+					9.0
+				]
+			],
+			"terrain_type": "earthy_museum_floor"
+		},
+		{
+			"positions": [
+				[
+					0,
+					8
+				],
+				[
+					0,
+					9
+				]
+			],
+			"terrain_type": "earthy_museum_floor"
+		},
+		{
+			"positions": [
+				[
+					-10,
+					10
+				],
+				[
+					-10,
+					11
+				],
+				[
+					-10,
+					12
+				],
+				[
+					-10,
+					13
+				],
+				[
+					-10,
+					14
+				],
+				[
+					-9,
+					10
+				],
+				[
+					-9,
+					11
+				],
+				[
+					-9,
+					12
+				],
+				[
+					-9,
+					13
+				],
+				[
+					-9,
+					14
+				],
+				[
+					-8,
+					10
+				],
+				[
+					-8,
+					11
+				],
+				[
+					-8,
+					12
+				],
+				[
+					-8,
+					13
+				],
+				[
+					-8,
+					14
+				],
+				[
+					-7,
+					10
+				],
+				[
+					-7,
+					11
+				],
+				[
+					-7,
+					12
+				],
+				[
+					-7,
+					13
+				],
+				[
+					-7,
+					14
+				],
+				[
+					-6,
+					10
+				],
+				[
+					-6,
+					11
+				],
+				[
+					-6,
+					12
+				],
+				[
+					-6,
+					13
+				],
+				[
+					-6,
+					14
+				],
+				[
+					-5,
+					10
+				],
+				[
+					-5,
+					11
+				],
+				[
+					-5,
+					12
+				],
+				[
+					-5,
+					13
+				],
+				[
+					-5,
+					14
+				],
+				[
+					-4,
+					10
+				],
+				[
+					-4,
+					11
+				],
+				[
+					-4,
+					12
+				],
+				[
+					-4,
+					13
+				],
+				[
+					-4,
+					14
+				],
+				[
+					-3,
+					10
+				],
+				[
+					-3,
+					11
+				],
+				[
+					-3,
+					12
+				],
+				[
+					-3,
+					13
+				],
+				[
+					-3,
+					14
+				],
+				[
+					-2,
+					10
+				],
+				[
+					-2,
+					11
+				],
+				[
+					-2,
+					12
+				],
+				[
+					-2,
+					13
+				],
+				[
+					-2,
+					14
+				],
+				[
+					-1,
+					10
+				],
+				[
+					-1,
+					11
+				],
+				[
+					-1,
+					12
+				],
+				[
+					-1,
+					13
+				],
+				[
+					-1,
+					14
+				],
+				[
+					0,
+					10
+				],
+				[
+					0,
+					11
+				],
+				[
+					0,
+					12
+				],
+				[
+					0,
+					13
+				],
+				[
+					0,
+					14
+				],
+				[
+					1,
+					10
+				],
+				[
+					1,
+					11
+				],
+				[
+					1,
+					12
+				],
+				[
+					1,
+					13
+				],
+				[
+					1,
+					14
+				],
+				[
+					2,
+					10
+				],
+				[
+					2,
+					11
+				],
+				[
+					2,
+					12
+				],
+				[
+					2,
+					13
+				],
+				[
+					2,
+					14
+				],
+				[
+					3,
+					10
+				],
+				[
+					3,
+					11
+				],
+				[
+					3,
+					12
+				],
+				[
+					3,
+					13
+				],
+				[
+					3,
+					14
+				],
+				[
+					4,
+					10
+				],
+				[
+					4,
+					11
+				],
+				[
+					4,
+					12
+				],
+				[
+					4,
+					13
+				],
+				[
+					4,
+					14
+				],
+				[
+					5,
+					10
+				],
+				[
+					5,
+					11
+				],
+				[
+					5,
+					12
+				],
+				[
+					5,
+					13
+				],
+				[
+					5,
+					14
+				],
+				[
+					6,
+					10
+				],
+				[
+					6,
+					11
+				],
+				[
+					6,
+					12
+				],
+				[
+					6,
+					13
+				],
+				[
+					6,
+					14
+				],
+				[
+					7,
+					10
+				],
+				[
+					7,
+					11
+				],
+				[
+					7,
+					12
+				],
+				[
+					7,
+					13
+				],
+				[
+					7,
+					14
+				],
+				[
+					8,
+					10
+				],
+				[
+					8,
+					11
+				],
+				[
+					8,
+					12
+				],
+				[
+					8,
+					13
+				],
+				[
+					8,
+					14
+				],
+				[
+					9,
+					10
+				],
+				[
+					9,
+					11
+				],
+				[
+					9,
+					12
+				],
+				[
+					9,
+					13
+				],
+				[
+					9,
+					14
+				],
+				[
 					10,
 					10
 				],
 				[
-					11,
-					-10
+					10,
+					11
 				],
 				[
-					11,
-					-9
+					10,
+					12
 				],
 				[
-					11,
-					-8
+					10,
+					13
 				],
 				[
-					11,
-					-7
-				],
-				[
-					11,
-					-6
-				],
-				[
-					11,
-					-5
-				],
-				[
-					11,
-					-4
-				],
-				[
-					11,
-					-3
-				],
-				[
-					11,
-					-2
-				],
-				[
-					11,
-					-1
-				],
-				[
-					11,
-					0
-				],
-				[
-					11,
-					1
-				],
-				[
-					11,
-					2
-				],
-				[
-					11,
-					3
-				],
-				[
-					11,
-					4
-				],
-				[
-					11,
-					5
-				],
-				[
-					11,
-					6
-				],
-				[
-					11,
-					7
-				],
-				[
-					11,
-					8
-				],
-				[
-					11,
-					9
+					10,
+					14
 				],
 				[
 					11,
 					10
 				],
 				[
-					12,
-					-10
+					11,
+					11
 				],
 				[
-					12,
-					-9
+					11,
+					12
 				],
 				[
-					12,
-					-8
+					11,
+					13
 				],
 				[
-					12,
-					-7
-				],
-				[
-					12,
-					-6
-				],
-				[
-					12,
-					-5
-				],
-				[
-					12,
-					-4
-				],
-				[
-					12,
-					-3
-				],
-				[
-					12,
-					-2
-				],
-				[
-					12,
-					-1
-				],
-				[
-					12,
-					0
-				],
-				[
-					12,
-					1
-				],
-				[
-					12,
-					2
-				],
-				[
-					12,
-					3
-				],
-				[
-					12,
-					4
-				],
-				[
-					12,
-					5
-				],
-				[
-					12,
-					6
-				],
-				[
-					12,
-					7
-				],
-				[
-					12,
-					8
-				],
-				[
-					12,
-					9
-				],
-				[
-					12,
-					10
+					11,
+					14
 				]
 			],
 			"terrain_type": "earthy_museum_floor"
+		},
+		{
+			"positions": [],
+			"terrain_type": "pale_museum_floor"
 		}
 	],
 	"vines": [],
@@ -3763,7 +5481,8 @@
 			"entrance_map_warp_id": 8,
 			"facing": "generic",
 			"id": 1,
-			"show_sprite": true
+			"show_sprite": true,
+			"sprite": "jalovea"
 		}
 	},
 	"water_blocks": [],

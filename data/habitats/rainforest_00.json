@@ -1,0 +1,357 @@
+{
+	"blue_flowers": [],
+	"floor_blocks": [],
+	"flower_beds": [],
+	"furnishings": [],
+	"grass_zones": [],
+	"habitat_template_version": 1,
+	"habitat_type": "rainforest",
+	"id": "rainforest_00",
+	"name": "rainforest",
+	"npc_spawn": [
+		0,
+		0
+	],
+	"objects": [
+		{
+			"asset_path": "res://assets/overworld/flower_tall_banana_plant.png",
+			"height": 1.7,
+			"instance_id": "placed-1794425431-1203526318",
+			"position": [
+				0.69999998807907,
+				0.0,
+				-0.69999998807907
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.flower_tall_banana_plant"
+		},
+		{
+			"asset_path": "res://assets/overworld/flower_tall_hibiscus.png",
+			"height": 1.5,
+			"position": [
+				-1.20000004768372,
+				0.0,
+				1.04999995231628
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.flower_tall_hibiscus"
+		},
+		{
+			"asset_path": "res://assets/overworld/flower_tall_torch_ginger_cluster.png",
+			"height": 1.6,
+			"position": [
+				-0.69999998807907,
+				0.0,
+				0.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.flower_tall_torch_ginger_cluster"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_large_00.png",
+			"height": 1.0,
+			"position": [
+				-1.39999997615814,
+				0.0,
+				-0.69999998807907
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_large",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 1.0,
+			"position": [
+				0.0,
+				0.0,
+				1.05
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 1.0,
+			"position": [
+				1.39999997615814,
+				0.0,
+				-0.34999999403954
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_orchid_ground.png",
+			"height": 1.0,
+			"position": [
+				0.69999998807907,
+				0.0,
+				1.04999995231628
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_orchid_ground"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_swan.png",
+			"attachment_order": 0,
+			"height": 1.0,
+			"host_id": "placed-1794425431-1203526318",
+			"is_attached": true,
+			"local_position": [
+				0.0,
+				-0.35000002384186
+			],
+			"position": [
+				0.69999998807907,
+				0.0,
+				-1.05000001192093
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_swan"
+		},
+		{
+			"asset_path": "res://assets/overworld/rocks_generic_00.png",
+			"height": 0.45,
+			"position": [
+				-1.75,
+				0.0,
+				-0.34999999403954
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_generic",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/rocks_generic_00.png",
+			"height": 0.45,
+			"position": [
+				-1.39999997615814,
+				0.0,
+				1.39999997615814
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_generic",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_scorchic_fallen_log.png",
+			"height": 0.75,
+			"position": [
+				1.05,
+				0.0,
+				0.9
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_scorchic_fallen_log"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_scorchic_fallen_log.png",
+			"height": 0.75,
+			"position": [
+				0.30000001192093,
+				0.0,
+				0.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_scorchic_fallen_log"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_scorchic_fallen_log_small.png",
+			"height": 0.5,
+			"position": [
+				-0.44999998807907,
+				0.0,
+				1.35000002384186
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_scorchic_fallen_log_small"
+		}
+	],
+	"orchids": [],
+	"rare_torch_ginger": [],
+	"rocks": [],
+	"sand_blocks": [],
+	"size": [
+		6.66666698455811,
+		5.0
+	],
+	"tall_flowers": [],
+	"terrain_tiles": [
+		{
+			"positions": [
+				[
+					-2,
+					0.0
+				],
+				[
+					-2,
+					1.0
+				],
+				[
+					-1.0,
+					1
+				],
+				[
+					0.0,
+					1
+				],
+				[
+					2.0,
+					-1.0
+				],
+				[
+					1,
+					-1.0
+				],
+				[
+					0.0,
+					-1.0
+				],
+				[
+					-1.0,
+					0
+				],
+				[
+					0.0,
+					0.0
+				],
+				[
+					-2.0,
+					-2.0
+				],
+				[
+					-1.0,
+					-2.0
+				],
+				[
+					0.0,
+					-2.0
+				],
+				[
+					1.0,
+					-2.0
+				],
+				[
+					2.0,
+					-2.0
+				],
+				[
+					2.0,
+					2.0
+				],
+				[
+					1.0,
+					2.0
+				],
+				[
+					0.0,
+					2.0
+				],
+				[
+					-1.0,
+					2.0
+				],
+				[
+					-2.0,
+					2.0
+				]
+			],
+			"terrain_type": "forest_floor"
+		},
+		{
+			"positions": [
+				[
+					-2,
+					-1
+				],
+				[
+					-1,
+					-1
+				],
+				[
+					2,
+					0
+				],
+				[
+					1,
+					0
+				],
+				[
+					1,
+					1
+				],
+				[
+					2,
+					1
+				]
+			],
+			"terrain_type": "mud"
+		}
+	],
+	"trees": [],
+	"vines": [],
+	"wall_blocks": [],
+	"wander_bounds": [
+		-2,
+		-1.5,
+		4,
+		3
+	],
+	"water_blocks": []
+}

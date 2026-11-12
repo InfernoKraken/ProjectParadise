@@ -40,10 +40,12 @@ func execute(command: String, args: Array, resume: Callable) -> Dictionary:
 		"SaveGame":
 			if not game._save_game(): return {"error":"Existing save service rejected the save."}
 		"GiveFakemon":
-			if game.party.size() >= 7: return {"error":"Party is full (7). No storage service exists yet."}
+			var capacity: int = game.fakemon_storage.PARTY_CAPACITY
+			if game.party.size() >= capacity: return {"error":"Party is full (%d). Make room before accepting this Fakemon." % capacity}
 			var index: int = _species_index(str(args[0]))
 			if index < 0: return {"error":"Unknown species: " + str(args[0])}
 			var mon: Dictionary = game.battle.create_fakemon(game.battle.battle_data.fakemon[index], int(args[1]))
+			game.exhibits.record(mon)
 			mon.experience = int(pow(float(mon.level), 3.0)); mon.current_hp = int(mon.max_hp); mon.condition = ""; mon.condition_turns = 0
 			game.party.append(mon); game._refresh_party_menu(); game._update_follower_appearance()
 			if game.party.size() == 1:

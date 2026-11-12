@@ -5,9 +5,13 @@ const BASE_FILE := "data/battle_data.json"
 const EVOLVED_FILE := "data/evolved_fakemon.json"
 const EGGS_FILE := "data/egg_groups.json"
 const MAPS_DIR := "data/maps"
+const MOVEMENT_MODES := {"ground": "Normal", "swimming": "Swimming", "flying": "Flying"}
+const DEFAULT_HABITAT := "tropical_clearing"
+const HABITATS := ["rainforest", "tropical_clearing", "reef", "freshwater", "highland", "savannah", "cave_ruins"]
 const STAT_KEYS := [&"max_hp", &"attack", &"defense", &"special_attack", &"special_defense", &"speed"]
 
 var game_root: String
+var habitat_types: Array
 var battle_data: Dictionary = {}
 var evolved_data: Array = []
 var egg_data: Dictionary = {}
@@ -26,6 +30,8 @@ var original_encounter_documents: Dictionary = {}
 
 func _init(root := "") -> void:
 	game_root = root if not root.is_empty() else ProjectSettings.globalize_path("res://../..").simplify_path()
+	var types: Variant = JSON.parse_string(FileAccess.get_file_as_string(game_root.path_join("data/habitat_types.json")))
+	habitat_types = types if types is Array and not types.is_empty() else HABITATS
 
 func load_all() -> bool:
 	error = ""
@@ -44,6 +50,9 @@ func load_all() -> bool:
 	battle_data = base_value
 	evolved_data = evolved_value
 	egg_data = eggs_value
+	for mon in all_species():
+		if not mon.has("habitat"):
+			mon["habitat"] = DEFAULT_HABITAT
 	_load_encounter_documents()
 	return true
 
@@ -134,6 +143,10 @@ func validate() -> Array[String]:
 		if int(draft.get(key, 0)) < 1: issues.append("%s must be positive." % String(key))
 	if bool(draft.get("light_source", false)) and float(draft.get("light_strength", 0.5)) <= 0.0:
 		issues.append("Light Strength must be a positive radius.")
+	if not MOVEMENT_MODES.has(draft.get("movement_mode", "ground")):
+		issues.append("Select a valid Movement mode.")
+	if not habitat_types.has(draft.get("habitat", DEFAULT_HABITAT)):
+		issues.append("Select a valid Habitat.")
 	var types := _types_of(draft)
 	if types.is_empty() or types.size() > 2: issues.append("A Fakemon must have one or two types.")
 	var known_moves: Dictionary = move_catalog()
@@ -209,7 +222,7 @@ func add_species(species_name: String, evolves_from := "") -> bool:
 	var clean := species_name.strip_edges()
 	if clean.is_empty() or species_names().map(func(v): return v.to_lower()).has(clean.to_lower()): return false
 	var starter_move := String(move_catalog().keys()[0]) if not move_catalog().is_empty() else ""
-	var created := {"name":clean,"art_id":clean,"male_ratio":0.5,"type":types_catalog()[0] if not types_catalog().is_empty() else "Normal","level":5,"max_hp":50,"attack":50,"defense":50,"special_attack":50,"special_defense":50,"speed":50,"light_source":false,"light_strength":0.5,"color":"7ebf78","size":"1 m","description":"","catch_rate":75,"base_exp":64,"learnset":[{"level":1,"move":starter_move}]}
+	var created := {"name":clean,"art_id":clean,"male_ratio":0.5,"type":types_catalog()[0] if not types_catalog().is_empty() else "Normal","level":5,"max_hp":50,"attack":50,"defense":50,"special_attack":50,"special_defense":50,"speed":50,"light_source":false,"light_strength":0.5,"habitat":DEFAULT_HABITAT,"movement_mode":"ground","color":"7ebf78","size":"1 m","description":"","catch_rate":75,"base_exp":64,"learnset":[{"level":1,"move":starter_move}]}
 	var parent := evolves_from.strip_edges()
 	if not parent.is_empty():
 		if not species_names().has(parent): return false
@@ -253,9 +266,9 @@ func encounter_maps() -> Array[Dictionary]:
 		var metadata: Dictionary = data.get("map_metadata", {})
 		var display:=String(metadata.get("display_name",filename.get_basename())).replace("_"," ").capitalize()
 		if not data.get("grass_zones", []).is_empty() or data.get("wild_zone") is Dictionary:
-			result.append({"file":filename,"name":display,"kind":"grass","label":display+" — Tall Grass"})
+			result.append({"file":filename,"name":display,"kind":"grass","label":display+" â€” Tall Grass"})
 		if data.has("water_species") or float(data.get("water_encounter_chance",0.0))>0.0:
-			result.append({"file":filename,"name":display,"kind":"water","label":display+" — Water"})
+			result.append({"file":filename,"name":display,"kind":"water","label":display+" â€” Water"})
 	result.sort_custom(func(a,b):return a.label<b.label)
 	return result
 

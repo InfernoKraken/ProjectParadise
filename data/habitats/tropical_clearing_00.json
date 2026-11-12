@@ -1,0 +1,346 @@
+{
+	"blue_flowers": [],
+	"floor_blocks": [],
+	"flower_beds": [],
+	"furnishings": [],
+	"grass_zones": [],
+	"habitat_template_version": 1,
+	"habitat_type": "tropical_clearing",
+	"id": "tropical_clearing_00",
+	"name": "tropical clearing",
+	"npc_spawn": [
+		0,
+		0
+	],
+	"objects": [
+		{
+			"asset_path": "res://assets/overworld/Rocks_Sunscorched_03.png",
+			"height": 0.6,
+			"position": [
+				-1.60000002384186,
+				0.0,
+				1.20000004768372
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_sunscorched",
+			"variant": 3.0
+		},
+		{
+			"asset_path": "res://assets/overworld/Rocks_Sunscorched_04.png",
+			"height": 0.85,
+			"instance_id": "placed-1794425749-400048682",
+			"position": [
+				0.60000002384186,
+				0.0,
+				-0.60000002384186
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_sunscorched",
+			"variant": 4.0
+		},
+		{
+			"asset_path": "res://assets/overworld/aloe_small.png",
+			"height": 0.45,
+			"position": [
+				-0.9,
+				0.2,
+				1.2
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.aloe_small"
+		},
+		{
+			"asset_path": "res://assets/overworld/aloe_small.png",
+			"height": 0.45,
+			"position": [
+				-1.79999995231628,
+				0.20000000298023,
+				1.39999997615814
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.aloe_small"
+		},
+		{
+			"asset_path": "res://assets/overworld/moss_rose_00.png",
+			"height": 0.2,
+			"position": [
+				-0.3,
+				0.2,
+				-1.05
+			],
+			"size": [
+				0.40000000596046,
+				1.0,
+				1.0
+			],
+			"type": "asset.moss_rose_small",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/moss_rose_00.png",
+			"height": 0.2,
+			"position": [
+				-0.60000002384186,
+				0.20000000298023,
+				-0.20000000298023
+			],
+			"size": [
+				0.40000000596046,
+				1.0,
+				1.0
+			],
+			"type": "asset.moss_rose_small",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_bromeliad.png",
+			"height": 1.0,
+			"position": [
+				-1.60000002384186,
+				0.0,
+				0.40000000596046
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.bromeliad"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vine_passionflower_trailing_00.png",
+			"attachment_order": 0.0,
+			"height": 0.8,
+			"host_id": "placed-1794425749-400048682",
+			"is_attached": true,
+			"local_position": [
+				-0.44999998807907,
+				0.15000000596046
+			],
+			"position": [
+				0.15000003576279,
+				0.0,
+				-0.4500000178814
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vine_passionflower_trailing",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_duo.png",
+			"height": 1.0,
+			"instance_id": "placed-1794446832-1529729304",
+			"position": [
+				1.39999997615814,
+				0.0,
+				1.20000004768372
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump_duo"
+		},
+		{
+			"asset_path": "res://assets/overworld/flower_tall_bird_of_paradise.png",
+			"height": 1.0,
+			"position": [
+				-1.5,
+				0.0,
+				-0.5
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.flower_tall_bird_of_paradise"
+		},
+		{
+			"asset_path": "res://assets/overworld/flower_tall_hibiscus.png",
+			"height": 1.5,
+			"position": [
+				0.40000000596046,
+				0.0,
+				1.39999997615814
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.flower_tall_hibiscus"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 1.0,
+			"position": [
+				-1.20000004768372,
+				0.0,
+				1.60000002384186
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0
+		}
+	],
+	"orchids": [],
+	"rare_torch_ginger": [],
+	"rocks": [],
+	"sand_blocks": [],
+	"size": [
+		6.66666698455811,
+		5.0
+	],
+	"tall_flowers": [
+		[
+			-0.80000001192093,
+			0.34999999403954,
+			-1.0
+		]
+	],
+	"terrain_tiles": [
+		{
+			"positions": [
+				[
+					-2,
+					-1
+				],
+				[
+					-2,
+					0
+				],
+				[
+					-2,
+					1
+				],
+				[
+					-1,
+					1
+				],
+				[
+					0,
+					1
+				],
+				[
+					1,
+					1
+				],
+				[
+					2,
+					1
+				],
+				[
+					2,
+					0
+				],
+				[
+					1,
+					0
+				],
+				[
+					0,
+					0
+				],
+				[
+					-1,
+					0
+				],
+				[
+					-1,
+					-1
+				],
+				[
+					0,
+					-1
+				],
+				[
+					1,
+					-1
+				],
+				[
+					2,
+					-1
+				],
+				[
+					-2,
+					-2
+				],
+				[
+					-1,
+					-2
+				],
+				[
+					0,
+					-2
+				],
+				[
+					1,
+					-2
+				],
+				[
+					2,
+					-2
+				],
+				[
+					2,
+					2
+				],
+				[
+					1,
+					2
+				],
+				[
+					0,
+					2
+				],
+				[
+					-1,
+					2
+				],
+				[
+					-2,
+					2
+				]
+			],
+			"terrain_type": "forest_floor"
+		}
+	],
+	"trees": [],
+	"vines": [],
+	"wall_blocks": [],
+	"wander_bounds": [
+		-2,
+		-1.5,
+		4,
+		3
+	],
+	"water_blocks": []
+}

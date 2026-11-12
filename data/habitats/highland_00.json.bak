@@ -1,0 +1,252 @@
+{
+	"blue_flowers": [],
+	"floor_blocks": [],
+	"flower_beds": [],
+	"furnishings": [],
+	"grass_zones": [],
+	"habitat_template_version": 1,
+	"habitat_type": "highland",
+	"id": "highland_00",
+	"name": "highland",
+	"npc_spawn": [
+		0,
+		0
+	],
+	"objects": [
+		{
+			"asset_path": "res://assets/overworld/rocks_generic_00.png",
+			"height": 1.0,
+			"position": [
+				-1.35000002384186,
+				0.0,
+				-0.20000000298023
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_generic",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/rocks_generic_00.png",
+			"height": 1.0,
+			"position": [
+				1.0,
+				0.0,
+				1.10000002384186
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_generic",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/rocks_generic_03.png",
+			"height": 1.0,
+			"instance_id": "placed-1794447695-3281420696",
+			"position": [
+				-0.9,
+				0.0,
+				0.9
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_generic",
+			"variant": 3
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 1.0,
+			"position": [
+				-1.20000004768372,
+				0.0,
+				0.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 1.0,
+			"position": [
+				-0.89999998807907,
+				0.0,
+				-0.35000000596046
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_tree_yellow.png",
+			"attachment_order": 0,
+			"height": 0.7,
+			"host_id": "placed-1794447695-3281420696",
+			"is_attached": true,
+			"local_position": [
+				0.14999997615814,
+				-0.64999997615814
+			],
+			"position": [
+				-0.75,
+				0.0,
+				0.25
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_tree_yellow"
+		},
+		{
+			"asset_path": "res://assets/overworld/ruins_rocks_00.png",
+			"height": 1.0,
+			"position": [
+				-1.04999995231628,
+				0.0,
+				1.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.ruins_rocks",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/ruins_rocks_01.png",
+			"height": 1.0,
+			"position": [
+				-1.54999995231628,
+				0.0,
+				0.34999999403954
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.ruins_rocks",
+			"variant": 1
+		},
+		{
+			"asset_path": "res://assets/overworld/ruins_rocks_01.png",
+			"height": 1.0,
+			"position": [
+				0.69999998807907,
+				0.0,
+				1.35000002384186
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.ruins_rocks",
+			"variant": 1
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_large_00.png",
+			"height": 1.0,
+			"position": [
+				1.45000004768372,
+				0.0,
+				0.75
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_large",
+			"variant": 0
+		}
+	],
+	"orchids": [],
+	"rare_torch_ginger": [],
+	"rocks": [],
+	"sand_blocks": [],
+	"size": [
+		6.66666698455811,
+		5.0
+	],
+	"tall_flowers": [],
+	"terrain_tiles": [
+		{
+			"positions": [
+				[
+					-1.0,
+					-1.0
+				],
+				[
+					-2.0,
+					-1.0
+				],
+				[
+					0.0,
+					-1
+				],
+				[
+					1.0,
+					1.0
+				],
+				[
+					2.0,
+					0.0
+				]
+			],
+			"terrain_type": "rock"
+		},
+		{
+			"positions": [
+				[
+					-1,
+					1
+				],
+				[
+					-2,
+					1
+				],
+				[
+					-2,
+					0
+				],
+				[
+					-1,
+					0
+				]
+			],
+			"terrain_type": "stone"
+		}
+	],
+	"trees": [],
+	"vines": [],
+	"wall_blocks": [],
+	"wander_bounds": [
+		-2,
+		-1.5,
+		4,
+		3
+	],
+	"water_blocks": []
+}

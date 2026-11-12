@@ -31,11 +31,16 @@ func _test() -> void:
 	map.borders.north.cells["0,0"]["art"] = {
 		"texture": "assets/animations/canal_locks_main_frame_0.png", "animation": "canal_lock",
 		"size": [2, 3], "rotation": 30, "collision": {"shape": "box"}, "script": "unused"}
+	map.borders.north.cells["0,0"].art["overlay"]=true
 	renderer.configure(map, origin, 3)
 	renderer.update_view(camera, null)
 	var bounds := Bounds.rect(map)
 	bounds.position += Vector2(origin.x, origin.z)
 	_verify_coverage(renderer, map, bounds)
+	var priority_art=renderer.get_node("North").get_children().filter(func(node):return node.has_meta("border_art"))
+	assert(not priority_art.is_empty())
+	assert(priority_art[0].material_override.render_priority==1,"Border overlays must render after wall artwork.")
+	assert(priority_art[0].material_override.shader.code.contains("depth_test_disabled"),"Walls must not depth-occlude border overlays.")
 	var seam_map := map.duplicate(true)
 	seam_map["_terrain_grid"] = {Vector2i.ZERO: "forest_floor"}
 	seam_map.borders.north.cells["1,2"].art = {"texture": "assets/overworld/citybuilding_00.png",
@@ -123,8 +128,51 @@ func _test() -> void:
 	game._update_map_borders(4)
 	assert(game.map_border_renderer.get_child_count() == 0)
 	game.free()
+	await _verify_player_cover(renderer, camera, origin)
 	print("MAP_BORDER_RUNTIME_PASSED")
 	quit()
+
+func _verify_player_cover(renderer: Node3D, camera: Camera3D, origin: Vector3) -> void:
+	var canvas := CanvasLayer.new()
+	root.add_child(canvas)
+	var map := {"size": [8, 8], "borders": {"south": {"enabled": true, "depth": 1, "cells": {
+		"4,0": {"terrain": "sand", "art": {"texture": "assets/test_wall.png", "size": [3, 5]}}
+	}}}}
+	var side: Dictionary = map.borders.south
+	var image := Image.create_empty(2, 2, false, Image.FORMAT_RGBA8)
+	image.fill(Color.BLUE)
+	renderer._textures[["assets/test_wall.png", ""]] = ImageTexture.create_from_image(image)
+	var anchor := origin + Vector3(0.5, 0.001, 4.5)
+	var point := camera.unproject_position(anchor + camera.global_basis.y * 2.5)
+	var actor := ColorRect.new()
+	actor.color = Color.MAGENTA
+	actor.position = point - Vector2(9, 9)
+	actor.size = Vector2(18, 18)
+	actor.z_index = 10
+	canvas.add_child(actor)
+	renderer.configure(map, origin, 3, canvas)
+	renderer.update_view(camera, null)
+	assert(renderer._foreground == null)
+	if DisplayServer.get_name() != "headless":
+		await RenderingServer.frame_post_draw
+		assert(_sample_canvas(point).is_equal_approx(Color.MAGENTA))
+	side.covers_player = true
+	renderer.configure(map, origin, 3, canvas)
+	renderer.update_view(camera, null)
+	var foreground: Node2D = renderer._foreground
+	assert(foreground.z_index > actor.z_index and foreground.get_child_count() == 2)
+	for source in renderer.get_node("South").get_children(): assert(source.layers == 0)
+	if DisplayServer.get_name() != "headless":
+		await RenderingServer.frame_post_draw
+		assert(_sample_canvas(point).is_equal_approx(Color.BLUE), "The wall must cover the player canvas.")
+	renderer.configure({}, origin, 3, canvas)
+	assert(renderer._foreground == null and not foreground.visible)
+	canvas.queue_free()
+
+func _sample_canvas(point: Vector2) -> Color:
+	var image := root.get_texture().get_image()
+	var scale := Vector2(image.get_size()) / root.get_visible_rect().size
+	return image.get_pixelv(Vector2i(point * scale))
 
 func _verify_coverage(renderer: Node3D, map: Dictionary, bounds: Rect2) -> void:
 	var strips: Array[Rect2] = []

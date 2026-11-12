@@ -59,6 +59,8 @@ static func _validate_borders(borders: Variant, issues: Array[Dictionary]) -> vo
 			continue
 		if not border.get("enabled", false) is bool:
 			issues.append(_issue("error", path + ".enabled", "Expected a boolean."))
+		if not border.get("covers_player", false) is bool:
+			issues.append(_issue("error", path + ".covers_player", "Expected a boolean."))
 		for axis in ["width", "height", "depth"]:
 			var value: Variant = border.get(axis, 4)
 			if not (value is int or value is float) or value != int(value) or value < 1 or value > BorderLayout.MAX_DIMENSION:
@@ -133,7 +135,7 @@ static func _validate_warp_metadata(doc: MapDocument, issues: Array[Dictionary])
 		if not (target_id is int or target_id is float) or int(target_id) < 1 or not is_equal_approx(float(target_id),floorf(float(target_id))): issues.append(_issue("error", path + ".entrance_map_warp_id", "Entrance Map Warp ID must be a positive whole number."))
 
 static func _validate_canonical_terrain(doc:MapDocument,issues:Array[Dictionary])->void:
-	var valid_types:=["dark_museum_floor","dark_museum_floor_corner","dark_museum_floor_icon","earthy_museum_floor","pale_museum_floor","water","sand","mud","forest_floor","stone","rock","indoor_floor_tile","indoor_floor_tile_00","warm_honey_limestone_paving"]
+	var valid_types:=["grass_savanna_dry","grass_savanna_wet","dark_museum_floor","dark_museum_floor_corner","dark_museum_floor_icon","earthy_museum_floor","pale_museum_floor","water","sand","mud","forest_floor","stone","rock","indoor_floor_tile","indoor_floor_tile_00","warm_honey_limestone_paving"]
 	if doc.data.has("base_terrain_type") and String(doc.data.get("base_terrain_type","")) not in valid_types:issues.append(_issue("error","$.base_terrain_type","Unknown canonical base terrain type."))
 	if not doc.data.has("terrain_tiles"):return
 	var entries:Variant=doc.data.terrain_tiles
@@ -175,12 +177,16 @@ static func _validate_universal_objects(doc: MapDocument, issues: Array[Dictiona
 		var path := "$.objects[%d]" % i; var value: Variant = doc.data.objects[i]
 		if not value is Dictionary: issues.append(_issue("error", path, "Expected an object record.")); continue
 		var type_id := String(value.get("type", ""))
-		if not type_id in supported and not type_id.begins_with("asset.") and not type_id.begins_with("overlay.") and not type_id.begins_with("tile.") and not type_id.begins_with("building."): issues.append(_issue("error", path + ".type", "Unsupported universal object type."))
-		if (type_id.begins_with("asset.") or type_id.begins_with("overlay.") or type_id.begins_with("tile.")) and (not value.get("asset_path") is String or not String(value.get("asset_path","")).begins_with("res://assets/overworld/")):
+		var is_flat_tile := type_id.begins_with("tile.") or type_id.begins_with("decal.")
+		var is_imported := is_flat_tile or type_id.begins_with("asset.") or type_id.begins_with("overlay.")
+		if type_id not in supported and not is_imported and not type_id.begins_with("building."):
+			issues.append(_issue("error", path + ".type", "Unsupported universal object type."))
+		if is_imported and (not value.get("asset_path") is String or not String(value.get("asset_path", "")).begins_with("res://assets/overworld/")):
 			issues.append(_issue("error", path + ".asset_path", "Imported overworld objects require an assets/overworld resource path."))
 		if type_id.begins_with("overlay.") and value.has("rotation_degrees") and not (value.rotation_degrees is int or value.rotation_degrees is float):
 			issues.append(_issue("error", path + ".rotation_degrees", "Overlay rotation must be a number of degrees."))
-		if type_id.begins_with("tile.") and value.has("rotation_degrees") and not (value.rotation_degrees is int or value.rotation_degrees is float):issues.append(_issue("error",path+".rotation_degrees","Tile rotation must be a number of degrees."))
+		if is_flat_tile and value.has("rotation_degrees") and not (value.rotation_degrees is int or value.rotation_degrees is float):
+			issues.append(_issue("error", path + ".rotation_degrees", "Tile rotation must be a number of degrees."))
 		if type_id.begins_with("overlay.") and bool(value.get("is_attached",false)):
 			var host_id:=String(value.get("host_id",""))
 			if host_id.is_empty() or not valid_hosts.has(host_id):issues.append(_issue("error",path+".host_id","Attached overlays require an existing renderable placed-object host."))

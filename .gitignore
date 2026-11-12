@@ -119,3 +119,6 @@ tests/
 !/tests/patrol_test.gd.uid
 !/tools/map_editor/tests/patrol_editor_test.gd
 !/tools/map_editor/tests/patrol_editor_test.gd.uid
+
+!/tests/habitat_exhibit_runtime_test.gd
+!/tests/habitat_exhibit_runtime_test.gd.uid

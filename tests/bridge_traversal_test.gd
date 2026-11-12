@@ -13,7 +13,7 @@ func _initialize() -> void:
 	assert(main.traversal_surfaces.size() >= 2, "Authored vertical and horizontal bridges must build traversal surfaces.")
 	var surface: Dictionary = main.traversal_surfaces.filter(func(item: Dictionary) -> bool: return String(item.name).begins_with("EastRoute"))[0]
 	assert(main.world.get_node_or_null("EastRouteUniversalObject0DeckTile0") != null, "Bridge deck tiles must render separately from terrain.")
-	assert(main.world.find_child("EastRouteCanonicalBase_*_water",false,false) != null, "Canonical water visuals must remain present beneath the bridge.")
+	assert(main.world.find_child("EastRouteCanonicalBase_water_*",false,false) != null, "Canonical water visuals must remain present beneath the bridge.")
 	var east_water_collision:=main.world.find_child("EastRouteCanonicalWaterCollision*",false,false) as StaticBody3D
 	assert(east_water_collision != null, "Underlying canonical terrain collision must remain independently functional.")
 	assert(east_water_collision.collision_layer == main.TERRAIN_OBSTACLE_LAYER, "Water must use the filterable terrain-obstacle layer.")
@@ -68,7 +68,7 @@ func _initialize() -> void:
 	assert(is_equal_approx(float(horizontal.width),1.3),"Horizontal bridges must share the same widened asset width.")
 	assert(main.world.get_node_or_null("WestRouteUniversalObject0DeckTile4") != null, "Horizontal bridge end art must be generated from the dedicated textures.")
 	assert((main.world.get_node("WestRouteUniversalObject0DeckTile0") as MeshInstance3D).material_override.albedo_texture.resource_path.ends_with("tile_bridge_horizontal_l.png"), "Horizontal bridges must use their horizontal start texture.")
-	assert(main.world.find_child("WestRouteCanonicalBase_*_water",false,false) != null, "Horizontal bridge placement must preserve canonical water beneath it.")
+	assert(main.world.find_child("WestRouteCanonicalBase_water_*",false,false) != null, "Horizontal bridge placement must preserve canonical water beneath it.")
 	assert(main.world.get_node_or_null("CanopyRouteUniversalObject0") != null and (main.world.get_node("CanopyRouteUniversalObject0") as Sprite3D).texture.resource_path.ends_with("vines_horizontal_flower_passion.png"), "Outdoor maps must render authored horizontal passion vines.")
 	main.player.position = Vector3(center.x, 0.65, center.z)
 	main.active_authored_map_id = ""

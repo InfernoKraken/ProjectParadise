@@ -25,11 +25,13 @@ const DIRECTIONS := [
 ]
 
 const TERRAIN := {
-	"dark_museum_floor":{"priority":9,"texture":"res://assets/overworld/tile_dark_museum_floor.png","tint":"ffffff"},
-	"dark_museum_floor_corner":{"priority":10,"texture":"res://assets/overworld/tile_dark_museum_floor_corner.png","tint":"ffffff"},
-	"dark_museum_floor_icon":{"priority":11,"texture":"res://assets/overworld/tile_dark_museum_floor_icon.png","tint":"ffffff"},
-	"earthy_museum_floor":{"priority":12,"texture":"res://assets/overworld/tile_earthy_museum_floor.png","tint":"ffffff"},
-	"pale_museum_floor":{"priority":13,"texture":"res://assets/overworld/tile_pale_museum_floor.png","tint":"ffffff"},
+	"grass_savanna_dry":{"priority":14,"texture":"res://assets/overworld/tile_grass_savanna_dry.png","tint":"ffffff"},
+	"grass_savanna_wet":{"priority":15,"texture":"res://assets/overworld/tile_grass_savanna_wet.png","tint":"ffffff"},
+	"dark_museum_floor":{"hard_edges":true,"priority":9,"texture":"res://assets/overworld/tile_dark_museum_floor.png","tint":"ffffff"},
+	"dark_museum_floor_corner":{"hard_edges":true,"priority":10,"texture":"res://assets/overworld/tile_dark_museum_floor_corner.png","tint":"ffffff"},
+	"dark_museum_floor_icon":{"hard_edges":true,"priority":11,"texture":"res://assets/overworld/tile_dark_museum_floor_icon.png","tint":"ffffff"},
+	"earthy_museum_floor":{"hard_edges":true,"priority":12,"texture":"res://assets/overworld/tile_earthy_museum_floor.png","tint":"ffffff"},
+	"pale_museum_floor":{"hard_edges":true,"priority":13,"texture":"res://assets/overworld/tile_pale_museum_floor.png","tint":"ffffff"},
 
 	"warm_honey_limestone_paving":{"priority":8, "texture":"res://assets/overworld/tile_warm_honey_limestone_paving.png", "tint":"ffffff"},
 	"indoor_floor_tile":{"priority":6, "texture":"res://assets/overworld/tile_interior_floor_tiles.png", "tint":"ffffff"},
@@ -159,7 +161,7 @@ static func resolve(grid: Dictionary, map_seed := "map") -> Array[Dictionary]:
 			var neighbor:Vector2i=position+boundary.offset
 			if not grid.has(neighbor):continue
 			var first:=String(grid[position]);var second:=String(grid[neighbor])
-			if first==second:continue
+			if first==second or (bool(TERRAIN.get(first,{}).get("hard_edges",false)) and bool(TERRAIN.get(second,{}).get("hard_edges",false))):continue
 			var terrain_a:=first if priority(first)>priority(second) else second
 			var terrain_b:=second if terrain_a==first else first
 			var key:=pair_key(terrain_a,terrain_b)
@@ -185,6 +187,7 @@ static func _add_corner_boundaries(result:Array[Dictionary],grid:Dictionary,map_
 			var terrain:=String(grid[tile]);counts[terrain]=int(counts.get(terrain,0))+1
 		if counts.size()!=2:continue
 		var types:Array=counts.keys();var terrain_a:=String(types[0]) if priority(String(types[0]))>priority(String(types[1])) else String(types[1]);var terrain_b:=String(types[1]) if terrain_a==String(types[0]) else String(types[0])
+		if bool(TERRAIN.get(terrain_a,{}).get("hard_edges",false)) and bool(TERRAIN.get(terrain_b,{}).get("hard_edges",false)):continue
 		var count_a:=int(counts[terrain_a]);var mask_type:="";var orientation:=""
 		if count_a==1:
 			mask_type="corner_b_dominant";orientation=_corner_name_for_index(grid_values_index(grid,tiles,terrain_a))

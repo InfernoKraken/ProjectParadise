@@ -36,6 +36,14 @@ func _test() -> void:
 		border._canvas._gui_input(click)
 		assert(editor.document.data.borders[border._side_name()].cells["0,0"].terrain == terrain_ids[side])
 	var before: Dictionary = editor.document.data.borders.duplicate(true)
+	assert(not border._covers_player.button_pressed)
+	border._covers_player.button_pressed = true
+	assert(editor.document.data.borders.west.covers_player)
+	border._side.select(1)
+	border._refresh()
+	assert(not border._covers_player.button_pressed)
+	editor._undo()
+	assert(_same_json(editor.document.data.borders, before))
 	border._side.select(0)
 	border._refresh(true)
 	border._layer.select(1)
@@ -51,7 +59,7 @@ func _test() -> void:
 	assert(border._canvas.visual_texture(art.texture, art.animation) is AnimatedTexture)
 	border._paint(Vector2i.ZERO, true)
 	border._reset_stroke()
-	assert(editor.document.data.borders.north == before.north)
+	assert(_same_json(editor.document.data.borders.north, before.north))
 	editor._undo()
 	var restored: Dictionary = editor.document.data.borders.north.cells["0,0"].art
 	assert(restored.texture == art.texture and restored.rotation == art.rotation)
@@ -95,11 +103,13 @@ func _test() -> void:
 	border._paint(Vector2i(11, 0), false)
 	border._reset_stroke()
 	assert(not editor.document.data.borders.north.get("cells").get("11,0", {}).has("art"))
+	border._covers_player.button_pressed = true
 	var path := "user://map_border_test.json"
 	assert(editor.document.save_atomic(path) == OK)
 	var reloaded := Document.load_file(path)
 	assert(_same_json(reloaded.data.borders, editor.document.data.borders))
 	assert(reloaded.data.border_corner_priority == "east_west")
+	assert(reloaded.data.borders.north.covers_player)
 	DirAccess.remove_absolute(path)
 	border.hide()
 	if DisplayServer.get_name() != "headless":

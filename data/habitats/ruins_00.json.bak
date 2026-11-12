@@ -1,0 +1,447 @@
+{
+	"blue_flowers": [
+		[
+			-0.34999999403954,
+			0.20000000298023,
+			1.04999995231628
+		],
+		[
+			0.39999999403954,
+			0.20000000298023,
+			-0.05000000149012
+		]
+	],
+	"floor_blocks": [],
+	"flower_beds": [],
+	"furnishings": [],
+	"grass_zones": [],
+	"habitat_template_version": 1,
+	"habitat_type": "cave_ruins",
+	"id": "ruins_00",
+	"name": "cave ruins",
+	"npc_spawn": [
+		0,
+		0
+	],
+	"objects": [
+		{
+			"asset_path": "res://assets/overworld/rocks_generic_00.png",
+			"height": 1.0,
+			"instance_id": "placed-1794444928-1765539478",
+			"position": [
+				-1.04999995231628,
+				0.0,
+				0.15000000596046
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_generic",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/rocks_generic_00.png",
+			"height": 1.0,
+			"position": [
+				-1.5,
+				0.0,
+				-0.30000001192093
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_generic",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/rocks_generic_00.png",
+			"height": 1.0,
+			"position": [
+				1.54999995231628,
+				0.0,
+				-0.25
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_generic",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/rocks_generic_02.png",
+			"height": 1.0,
+			"position": [
+				-1.70000004768372,
+				0.0,
+				1.39999997615814
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_generic",
+			"variant": 2
+		},
+		{
+			"asset_path": "res://assets/overworld/rocks_generic_03.png",
+			"height": 1.0,
+			"instance_id": "placed-1794444896-2285142714",
+			"position": [
+				0.89999997615814,
+				0.0,
+				1.5
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_generic",
+			"variant": 3
+		},
+		{
+			"asset_path": "res://assets/overworld/ruins_building_00.png",
+			"height": 1.0,
+			"position": [
+				-0.89999997615814,
+				0.0,
+				0.25
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.ruins_building",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/ruins_building_01.png",
+			"height": 1.0,
+			"position": [
+				1.0,
+				0.0,
+				-0.15000000596046
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.ruins_building",
+			"variant": 1
+		},
+		{
+			"asset_path": "res://assets/overworld/ruins_building_02.png",
+			"height": 1.0,
+			"position": [
+				-1.54999995231628,
+				0.0,
+				1.54999995231628
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.ruins_building",
+			"variant": 2
+		},
+		{
+			"asset_path": "res://assets/overworld/ruins_building_03.png",
+			"height": 1.0,
+			"position": [
+				-0.60000002384186,
+				0.0,
+				1.5
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.ruins_building",
+			"variant": 3
+		},
+		{
+			"asset_path": "res://assets/overworld/ruins_building_04.png",
+			"height": 1.0,
+			"position": [
+				-0.64999997615814,
+				0.0,
+				-1.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.ruins_building",
+			"variant": 4
+		},
+		{
+			"asset_path": "res://assets/overworld/ruins_rocks_00.png",
+			"height": 1.0,
+			"position": [
+				1.35000002384186,
+				0.0,
+				1.54999995231628
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.ruins_rocks",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/ruins_rocks_01.png",
+			"height": 1.0,
+			"position": [
+				-1.60000002384186,
+				0.0,
+				-0.25
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.ruins_rocks",
+			"variant": 1
+		},
+		{
+			"asset_path": "res://assets/overworld/ruins_rocks_02.png",
+			"height": 1.0,
+			"position": [
+				0.10000000149012,
+				0.0,
+				-0.94999998807907
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.ruins_rocks",
+			"variant": 2
+		},
+		{
+			"asset_path": "res://assets/overworld/ruins_rocks_03.png",
+			"height": 1.0,
+			"position": [
+				1.54999995231628,
+				0.0,
+				0.10000000149012
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.ruins_rocks",
+			"variant": 3
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_hibiscus.png",
+			"attachment_order": 0,
+			"height": 1.0,
+			"host_id": "placed-1794444896-2285142714",
+			"is_attached": true,
+			"local_position": [
+				0.0,
+				-0.29999995231628
+			],
+			"position": [
+				0.89999997615814,
+				0.0,
+				1.20000004768372
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_hibiscus"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_hibiscus.png",
+			"attachment_order": 0,
+			"height": 1.0,
+			"host_id": "placed-1794444928-1765539478",
+			"is_attached": true,
+			"local_position": [
+				0.04999995231628,
+				-0.5
+			],
+			"position": [
+				-1.0,
+				0.0,
+				-0.34999999403954
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_hibiscus"
+		}
+	],
+	"orchids": [],
+	"rare_torch_ginger": [],
+	"rocks": [],
+	"sand_blocks": [],
+	"size": [
+		6.66666698455811,
+		5.0
+	],
+	"tall_flowers": [],
+	"terrain_tiles": [
+		{
+			"positions": [
+				[
+					-1,
+					1
+				],
+				[
+					-2,
+					1
+				],
+				[
+					-2,
+					0
+				],
+				[
+					-2,
+					-1
+				],
+				[
+					-1,
+					-1
+				],
+				[
+					0,
+					-1
+				],
+				[
+					1,
+					0.0
+				],
+				[
+					1.0,
+					1.0
+				],
+				[
+					2,
+					1.0
+				]
+			],
+			"terrain_type": "stone"
+		},
+		{
+			"positions": [
+				[
+					-2,
+					-2
+				],
+				[
+					-1,
+					-2
+				],
+				[
+					0,
+					-2
+				],
+				[
+					1,
+					-2
+				],
+				[
+					2,
+					-2
+				],
+				[
+					-2,
+					2
+				],
+				[
+					-1,
+					2
+				],
+				[
+					0,
+					2
+				],
+				[
+					1,
+					2
+				],
+				[
+					2,
+					2
+				]
+			],
+			"terrain_type": "rock"
+		},
+		{
+			"positions": [
+				[
+					-1,
+					0
+				],
+				[
+					0,
+					1
+				],
+				[
+					0,
+					0
+				],
+				[
+					2,
+					0
+				],
+				[
+					2,
+					-1
+				],
+				[
+					1,
+					-1
+				]
+			],
+			"terrain_type": "forest_floor"
+		}
+	],
+	"trees": [],
+	"vines": [
+		[
+			-1.39999997615814,
+			0.5,
+			0.0
+		],
+		[
+			1.79999995231628,
+			0.5,
+			0.25
+		]
+	],
+	"wall_blocks": [],
+	"wander_bounds": [
+		-2,
+		-1.5,
+		4,
+		3
+	],
+	"water_blocks": []
+}

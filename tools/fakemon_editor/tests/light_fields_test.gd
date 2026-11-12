@@ -18,12 +18,16 @@ func _initialize() -> void:
 	editor._select("Scorchick")
 	assert(editor.light_source_box.button_pressed and editor.light_strength_spin.editable)
 	assert(is_equal_approx(editor.light_strength_spin.value, 0.5) and not model.is_dirty())
+	assert(editor.movement_box.get_item_text(editor.movement_box.selected) == "Flying")
+	editor.movement_box.select(0)
+	editor.movement_box.item_selected.emit(0)
 	editor.light_strength_spin.value = 1.25
 	editor.light_source_box.button_pressed = false
 	assert(model.is_dirty() and not editor.light_strength_spin.editable)
 	assert(model.save_selected(), model.error)
 	var saved: Dictionary = model.written[model.BASE_FILE].fakemon.filter(func(mon): return mon.name == "Scorchick")[0]
 	assert(saved.light_source == false and is_equal_approx(float(saved.light_strength), 1.25), "Stats edits must survive JSON serialization through the normal save path.")
+	assert(saved.movement_mode == "ground")
 	editor._select("Scorcaw")
 	assert(editor.light_source_box.button_pressed and is_equal_approx(editor.light_strength_spin.value, 1.0))
 	editor.light_strength_spin.value = 2.5

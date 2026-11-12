@@ -2,9 +2,9 @@ class_name EditorCanvas
 extends Control
 
 const BorderLayout := preload("res://core/map_border_layout.gd")
+const PolygonColliders := preload("res://core/polygon_colliders.gd")
 
 const VIEWPORT_MARGIN_PIXELS := 128.0
-const TERRAIN_LABEL_MIN_CELL_PIXELS := 24.0
 
 const WallGeometryRef := preload("res://core/wall_geometry.gd")
 
@@ -16,6 +16,8 @@ const WALL_POST_TEXTURE_PATH := "assets/overworld/wall_post_generic.png"
 const WALL_HORIZONTAL_TEXTURE_PATH := "assets/overworld/wall_horizontal_generic.png"
 const WALL_VERTICAL_TEXTURE_PATH := "assets/overworld/wall_vertical_generic.png"
 const RUNTIME_TERRAIN_TEXTURES := {
+	"grass_savanna_dry":"assets/overworld/tile_grass_savanna_dry.png",
+	"grass_savanna_wet":"assets/overworld/tile_grass_savanna_wet.png",
 	"dark_museum_floor":"assets/overworld/tile_dark_museum_floor.png",
 	"dark_museum_floor_corner":"assets/overworld/tile_dark_museum_floor_corner.png",
 	"dark_museum_floor_icon":"assets/overworld/tile_dark_museum_floor_icon.png",
@@ -133,6 +135,8 @@ var marquee_start := Vector2.ZERO
 var marquee_rect := Rect2()
 var host_picker_active := false
 var collision_polygon_active:=false
+var other_collision_polygons: Array = []
+var active_collision_reference := Vector2.ZERO
 var collision_polygon_points:=PackedVector2Array()
 var collision_polygon_closed:=false
 var collision_polygon_selected_vertex:=-1
@@ -176,6 +180,9 @@ func frame_all() -> void:
 func _show_editor_geometry() -> bool:
 	return not placement_preview and not script_read_only
 
+var habitat_preview: Dictionary = {}
+var habitat_pen_texture := ""
+
 func _draw() -> void:
 	water_clip_grid.clear();water_clip_walls.clear()
 	for object in objects:
@@ -188,21 +195,41 @@ func _draw() -> void:
 	var bounds := _map_bounds_rect()
 	if placement_preview or script_read_only:
 		_draw_ground(bounds)
-		if placement_preview: _draw_map_borders()
 	else:
+		_draw_ground(bounds)
 		_draw_grid()
-		draw_rect(bounds, Color("#29433288"), true)
 		draw_rect(bounds, Color("#7dab85"), false, 2.0)
 		if map_resize_enabled:
 			draw_rect(_resize_handle(bounds), Color("#a6f06c"), true)
 			draw_rect(_resize_handle(bounds), Color("#eaffd8"), false, 2.0)
-	for object in _visible_draw_objects():_draw_object(object)
+	if not habitat_preview.is_empty():
+		var pen := _texture_for(habitat_pen_texture)
+		if pen != null:
+			draw_texture_rect(pen, bounds, false, Color(1, 1, 1, 0.45))
+	var visible_objects:=_visible_draw_objects()
+	# Border billboards can extend over playable floor, especially on the south.
+	# Draw ground first so terrain cannot erase those inward-facing walls.
+	for object in visible_objects:
+		if _draw_rank(object)==0:_draw_object(object)
+	if placement_preview:_draw_map_borders(false)
+	for object in visible_objects:
+		if _draw_rank(object)!=0:_draw_object(object)
+	if placement_preview:_draw_map_borders(true)
+	if not habitat_preview.is_empty():
+		draw_rect(bounds, Color("#e0ba82"), false, 3)
+		var wander: Array = habitat_preview.wander_bounds
+		var start := world_to_screen(Vector2(wander[0], wander[1]))
+		var end := world_to_screen(Vector2(wander[0] + wander[2], wander[1] + wander[3]))
+		draw_rect(Rect2(start, end - start), Color("#74d9ef"), false, 2)
+		var spawn: Array = habitat_preview.npc_spawn
+		draw_circle(world_to_screen(Vector2(spawn[0], spawn[1])), 5, Color("#74d9ef"))
+
 	if map_resize_enabled:_draw_map_resize_arrows()
 	if script_read_only: _draw_script_paths()
 	if collision_polygon_active and _show_editor_geometry():_draw_collision_polygon()
 	if _show_editor_geometry():
 		for cell in terrain_error_cells:
-			var center:=world_to_screen(Vector2(cell));var rect:=Rect2(center-Vector2.ONE*pixels_per_unit*zoom*0.5,Vector2.ONE*pixels_per_unit*zoom)
+			var center:=world_to_screen(Vector2(cell));var rect:=Rect2(center-Vector2.ONE*pixels_per_unit*zoom*_ground_projection()*0.5,Vector2.ONE*pixels_per_unit*zoom*_ground_projection())
 			if not rect.intersects(Rect2(Vector2.ZERO,size).grow(VIEWPORT_MARGIN_PIXELS)):continue
 			draw_rect(rect,Color("#ff334466"),true);draw_rect(rect,Color("#ff3344"),false,3.0)
 	if marquee_selecting and _show_editor_geometry():
@@ -215,13 +242,14 @@ func _draw() -> void:
 func set_border_preview(map: Dictionary) -> void:
 	_border_preview_map = map
 
-func _draw_map_borders() -> void:
+func _draw_map_borders(covers_player: bool) -> void:
 	var bounds := Rect2(map_center - map_size * 0.5, map_size)
 	var canonical := _border_preview_map.has("terrain_tiles") or _border_preview_map.has("objects") or _border_preview_map.has("water_blocks") or _border_preview_map.has("sand_blocks")
 	for side: String in BorderLayout.SIDES:
 		var strip := BorderLayout.region(_border_preview_map, bounds, side)
 		if not strip.has_area(): continue
 		var definition := BorderLayout.definition(_border_preview_map, side)
+		if (definition.get("covers_player") == true) != covers_player: continue
 		var cells: Variant = definition.get("cells")
 		if not cells is Dictionary or cells.is_empty(): continue
 		var anchor := BorderLayout.repeat_origin(bounds, strip, side)
@@ -261,6 +289,7 @@ func _draw_border_strip(strip: Rect2, anchor: Vector2, dimensions: Vector2i, cel
 				if fits:
 					art_cells.append({"center": world_to_screen(art_anchor), "art": cell.art})
 	var screen_strip := Rect2(world_to_screen(strip.position), strip.size * pixels_per_unit * zoom * _ground_projection())
+	art_cells.sort_custom(func(a,b):return BorderLayout.art_priority(a.art)<BorderLayout.art_priority(b.art))
 	for item in art_cells:
 		_draw_border_art(item.center, item.art, screen_strip)
 
@@ -339,7 +368,8 @@ func _draw_ground(bounds: Rect2) -> void:
 		draw_rect(bounds, Color("#294332"), true)
 
 func _ground_projection()->Vector2:
-	return Vector2(1.0,sqrt(0.5)) if placement_preview or script_read_only else Vector2.ONE
+	# All editor tools operate on the same 45-degree ground plane as gameplay.
+	return Vector2(1.0,sqrt(0.5))
 
 func _draw_preview_tiled_texture(texture:Texture2D,rect:Rect2,tint:Color=Color.WHITE)->void:
 	var tile_scale:=Vector2.ONE*pixels_per_unit*zoom*_ground_projection()/texture.get_size()
@@ -348,19 +378,22 @@ func _draw_preview_tiled_texture(texture:Texture2D,rect:Rect2,tint:Color=Color.W
 	draw_set_transform(Vector2.ZERO,0.0,Vector2.ONE)
 
 func _draw_grid() -> void:
-	var spacing := grid_size * pixels_per_unit * zoom
-	if spacing < 4.0: return
+	var spacing := grid_size * pixels_per_unit * zoom * _ground_projection()
+	if minf(spacing.x,spacing.y) < 4.0: return
 	var center := size * 0.5 + pan
-	var x := fposmod(center.x, spacing)
+	var x := fposmod(center.x, spacing.x)
 	while x < size.x:
-		draw_line(Vector2(x, 0), Vector2(x, size.y), Color("#34404b"), 1.0); x += spacing
-	var y := fposmod(center.y, spacing)
+		draw_line(Vector2(x, 0), Vector2(x, size.y), Color("#34404b"), 1.0); x += spacing.x
+	var y := fposmod(center.y, spacing.y)
 	while y < size.y:
-		draw_line(Vector2(0, y), Vector2(size.x, y), Color("#34404b"), 1.0); y += spacing
+		draw_line(Vector2(0, y), Vector2(size.x, y), Color("#34404b"), 1.0); y += spacing.y
 	draw_line(Vector2(center.x, 0), Vector2(center.x, size.y), Color("#6c8296"), 1.5)
 	draw_line(Vector2(0, center.y), Vector2(size.x, center.y), Color("#6c8296"), 1.5)
 
-func begin_collision_polygon_editor(points:Array,closed:bool)->void:
+func begin_collision_polygon_editor(points: Array, closed: bool, other_polygons: Array = [], reference: Vector2 = Vector2.ZERO) -> void:
+	other_collision_polygons = other_polygons
+	active_collision_reference = reference
+	collision_polygon_drag_vertex = -1
 	collision_polygon_points=PackedVector2Array()
 	for point:Variant in points:
 		if point is Array and point.size()==2:collision_polygon_points.append(Vector2(float(point[0]),float(point[1])))
@@ -368,6 +401,8 @@ func begin_collision_polygon_editor(points:Array,closed:bool)->void:
 
 func end_collision_polygon_editor()->void:
 	collision_polygon_active=false;collision_polygon_drag_vertex=-1;collision_polygon_selected_vertex=-1;queue_redraw()
+	active_collision_reference = Vector2.ZERO
+	other_collision_polygons = []
 
 func clear_collision_polygon()->void:
 	if not collision_polygon_active:return
@@ -387,16 +422,26 @@ func _collision_polygon_array()->Array:
 func _emit_collision_polygon(action:String)->void:
 	collision_polygon_changed.emit(_collision_polygon_array(),collision_polygon_closed,action);queue_redraw()
 
-func _polygon_screen_point(point:Vector2)->Vector2:
+func _polygon_reference_size(object:Dictionary)->Vector2:
+	if _is_scalable(object):return Vector2(object.size.x,object.size.z)
+	return object.get("footprint",Vector2(0.8,0.8))
+
+func _active_polygon_reference_size(object: Dictionary) -> Vector2:
+	return active_collision_reference if active_collision_reference != Vector2.ZERO else _polygon_reference_size(object)
+
+func _polygon_screen_point(point: Vector2, reference: Vector2 = Vector2.ZERO) -> Vector2:
 	var object:=_selected();if object.is_empty():return Vector2.ZERO
-	var rect:=_screen_rect(object);var local:=(point-Vector2(0.5,0.5))*rect.size
-	return rect.get_center()+local.rotated(deg_to_rad(float(object.get("rotation_degrees",0.0))))
+	var local := (point - Vector2(0.5, 0.5)) * (reference if reference != Vector2.ZERO else _active_polygon_reference_size(object))
+	# Positive Godot Y rotation turns +X toward -Z.
+	local=local.rotated(-deg_to_rad(float(object.get("rotation_degrees",0.0))))
+	return world_to_screen(Vector2(object.position.x,object.position.z)+local)
 
 func _polygon_normalized_point(screen_point:Vector2)->Vector2:
 	var object:=_selected();if object.is_empty():return Vector2.ZERO
-	var rect:=_screen_rect(object);var local:=(screen_point-rect.get_center()).rotated(-deg_to_rad(float(object.get("rotation_degrees",0.0))))
-	# Keep footprint-relative coordinates unbounded so colliders can surround large sprite bases.
-	return Vector2(local.x/maxf(rect.size.x,0.001)+0.5,local.y/maxf(rect.size.y,0.001)+0.5)
+	var local:=screen_to_world(screen_point)-Vector2(object.position.x,object.position.z)
+	local=local.rotated(deg_to_rad(float(object.get("rotation_degrees",0.0))))
+	var reference := _active_polygon_reference_size(object)
+	return local/Vector2(maxf(reference.x,0.001),maxf(reference.y,0.001))+Vector2(0.5,0.5)
 
 func _polygon_vertex_at(screen_point:Vector2)->int:
 	for index in collision_polygon_points.size():
@@ -411,6 +456,20 @@ func _polygon_edge_at(screen_point:Vector2)->int:
 	return -1
 
 func _draw_collision_polygon()->void:
+	var fallback := _polygon_reference_size(_selected())
+	for polygon: Dictionary in other_collision_polygons:
+		var points: Variant = polygon.get("points", [])
+		if not points is Array:
+			continue
+		var outline := PackedVector2Array()
+		var reference := PolygonColliders.reference_size(polygon, fallback)
+		for point: Variant in points:
+			if point is Array and point.size() == 2 and (point[0] is int or point[0] is float) and (point[1] is int or point[1] is float):
+				outline.append(_polygon_screen_point(Vector2(float(point[0]), float(point[1])), reference))
+		if bool(polygon.get("closed", false)) and outline.size() >= 3:
+			outline.append(outline[0])
+		if outline.size() >= 2:
+			draw_polyline(outline, Color("#ffb46b"), 2.0, true)
 	if collision_polygon_points.is_empty():return
 	var screen_points:=PackedVector2Array();for point in collision_polygon_points:screen_points.append(_polygon_screen_point(point))
 	if collision_polygon_closed and screen_points.size()>=3:draw_colored_polygon(screen_points,Color("#ef334455"))
@@ -426,11 +485,6 @@ func _visible_draw_objects()->Array[Dictionary]:
 		if _object_in_draw_view(object):_visible_draw_order.append(object)
 	_visible_draw_signature=signature
 	return _visible_draw_order
-
-func _terrain_label_visible(object:Dictionary)->bool:
-	if not _is_terrain_object(object):return true
-	var id:=String(object.get("id",""))
-	return pixels_per_unit*zoom>=TERRAIN_LABEL_MIN_CELL_PIXELS or id==selected_id or selected_ids.has(id) or validation_error_ids.has(id)
 
 func _object_in_draw_view(object:Dictionary)->bool:
 	if (placement_preview or script_read_only) and (not bool(object.get("preview_visible",true)) or String(object.get("field",""))=="asset_collision"):return false
@@ -450,7 +504,7 @@ func _object_draw_bounds(object:Dictionary)->Rect2:
 		_drawing_bounds_cache[key]=Rect2((bounds.position-origin)/zoom,bounds.size/zoom)
 	var local:Rect2=_drawing_bounds_cache[key]
 	var bounds:=Rect2(origin+local.position*zoom,local.size*zoom).grow(12)
-	if _show_editor_geometry() and _terrain_label_visible(object):
+	if _show_editor_geometry() and not _is_terrain_object(object):
 		var center:=_object_anchor_screen(object)
 		if String(object.get("shape",""))=="wall" and not object.get("wall_points",[]).is_empty():center=world_to_screen(object.wall_points[0])
 		var label:=String(object.get("label",object.get("field","object")))
@@ -524,12 +578,17 @@ func _draw_object(object: Dictionary) -> void:
 			# Gameplay repeats block textures across the serialized X/Z dimensions.
 			# Tile the same source art here so large interior floors and thin wall
 			# strips read like their in-game counterparts instead of flat overlays.
-			if String(object.get("universal_type","")).begins_with("tile."):
+			if String(object.get("universal_type","")).begins_with("decal."):
+				var dimensions:=Vector2(object.size.x,object.size.z)*pixels_per_unit*zoom
+				var transform:=Transform2D(0,_ground_projection(),0,center)*Transform2D(-deg_to_rad(float(object.get("rotation_degrees",0.0))),Vector2.ZERO)
+				draw_set_transform_matrix(transform)
+				draw_texture_rect(texture,Rect2(-dimensions*0.5,dimensions),false)
+				draw_set_transform(Vector2.ZERO)
+			elif String(object.get("universal_type","")).begins_with("tile."):
 				draw_set_transform(center,deg_to_rad(float(object.get("rotation_degrees",0.0))),Vector2.ONE)
 				draw_texture_rect(texture,Rect2(-rect.size*0.5,rect.size),false,Color(1,1,1,0.96))
 				draw_set_transform(Vector2.ZERO,0.0,Vector2.ONE)
-			elif placement_preview or script_read_only:_draw_preview_tiled_texture(texture,rect,_runtime_terrain_tint(String(object.get("label", ""))))
-			else:draw_texture_rect(texture, rect, true, Color(1,1,1,0.92))
+			else:_draw_preview_tiled_texture(texture,rect,_runtime_terrain_tint(String(object.get("label", ""))))
 			if _show_editor_geometry(): draw_rect(rect, Color(color, 0.12), true)
 		else:
 			draw_rect(rect, Color(color, 0.32), true)
@@ -566,11 +625,11 @@ func _draw_object(object: Dictionary) -> void:
 		var config:Dictionary=object.wall_collision
 		if bool(config.get("enabled",true)):
 			var offset:Array=config.get("offset",[0,0,0]);var dimensions:Array=config.get("size",[object.size.x,object.size.y,object.size.z])
-			var collider_size:=Vector2(float(dimensions[0]),float(dimensions[2]))*pixels_per_unit*zoom
-			var collider_center:=center+Vector2(float(offset[0]),float(offset[2]))*pixels_per_unit*zoom
+			var collider_size:=Vector2(float(dimensions[0]),float(dimensions[2]))*pixels_per_unit*zoom*_ground_projection()
+			var collider_center:=center+Vector2(float(offset[0]),float(offset[2]))*pixels_per_unit*zoom*_ground_projection()
 			draw_rect(Rect2(collider_center-collider_size*0.5,collider_size),Color("#ff5577"),false,3.0)
 	var label := String(object.get("label", object.get("field", "object")))
-	if _show_editor_geometry() and _terrain_label_visible(object): draw_string(get_theme_default_font(), center + Vector2(7, -7), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color.WHITE)
+	if _show_editor_geometry() and not _is_terrain_object(object): draw_string(get_theme_default_font(), center + Vector2(7, -7), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color.WHITE)
 
 func _draw_wall(object:Dictionary)->void:
 	var points:Array=object.get("wall_points",[]);if points.is_empty():return
@@ -731,6 +790,7 @@ func _draw_rank(object:Dictionary)->int:
 	if _show_editor_geometry() and String(object.get("role", "")) == "marker": return 100
 	if int(object.get("render_band",0))>0:return 5
 	if _is_terrain_object(object):return 0
+	if String(object.get("universal_type","")).begins_with("decal."):return 1
 	if placement_preview and String(object.get("field","")) in ["wall_blocks","furnishings"]:return 4
 	if String(object.get("universal_type","")).begins_with("background.citybuilding"):return 1
 	if String(object.get("field",""))=="wall_blocks":return 1
@@ -939,7 +999,7 @@ func _gui_input(event: InputEvent) -> void:
 		elif marquee_selecting:
 			marquee_rect=Rect2(marquee_start,event.position-marquee_start).abs();queue_redraw();accept_event()
 		elif dragging:
-			var delta := Vector2(event.position.x - drag_start_mouse.x, event.position.y - drag_start_mouse.y) / (pixels_per_unit * zoom)
+			var delta := Vector2(event.position.x - drag_start_mouse.x, event.position.y - drag_start_mouse.y) / (pixels_per_unit * zoom * _ground_projection())
 			for id in drag_start_positions:
 				var object:=_object_by_id(String(id));if object.is_empty():continue
 				var pos:Vector3=drag_start_positions[id]+Vector3(delta.x,0,delta.y)
@@ -956,7 +1016,7 @@ func _gui_input(event: InputEvent) -> void:
 		elif resizing:
 			var object := _selected()
 			if not object.is_empty():
-				var delta := Vector2(event.position.x - drag_start_mouse.x, event.position.y - drag_start_mouse.y) / (pixels_per_unit * zoom)
+				var delta := Vector2(event.position.x - drag_start_mouse.x, event.position.y - drag_start_mouse.y) / (pixels_per_unit * zoom * _ground_projection())
 				if String(object.get("field",""))=="terrain_tiles":
 					_preview_terrain_expansion(object,delta);queue_redraw();return
 				var snap_step:=0.1 if String(object.get("field",""))=="asset_collision" else grid_size
@@ -1038,7 +1098,7 @@ func _screen_rect(object: Dictionary) -> Rect2:
 	var fp: Vector2 = object.get("footprint", Vector2(0.8,0.8))
 	if _is_scalable(object): fp = Vector2(object.size.x, object.size.z)
 	var offset:Vector2=object.get("footprint_offset",Vector2.ZERO)
-	return Rect2(world_to_screen(Vector2(object.position.x,object.position.z))+offset*pixels_per_unit*zoom-fp*pixels_per_unit*zoom*0.5,fp*pixels_per_unit*zoom)
+	return Rect2(world_to_screen(Vector2(object.position.x,object.position.z))+offset*pixels_per_unit*zoom*_ground_projection()-fp*pixels_per_unit*zoom*_ground_projection()*0.5,fp*pixels_per_unit*zoom*_ground_projection())
 
 func _map_bounds_rect()->Rect2:
 	return Rect2(world_to_screen(map_center-map_size*0.5),map_size*pixels_per_unit*zoom*_ground_projection())

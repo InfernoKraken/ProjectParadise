@@ -5,7 +5,10 @@ const Bounds := preload("res://tools/map_editor/core/map_bounds.gd")
 const CameraView := preload("res://world/terrain_camera_view.gd")
 const TerrainTextures := preload("res://world/terrain_transition_texture_cache.gd")
 const LightShader := preload("res://world/overworld_light_terrain.gdshader")
+const Foreground := preload("res://world/map_border_foreground.gd")
 const WINDOW_STEP := 4.0
+
+var _overlay_shader:Shader
 
 var _layer := 1
 var _states: Dictionary = {}
@@ -13,8 +16,9 @@ var _textures: Dictionary = {}
 var _art_meshes: Dictionary = {}
 var _view_signature: Array = []
 var _light_generation := -1
+var _foreground: Node2D
 
-func configure(map: Dictionary, origin: Vector3, layer: int) -> void:
+func configure(map: Dictionary, origin: Vector3, layer: int, canvas: CanvasLayer = null) -> void:
 	var bounds := Bounds.rect(map)
 	var local_bounds := bounds
 	var offset := Vector2(origin.x, origin.z)
@@ -25,6 +29,7 @@ func configure(map: Dictionary, origin: Vector3, layer: int) -> void:
 	_art_meshes.clear()
 	_light_generation = -1
 	for child in get_children(): child.free()
+	_clear_foreground()
 	_states.clear()
 	if not bounds.has_area(): return
 	for side in Layout.SIDES:
@@ -33,6 +38,13 @@ func configure(map: Dictionary, origin: Vector3, layer: int) -> void:
 		var definition := Layout.definition(map, side)
 		var cells: Variant = definition.get("cells")
 		if not cells is Dictionary or cells.is_empty(): continue
+		var covers: bool = canvas != null and definition.get("covers_player") == true
+		if covers and _foreground == null:
+			_foreground = Node2D.new()
+			_foreground.name = "ForegroundMapBorders"
+			_foreground.z_index = 100
+			_foreground.y_sort_enabled = true
+			canvas.add_child(_foreground)
 		var root := Node3D.new()
 		root.name = side.capitalize()
 		add_child(root)
@@ -48,6 +60,7 @@ func configure(map: Dictionary, origin: Vector3, layer: int) -> void:
 		_states[side] = {"strip": strip, "anchor": anchor, "uv_phase": uv_phase,
 			"dimensions": Layout.repeat_dimensions(map, side, definition), "cells": cells, "root": root,
 			"seam": seam, "along_x": Layout.horizontal(side),
+			"covers_player": covers, "foreground_items": [],
 			"padding": padding, "height": origin.y + (0.401 if canonical else 0.001),
 			"materials": {}, "terrain_window": Rect2i(), "art_window": Rect2i()}
 
@@ -65,11 +78,22 @@ func update_view(camera: Camera3D, lighting: Node) -> void:
 				state.art_window = art_window
 				_rebuild(state)
 				_light_generation = -1
+			for item in state.foreground_items: Foreground.project(item, camera)
 	if lighting != null and _light_generation != lighting.material_update_generation:
 		_light_generation = lighting.material_update_generation
+		if _foreground != null: _foreground.material = lighting.canvas_light_material
 		for state in _states.values():
 			for material in state.materials.values():
 				lighting.apply_world_material_lighting(material)
+
+func _exit_tree() -> void:
+	_clear_foreground()
+
+func _clear_foreground() -> void:
+	if is_instance_valid(_foreground):
+		_foreground.hide()
+		_foreground.queue_free()
+	_foreground = null
 
 func _window(view: Rect2, state: Dictionary) -> Rect2i:
 	var visible := view.intersection(state.strip)
@@ -80,6 +104,8 @@ func _window(view: Rect2, state: Dictionary) -> Rect2i:
 
 func _rebuild(state: Dictionary) -> void:
 	for child in state.root.get_children(): child.free()
+	for item in state.foreground_items: item.free()
+	state.foreground_items.clear()
 	var terrain_window: Rect2i = state.terrain_window
 	var art_window: Rect2i = state.art_window
 	var window := art_window.merge(terrain_window) if art_window.has_area() and terrain_window.has_area() else (art_window if art_window.has_area() else terrain_window)
@@ -112,6 +138,7 @@ func _rebuild(state: Dictionary) -> void:
 		var mesh := _add_mesh(state, batches[terrain].commit(), texture, false, false)
 		mesh.set_meta("border_terrain", terrain)
 		OverworldTextureAnimation.register_terrain(texture, mesh)
+		_add_foreground(state, mesh, false, false, 0)
 
 func _ground_quad(surface: SurfaceTool, rect: Rect2, uv_start: Vector2, height: float) -> void:
 	for point: Vector2 in [Vector2.ZERO, Vector2(rect.size.x, 0), rect.size, Vector2.ZERO, rect.size, Vector2(0, rect.size.y)]:
@@ -138,7 +165,7 @@ func _add_art(state: Dictionary, anchor: Vector2, art: Dictionary) -> void:
 			surface.set_uv(uv)
 			surface.add_vertex(Vector3(point.x, 0.003, point.y) if flat else Vector3(point.x, -point.y, 0))
 		_art_meshes[key] = surface.commit()
-	var mesh := _add_mesh(state, _art_meshes[key], texture, not flat, footprint == Vector2.ZERO)
+	var mesh := _add_mesh(state, _art_meshes[key], texture, not flat, footprint == Vector2.ZERO, Layout.art_priority(art))
 	mesh.position = Vector3(anchor.x, state.height, anchor.y)
 	mesh.set_meta("border_art", Layout.texture_path(art))
 	# The shader billboards upright art. Give its rotated quad conservative bounds.
@@ -147,13 +174,29 @@ func _add_art(state: Dictionary, anchor: Vector2, art: Dictionary) -> void:
 		mesh.custom_aabb = AABB(Vector3.ONE * -reach, Vector3.ONE * reach * 2)
 	if texture is AnimatedTexture:
 		OverworldTextureAnimation.register_terrain(texture, mesh)
+	_add_foreground(state, mesh, not flat, footprint == Vector2.ZERO, 1 + Layout.art_priority(art))
 
-func _add_mesh(state: Dictionary, geometry: Mesh, texture: Texture2D, billboard: bool, clip: bool) -> MeshInstance3D:
-	var key := [texture, billboard, clip]
+func _add_foreground(state: Dictionary, source: MeshInstance3D, billboard: bool, clip: bool, priority: int) -> void:
+	if not state.covers_player: return
+	source.layers = 0
+	source.set_meta("border_foreground_source", true)
+	var item := Foreground.make(source, state.strip, billboard, clip, priority)
+	if item == null: return
+	_foreground.add_child(item)
+	state.foreground_items.append(item)
+
+func _add_mesh(state: Dictionary, geometry: Mesh, texture: Texture2D, billboard: bool, clip: bool, priority:int=0) -> MeshInstance3D:
+	var key := [texture, billboard, clip, priority]
 	var material: ShaderMaterial = state.materials.get(key)
 	if material == null:
 		material = ShaderMaterial.new()
-		material.shader = LightShader
+		if priority>0:
+			if _overlay_shader==null:
+				_overlay_shader=Shader.new()
+				_overlay_shader.code=LightShader.code.replace("render_mode unshaded, cull_disabled;","render_mode unshaded, cull_disabled, depth_test_disabled, depth_draw_never;")
+			material.shader=_overlay_shader
+			material.render_priority=priority
+		else:material.shader = LightShader
 		material.set_shader_parameter("albedo_texture", texture)
 		material.set_shader_parameter("billboard_enabled", billboard)
 		material.set_shader_parameter("clip_to_border", clip)

@@ -34,11 +34,7 @@
 			"sprite": "man",
 			"team": [
 				{
-					"fakemon": "Slumboth",
-					"level": 5
-				},
-				{
-					"fakemon": "Skeeter",
+					"fakemon": "Keklid",
 					"level": 5
 				}
 			]
@@ -72,7 +68,11 @@
 			"sprite": "woman",
 			"team": [
 				{
-					"fakemon": "Keklid",
+					"fakemon": "Lochirp",
+					"level": 5
+				},
+				{
+					"fakemon": "Lochirp",
 					"level": 5
 				}
 			]
@@ -121,7 +121,7 @@
 			"sprite": "man",
 			"team": [
 				{
-					"fakemon": "Scorchick",
+					"fakemon": "Dartlet",
 					"level": 5
 				}
 			]

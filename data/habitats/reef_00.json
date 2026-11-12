@@ -1,0 +1,311 @@
+{
+	"blue_flowers": [],
+	"floor_blocks": [],
+	"flower_beds": [],
+	"furnishings": [],
+	"grass_zones": [],
+	"habitat_template_version": 1,
+	"habitat_type": "reef",
+	"id": "reef_00",
+	"name": "reef",
+	"npc_spawn": [
+		0,
+		0
+	],
+	"objects": [
+		{
+			"asset_path": "res://assets/overworld/underwater_reef_coral_02.png",
+			"height": 1.0,
+			"position": [
+				1.10000002384186,
+				0.0,
+				-0.10000000149012
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.underwater_reef_coral",
+			"variant": 2
+		},
+		{
+			"asset_path": "res://assets/overworld/underwater_reef_coral_03.png",
+			"height": 1.0,
+			"position": [
+				-1.45000004768372,
+				0.0,
+				0.75
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.underwater_reef_coral",
+			"variant": 3
+		},
+		{
+			"asset_path": "res://assets/overworld/underwater_reef_coral_04.png",
+			"height": 1.0,
+			"position": [
+				0.40000000596046,
+				0.0,
+				1.39999997615814
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.underwater_reef_coral",
+			"variant": 4
+		},
+		{
+			"asset_path": "res://assets/overworld/underwater_reef_coral_05.png",
+			"height": 1.0,
+			"position": [
+				1.35000002384186,
+				0.0,
+				0.80000001192093
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.underwater_reef_coral",
+			"variant": 5
+		},
+		{
+			"asset_path": "res://assets/overworld/underwater_reef_coral_01.png",
+			"height": 1.0,
+			"position": [
+				-1.09999997615814,
+				0.0,
+				1.44999997615814
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.underwater_reef_coral",
+			"variant": 1
+		},
+		{
+			"asset_path": "res://assets/overworld/underwater_reef_coral_00.png",
+			"height": 1.0,
+			"position": [
+				-0.75000001192093,
+				0.0,
+				0.49999998807907
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.underwater_reef_coral",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/underwater_reef_rock_01.png",
+			"height": 1.0,
+			"position": [
+				-1.5,
+				0.0,
+				-0.34999999403954
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.underwater_reef_rock",
+			"variant": 1
+		},
+		{
+			"asset_path": "res://assets/overworld/underwater_reef_rock_05.png",
+			"height": 1.0,
+			"position": [
+				0.05000000074506,
+				0.0,
+				0.10000000149012
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.underwater_reef_rock",
+			"variant": 5
+		},
+		{
+			"asset_path": "res://assets/overworld/underwater_reef_rock_05.png",
+			"height": 1.0,
+			"position": [
+				-1.54999995231628,
+				0.0,
+				0.05000000074506
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.underwater_reef_rock",
+			"variant": 5
+		},
+		{
+			"asset_path": "res://assets/overworld/underwater_reef_rock_04.png",
+			"height": 1.0,
+			"position": [
+				-0.10000000149012,
+				0.0,
+				-0.30000001192093
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.underwater_reef_rock",
+			"variant": 4
+		},
+		{
+			"asset_path": "res://assets/overworld/underwater_reef_rock_03.png",
+			"height": 1.0,
+			"position": [
+				-0.30000001192093,
+				0.0,
+				1.54999995231628
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.underwater_reef_rock",
+			"variant": 3
+		},
+		{
+			"asset_path": "res://assets/overworld/underwater_reef_rock_02.png",
+			"height": 1.0,
+			"position": [
+				1.25000004768372,
+				0.0,
+				1.40000002384186
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.underwater_reef_rock",
+			"variant": 2
+		},
+		{
+			"asset_path": "res://assets/overworld/underwater_reef_rock_00.png",
+			"height": 1.0,
+			"position": [
+				-1.2,
+				0.0,
+				-0.50000001192093
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.underwater_reef_rock",
+			"variant": 0
+		}
+	],
+	"orchids": [],
+	"rare_torch_ginger": [],
+	"rocks": [],
+	"sand_blocks": [],
+	"size": [
+		6.66666698455811,
+		5.0
+	],
+	"tall_flowers": [],
+	"terrain_tiles": [
+		{
+			"positions": [
+				[
+					-1,
+					-1
+				],
+				[
+					-2,
+					-1
+				],
+				[
+					-2,
+					0
+				],
+				[
+					-1,
+					0
+				],
+				[
+					-1,
+					1
+				],
+				[
+					-2,
+					1
+				],
+				[
+					0,
+					1
+				],
+				[
+					1,
+					1
+				],
+				[
+					2,
+					1
+				],
+				[
+					2,
+					0
+				],
+				[
+					2,
+					-1
+				],
+				[
+					1,
+					-1
+				],
+				[
+					0,
+					-1
+				],
+				[
+					0,
+					0
+				],
+				[
+					1,
+					0
+				]
+			],
+			"terrain_type": "water"
+		}
+	],
+	"trees": [],
+	"vines": [],
+	"wall_blocks": [],
+	"wander_bounds": [
+		-2,
+		-1.5,
+		4,
+		3
+	],
+	"water_blocks": []
+}

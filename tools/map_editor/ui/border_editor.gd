@@ -16,6 +16,7 @@ var _catalog: AssetCatalog
 var _canvas: Control
 var _side: OptionButton
 var _enabled: CheckBox
+var _covers_player: CheckBox
 var _depth: SpinBox
 var _span: Label
 var _priority: OptionButton
@@ -51,6 +52,11 @@ func build(project_root: String, catalog: AssetCatalog) -> void:
 	_enabled.text = "Enabled in game"
 	row.add_child(_enabled)
 	_enabled.toggled.connect(_set_enabled)
+	_covers_player = CheckBox.new()
+	_covers_player.text = "Covers player"
+	_covers_player.tooltip_text = "Draw this side in front of the player and other overworld sprites."
+	row.add_child(_covers_player)
+	_covers_player.toggled.connect(func(value): _set_property("covers_player", value))
 	_span = Label.new()
 	row.add_child(_span)
 	_depth = _number(row, "Depth", 1, Layout.MAX_DIMENSION, 1, 4)
@@ -182,6 +188,7 @@ func _refresh(frame: bool = false) -> void:
 	var dimensions := Layout.dimensions(_map, side, definition)
 	var horizontal := Layout.horizontal(side)
 	_enabled.set_pressed_no_signal(definition.get("enabled") == true)
+	_covers_player.set_pressed_no_signal(definition.get("covers_player") == true)
 	_depth.set_value_no_signal(Layout.depth(definition, side))
 	_priority.select(Layout.CORNER_PRIORITIES.find(Layout.corner_priority(_map)))
 	_span.text = "Map width · %d tiles" % dimensions.x if horizontal else "Map height · %d tiles" % dimensions.y
@@ -335,6 +342,7 @@ func _selected_art() -> Variant:
 		dimensions = Vector2(width, width / ratio)
 	dimensions = (dimensions * _scale.value).clamp(Vector2.ONE * 0.05, Vector2.ONE * Layout.MAX_ART_SIZE)
 	var art := {"texture": path, "size": [dimensions.x, dimensions.y], "rotation": _rotation.value, "flat": flat}
+	if type_id.begins_with("overlay."):art["overlay"]=true;art["type_id"]=type_id
 	if type_id.begins_with("background.citybuilding") or type_id.begins_with("building."):
 		var footprint := Vector2(5, 4)
 		if default_size is Array and default_size.size() >= 3:

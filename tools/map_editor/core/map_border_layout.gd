@@ -165,3 +165,6 @@ static func animation_spec(id: String, definitions: Dictionary) -> Dictionary:
 	for index in count:
 		paths.append("assets/overworld/anim/%s_%02d.png" % [id, index])
 	return {"paths": paths, "duration": duration}
+
+static func art_priority(art:Dictionary)->int:
+	return 1 if bool(art.get("overlay",false)) or String(art.get("type_id","")).begins_with("overlay.") or texture_path(art).get_file().begins_with("overlay_") else 0

@@ -103,13 +103,15 @@ func _initialize() -> void:
 	editor._delete_selected();assert(MapGraphRef.warp_fields(editor.document.data).size()==warps_before,"Newly authored warps must be deletable through the UI.")
 	editor._undo();editor._undo()
 	editor.canvas.frame_all()
+	editor._set_activity(2)
 	var original_map_size:Vector2=editor._map_size()
-	var map_handle:Vector2=editor.canvas._resize_handle(editor.canvas._map_bounds_rect()).get_center()
-	var map_press:=InputEventMouseButton.new();map_press.button_index=MOUSE_BUTTON_RIGHT;map_press.pressed=true;map_press.position=map_handle;editor.canvas._gui_input(map_press)
-	var map_motion:=InputEventMouseMotion.new();map_motion.button_mask=MOUSE_BUTTON_MASK_RIGHT;map_motion.position=map_handle+Vector2(editor.canvas.pixels_per_unit*editor.canvas.zoom,0);editor.canvas._gui_input(map_motion)
-	var map_release:=InputEventMouseButton.new();map_release.button_index=MOUSE_BUTTON_RIGHT;map_release.pressed=false;map_release.position=map_motion.position;editor.canvas._gui_input(map_release)
-	assert(editor._map_size().x==original_map_size.x+2.0,"Right-dragging the map-bound resize handle must expand the serialized map dimensions.")
+	var map_handle:Vector2=editor.canvas._map_resize_handles()["east"].get_center()
+	var map_press:=InputEventMouseButton.new();map_press.button_index=MOUSE_BUTTON_LEFT;map_press.pressed=true;map_press.position=map_handle;editor.canvas._gui_input(map_press)
+	var map_motion:=InputEventMouseMotion.new();map_motion.button_mask=MOUSE_BUTTON_MASK_RIGHT;map_motion.position=map_handle+Vector2(2.0*editor.canvas.pixels_per_unit*editor.canvas.zoom,0);editor.canvas._gui_input(map_motion)
+	var map_release:=InputEventMouseButton.new();map_release.button_index=MOUSE_BUTTON_LEFT;map_release.pressed=false;map_release.position=map_motion.position;editor.canvas._gui_input(map_release)
+	assert(editor._map_size().x==original_map_size.x+2.0,"Dragging the east map resize arrow must expand the serialized map dimensions.")
 	editor._undo();assert(editor._map_size()==original_map_size,"Map-bound resizing must be undoable.")
+	editor._set_activity(0)
 	var scalable_object:Dictionary={}
 	for candidate in editor.editor_objects:
 		if candidate.shape=="rectangle":scalable_object=candidate;break
