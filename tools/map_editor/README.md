@@ -297,3 +297,5 @@ Template positions use local X/Y/Z, with the enclosure footprint centered at loc
 Select a habitat control display in the Map Editor and open **Configure Exhibit** in the Inspector. The slot ID identifies the exhibit in save files. Keep it stable when moving the lectern or pen. The placement origin uses map-local X/Y/Z. The interior rectangle uses X/Z relative to that origin and limits the template's wander area.
 
 In game, select a species at the lectern to display it, or choose **Clear exhibit** to empty the pen. Captures, starters, gifts, and evolutions qualify, including species in Cloud storage. A species can occupy one slot. The save records species and slot IDs, and the game recreates the exhibit from its template.
+
+Flag autocomplete: after `IfFlag `, `SetFlag `, or `ClearFlag `, the script editors suggest sorted, unique flag names used by those commands across saved `data/maps/*.json` scripts and the current map's unsaved script. Type a prefix to narrow suggestions. Comments, quoted dialogue, and backup files are excluded. New names can still be entered freely; `IfFlag` continues to suggest Block names for its second argument.

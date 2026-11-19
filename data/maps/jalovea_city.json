@@ -3747,7 +3747,7 @@
 			"position": [
 				-2.0,
 				1.5,
-				10.5
+				11.0
 			],
 			"size": [
 				5.0,
@@ -14975,6 +14975,11 @@
 		0.11999999731779,
 		-11.0
 	],
+	"warp_9": [
+		18.0,
+		0.0,
+		-7.0
+	],
 	"warp_metadata": {
 		"return_warp": {
 			"entrance_map": "eastern_rainforest_route.json",
@@ -15039,6 +15044,15 @@
 			"facing": "generic",
 			"id": 8,
 			"show_sprite": false
+		},
+		"warp_9": {
+			"entrance_instance_id": "",
+			"entrance_map": "orchid_botanical_garden.json",
+			"entrance_map_warp_id": 1,
+			"facing": "generic",
+			"id": 9,
+			"show_sprite": true,
+			"sprite": "generic"
 		}
 	},
 	"water_blocks": [],

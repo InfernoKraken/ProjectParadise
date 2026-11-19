@@ -2,6 +2,7 @@ class_name EditorCanvas
 extends Control
 
 const BorderLayout := preload("res://core/map_border_layout.gd")
+const BridgeVisualLayout := preload("res://core/bridge_visual_layout.gd")
 const PolygonColliders := preload("res://core/polygon_colliders.gd")
 
 const VIEWPORT_MARGIN_PIXELS := 128.0
@@ -81,7 +82,10 @@ var _drawing_bounds_cache:Dictionary={}
 var _drawing_bounds_signature:Array=[]
 var _visible_draw_order:Array[Dictionary]=[]
 var _visible_draw_signature:Array=[]
-var selected_id := ""
+var selected_id := "":
+	set(value):
+		if value != selected_id: edited_collision_id = ""
+		selected_id = value
 var selected_ids: Dictionary = {}
 var selected_wall_anchors: Dictionary = {}
 var map_size := Vector2(20, 20)
@@ -135,7 +139,10 @@ var marquee_start := Vector2.ZERO
 var marquee_rect := Rect2()
 var host_picker_active := false
 var collision_polygon_active:=false
-var other_collision_polygons: Array = []
+var edited_collision_id := "":
+	set(value):
+		edited_collision_id = value
+		queue_redraw()
 var active_collision_reference := Vector2.ZERO
 var collision_polygon_points:=PackedVector2Array()
 var collision_polygon_closed:=false
@@ -226,7 +233,15 @@ func _draw() -> void:
 
 	if map_resize_enabled:_draw_map_resize_arrows()
 	if script_read_only: _draw_script_paths()
-	if collision_polygon_active and _show_editor_geometry():_draw_collision_polygon()
+	if _show_editor_geometry():
+		if collision_polygon_active:
+			_draw_collision_polygon()
+		else:
+			var active_id := _active_collision_id()
+			if debug_geometry or not active_id.is_empty():
+				for object in visible_objects:
+					if active_id.is_empty() or String(object.id) == active_id:
+						_draw_debug_collision(object)
 	if _show_editor_geometry():
 		for cell in terrain_error_cells:
 			var center:=world_to_screen(Vector2(cell));var rect:=Rect2(center-Vector2.ONE*pixels_per_unit*zoom*_ground_projection()*0.5,Vector2.ONE*pixels_per_unit*zoom*_ground_projection())
@@ -390,8 +405,7 @@ func _draw_grid() -> void:
 	draw_line(Vector2(center.x, 0), Vector2(center.x, size.y), Color("#6c8296"), 1.5)
 	draw_line(Vector2(0, center.y), Vector2(size.x, center.y), Color("#6c8296"), 1.5)
 
-func begin_collision_polygon_editor(points: Array, closed: bool, other_polygons: Array = [], reference: Vector2 = Vector2.ZERO) -> void:
-	other_collision_polygons = other_polygons
+func begin_collision_polygon_editor(points: Array, closed: bool, reference: Vector2 = Vector2.ZERO) -> void:
 	active_collision_reference = reference
 	collision_polygon_drag_vertex = -1
 	collision_polygon_points=PackedVector2Array()
@@ -402,7 +416,6 @@ func begin_collision_polygon_editor(points: Array, closed: bool, other_polygons:
 func end_collision_polygon_editor()->void:
 	collision_polygon_active=false;collision_polygon_drag_vertex=-1;collision_polygon_selected_vertex=-1;queue_redraw()
 	active_collision_reference = Vector2.ZERO
-	other_collision_polygons = []
 
 func clear_collision_polygon()->void:
 	if not collision_polygon_active:return
@@ -429,9 +442,13 @@ func _polygon_reference_size(object:Dictionary)->Vector2:
 func _active_polygon_reference_size(object: Dictionary) -> Vector2:
 	return active_collision_reference if active_collision_reference != Vector2.ZERO else _polygon_reference_size(object)
 
-func _polygon_screen_point(point: Vector2, reference: Vector2 = Vector2.ZERO) -> Vector2:
-	var object:=_selected();if object.is_empty():return Vector2.ZERO
-	var local := (point - Vector2(0.5, 0.5)) * (reference if reference != Vector2.ZERO else _active_polygon_reference_size(object))
+func _polygon_screen_point(point: Vector2) -> Vector2:
+	var object := _selected()
+	if object.is_empty(): return Vector2.ZERO
+	return _project_polygon_point(object, point, _active_polygon_reference_size(object))
+
+func _project_polygon_point(object: Dictionary, point: Vector2, reference: Vector2) -> Vector2:
+	var local := (point - Vector2(0.5, 0.5)) * reference
 	# Positive Godot Y rotation turns +X toward -Z.
 	local=local.rotated(-deg_to_rad(float(object.get("rotation_degrees",0.0))))
 	return world_to_screen(Vector2(object.position.x,object.position.z)+local)
@@ -456,20 +473,6 @@ func _polygon_edge_at(screen_point:Vector2)->int:
 	return -1
 
 func _draw_collision_polygon()->void:
-	var fallback := _polygon_reference_size(_selected())
-	for polygon: Dictionary in other_collision_polygons:
-		var points: Variant = polygon.get("points", [])
-		if not points is Array:
-			continue
-		var outline := PackedVector2Array()
-		var reference := PolygonColliders.reference_size(polygon, fallback)
-		for point: Variant in points:
-			if point is Array and point.size() == 2 and (point[0] is int or point[0] is float) and (point[1] is int or point[1] is float):
-				outline.append(_polygon_screen_point(Vector2(float(point[0]), float(point[1])), reference))
-		if bool(polygon.get("closed", false)) and outline.size() >= 3:
-			outline.append(outline[0])
-		if outline.size() >= 2:
-			draw_polyline(outline, Color("#ffb46b"), 2.0, true)
 	if collision_polygon_points.is_empty():return
 	var screen_points:=PackedVector2Array();for point in collision_polygon_points:screen_points.append(_polygon_screen_point(point))
 	if collision_polygon_closed and screen_points.size()>=3:draw_colored_polygon(screen_points,Color("#ef334455"))
@@ -512,6 +515,7 @@ func _object_draw_bounds(object:Dictionary)->Rect2:
 	return bounds
 
 func _uncached_object_draw_bounds(object:Dictionary)->Rect2:
+	if object.get("shape") == "bridge": return _bridge_art_rect(object).merge(_screen_rect(object))
 	if String(object.get("shape",""))=="wall":
 		var points:Array=object.get("wall_points",[])
 		if points.is_empty():return Rect2()
@@ -547,7 +551,8 @@ func _uncached_object_draw_bounds(object:Dictionary)->Rect2:
 	return bounds
 
 func _draw_object(object: Dictionary) -> void:
-	if (placement_preview or script_read_only) and (not bool(object.get("preview_visible",true)) or String(object.get("field","")) == "asset_collision"):return
+	if object.get("field") == "asset_collision": return
+	if (placement_preview or script_read_only) and not bool(object.get("preview_visible",true)):return
 	if String(object.get("shape",""))=="wall":
 		_draw_wall(object)
 		return
@@ -558,11 +563,16 @@ func _draw_object(object: Dictionary) -> void:
 	var footprint_offset:Vector2=object.get("footprint_offset",Vector2.ZERO)
 	var projected_footprint:=footprint*pixels_per_unit*zoom*_ground_projection()
 	var rect := Rect2(center+footprint_offset*pixels_per_unit*zoom*_ground_projection()-projected_footprint*0.5,projected_footprint)
+	if object.get("shape") == "bridge":
+		rect = _bridge_art_rect(object)
+		center = rect.get_center()
 	if String(object.get("shape",""))=="terrain" and String(object.get("label",""))=="water":
 		var clipped:=preload("res://core/wall_water_clip.gd").bounds(Vector2i(roundi(position.x),roundi(position.z)),water_clip_grid,water_clip_walls)
 		rect=Rect2(world_to_screen(clipped.position),clipped.size*pixels_per_unit*zoom*_ground_projection())
 	var color: Color = object.get("color", Color("#dce6ee"))
-	if object.get("shape", "point") in ["rectangle","terrain"]:
+	if object.get("shape") == "bridge":
+		_draw_bridge(object)
+	elif object.get("shape", "point") in ["rectangle","terrain"]:
 		var texture:Texture2D = object.get("resolved_texture") if object.has("resolved_texture") else _texture_for(String(object.get("texture", "")))
 		# Canonical painted cells use the same terrain source as the runtime base,
 		# rather than the catalog thumbnail. Transition seams remain runtime-derived
@@ -589,10 +599,8 @@ func _draw_object(object: Dictionary) -> void:
 				draw_texture_rect(texture,Rect2(-rect.size*0.5,rect.size),false,Color(1,1,1,0.96))
 				draw_set_transform(Vector2.ZERO,0.0,Vector2.ONE)
 			else:_draw_preview_tiled_texture(texture,rect,_runtime_terrain_tint(String(object.get("label", ""))))
-			if _show_editor_geometry(): draw_rect(rect, Color(color, 0.12), true)
 		else:
 			draw_rect(rect, Color(color, 0.32), true)
-		if _show_editor_geometry(): draw_rect(rect, color, false, 2.0)
 	else:
 		var texture:Texture2D = object.get("resolved_texture") if object.has("resolved_texture") else _texture_for(String(object.get("texture", "")))
 		if texture != null:
@@ -605,31 +613,47 @@ func _draw_object(object: Dictionary) -> void:
 				var display_height := float(object.get("display_height", footprint.y))
 				draw_size = Vector2(display_height * aspect, display_height) * pixels_per_unit * zoom
 			var rotation_radians:=deg_to_rad(float(object.get("rotation_degrees",0.0)))
-			draw_set_transform(center,rotation_radians,Vector2.ONE)
+			draw_set_transform(center,rotation_radians,Vector2(-1,1) if bool(object.get("mirror_x",false)) else Vector2.ONE)
 			draw_texture_rect(texture,Rect2(Vector2(-draw_size.x*0.5,-draw_size.y),draw_size),false,Color(1,1,1,0.9))
 			draw_set_transform(Vector2.ZERO,0.0,Vector2.ONE)
 		else:
 			draw_circle(center, maxf(7.0, footprint.x * pixels_per_unit * zoom * 0.35), Color(color, 0.8))
 			draw_line(center + Vector2(-6, 0), center + Vector2(6, 0), Color.WHITE, 2)
 			draw_line(center + Vector2(0, -6), center + Vector2(0, 6), Color.WHITE, 2)
-		if _show_editor_geometry():
-			draw_rect(rect, Color(color, 0.18), true)
-			draw_rect(rect, color, false, 1.0)
-	if String(object.id) == selected_id and _show_editor_geometry():
+	if String(object.id) == selected_id and _show_editor_geometry() and not collision_polygon_active and edited_collision_id.is_empty():
 		draw_rect(rect.grow(3), Color("#ffe16b"), false, 3.0)
 		if _is_scalable(object): draw_rect(_resize_handle(rect), Color("#ffe16b"), true)
-	elif selected_ids.has(String(object.id)) and _show_editor_geometry():
+	elif selected_ids.has(String(object.id)) and _show_editor_geometry() and not collision_polygon_active and edited_collision_id.is_empty():
 		draw_rect(rect.grow(2), Color("#72d7ff"), false, 2.0)
 	if validation_error_ids.has(String(object.id)) and _show_editor_geometry():draw_rect(rect.grow(2),Color("#ff3344"),false,3.0)
-	if _show_editor_geometry() and object.has("wall_collision") and String(object.id)==selected_id:
-		var config:Dictionary=object.wall_collision
-		if bool(config.get("enabled",true)):
-			var offset:Array=config.get("offset",[0,0,0]);var dimensions:Array=config.get("size",[object.size.x,object.size.y,object.size.z])
-			var collider_size:=Vector2(float(dimensions[0]),float(dimensions[2]))*pixels_per_unit*zoom*_ground_projection()
-			var collider_center:=center+Vector2(float(offset[0]),float(offset[2]))*pixels_per_unit*zoom*_ground_projection()
-			draw_rect(Rect2(collider_center-collider_size*0.5,collider_size),Color("#ff5577"),false,3.0)
 	var label := String(object.get("label", object.get("field", "object")))
 	if _show_editor_geometry() and not _is_terrain_object(object): draw_string(get_theme_default_font(), center + Vector2(7, -7), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color.WHITE)
+
+func _bridge_art_rect(object: Dictionary) -> Rect2:
+	var horizontal: bool = object.get("bridge_orientation", "horizontal") == "horizontal"
+	var dimensions := Vector2(object.size.x, object.size.z * BridgeVisualLayout.DEPTH_PROJECTION) * pixels_per_unit * zoom
+	var center := world_to_screen(Vector2(object.position.x, object.position.z))
+	center.y -= (float(object.size.y) + BridgeVisualLayout.DECK_HEIGHT_OFFSET) * sqrt(0.5) * pixels_per_unit * zoom
+	var length := roundi(object.size.x if horizontal else object.size.z)
+	if not horizontal:
+		dimensions.y = (float(length - 1) * _ground_projection().y + BridgeVisualLayout.DEPTH_PROJECTION) * pixels_per_unit * zoom
+	return Rect2(center - dimensions * 0.5, dimensions)
+
+func _draw_bridge(object: Dictionary) -> void:
+	var horizontal: bool = object.get("bridge_orientation", "horizontal") == "horizontal"
+	var length := roundi(object.size.x if horizontal else object.size.z)
+	var textures: Array = BridgeVisualLayout.HORIZONTAL_TEXTURES if horizontal else BridgeVisualLayout.VERTICAL_TEXTURES
+	var tile_size := Vector2(1.0, object.size.z * BridgeVisualLayout.DEPTH_PROJECTION) if horizontal else Vector2(object.size.x, BridgeVisualLayout.DEPTH_PROJECTION)
+	tile_size *= pixels_per_unit * zoom
+	var center := world_to_screen(Vector2(object.position.x, object.position.z))
+	center.y -= (float(object.size.y) + BridgeVisualLayout.DECK_HEIGHT_OFFSET) * sqrt(0.5) * pixels_per_unit * zoom
+	for index in length:
+		var texture := _texture_for(textures[0 if index == 0 else (2 if index == length - 1 else 1)])
+		if texture == null: continue
+		var offset := float(index) - float(length - 1) * 0.5
+		var axis := Vector2.RIGHT if horizontal else Vector2(0, -_ground_projection().y)
+		var tile_center := center + axis * offset * pixels_per_unit * zoom
+		draw_texture_rect(texture, Rect2(tile_center - tile_size * 0.5, tile_size), false)
 
 func _draw_wall(object:Dictionary)->void:
 	var points:Array=object.get("wall_points",[]);if points.is_empty():return
@@ -649,7 +673,6 @@ func _draw_wall(object:Dictionary)->void:
 		for point in points:
 			var screen:=world_to_screen(point);var anchor_key:="%s:%d"%[String(object.id),points.find(point)];draw_circle(screen,6.0,Color("#72d7ff") if selected_wall_anchors.has(anchor_key) else (Color("#ffe16b") if String(object.id)==selected_id else color));draw_circle(screen,2.5,Color.WHITE)
 		if String(object.id)==selected_id:draw_rect(bounds.grow(8),Color("#ffe16b"),false,2.0)
-		if debug_geometry and String(object.id)==selected_id:_draw_wall_debug_geometry(object)
 		if wall_tool_active and String(object.id)==selected_id and points.size()>0:_draw_wall_route_preview(points[-1],wall_preview)
 		draw_string(get_theme_default_font(),world_to_screen(points[0])+Vector2(7,-9),String(object.get("label","Wall / Fence")),HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color.WHITE)
 
@@ -712,21 +735,55 @@ func _draw_wall_route_preview(origin:Vector2,target:Vector2)->void:
 		draw_line(world_to_screen(previous),world_to_screen(point),Color("#ffe16b99"),3.0)
 		previous=point
 
-func _draw_wall_debug_geometry(object:Dictionary)->void:
-	var points:Array=object.get("wall_points",[]);var segments:Variant=object.get("wall_segments",[]);var collisions:Variant=object.get("collision",[])
-	for point in points:
-		var screen:=world_to_screen(point);draw_circle(screen,7,Color("#ffe16b"));draw_string(get_theme_default_font(),screen+Vector2(8,16),"(%.1f, %.1f)"%[point.x,point.y],HORIZONTAL_ALIGNMENT_LEFT,-1,11,Color("#ffe16b"))
-	for index in segments.size():
-		var segment:Variant=segments[index];if not segment is Dictionary:continue
-		var from:Variant=segment.get("from",[]);var to:Variant=segment.get("to",[]);if not from is Array or not to is Array or from.size()<2 or to.size()<2:continue
-		var a:=Vector2(float(from[0]),float(from[1]));var b:=Vector2(float(to[0]),float(to[1]));var delta:=b-a;var length:=delta.length();if length<=0.001:continue
-		var direction:=delta/length;var normal:=Vector2(-direction.y,direction.x);var thickness:=float(collisions[index].get("thickness",0.22)) if index<collisions.size() and collisions[index] is Dictionary else 0.22
-		var c:=PackedVector2Array([world_to_screen(a+normal*thickness*.5),world_to_screen(b+normal*thickness*.5),world_to_screen(b-normal*thickness*.5),world_to_screen(a-normal*thickness*.5)]);draw_colored_polygon(c,Color("#27e6ff33"));draw_polyline(PackedVector2Array([c[0],c[1],c[2],c[3],c[0]]),Color("#27e6ff"),2)
-		for piece in maxi(1,ceili(length)):
-			var piece_length:=minf(1.0,length-float(piece));var origin:=a+direction*(float(piece)+piece_length*.5);var r:=PackedVector2Array([world_to_screen(origin-direction*piece_length*.5-normal*.18),world_to_screen(origin+direction*piece_length*.5-normal*.18),world_to_screen(origin+direction*piece_length*.5+normal*.18),world_to_screen(origin-direction*piece_length*.5+normal*.18)]);draw_polyline(PackedVector2Array([r[0],r[1],r[2],r[3],r[0]]),Color("#ff4fd8"),1.5);draw_string(get_theme_default_font(),world_to_screen(origin)+Vector2(2,-3),"Ã—",HORIZONTAL_ALIGNMENT_LEFT,-1,16,Color("#ff4fd8"))
-		draw_string(get_theme_default_font(),world_to_screen((a+b)*.5)+Vector2(8,-9),"%s %.2fu"%[String(segment.get("direction","")),length],HORIZONTAL_ALIGNMENT_LEFT,-1,11,Color.WHITE)
-	var first:=world_to_screen(points[0]);draw_line(first-Vector2(9,0),first+Vector2(9,0),Color("#ff9d4d"),2);draw_line(first-Vector2(0,9),first+Vector2(0,9),Color("#ff9d4d"),2)
-	draw_string(get_theme_default_font(),Vector2(14,42),"Debug: white=path Â· cyan=collision Â· magenta=sprite pieces Â· yellow=anchors Â· orange=origin",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("#f1f4f8"))
+func _active_collision_id() -> String:
+	if not edited_collision_id.is_empty(): return edited_collision_id
+	if not selected_id.is_empty() and _selected().get("field") == "asset_collision":
+		return selected_id
+	return ""
+
+func _draw_debug_collision(object: Dictionary) -> void:
+	var collision_color := Color("#ff5577")
+	if object.get("shape") == "wall":
+		for segment: Dictionary in object.get("collision", []):
+			var start := Vector2(segment.from[0], segment.from[1])
+			var finish := Vector2(segment.to[0], segment.to[1])
+			var delta := finish - start
+			var normal := Vector2(-delta.y, delta.x).normalized()
+			var offset := normal * float(segment.get("offset", 0.0))
+			var edge := normal * float(segment.get("thickness", 0.22)) * 0.5
+			var outline := PackedVector2Array([world_to_screen(start + offset + edge), world_to_screen(finish + offset + edge), world_to_screen(finish + offset - edge), world_to_screen(start + offset - edge)])
+			outline.append(outline[0])
+			draw_polyline(outline, collision_color, 2.0, true)
+		return
+	var field := String(object.get("field", ""))
+	var dimensions: Vector3 = object.size
+	var projection := pixels_per_unit * zoom * _ground_projection()
+	var center := _object_anchor_screen(object)
+	var footprint: Vector2 = object.get("footprint", Vector2(0.8, 0.8))
+	if _is_scalable(object) and object.get("shape") != "building": footprint = Vector2(dimensions.x, dimensions.z)
+	var footprint_offset: Vector2 = object.get("footprint_offset", Vector2.ZERO)
+	if field != "asset_collision" and edited_collision_id.is_empty():
+		draw_rect(Rect2(center + (footprint_offset - footprint * 0.5) * projection, footprint * projection), Color("#27e6ff"), false, 1.0)
+	if field in ["asset_collision", "wall_blocks", "rocks", "water_blocks"]:
+		var config: Dictionary = object.get("wall_collision", {})
+		if config.get("enabled", true):
+			var offset: Array = config.get("offset", [0, 0, 0])
+			var extent: Array = config.get("size", [dimensions.x, dimensions.y, dimensions.z])
+			var projected := Vector2(extent[0], extent[2]) * projection
+			var collider_center := center + Vector2(offset[0], offset[2]) * projection
+			var rect := Rect2(collider_center - projected * 0.5, projected)
+			draw_rect(rect, Color(collision_color, 0.18))
+			draw_rect(rect, collision_color, false, 2.0)
+			if field == "asset_collision" and String(object.id) == selected_id:
+				draw_rect(_resize_handle(rect), Color("#ffe16b"))
+	for polygon: Dictionary in object.get("collision_polygons", []):
+		var reference := PolygonColliders.reference_size(polygon, _polygon_reference_size(object))
+		var outline := PackedVector2Array()
+		for point: Variant in polygon.get("points", []):
+			if point is Array and point.size() == 2 and (point[0] is int or point[0] is float) and (point[1] is int or point[1] is float):
+				outline.append(_project_polygon_point(object, Vector2(point[0], point[1]), reference))
+		if polygon.get("closed", false) and outline.size() >= 3: outline.append(outline[0])
+		if outline.size() >= 2: draw_polyline(outline, collision_color, 2.0, true)
 
 func _texture_for(relative_path: String) -> Texture2D:
 	if relative_path.is_empty() or project_root.is_empty(): return null
@@ -1033,7 +1090,7 @@ func _gui_input(event: InputEvent) -> void:
 func _apply_marquee_selection()->void:
 	selected_ids.clear();selected_wall_anchors.clear()
 	for object in objects:
-		if not _selection_mode_allows(object):continue
+		if not _selection_mode_allows(object) or object.get("field") == "asset_collision":continue
 		if String(object.get("shape",""))=="wall":
 			var points:Array=object.get("wall_points",[])
 			for index in points.size():
@@ -1085,6 +1142,7 @@ func _object_anchor_screen(object: Dictionary) -> Vector2:
 	return point
 
 func _screen_rect(object: Dictionary) -> Rect2:
+	if object.get("shape") == "bridge": return _bridge_art_rect(object)
 	if String(object.get("shape",""))=="wall":
 		var points:Array=object.get("wall_points",[]);if points.is_empty():return Rect2()
 		var result:=Rect2(world_to_screen(points[0]),Vector2.ZERO)
@@ -1176,7 +1234,11 @@ func _is_scalable(object:Dictionary)->bool:
 	return String(object.get("shape","point")) in ["rectangle","building","terrain"]
 
 func _hit_test(screen_position: Vector2) -> Dictionary:
+	var active_id := _active_collision_id()
 	for object in _ordered_selection_candidates():
+		if object.get("field") == "asset_collision":
+			if not _show_editor_geometry() or collision_polygon_active: continue
+			if String(object.id) != active_id and (not active_id.is_empty() or not debug_geometry): continue
 		if String(object.get("shape",""))=="wall":
 			if not fence_edit_mode:continue
 			for point in object.get("wall_points",[]):if world_to_screen(point).distance_to(screen_position)<10:return object

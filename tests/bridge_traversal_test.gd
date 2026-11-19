@@ -19,6 +19,7 @@ func _initialize() -> void:
 	assert(east_water_collision.collision_layer == main.TERRAIN_OBSTACLE_LAYER, "Water must use the filterable terrain-obstacle layer.")
 	assert(is_equal_approx(float(surface.width),1.3),"The shared bridge asset must widen traversal and art by 30 percent.")
 	assert(is_equal_approx(float(((main.world.get_node("EastRouteUniversalObject0DeckTile0") as MeshInstance3D).mesh as PlaneMesh).size.x),1.3),"Vertical bridge deck art must use the widened reusable width.")
+	assert(not main.world.get_node("EastRouteUniversalObject0DeckTile0").visible, "Only the Y-sorted bridge art should be visible.")
 	var deck_material := (main.world.get_node("EastRouteUniversalObject0DeckTile0") as MeshInstance3D).material_override as StandardMaterial3D
 	assert(deck_material.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA, "Transparent bridge pixels must reveal the independently rendered terrain below.")
 
@@ -40,8 +41,11 @@ func _initialize() -> void:
 	assert(main.active_traversal_layer == 1 and is_equal_approx(main.player.position.y, 1.65), "Walking across a bridge must use its elevated world-space deck.")
 	assert(Vector2(main.player.position.x, main.player.position.z) == under_position, "Under and on-deck actors may share X/Z while differing in world Y.")
 	assert((main.player.collision_mask & main.TERRAIN_OBSTACLE_LAYER) == 0, "Deck traversal must ignore only underlying terrain obstacles.")
-	assert(main.player_sort_root.z_index > main.bridge_sort_entries[0].sort_root.z_index, "A player on the deck must render over bridge art.")
-	assert(main.follower_sort_root.z_index == main.player_sort_root.z_index, "Following Fakemon must render on the player's bridge layer.")
+	main._update_sort_canvas()
+	var deck := main.sort_root.get_node("EastRouteUniversalObject0Occlusion%d" % floori(float(surface.length) * 0.5)) as Node2D
+	assert(main.player_sort_root.z_index == deck.z_index and main.player_sort_root.position.y > deck.position.y, "A player on the deck must Y-sort in front of its deck tile.")
+	var tree: Node2D = main.tree_sort_entries[0].sort_root
+	assert(deck.z_index == tree.z_index, "Bridge art and foreground trees must share the same Y-sort layer.")
 	assert(is_equal_approx(main.follower.position.y, main.player.position.y) and is_equal_approx(main.follower_target.y, main.player.position.y), "Follower height and movement target must follow the player onto the deck.")
 	main.player.position += (surface.side_axis as Vector3) * 2.0
 	main._update_traversal_surface(main.player.position, Vector2(-1, 0))
@@ -58,7 +62,9 @@ func _initialize() -> void:
 	main.player.position = center + Vector3(float(surface.width) * 0.5 + 0.1, 0.65, 0)
 	main._update_traversal_surface(main.player.position, Vector2(-1, 0))
 	assert(main.active_traversal_layer == 0 and is_equal_approx(main.player.position.y, 0.65), "Bridge sides must not become accidental entrances.")
-	assert(main.player_sort_root.z_index < main.bridge_sort_entries[0].sort_root.z_index, "Bridge art must occlude a player passing underneath.")
+	main.player.position = Vector3(center.x, 0.65, center.z)
+	main._update_sort_canvas()
+	assert(main.player_sort_root.position.y < deck.position.y, "Bridge art must occlude a player passing underneath.")
 	assert(main.follower_sort_root.z_index == main.player_sort_root.z_index and is_equal_approx(main.follower.position.y, 0.65), "The follower must return to ground height and render beneath bridges with the player.")
 	assert(main.world.get_node_or_null("EastRouteUniversalObject0RailingA") != null and main.world.get_node_or_null("EastRouteUniversalObject0RailingB") != null, "Bridge railings must use permanent structure collision.")
 
@@ -79,9 +85,16 @@ func _initialize() -> void:
 	# Diving from either side must discard the destination's inherited deck Y.
 	for side in [-1.0, 1.0]:
 		main.swimming = false
-		main.player.position = center + Vector3(0, 1.65, 0)
+		main.player.position = Vector3(center.x, 1.65, center.z)
 		main.active_traversal_layer = 1
-		await main._start_swimming(Vector3(center.x + side, 1.65, center.z), "left" if side < 0 else "right")
+		main.active_traversal_surface = surface
+		main._start_swimming(Vector3(center.x + side, 1.65, center.z), "left" if side < 0 else "right")
+		assert(main.swim_transitioning, "The bridge dive fixture must start a transition.")
+		while main.swim_transitioning:
+			main._update_sort_canvas()
+			if main.player_sort_root.visible:
+				assert(main.player_sort_root.position.y > deck.position.y, "Visible dive frames must stay in front of the departure tile.")
+			await process_frame
 		assert(is_equal_approx(main.player.position.y, 0.65), "Bridge dives must land at water elevation on both sides.")
 		for step in 24:
 			await physics_frame
@@ -89,5 +102,19 @@ func _initialize() -> void:
 			main.player.move_and_slide()
 			assert(not main.player.is_on_wall(), "Swimmers must pass beneath either railing.")
 		assert((main.player.position.x - center.x) * side < 0, "Swimming must cross under the bridge from either side.")
+	# Leaving water must restore foot contact at deck elevation on the next walk.
+	var bank := center + Vector3.BACK * (float(surface.length) * 0.5 + 0.1)
+	bank.y = 0.65
+	main._finish_swimming(bank)
+	main._update_traversal_surface(bank, Vector2.UP)
+	for step in range(1, 7):
+		main.player.position.z = bank.z - step * 0.2
+		main._update_traversal_surface(main.player.position, Vector2.UP)
+		main._update_sort_canvas()
+		assert(main.active_traversal_layer == 1, "A former swimmer must enter the deck from the south ramp.")
+		var art := main.player_sort_root.get_node("Visual") as Sprite2D
+		var expected: Vector2 = main.camera.unproject_position(main.player.position - Vector3.UP * 0.65)
+		var rendered_feet := art.to_global(Vector2(0.0, art.get_rect().end.y))
+		assert(absf(rendered_feet.y - expected.y) < 1.0, "Walking feet must render at deck elevation after leaving water.")
 	print("BRIDGE_TRAVERSAL_TEST_PASSED")
 	quit()

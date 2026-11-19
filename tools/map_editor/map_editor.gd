@@ -93,6 +93,9 @@ func _refresh_script_panel() -> void:
 	var maps: Array[String] = []
 	for file in DirAccess.get_files_at(map_directory):
 		if file.ends_with(".json") and not file.ends_with("_NPC_Data.json") and file != "map_index.json": maps.append(file); maps.append(file.get_basename())
+	script_panel.flag_map_directory = map_directory
+	script_panel.flag_current_path = document.path
+	script_panel.completion_source_provider = func(): return str(document.data.get("script_source", ""))
 	script_panel.set_map(document.data, {"species":fakemon_names, "map":maps, "object":objects, "sprite":sprites, "interaction":interactions})
 	var inspected: Dictionary = script_panel.path_schema.inspect(document.data)
 	canvas.script_paths = inspected.paths.values()
@@ -366,7 +369,7 @@ func _build_ui() -> void:
 	var placement_preview := CheckBox.new();placement_preview.name="PlacementPreview";placement_preview.text="Placement Preview";placement_preview.tooltip_text="Show terrain, enabled map borders, and placed artwork with the editing grid and markers hidden.";placement_preview.toggled.connect(func(enabled):canvas.placement_preview=enabled;canvas.queue_redraw());toolbar.add_child(placement_preview)
 	var fence_edit:=CheckBox.new();fence_edit.name="FenceEditMode";fence_edit.text="Fence Edit";fence_edit.tooltip_text="Enable to select or move wall anchors. Double-click a wall run to add a vertex. Leave it off to select and move objects through fence zones.";fence_edit.toggled.connect(func(enabled):canvas.fence_edit_mode=enabled;if not enabled and String(_find_object(selected_id).get("shape",""))=="wall":canvas.select_object("");canvas.queue_redraw());toolbar.add_child(fence_edit)
 	_add_button(toolbar, "Frame Map", func(): canvas.frame_all())
-	var debug_geometry:=CheckBox.new();debug_geometry.text="Debug Geometry";debug_geometry.tooltip_text="Show selected-object wall render, collision, origin, and bake diagnostics.";debug_geometry.toggled.connect(func(enabled):canvas.debug_geometry=enabled;canvas.queue_redraw());toolbar.add_child(debug_geometry)
+	var debug_geometry:=CheckBox.new();debug_geometry.text="Debug Geometry";debug_geometry.tooltip_text="Show object footprints in cyan and collision shapes in pink.";debug_geometry.toggled.connect(func(enabled):canvas.debug_geometry=enabled;canvas.queue_redraw());toolbar.add_child(debug_geometry)
 	status_label = Label.new(); status_label.clip_text=true; status_label.size_flags_horizontal=Control.SIZE_EXPAND_FILL; status_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_LEFT; root_v.add_child(status_label)
 
 	var split := HSplitContainer.new(); split.name="EditorWorkspace";split.size_flags_horizontal=Control.SIZE_EXPAND_FILL;split.size_flags_vertical=Control.SIZE_EXPAND_FILL;split.split_offset=320;root_v.add_child(split)
@@ -715,9 +718,9 @@ func _append_universal_object(result:Array[Dictionary],path:String,value:Diction
 	var shape:="bridge" if is_bridge else ("building" if type_id.begins_with("building.") or type_id.begins_with("background.citybuilding") else ("rectangle" if String(entry.get("scale_mode",""))=="explicit_size" else "point"))
 	var fp:Variant=entry.get("footprint",[0.8,0.8]);if not fp is Array:fp=[float(s[0]),float(s[2])]
 	if is_bridge:
-		var length:=float(value.get("length",3));var width:=float(value.get("width",1.0))
-		fp=[length,width] if String(value.get("orientation","vertical"))=="horizontal" else [width,length]
-		s=[float(fp[0]),float(value.get("elevation",1.0)),float(fp[1])]
+		var length:=float(maxi(3,int(value.get("length",3))));var width:=maxf(1.0,float(value.get("width",1.0)))*preload("res://core/bridge_visual_layout.gd").WIDTH_SCALE
+		fp=[length,width] if String(value.get("orientation","horizontal"))=="horizontal" else [width,length]
+		s=[float(fp[0]),maxf(0.5,float(value.get("elevation",1.0))),float(fp[1])]
 	var object_label:Variant=entry.get("display_name",type_id)
 	if type_id=="npc.opponent":object_label=_trainer_definition(value).get("name",object_label)
 	var asset_variant:=-1;var object_texture:=String(entry.get("preview_texture",""))
@@ -739,7 +742,8 @@ func _append_universal_object(result:Array[Dictionary],path:String,value:Diction
 			var shared_size:Variant=scale_metadata.get("size",[])
 			if shared_size is Array and shared_size.size()>=3:s=shared_size
 	var instance_id:=String(value.get("instance_id",""));var editor_id:="placed:"+instance_id if not instance_id.is_empty() else _stable_id(path)
-	var editor_object:={"id":editor_id,"instance_id":instance_id,"path":path,"field":"objects","label":object_label,"position":Vector3(float(p[0]),float(p[1]),float(p[2])),"size":Vector3(float(s[0]),float(s[1]),float(s[2])),"size_path":path+".size","shape":shape,"variant":-1,"asset_variant":asset_variant,"texture":object_texture,"display_height":display_height,"footprint":Vector2(float(fp[0]),float(fp[1])),"color":Color("#d4b47a") if shape=="building" else Color("#dce6ee"),"universal_type":type_id,"rotation_degrees":float(value.get("rotation_degrees",0.0)),"is_attached":bool(value.get("is_attached",false)),"host_id":String(value.get("host_id","")),"attachment_order":int(value.get("attachment_order",0))}
+	var editor_object:={"id":editor_id,"instance_id":instance_id,"path":path,"field":"objects","label":object_label,"position":Vector3(float(p[0]),float(p[1]),float(p[2])),"size":Vector3(float(s[0]),float(s[1]),float(s[2])),"size_path":path+".size","shape":shape,"variant":-1,"asset_variant":asset_variant,"texture":object_texture,"display_height":display_height,"footprint":Vector2(float(fp[0]),float(fp[1])),"color":Color("#d4b47a") if shape=="building" else Color("#dce6ee"),"universal_type":type_id,"rotation_degrees":float(value.get("rotation_degrees",0.0)),"mirror_x":bool(value.get("mirror_x",false)),"is_attached":bool(value.get("is_attached",false)),"host_id":String(value.get("host_id","")),"attachment_order":int(value.get("attachment_order",0))}
+	if is_bridge: editor_object["bridge_orientation"] = String(value.get("orientation","horizontal"))
 	editor_object["render_band"]=int(entry.get("render_band",0))
 	# Gate art stays upright; yaw rotates its physical opening in the map plane.
 	if type_id=="structure.canal_lock":editor_object["rotation_degrees"]=0.0
@@ -758,6 +762,7 @@ func _append_universal_object(result:Array[Dictionary],path:String,value:Diction
 
 func _append_asset_collision_boxes(result:Array[Dictionary],owner_path:String,owner:Dictionary,asset_path:String)->void:
 	var absolute_path:=project_root.path_join(asset_path.trim_prefix("res://"));var metadata:=AssetCatalogRef.load_metadata(absolute_path)
+	owner["collision_polygons"] = PolygonColliders.read(metadata.get("collision"))
 	var boxes:Variant=metadata.get("collision_boxes",[]);if not boxes is Array:return
 	for index in boxes.size():
 		var box:Variant=boxes[index];if not box is Dictionary:continue
@@ -1742,6 +1747,11 @@ func _refresh_inspector()->void:
 		var tile_rotation:=SpinBox.new();tile_rotation.name="TileRotationDegrees";tile_rotation.min_value=-3600.0;tile_rotation.max_value=3600.0;tile_rotation.step=1.0;tile_rotation.allow_greater=true;tile_rotation.allow_lesser=true;tile_rotation.value=float(object.get("rotation_degrees",0.0));tile_rotation.prefix="Rotation ";tile_rotation.suffix="°";tile_rotation.value_changed.connect(func(value):_set_overlay_rotation(object,float(value)));inspector.add_child(tile_rotation)
 	var source_record:Variant=_get_path(String(object.path))
 	if object.field=="wall_blocks" and source_record is Array:
+		var edit_collider := CheckButton.new()
+		edit_collider.text = "Show collider while editing"
+		edit_collider.button_pressed = canvas.edited_collision_id == String(object.id)
+		edit_collider.toggled.connect(func(active): canvas.edited_collision_id = String(object.id) if active else "")
+		inspector.add_child(edit_collider)
 		var config:=_wall_collision_config(source_record)
 		var enabled:=CheckBox.new();enabled.name="WallCollisionEnabled";enabled.text="Wall collider enabled";enabled.button_pressed=bool(config.get("enabled",true));enabled.toggled.connect(func(value):_set_wall_collision(object,"enabled",value));inspector.add_child(enabled)
 		_add_vector_editor("Collider offset (relative X / Y / Z)",Vector3(config.offset[0],config.offset[1],config.offset[2]),func(value):_set_wall_collision(object,"offset",[value.x,value.y,value.z]))
@@ -1839,6 +1849,7 @@ func _set_overlay_rotation(object:Dictionary,rotation_degrees:float)->void:
 	_push_undo();document.set_value(String(object.path)+".rotation_degrees",rotation_degrees);_after_edit()
 
 func _add_attachment_editor(object:Dictionary)->void:
+	var mirror:=CheckBox.new();mirror.name="OverlayMirrorHorizontal";mirror.text="Mirror horizontally";mirror.button_pressed=bool(object.get("mirror_x",false));mirror.toggled.connect(func(enabled):_push_undo();document.set_value(String(object.path)+".mirror_x",enabled);_after_edit());inspector.add_child(mirror)
 	var attached:=CheckBox.new();attached.name="IsAttachedOverlay";attached.text="Is Attached Overlay";attached.button_pressed=bool(object.get("is_attached",false));inspector.add_child(attached)
 	var state:=Label.new();state.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART;state.text="Host: %s\nHost-local position controls sorting as one decorated object."%String(object.get("host_label","Choose a host" if not attached.button_pressed else "Missing host"));inspector.add_child(state)
 	var picker:=Button.new();picker.name="HostEyedropper";picker.text="Choose Host (Eyedropper)";picker.disabled=not attached.button_pressed;picker.pressed.connect(func():attachment_overlay_id=String(object.id);canvas.host_picker_active=true;status_label.text="Host eyedropper active. Click a tree, building, or placed object sprite.");inspector.add_child(picker)
@@ -2219,12 +2230,9 @@ func _begin_polygon_collision_editor(asset_path: String, index: int = 0) -> void
 
 func _show_active_polygon(polygons: Array) -> void:
 	var polygon: Dictionary = polygons[polygon_index] if polygon_index < polygons.size() else {}
-	var other_polygons := polygons.duplicate()
-	if polygon_index < other_polygons.size():
-		other_polygons.remove_at(polygon_index)
 	var points: Variant = polygon.get("points", [])
 	var reference := PolygonColliders.reference_size(polygon, Vector2.ZERO)
-	canvas.begin_collision_polygon_editor(points if points is Array else [], bool(polygon.get("closed", false)), other_polygons, reference)
+	canvas.begin_collision_polygon_editor(points if points is Array else [], bool(polygon.get("closed", false)), reference)
 	_refresh_inspector()
 
 func _toggle_polygon_collision_editor(asset_path: String, index: int = 0) -> void:
@@ -2316,6 +2324,12 @@ func _open_collision_box_editor(asset_path:String,metadata:Dictionary,boxes:Arra
 		box["offset"]=[offset_spins[0].value,offset_spins[1].value];box["size"]=[size_spins[0].value,size_spins[1].value,size_spins[2].value];metadata["collision_boxes"]=boxes
 		if AssetCatalogRef.save_metadata(asset_path,metadata)==OK:status_label.text="Collision box %d updated for every instance."%(index+1);_refresh_all()
 		dialog.queue_free())
+	var owner := canvas._object_by_id(selected_id)
+	if not owner.is_empty():
+		canvas.edited_collision_id = _stable_id(String(owner.path) + ".asset_collision[%d]" % index)
+	dialog.visibility_changed.connect(func():
+		if not dialog.visible:
+			canvas.edited_collision_id = "")
 	dialog.canceled.connect(dialog.queue_free);add_child(dialog);dialog.popup_centered()
 
 func _collision_numbers(text:String,count:int)->Array:
@@ -2408,7 +2422,7 @@ func _configure_script_completion(code: CodeEdit) -> void:
 	code.code_completion_requested.connect(func():
 		var before := code.get_line(code.get_caret_line()).left(code.get_caret_column())
 		if before.contains('"') or before.contains("//"): return
-		for candidate: String in script_panel.registry.completions(before, script_panel.parsed.blocks, script_panel.references):
+		for candidate: String in script_panel.registry.completions(before, script_panel.parsed.blocks, script_panel.completion_references(before)):
 			code.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, candidate, candidate)
 		code.update_code_completion_options(true))
 	code.text_changed.connect(func(): code.request_code_completion(true))

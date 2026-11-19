@@ -105,7 +105,8 @@ static func completions(before_caret: String, blocks: Dictionary, references: Di
 	if index <= 0: pool = ["Block"] + DEFINITIONS.keys()
 	elif DEFINITIONS.has(tokens[0]):
 		var types: Array = DEFINITIONS[tokens[0]]
-		if index <= types.size() and types[index - 1] == "block": pool = blocks.keys()
+		if index == 1 and tokens[0] in ["IfFlag", "SetFlag", "ClearFlag"]: pool = references.get("flag", [])
+		elif index <= types.size() and types[index - 1] == "block": pool = blocks.keys()
 		elif index <= types.size(): pool = references.get(types[index - 1], [])
 	var result: Array[String] = []
 	for value: String in pool:

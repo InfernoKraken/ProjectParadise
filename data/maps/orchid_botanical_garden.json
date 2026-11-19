@@ -1,0 +1,4040 @@
+{
+	"arrival_points": {
+		"entry": [
+			0,
+			0.65,
+			8
+		]
+	},
+	"base_terrain_type": "forest_floor",
+	"borders": {
+		"east": {
+			"cells": {},
+			"depth": 4,
+			"enabled": false
+		},
+		"south": {
+			"cells": {
+				"0,0": {
+					"terrain": "warm_honey_limestone_paving"
+				},
+				"1,0": {
+					"terrain": "warm_honey_limestone_paving"
+				},
+				"2,0": {
+					"terrain": "warm_honey_limestone_paving"
+				},
+				"3,0": {
+					"terrain": "warm_honey_limestone_paving"
+				},
+				"4,0": {
+					"terrain": "warm_honey_limestone_paving"
+				},
+				"5,0": {
+					"terrain": "warm_honey_limestone_paving"
+				}
+			},
+			"depth": 4,
+			"enabled": true
+		},
+		"west": {
+			"cells": {
+				"3,16": {
+					"terrain": "warm_honey_limestone_paving"
+				},
+				"3,17": {
+					"terrain": "warm_honey_limestone_paving"
+				},
+				"3,18": {
+					"terrain": "warm_honey_limestone_paving"
+				},
+				"3,19": {
+					"terrain": "warm_honey_limestone_paving"
+				}
+			},
+			"depth": 4,
+			"enabled": true
+		}
+	},
+	"entry": [
+		0,
+		0.65,
+		8
+	],
+	"floor_blocks": [],
+	"format_version": 2,
+	"furnishings": [],
+	"grass_zones": [],
+	"map_metadata": {
+		"display_name": "Orchid Botanical Garden",
+		"group": "custom",
+		"id": "orchid_botanical_garden",
+		"layout_type": "outdoor",
+		"tags": []
+	},
+	"map_type": "Rainforest",
+	"npcs": [
+		{
+			"facing": "down",
+			"id": 1,
+			"position": [
+				-2.65000009536743,
+				0.0,
+				2.15000009536743
+			]
+		},
+		{
+			"facing": "down",
+			"id": 2,
+			"position": [
+				-0.34644481539726,
+				0.0,
+				-0.66080594062805
+			]
+		}
+	],
+	"objects": [
+		{
+			"height": 4.2,
+			"position": [
+				1.0,
+				1.5,
+				-2.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"height": 4.2,
+			"position": [
+				6.0,
+				1.5,
+				7.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"height": 4.2,
+			"position": [
+				-7.30000019073486,
+				1.5,
+				-7.75
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"height": 4.2,
+			"position": [
+				-4.95,
+				1.5,
+				-5.95
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"height": 4.2,
+			"position": [
+				-8.80000019073486,
+				1.5,
+				5.19999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.main"
+		},
+		{
+			"elevation": 1.0,
+			"entrance_length": 1.25,
+			"length": 6.0,
+			"orientation": "vertical",
+			"position": [
+				-4.0,
+				0.0,
+				2.79999995231628
+			],
+			"traversal_layer": 1.0,
+			"type": "structure.bridge",
+			"width": 1.0
+		},
+		{
+			"elevation": 1.0,
+			"entrance_length": 1.25,
+			"length": 5.0,
+			"orientation": "vertical",
+			"position": [
+				5.0,
+				0.0,
+				-3.59999990463257
+			],
+			"traversal_layer": 1.0,
+			"type": "structure.bridge",
+			"width": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_scorchic_fallen_log.png",
+			"height": 0.75,
+			"position": [
+				2.0,
+				0.0,
+				-2.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_scorchic_fallen_log"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_scorchic_fallen_log.png",
+			"height": 0.75,
+			"position": [
+				5.0,
+				0.0,
+				6.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_scorchic_fallen_log"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_scorchic_fallen_log_small.png",
+			"height": 0.5,
+			"position": [
+				0.0,
+				0.0,
+				-3.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_scorchic_fallen_log_small"
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_duo.png",
+			"height": 1.0,
+			"instance_id": "placed-1794974602-2924755998",
+			"position": [
+				-0.15000000596046,
+				0.0,
+				-3.15000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump_duo"
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.0,
+			"instance_id": "placed-1794543823-2411270381",
+			"position": [
+				-3.0,
+				0.0,
+				-2.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.0,
+			"instance_id": "placed-1795039713-5514852",
+			"position": [
+				-2.95,
+				0.0,
+				-1.95
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.0,
+			"instance_id": "placed-1795057877-1809288849",
+			"position": [
+				2.84999990463257,
+				0.0,
+				-2.79999995231628
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_01.png",
+			"height": 1.0,
+			"instance_id": "placed-1795039752-2424026657",
+			"position": [
+				-2.40000009536743,
+				0.0,
+				-2.54999995231628
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.0,
+			"instance_id": "placed-1795039775-3446469853",
+			"position": [
+				-2.90000009536743,
+				0.0,
+				-1.10000002384186
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.0,
+			"instance_id": "placed-1795039816-3503408488",
+			"position": [
+				-1.60000004768372,
+				0.0,
+				-4.4
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.0,
+			"instance_id": "placed-1795039803-3892334230",
+			"position": [
+				-1.95000004768372,
+				0.0,
+				-3.5
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.0,
+			"instance_id": "placed-1795039195-1765535150",
+			"position": [
+				-1.29999995231628,
+				0.0,
+				-7.59999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.0,
+			"instance_id": "placed-1794974507-576131661",
+			"position": [
+				0.80000001192093,
+				0.0,
+				-7.69999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.0,
+			"instance_id": "placed-1795039679-4071388419",
+			"position": [
+				-0.94999998807907,
+				0.0,
+				-8.39999961853027
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.0,
+			"position": [
+				0.25000000298023,
+				0.0,
+				-8.2
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.0,
+			"position": [
+				1.14999997615814,
+				0.0,
+				-8.55000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.3,
+			"instance_id": "placed-1794599764-2913682170",
+			"position": [
+				2.09999990463257,
+				0.0,
+				9.19999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.3,
+			"instance_id": "placed-1795054907-1497101909",
+			"position": [
+				4.09999990463257,
+				0.0,
+				6.94999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.3,
+			"instance_id": "placed-1794599858-101992240",
+			"position": [
+				3.65000009536743,
+				0.0,
+				5.69999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.4,
+			"instance_id": "placed-1794599715-2538120727",
+			"position": [
+				-7.40000009536743,
+				0.0,
+				5.19999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_duo.png",
+			"height": 1.0,
+			"instance_id": "placed-1794543742-2884693180",
+			"position": [
+				-6.0,
+				0.0,
+				-1.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump_duo"
+		},
+		{
+			"elevation": 1.0,
+			"entrance_length": 1.0,
+			"length": 4.0,
+			"orientation": "vertical",
+			"position": [
+				-8.0,
+				0.0,
+				0.40000000596046
+			],
+			"traversal_layer": 1.0,
+			"type": "structure.bridge",
+			"width": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_orchid_ground.png",
+			"height": 1.0,
+			"position": [
+				-9.0,
+				0.0,
+				-5.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_orchid_ground"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_orchid_ground.png",
+			"height": 1.0,
+			"position": [
+				-8.0,
+				0.0,
+				-5.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_orchid_ground"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_orchid_ground.png",
+			"height": 1.0,
+			"position": [
+				-8.94999980926514,
+				0.0,
+				-2.95000004768372
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_orchid_ground"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_orchid_ground.png",
+			"height": 1.0,
+			"position": [
+				-9.14999961853027,
+				0.0,
+				-2.04999995231628
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_orchid_ground"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_orchid_ground.png",
+			"height": 1.0,
+			"position": [
+				-7.19999980926514,
+				0.0,
+				-4.65000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_orchid_ground"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_orchid_ground.png",
+			"height": 1.0,
+			"position": [
+				-9.8,
+				0.0,
+				-3.5
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_orchid_ground"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_swan.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1794543742-2884693180",
+			"is_attached": true,
+			"local_position": [
+				-0.30000019073486,
+				-0.39999997615814
+			],
+			"position": [
+				-6.30000019073486,
+				0.0,
+				-1.39999997615814
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_swan"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_swan.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1794543742-2884693180",
+			"instance_id": "",
+			"is_attached": true,
+			"local_position": [
+				0.40000009536743,
+				-0.39999997615814
+			],
+			"position": [
+				-5.59999990463257,
+				0.0,
+				-1.39999997615814
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_swan"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_tree_yellow.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1794543823-2411270381",
+			"is_attached": true,
+			"local_position": [
+				0.0,
+				-0.40000009536743
+			],
+			"position": [
+				-3.0,
+				0.0,
+				-2.40000009536743
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_tree_yellow"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_raised_holy_ghost_orchid.png",
+			"height": 2.5,
+			"instance_id": "placed-1794599318-2217364430",
+			"interaction_text": "Holy Ghost Orchid\nThese magnificent ground orchids are Jalvoea's national flower. Their tall flower spikes bear beautiful white blossoms, each resembling a dove with outstretched wings.\nOnce threatened by decline, conservation and cultivation have helped restore their populations. They typically bloom between July and November.",
+			"position": [
+				-0.05000000074506,
+				0.0,
+				4.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"sort_offset_y": -1.0,
+			"type": "asset.habitat_raised_holy_ghost_orchid"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_holy_ghost_orchid.png",
+			"attachment_order": 0.0,
+			"height": 1.2,
+			"host_id": "placed-1794599318-2217364430",
+			"is_attached": true,
+			"local_position": [
+				0.0,
+				-1.60000014305115
+			],
+			"position": [
+				-0.05000000074506,
+				0.0,
+				3.20000004768372
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_holy_ghost_orchid"
+		},
+		{
+			"asset_path": "res://assets/overworld/plant_table_orchid_00.png",
+			"height": 2.5,
+			"position": [
+				-8.0,
+				0.0,
+				10.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.plant_table_orchid",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/plant_table_orchid_02.png",
+			"height": 2.5,
+			"position": [
+				-5.40000009536743,
+				0.0,
+				10.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.plant_table_orchid",
+			"variant": 2.0
+		},
+		{
+			"asset_path": "res://assets/overworld/plant_table_orchid_01.png",
+			"height": 2.5,
+			"position": [
+				-8.0,
+				0.0,
+				8.19999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.plant_table_orchid",
+			"variant": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_hanging_cultivated_00.png",
+			"attachment_order": 1.0,
+			"height": 1.0,
+			"host_id": "placed-1794599764-2913682170",
+			"is_attached": true,
+			"local_position": [
+				0.29999995231628,
+				-0.10000038146973
+			],
+			"position": [
+				2.39999985694885,
+				0.0,
+				9.09999942779541
+			],
+			"rotation_degrees": -7.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_hanging_cultivated",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_hanging_cultivated_00.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1794599715-2538120727",
+			"instance_id": "",
+			"is_attached": true,
+			"local_position": [
+				0.20000028610229,
+				-0.39999961853027
+			],
+			"position": [
+				-7.09999980926514,
+				0.0,
+				4.90000019073486
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_hanging_cultivated",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_hanging_cultivated_01.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1794599764-2913682170",
+			"is_attached": true,
+			"local_position": [
+				-0.35000014305115,
+				-0.30000019073486
+			],
+			"position": [
+				1.74999976158142,
+				0.0,
+				8.89999961853028
+			],
+			"rotation_degrees": 4.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_hanging_cultivated",
+			"variant": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_hanging_cultivated_00.png",
+			"attachment_order": 1.0,
+			"height": 1.0,
+			"host_id": "placed-1794599858-101992240",
+			"is_attached": true,
+			"local_position": [
+				0.29999995231628,
+				-0.10000038146973
+			],
+			"position": [
+				3.95000004768371,
+				0.0,
+				5.59999942779541
+			],
+			"rotation_degrees": -7.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_hanging_cultivated",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_hanging_cultivated_01.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1794599858-101992240",
+			"is_attached": true,
+			"local_position": [
+				-0.29999995231628,
+				-0.30000019073486
+			],
+			"position": [
+				3.35000014305115,
+				0.0,
+				5.39999961853028
+			],
+			"rotation_degrees": 4.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_hanging_cultivated",
+			"variant": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/outdoor_park_bench.png",
+			"height": 1.0,
+			"position": [
+				5.5,
+				0.0,
+				8.19999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.outdoor_park_bench"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_orchid_ground.png",
+			"height": 1.0,
+			"position": [
+				-9.60000038146973,
+				0.0,
+				-4.55000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_orchid_ground"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_large_00.png",
+			"height": 1.0,
+			"position": [
+				-9.69999980926514,
+				0.0,
+				-2.40000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_large",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_large_00.png",
+			"height": 1.0,
+			"position": [
+				-8.39999980926514,
+				0.0,
+				-5.50000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_large",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_large_00.png",
+			"height": 1.0,
+			"position": [
+				-9.50000019073486,
+				0.0,
+				-5.54999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_large",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 0.55,
+			"position": [
+				-8.55000019073486,
+				0.0,
+				-4.65000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/sign_normal_outside.png",
+			"height": 1.0,
+			"interaction_text": "Jalvoean Showy Ground Orchid\nUnlike their tree-clinging relatives, these orchids grow directly in the soil. Many were introduced from distant tropical lands, but generations of adaptation and cultivation have given rise to varieties unique to Jalvoea.",
+			"position": [
+				-7.84999990463257,
+				0.0,
+				-4.34999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.sign_normal_outside"
+		},
+		{
+			"asset_path": "res://assets/overworld/tree_palm_small.png",
+			"height": 1.0,
+			"position": [
+				-5.0,
+				0.0,
+				0.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.tree_palm_small"
+		},
+		{
+			"height": 3.8,
+			"position": [
+				1.35000002384186,
+				1.5,
+				2.34999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"height": 3.8,
+			"position": [
+				-1.20000004768372,
+				1.5,
+				2.40000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_large_00.png",
+			"height": 1.0,
+			"position": [
+				0.44999998807907,
+				0.0,
+				1.85000002384186
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_large",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_large_00.png",
+			"height": 1.0,
+			"position": [
+				-0.55000001192093,
+				0.0,
+				1.85000002384186
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_large",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_large_00.png",
+			"height": 1.0,
+			"position": [
+				-6.94999980926514,
+				0.0,
+				-1.5
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_large",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_large_00.png",
+			"height": 1.0,
+			"position": [
+				-6.05000019073486,
+				0.0,
+				2.20000004768372
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_large",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/outdoor_park_bench.png",
+			"height": 1.0,
+			"position": [
+				-0.15000000596046,
+				0.0,
+				-0.69999998807907
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.outdoor_park_bench"
+		},
+		{
+			"asset_path": "res://assets/overworld/outdoor_park_bench.png",
+			"height": 1.0,
+			"position": [
+				-1.95,
+				0.0,
+				6.05
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.outdoor_park_bench"
+		},
+		{
+			"asset_path": "res://assets/overworld/park_bench_south_facing_00.png",
+			"height": 2.0,
+			"position": [
+				-5.05000019073486,
+				0.0,
+				-4.09999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.park_bench_south_facing",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/park_bench_south_facing_00.png",
+			"height": 2.0,
+			"position": [
+				7.05000019073486,
+				0.0,
+				1.14999997615814
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.park_bench_south_facing",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/park_table.png",
+			"height": 2.25,
+			"position": [
+				-5.75,
+				0.0,
+				8.69999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.park_table"
+		},
+		{
+			"asset_path": "res://assets/overworld/flower_tall_banana_plant.png",
+			"height": 1.7,
+			"position": [
+				7.25,
+				0.0,
+				-2.59999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.flower_tall_banana_plant"
+		},
+		{
+			"asset_path": "res://assets/overworld/flower_tall_banana_plant.png",
+			"height": 1.7,
+			"position": [
+				6.55,
+				0.0,
+				-1.45
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.flower_tall_banana_plant"
+		},
+		{
+			"asset_path": "res://assets/overworld/flower_tall_banana_plant.png",
+			"height": 1.7,
+			"position": [
+				6.14999990463257,
+				0.0,
+				-0.25000001192093
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.flower_tall_banana_plant"
+		},
+		{
+			"asset_path": "res://assets/overworld/flower_tall_torch_ginger_cluster.png",
+			"height": 1.8,
+			"position": [
+				7.90000009536743,
+				0.0,
+				-0.75
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.flower_tall_torch_ginger_cluster"
+		},
+		{
+			"asset_path": "res://assets/overworld/flower_tall_banana_plant.png",
+			"height": 1.7,
+			"position": [
+				-8.30000019073486,
+				0.0,
+				-6.30000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.flower_tall_banana_plant"
+		},
+		{
+			"asset_path": "res://assets/overworld/flower_tall_banana_plant.png",
+			"height": 1.7,
+			"position": [
+				-9.64999980926514,
+				0.0,
+				-6.2
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.flower_tall_banana_plant"
+		},
+		{
+			"asset_path": "res://assets/overworld/flower_tall_banana_plant.png",
+			"height": 1.7,
+			"position": [
+				-6.7,
+				0.0,
+				-5.25000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.flower_tall_banana_plant"
+		},
+		{
+			"asset_path": "res://assets/overworld/rocks_generic_01.png",
+			"height": 1.0,
+			"position": [
+				-9.55000019073486,
+				0.0,
+				-9.05000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_generic",
+			"variant": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/rocks_generic_00.png",
+			"height": 1.0,
+			"position": [
+				-8.94999980926514,
+				0.0,
+				-9.55000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_generic",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/rocks_generic_03.png",
+			"height": 1.0,
+			"position": [
+				-8.89999961853027,
+				0.0,
+				-8.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_generic",
+			"variant": 3.0
+		},
+		{
+			"asset_path": "res://assets/overworld/props_rocks_general_00.png",
+			"height": 1.0,
+			"position": [
+				-6.09999990463257,
+				0.0,
+				-7.40000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.props_rocks_general",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/props_rocks_general_01.png",
+			"height": 1.0,
+			"position": [
+				-8.05000019073486,
+				0.0,
+				-9.5
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.props_rocks_general",
+			"variant": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/props_rocks_general_01.png",
+			"height": 1.0,
+			"position": [
+				-6.34999990463257,
+				0.0,
+				-4.84999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.props_rocks_general",
+			"variant": 1.0
+		},
+		{
+			"height": 3.8,
+			"position": [
+				-1.95000004768372,
+				1.5,
+				-6.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"height": 3.8,
+			"position": [
+				-0.30000001192093,
+				1.5,
+				-7.75
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"height": 3.8,
+			"instance_id": "placed-1794974546-3523710487",
+			"position": [
+				1.95000004768372,
+				1.5,
+				-7.75
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"asset_path": "res://assets/overworld/tree_palm_small.png",
+			"height": 1.0,
+			"position": [
+				4.09999990463257,
+				0.0,
+				-5.69999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.tree_palm_small"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_bromeliad.png",
+			"height": 1.0,
+			"position": [
+				-3.54999995231628,
+				0.0,
+				-7.40000009536743
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.bromeliad"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_bromeliad.png",
+			"height": 1.0,
+			"position": [
+				-3.04999995231628,
+				0.0,
+				-8.55000019073486
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.bromeliad"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_bromeliad.png",
+			"height": 1.0,
+			"position": [
+				-2.75,
+				0.0,
+				-7.5
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.bromeliad"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_bromeliad.png",
+			"height": 1.0,
+			"position": [
+				-3.45000004768372,
+				0.0,
+				-7.94999980926514
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.bromeliad"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_bromeliad.png",
+			"height": 1.0,
+			"position": [
+				-2.5,
+				0.0,
+				-7.94999980926514
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.bromeliad"
+		},
+		{
+			"asset_path": "res://assets/overworld/orchid_ground_potted.png",
+			"height": 1.25,
+			"position": [
+				-9.69999980926514,
+				0.0,
+				5.84999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.orchid_ground_potted"
+		},
+		{
+			"asset_path": "res://assets/overworld/orchid_ground_potted.png",
+			"height": 1.25,
+			"position": [
+				-7.80000019073486,
+				0.0,
+				5.84999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.orchid_ground_potted"
+		},
+		{
+			"asset_path": "res://assets/overworld/orchid_ground_potted.png",
+			"height": 1.25,
+			"position": [
+				-8.75,
+				0.0,
+				5.84999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.orchid_ground_potted"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_swan.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1795041570-1578029959",
+			"is_attached": true,
+			"local_position": [
+				-0.35000014305115,
+				-0.30000001192093
+			],
+			"mirror_x": true,
+			"position": [
+				3.59999990463257,
+				0.0,
+				-0.55000001192093
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_swan"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_swan.png",
+			"attachment_order": 1.0,
+			"height": 1.0,
+			"host_id": "placed-1795041570-1578029959",
+			"instance_id": "",
+			"is_attached": true,
+			"local_position": [
+				0.29999995231628,
+				-0.15000000596046
+			],
+			"mirror_x": true,
+			"position": [
+				4.25,
+				0.0,
+				-0.40000000596046
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_swan"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_swan.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1795041557-361112884",
+			"instance_id": "",
+			"is_attached": true,
+			"local_position": [
+				0.0,
+				-0.14999997615814
+			],
+			"mirror_x": false,
+			"position": [
+				3.84999990463257,
+				0.0,
+				0.89999997615814
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_swan"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_swan.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1795041533-3056136652",
+			"instance_id": "",
+			"is_attached": true,
+			"local_position": [
+				-0.15000009536743,
+				-0.34999990463257
+			],
+			"mirror_x": true,
+			"position": [
+				3.8,
+				0.0,
+				2.55
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_swan"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_swan.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1795041507-1954613917",
+			"instance_id": "",
+			"is_attached": true,
+			"local_position": [
+				-0.25,
+				-0.44999998807907
+			],
+			"mirror_x": true,
+			"position": [
+				2.59999995231628,
+				0.0,
+				0.3
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_swan"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_swan.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1795041507-1954613917",
+			"instance_id": "",
+			"is_attached": true,
+			"local_position": [
+				0.29999995231628,
+				-0.05000001192093
+			],
+			"position": [
+				3.14999990463257,
+				0.0,
+				0.69999997615814
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_swan"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_aspasia.png",
+			"attachment_order": 1.0,
+			"height": 1.0,
+			"host_id": "placed-1795057877-1809288849",
+			"is_attached": true,
+			"local_position": [
+				-0.29999995231628,
+				-0.20000004768372
+			],
+			"mirror_x": true,
+			"position": [
+				2.54999995231628,
+				0.0,
+				-3.0
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_aspasia"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_aspasia.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1795038914-2400266143",
+			"is_attached": true,
+			"local_position": [
+				-0.30000019073486,
+				-0.29999971389771
+			],
+			"mirror_x": true,
+			"position": [
+				7.5,
+				0.0,
+				-6.69999980926514
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_aspasia"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_aspasia.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1795038925-710888698",
+			"instance_id": "",
+			"is_attached": true,
+			"local_position": [
+				-0.20000028610229,
+				-0.15000009536743
+			],
+			"mirror_x": true,
+			"position": [
+				7.59999990463257,
+				0.0,
+				-5.15000009536743
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_aspasia"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_aspasia.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1795036881-3688532859",
+			"is_attached": true,
+			"local_position": [
+				0.30000019073486,
+				0.09999990463257
+			],
+			"position": [
+				1.75000023841858,
+				0.0,
+				-8.70000028610229
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_aspasia"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_aspasia.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1794974602-2924755998",
+			"is_attached": true,
+			"local_position": [
+				0.55000001192093,
+				-0.14999985694885
+			],
+			"position": [
+				0.40000000596046,
+				0.0,
+				-3.29999995231628
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_aspasia"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_aspasia.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1794974546-3523710487",
+			"is_attached": true,
+			"local_position": [
+				0.29999995231628,
+				-0.30000019073486
+			],
+			"position": [
+				2.25,
+				1.5,
+				-8.05000019073486
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_aspasia"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_aspasia.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1794974507-576131661",
+			"is_attached": true,
+			"local_position": [
+				0.24999994039536,
+				0.34999990463257
+			],
+			"position": [
+				1.04999995231628,
+				0.0,
+				-7.34999990463257
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_aspasia"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_aspasia.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1795039195-1765535150",
+			"instance_id": "",
+			"is_attached": true,
+			"local_position": [
+				0.25,
+				-0.09999990463257
+			],
+			"mirror_x": false,
+			"position": [
+				-1.04999995231628,
+				0.0,
+				-7.69999980926514
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_aspasia"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_aspasia.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1795039195-1765535150",
+			"instance_id": "placed-1795039212-4249502254",
+			"is_attached": true,
+			"local_position": [
+				0.25,
+				-0.09999990463257
+			],
+			"mirror_x": false,
+			"position": [
+				-0.99999995231628,
+				0.0,
+				-7.64999980926514
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_aspasia"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_aspasia.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1795039679-4071388419",
+			"instance_id": "placed-1795039201-2414054840",
+			"is_attached": true,
+			"local_position": [
+				0.14999997615814,
+				-0.15000057220459
+			],
+			"mirror_x": false,
+			"position": [
+				-0.80000001192093,
+				0.0,
+				-8.55000019073486
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_aspasia"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_aspasia.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1795039195-1765535150",
+			"instance_id": "placed-1795039674-933269533",
+			"is_attached": true,
+			"local_position": [
+				-0.35000002384186,
+				-0.50000047683716
+			],
+			"mirror_x": true,
+			"position": [
+				-1.54999997615814,
+				0.0,
+				-8.00000038146973
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_aspasia"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_aspasia.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1794974507-576131661",
+			"instance_id": "placed-1795039189-753006252",
+			"is_attached": true,
+			"local_position": [
+				-0.30000001192093,
+				-0.05000019073486
+			],
+			"mirror_x": true,
+			"position": [
+				0.55,
+				0.0,
+				-7.7
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_aspasia"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_aspasia.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1794974507-576131661",
+			"instance_id": "placed-1795039167-2449447603",
+			"is_attached": true,
+			"local_position": [
+				-0.85000001266599,
+				-0.5
+			],
+			"mirror_x": true,
+			"position": [
+				-0.00000000074506,
+				0.0,
+				-8.14999980926514
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_aspasia"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_aspasia.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1794974507-576131661",
+			"instance_id": "placed-1795039156-253473433",
+			"is_attached": true,
+			"local_position": [
+				-0.35000002384186,
+				-0.75
+			],
+			"position": [
+				0.44999998807907,
+				0.0,
+				-8.44999980926514
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_aspasia"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_vanda.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1795057877-1809288849",
+			"is_attached": true,
+			"local_position": [
+				0.30000019073486,
+				-0.20000004768372
+			],
+			"position": [
+				3.15000009536743,
+				0.0,
+				-3.0
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_vanda"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_vanda.png",
+			"attachment_order": 0.0,
+			"height": 1.3,
+			"host_id": "placed-1795036821-3874797012",
+			"is_attached": true,
+			"local_position": [
+				-0.20000004768372,
+				0.05000019073486
+			],
+			"mirror_x": true,
+			"position": [
+				3.70000004768371,
+				0.0,
+				-9.0
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_vanda"
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.0,
+			"instance_id": "placed-1795038925-710888698",
+			"position": [
+				7.80000019073486,
+				0.0,
+				-5.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.0,
+			"instance_id": "placed-1795038914-2400266143",
+			"position": [
+				7.80000019073486,
+				0.0,
+				-6.40000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_01.png",
+			"height": 1.0,
+			"instance_id": "placed-1795036881-3688532859",
+			"position": [
+				1.45000004768372,
+				0.0,
+				-8.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_01.png",
+			"height": 1.0,
+			"instance_id": "placed-1795036922-3332614254",
+			"position": [
+				2.54999995231628,
+				0.0,
+				-8.85000038146973
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_01.png",
+			"height": 1.0,
+			"instance_id": "placed-1795036867-2801108729",
+			"position": [
+				6.15000009536743,
+				0.0,
+				-7.59999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 1
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_01.png",
+			"height": 1.0,
+			"instance_id": "placed-1795036855-1713714867",
+			"position": [
+				5.30000019073486,
+				0.0,
+				-8.89999961853027
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 1
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.0,
+			"instance_id": "placed-1795036821-3874797012",
+			"position": [
+				3.90000009536743,
+				0.0,
+				-9.05000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.0,
+			"instance_id": "placed-1795036833-4228606230",
+			"position": [
+				6.30000019073486,
+				0.0,
+				-8.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.0,
+			"instance_id": "placed-1795036841-746153772",
+			"position": [
+				4.34999990463257,
+				0.0,
+				-8.85000038146973
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_vanda.png",
+			"attachment_order": 0.0,
+			"height": 1.3,
+			"host_id": "placed-1795036841-746153772",
+			"is_attached": true,
+			"local_position": [
+				0.29999995231628,
+				0.39999961853027
+			],
+			"position": [
+				4.64999985694885,
+				0.0,
+				-8.45000076293945
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_vanda"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_vanda.png",
+			"attachment_order": 0.0,
+			"height": 1.3,
+			"host_id": "placed-1795036855-1713714867",
+			"instance_id": "",
+			"is_attached": true,
+			"local_position": [
+				0.34999990463257,
+				-0.05000019073486
+			],
+			"position": [
+				5.65000009536743,
+				0.0,
+				-8.94999980926513
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_vanda"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_vanda.png",
+			"attachment_order": 0.0,
+			"height": 1.3,
+			"host_id": "placed-1795036867-2801108729",
+			"instance_id": "placed-1795036860-2797401309",
+			"is_attached": true,
+			"local_position": [
+				-0.25,
+				-0.25
+			],
+			"mirror_x": true,
+			"position": [
+				5.90000009536743,
+				0.0,
+				-7.84999990463257
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_vanda"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_aspasia.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1795036922-3332614254",
+			"is_attached": true,
+			"local_position": [
+				0.30000019073486,
+				0.09999990463257
+			],
+			"position": [
+				2.85000014305114,
+				0.0,
+				-8.75000047683716
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_aspasia"
+		},
+		{
+			"asset_path": "res://assets/overworld/sign_normal_outside.png",
+			"height": 1.0,
+			"interaction_text": "Jalvoean Aspasia\n\nA familiar native orchid of Jalvoea's rainforests, the Aspasia grows upon the trunks and branches of trees. Its large, oval pseudobulbs store water, while its modest flowers reward a closer look with intricate patterns, successive flowering and a delicate, honey-like fragrance.",
+			"position": [
+				0.20000000298023,
+				0.0,
+				-7.40000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.sign_normal_outside"
+		},
+		{
+			"asset_path": "res://assets/overworld/sign_normal_outside.png",
+			"height": 1.0,
+			"interaction_text": "Jalvoean Vanda\nUnlike many orchids that shelter beneath the forest canopy, these strap-leaved orchids thrive in bright light, often growing on exposed branches.\nDescended from orchids introduced from distant tropical lands, this hybrid was developed in Jalvoea and is particularly well suited to its warm rainforest edges and gardens. Its colorful blooms have made it a local favorite.",
+			"position": [
+				4.85000019073486,
+				0.0,
+				-8.2
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.sign_normal_outside"
+		},
+		{
+			"height": 3.8,
+			"instance_id": "placed-1795057985-2354693125",
+			"position": [
+				8.85000038146973,
+				1.5,
+				-6.84999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "tree.palm"
+		},
+		{
+			"asset_path": "res://assets/overworld/flower_tall_banana_plant.png",
+			"height": 1.7,
+			"position": [
+				7.09999990463257,
+				0.0,
+				-8.10000038146973
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.flower_tall_banana_plant"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 0.5,
+			"position": [
+				6.65000009536743,
+				0.0,
+				-9.19999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 0.5,
+			"position": [
+				6.59999990463257,
+				0.0,
+				-8.44999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 0.5,
+			"position": [
+				7.84999990463257,
+				0.0,
+				-8.19999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 0.5,
+			"position": [
+				6.64999990463257,
+				0.0,
+				-7.64999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0.0
+		},
+		{
+			"height": 0.45,
+			"position": [
+				8.1,
+				0.2,
+				-9.35
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.blue"
+		},
+		{
+			"height": 0.45,
+			"position": [
+				7.6,
+				0.2,
+				-9.05
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.blue"
+		},
+		{
+			"height": 0.45,
+			"position": [
+				8.1,
+				0.2,
+				-8.9
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.blue"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_tree_yellow.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1795039775-3446469853",
+			"is_attached": true,
+			"local_position": [
+				-0.09999990463257,
+				-0.25
+			],
+			"position": [
+				-3.0,
+				0.0,
+				-1.35000002384186
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_tree_yellow"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_tree_yellow.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1795039752-2424026657",
+			"instance_id": "",
+			"is_attached": true,
+			"local_position": [
+				0.0,
+				-0.25
+			],
+			"position": [
+				-2.40000009536743,
+				0.0,
+				-2.79999995231628
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_tree_yellow"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_tree_yellow.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1795039803-3892334230",
+			"is_attached": true,
+			"local_position": [
+				0.0,
+				-0.20000004768372
+			],
+			"position": [
+				-1.95000004768372,
+				0.0,
+				-3.70000004768372
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_tree_yellow"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_tree_yellow.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1795039816-3503408488",
+			"is_attached": true,
+			"local_position": [
+				-0.04999995231628,
+				-0.34999990463257
+			],
+			"position": [
+				-1.64999997615814,
+				0.0,
+				-4.75
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_tree_yellow"
+		},
+		{
+			"asset_path": "res://assets/overworld/sign_normal_outside.png",
+			"height": 1.0,
+			"interaction_text": "Oncidium\n\nA diverse genus of orchids found throughout Jalvoea, from the warm lowland rainforests to the cooler mountain forests. Many are known as dancing lady orchids, producing cascading sprays of small yellow flowers that resemble dancers in flowing skirts.",
+			"position": [
+				-2.25,
+				0.0,
+				-4.40000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.sign_normal_outside"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegetation_orchid_ground_bamboo.png",
+			"height": 1.45,
+			"position": [
+				1.64999997615814,
+				0.0,
+				5.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegetation_orchid_ground_bamboo"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegetation_orchid_ground_bamboo.png",
+			"height": 1.45,
+			"position": [
+				1.0,
+				0.0,
+				6.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegetation_orchid_ground_bamboo"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegetation_orchid_ground_bamboo.png",
+			"height": 1.45,
+			"position": [
+				2.65000009536743,
+				0.0,
+				5.55000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegetation_orchid_ground_bamboo"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegetation_orchid_ground_bamboo.png",
+			"height": 1.45,
+			"position": [
+				2.15000009536743,
+				0.0,
+				6.19999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegetation_orchid_ground_bamboo"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegetation_orchid_ground_radicans.png",
+			"height": 1.0,
+			"position": [
+				-2.95000004768372,
+				0.0,
+				8.55000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegetation_orchid_ground_radicans"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegetation_orchid_ground_radicans.png",
+			"height": 1.0,
+			"position": [
+				-2.0,
+				0.0,
+				5.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegetation_orchid_ground_radicans"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegetation_orchid_ground_radicans.png",
+			"height": 1.0,
+			"position": [
+				-2.59999990463257,
+				0.0,
+				9.44999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegetation_orchid_ground_radicans"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegetation_orchid_ground_radicans.png",
+			"height": 1.0,
+			"position": [
+				-2.15000009536743,
+				0.0,
+				10.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegetation_orchid_ground_radicans"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegetation_orchid_ground_radicans.png",
+			"height": 1.0,
+			"position": [
+				-3.10000009536743,
+				0.0,
+				9.99999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegetation_orchid_ground_radicans"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegetation_orchid_ground_radicans.png",
+			"height": 1.0,
+			"position": [
+				-1.84999997615814,
+				0.0,
+				9.05
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegetation_orchid_ground_radicans"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegetation_orchid_ground_radicans.png",
+			"height": 1.0,
+			"position": [
+				3.04999995231628,
+				0.0,
+				9.44999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegetation_orchid_ground_radicans"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegetation_orchid_ground_radicans.png",
+			"height": 1.0,
+			"position": [
+				-1.35,
+				0.0,
+				9.45
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegetation_orchid_ground_radicans"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegetation_orchid_ground_radicans.png",
+			"height": 1.0,
+			"position": [
+				-1.35,
+				0.0,
+				8.05
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegetation_orchid_ground_radicans"
+		},
+		{
+			"asset_path": "res://assets/overworld/sign_normal_outside.png",
+			"height": 1.0,
+			"interaction_text": "Crucifix Orchid\n\nThese showy native ground orchids grow from sea level to the lower reaches of the cloud forest. Hardy and adaptable, they readily colonize disturbed ground and are a familiar sight along roadsides and drainage ditches.",
+			"position": [
+				-2.15000009536743,
+				0.0,
+				8.25
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.sign_normal_outside"
+		},
+		{
+			"asset_path": "res://assets/overworld/sign_normal_outside.png",
+			"height": 1.0,
+			"interaction_text": "Bamboo Orchid\n\nIntroduced through the tropical ornamental plant trade, these attractive orchids thrive in Jalvoea's lowlands, where their bamboo-like stems can grow several meters tall. Their vigorous growth has prompted discussions of population control, though local authorities have yet to deem such measures necessary.",
+			"position": [
+				1.54999995231628,
+				0.0,
+				6.5
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.sign_normal_outside"
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_duo.png",
+			"height": 1.0,
+			"instance_id": "placed-1795041507-1954613917",
+			"position": [
+				2.79999995231628,
+				0.0,
+				0.69999998807907
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump_duo"
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_duo.png",
+			"height": 1.0,
+			"instance_id": "placed-1795041570-1578029959",
+			"position": [
+				3.95000009536743,
+				0.0,
+				-0.25000001192093
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump_duo"
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.0,
+			"instance_id": "placed-1795041557-361112884",
+			"position": [
+				3.84999990463257,
+				0.0,
+				1.04999995231628
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/stump_00.png",
+			"height": 1.0,
+			"instance_id": "placed-1795041533-3056136652",
+			"position": [
+				3.90000009536743,
+				0.0,
+				2.84999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.stump",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/sign_normal_outside.png",
+			"height": 1.0,
+			"interaction_text": "Fragrant Swan Orchid\n\nHighly prized among Jalvoea's native orchids, the Swan Orchid follows a distinct seasonal cycle. It grows vigorously during the wet season, producing large, waxy flowers with a sweet fragrance as its growth matures. During the dry season, it sheds its leaves and enters a period of dormancy.",
+			"position": [
+				4.25,
+				0.0,
+				1.85000002384186
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.sign_normal_outside"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_hanging_cultivated_00.png",
+			"attachment_order": 1.0,
+			"height": 1.0,
+			"host_id": "placed-1795054907-1497101909",
+			"is_attached": true,
+			"local_position": [
+				0.25,
+				0.05000019073486
+			],
+			"position": [
+				4.34999990463257,
+				0.0,
+				7.0
+			],
+			"rotation_degrees": -7.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_hanging_cultivated",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_orchid_hanging_cultivated_01.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1795054907-1497101909",
+			"is_attached": true,
+			"local_position": [
+				-0.25,
+				0.05000019073486
+			],
+			"position": [
+				3.84999990463257,
+				0.0,
+				7.0
+			],
+			"rotation_degrees": 4.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.orchid_hanging_cultivated",
+			"variant": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 0.7,
+			"position": [
+				2.95000004768372,
+				0.0,
+				9.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 0.7,
+			"position": [
+				2.15000009536743,
+				0.0,
+				9.75
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 0.7,
+			"position": [
+				1.45000002384186,
+				0.0,
+				9.90000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegetation_orchid_ground_sobralia.png",
+			"height": 1.0,
+			"position": [
+				9.30000019073486,
+				0.0,
+				2.5
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegetation_orchid_ground_sobralia"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegetation_orchid_ground_sobralia.png",
+			"height": 1.0,
+			"position": [
+				9.05000019073486,
+				0.0,
+				3.59999990463257
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegetation_orchid_ground_sobralia"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegetation_orchid_ground_sobralia.png",
+			"height": 1.0,
+			"position": [
+				9.55000019073486,
+				0.0,
+				6.40000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegetation_orchid_ground_sobralia"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegetation_orchid_ground_sobralia.png",
+			"height": 1.0,
+			"position": [
+				9.10000019073486,
+				0.0,
+				7.24999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegetation_orchid_ground_sobralia"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegetation_orchid_ground_sobralia.png",
+			"height": 1.0,
+			"position": [
+				9.15000019073486,
+				0.0,
+				5.29999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegetation_orchid_ground_sobralia"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 0.65,
+			"position": [
+				9.55000019073486,
+				0.0,
+				5.69999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 0.65,
+			"position": [
+				9.55,
+				0.0,
+				3.95000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 0.65,
+			"position": [
+				8.90000038146973,
+				0.0,
+				4.24999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 0.65,
+			"position": [
+				8.85000019073486,
+				0.0,
+				2.55
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 0.65,
+			"position": [
+				8.94999961853027,
+				0.0,
+				2.05
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 0.65,
+			"position": [
+				9.05000019073486,
+				0.0,
+				3.04999995231628
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/sign_normal_outside.png",
+			"height": 1.0,
+			"interaction_text": "Sobralia\n\nA diverse genus of showy orchids native to Jalvoea's lowland and mountain forests. Though their flowers are spectacular, they are remarkably short-lived. The fleeting opportunity to see a wild Sobralia in bloom has earned these orchids an almost mythic  reputation among hikers and orchid enthusiasts alike.",
+			"position": [
+				8.85000038146973,
+				0.0,
+				6.5
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.sign_normal_outside"
+		},
+		{
+			"asset_path": "res://assets/overworld/flower_tall_torch_ginger_cluster.png",
+			"height": 1.8,
+			"position": [
+				9.30000019073486,
+				0.0,
+				9.89999961853027
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.flower_tall_torch_ginger_cluster"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_scorchic_fallen_log.png",
+			"height": 0.75,
+			"position": [
+				9.5,
+				0.0,
+				7.94999980926514
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_scorchic_fallen_log"
+		},
+		{
+			"asset_path": "res://assets/overworld/habitat_scorchic_fallen_log_small.png",
+			"height": 0.5,
+			"instance_id": "placed-1795055223-4106812765",
+			"position": [
+				7.09999990463257,
+				0.0,
+				7.40000009536743
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.habitat_scorchic_fallen_log_small"
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_aspasia.png",
+			"attachment_order": 0.0,
+			"height": 1.0,
+			"host_id": "placed-1795055223-4106812765",
+			"is_attached": true,
+			"local_position": [
+				-0.54999971389771,
+				-0.65000009536743
+			],
+			"mirror_x": true,
+			"position": [
+				6.55000019073486,
+				0.0,
+				6.75
+			],
+			"rotation_degrees": 90.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_aspasia"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegetation_orchid_ground_radicans.png",
+			"height": 1.0,
+			"position": [
+				7.15000009536743,
+				0.0,
+				5.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegetation_orchid_ground_radicans"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_orchid_ground.png",
+			"height": 1.0,
+			"position": [
+				7.94999980926514,
+				0.0,
+				9.85000038146973
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_orchid_ground"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
+			"height": 0.7,
+			"position": [
+				8.44999980926514,
+				0.0,
+				9.30000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegitation_fern_small",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/overlay_vegetation_orchid_of_wonder.png",
+			"attachment_order": 0.0,
+			"height": 1.85,
+			"host_id": "placed-1795057985-2354693125",
+			"is_attached": true,
+			"local_position": [
+				0.04999923706055,
+				-0.45000028610229
+			],
+			"position": [
+				8.89999961853027,
+				1.5,
+				-7.30000019073486
+			],
+			"rotation_degrees": 0.0,
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "overlay.vegetation_orchid_of_wonder"
+		},
+		{
+			"asset_path": "res://assets/overworld/sign_normal_outside.png",
+			"height": 1.0,
+			"interaction_text": "Unidentified White Orchid\n\nThis unusual orchid bears large, magnificent white flowers. Its identity remains a mystery, though some speculate that it may be a hybrid. It is cultivated here as a special treat for our most observant visitors.",
+			"position": [
+				8.85000038146973,
+				0.0,
+				-6.25
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.sign_normal_outside"
+		}
+	],
+	"orchids": [],
+	"origin": [
+		462.25,
+		0.0,
+		0.0
+	],
+	"outdoor_connections": [],
+	"return_warp": [
+		0,
+		0.12,
+		9.5
+	],
+	"rocks": [],
+	"sand_blocks": [],
+	"script_interactions": {
+		"npc:1": "BotanicalScientistHint"
+	},
+	"script_source": "Block BotanicalScientistHint:\n  IfFlag Starter StarterDescovered\n  TextBox \"I work for the Tropical Research Institute. You can find us due east of the Jalovea Challenger center, tucked behind a small forest.\"\nEnd\n\nBlock StarterDescovered:\n  TextBox \"The professor is a generous man, isn't he? I hope you and your companion get along just fine.\"\nEnd",
+	"size": [
+		20,
+		20
+	],
+	"tall_grass_species": [],
+	"terrain_tiles": [
+		{
+			"positions": [
+				[
+					-8,
+					-1
+				],
+				[
+					-8,
+					0
+				],
+				[
+					-8,
+					1
+				],
+				[
+					-7,
+					0
+				],
+				[
+					-7,
+					-1
+				],
+				[
+					-7,
+					1
+				],
+				[
+					-6,
+					1
+				],
+				[
+					-6,
+					0
+				],
+				[
+					-5,
+					1
+				],
+				[
+					-4,
+					1
+				],
+				[
+					-4,
+					0
+				],
+				[
+					-4,
+					2
+				],
+				[
+					-4,
+					3
+				],
+				[
+					-5,
+					3
+				],
+				[
+					-5,
+					2
+				],
+				[
+					-5,
+					4
+				],
+				[
+					-4,
+					4
+				],
+				[
+					-3,
+					4
+				],
+				[
+					-3,
+					3
+				],
+				[
+					4,
+					-5
+				],
+				[
+					4,
+					-4
+				],
+				[
+					4,
+					-3
+				],
+				[
+					4,
+					-2
+				],
+				[
+					5,
+					-3
+				],
+				[
+					5,
+					-4
+				],
+				[
+					5,
+					-5
+				],
+				[
+					5,
+					-6
+				],
+				[
+					6,
+					-6
+				],
+				[
+					6,
+					-5
+				],
+				[
+					6,
+					-4
+				],
+				[
+					6,
+					-3
+				],
+				[
+					7,
+					-4
+				],
+				[
+					7,
+					-5
+				],
+				[
+					7,
+					-6
+				],
+				[
+					7,
+					-7
+				],
+				[
+					6,
+					-7
+				]
+			],
+			"terrain_type": "water"
+		},
+		{
+			"positions": [],
+			"terrain_type": "mud"
+		},
+		{
+			"positions": [
+				[
+					-4,
+					5
+				],
+				[
+					-4,
+					6
+				],
+				[
+					-4,
+					7
+				],
+				[
+					-3,
+					7
+				],
+				[
+					-2,
+					7
+				],
+				[
+					-1,
+					7
+				],
+				[
+					0,
+					7
+				],
+				[
+					1,
+					7
+				],
+				[
+					-4,
+					-1
+				],
+				[
+					-4,
+					-2
+				],
+				[
+					-4,
+					-3
+				],
+				[
+					-4,
+					-4
+				],
+				[
+					-3,
+					-4
+				],
+				[
+					-3,
+					-5
+				],
+				[
+					-3,
+					-6
+				],
+				[
+					-2,
+					-6
+				],
+				[
+					-1,
+					-6
+				],
+				[
+					0,
+					-6
+				],
+				[
+					1,
+					-6
+				],
+				[
+					-1,
+					-7
+				],
+				[
+					0,
+					-7
+				],
+				[
+					1,
+					-7
+				],
+				[
+					2,
+					-7
+				],
+				[
+					3,
+					-7
+				],
+				[
+					4,
+					-7
+				],
+				[
+					5,
+					-7
+				],
+				[
+					5,
+					-1
+				],
+				[
+					5,
+					-2
+				],
+				[
+					5,
+					0
+				],
+				[
+					5,
+					1
+				],
+				[
+					5,
+					2
+				],
+				[
+					6,
+					2
+				],
+				[
+					7,
+					2
+				],
+				[
+					8,
+					2
+				],
+				[
+					8,
+					3
+				],
+				[
+					8,
+					4
+				],
+				[
+					8,
+					5
+				],
+				[
+					8,
+					6
+				],
+				[
+					8,
+					7
+				],
+				[
+					8,
+					8
+				],
+				[
+					7,
+					8
+				],
+				[
+					6,
+					9
+				],
+				[
+					5,
+					9
+				],
+				[
+					4,
+					9
+				],
+				[
+					3,
+					8
+				],
+				[
+					3,
+					7
+				],
+				[
+					2,
+					7
+				],
+				[
+					4,
+					8
+				],
+				[
+					-8,
+					2
+				],
+				[
+					-8,
+					3
+				],
+				[
+					-7,
+					4
+				],
+				[
+					-6,
+					4
+				],
+				[
+					-6,
+					5
+				],
+				[
+					-5,
+					5
+				],
+				[
+					-7,
+					3
+				],
+				[
+					-8,
+					-2
+				],
+				[
+					-8,
+					-3
+				],
+				[
+					-8,
+					-4
+				],
+				[
+					-9,
+					-4
+				],
+				[
+					-7,
+					-4
+				],
+				[
+					-6,
+					-3
+				],
+				[
+					-5,
+					-3
+				],
+				[
+					-6,
+					-4
+				],
+				[
+					0,
+					5
+				],
+				[
+					0,
+					6
+				],
+				[
+					7,
+					9
+				],
+				[
+					5,
+					-8
+				],
+				[
+					4,
+					-8
+				],
+				[
+					-5,
+					6
+				],
+				[
+					-6,
+					6
+				],
+				[
+					-7,
+					6
+				],
+				[
+					-9,
+					6
+				],
+				[
+					-10,
+					7
+				],
+				[
+					-8,
+					7
+				],
+				[
+					-6,
+					7
+				],
+				[
+					-5,
+					7
+				],
+				[
+					-4,
+					8
+				],
+				[
+					-4,
+					10
+				],
+				[
+					-5,
+					10
+				],
+				[
+					-9,
+					9
+				],
+				[
+					-10,
+					9
+				],
+				[
+					-10,
+					10
+				],
+				[
+					-8,
+					9
+				],
+				[
+					-8,
+					8
+				],
+				[
+					-7,
+					9
+				]
+			],
+			"terrain_type": "warm_honey_limestone_paving"
+		},
+		{
+			"positions": [],
+			"terrain_type": "sand"
+		},
+		{
+			"positions": [
+				[
+					0,
+					3
+				],
+				[
+					0,
+					2
+				]
+			],
+			"terrain_type": "forest_floor"
+		},
+		{
+			"positions": [],
+			"terrain_type": "grass_savanna_wet"
+		},
+		{
+			"positions": [
+				[
+					-10,
+					8
+				],
+				[
+					-8,
+					6
+				],
+				[
+					-9,
+					7
+				],
+				[
+					-9,
+					8
+				],
+				[
+					-5,
+					8
+				],
+				[
+					-5,
+					9
+				],
+				[
+					-6,
+					9
+				],
+				[
+					-6,
+					10
+				],
+				[
+					-7,
+					10
+				],
+				[
+					-9,
+					10
+				],
+				[
+					-8,
+					10
+				],
+				[
+					-7,
+					7
+				],
+				[
+					-7,
+					8
+				],
+				[
+					-6,
+					8
+				],
+				[
+					-4,
+					9
+				],
+				[
+					-10,
+					6
+				]
+			],
+			"terrain_type": "stone"
+		}
+	],
+	"vines": [],
+	"wall_blocks": [],
+	"warp_metadata": {
+		"return_warp": {
+			"entrance_instance_id": "",
+			"entrance_map": "jalovea_city.json",
+			"entrance_map_warp_id": 9,
+			"facing": "generic",
+			"id": 1,
+			"show_sprite": true,
+			"sprite": "generic"
+		}
+	},
+	"water_blocks": [],
+	"water_encounter_chance": 0.0,
+	"water_species": []
+}

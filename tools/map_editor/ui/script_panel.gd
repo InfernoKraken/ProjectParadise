@@ -29,6 +29,9 @@ var show_map: CheckButton
 var syncing := false
 var malformed_fields: Array[String] = []
 var map_header_data: Dictionary = {}
+var flag_map_directory := ""
+var flag_current_path := ""
+var completion_source_provider := Callable()
 
 func configure(project_root: String) -> void:
 	header_schema = load(project_root.path_join("world/scripting/map_header.gd"))
@@ -187,5 +190,38 @@ func _add_diagnostic(line: int, message: String, warning := false) -> void:
 func _complete() -> void:
 	var before := code.get_line(code.get_caret_line()).left(code.get_caret_column())
 	if before.contains('"') or before.contains("//"): return
-	for candidate: String in registry.completions(before, parsed.blocks, references): code.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, candidate, candidate)
+	for candidate: String in registry.completions(before, parsed.blocks, completion_references(before)): code.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, candidate, candidate)
 	code.update_code_completion_options(true)
+
+
+# Suggestions are advisory: new flag names remain valid without registration.
+# Use the lexer rather than searching text so comments and dialogue are excluded.
+func _collect_flags(source: String, flags: Dictionary) -> void:
+	for line: String in source.split("\n"):
+		var lex: Dictionary = parser.tokenize(line)
+		var tokens: Array = lex.tokens
+		if not lex.error.is_empty() or tokens.size() < 2: continue
+		if tokens[0].quoted or tokens[0].value not in ["IfFlag", "SetFlag", "ClearFlag"]: continue
+		if not tokens[1].quoted and registry.identifier(str(tokens[1].value)):
+			flags[str(tokens[1].value)] = true
+
+
+func completion_references(before: String) -> Dictionary:
+	var result := references.duplicate()
+	var command := before.strip_edges().replace("\t", " ").get_slice(" ", 0)
+	if command not in ["IfFlag", "SetFlag", "ClearFlag"]: return result
+	var flags := {}
+	if not flag_map_directory.is_empty():
+		for filename: String in DirAccess.get_files_at(flag_map_directory):
+			var path := flag_map_directory.path_join(filename)
+			if not filename.ends_with(".json") or path == flag_current_path: continue
+			var json := JSON.new()
+			if json.parse(FileAccess.get_file_as_string(path)) != OK or not json.data is Dictionary: continue
+			var source: Variant = json.data.get("script_source", "")
+			if source is String: _collect_flags(source, flags)
+	var current_source: String = completion_source_provider.call() if completion_source_provider.is_valid() else map_source
+	_collect_flags(current_source, flags)
+	var names: Array = flags.keys()
+	names.sort()
+	result["flag"] = names
+	return result

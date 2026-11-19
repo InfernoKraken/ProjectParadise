@@ -56,12 +56,12 @@ func _try_script_object_click(screen_position: Vector2) -> bool:
 				var key := "object:" + str(entry.get("instance_id", ""))
 				if not table.has(key) or not entry.has("sort_root") or not entry.sort_root.is_visible_in_tree(): continue
 				var art := entry.sort_root.get_node_or_null("Visual") as Sprite2D
-				if art != null and art.get_rect().has_point(art.to_local(screen_position)):
+				if art != null and _object_interaction_hit(entry, art, screen_position):
 					run_map_block(filename, str(table[key])); return true
 	return false
 
 # Shared outdoor framing keeps zoom consistent across travel and save loading.
-const OUTDOOR_CAMERA_SIZE := 14.0
+const OUTDOOR_CAMERA_SIZE := 10.0
 const MAP_DATA_PATH := "res://data/maps/map_index.json"
 const PLATFORM_WALL_LAYER := 4
 const ACTOR_COLLISION_LAYER := 8
@@ -157,7 +157,8 @@ const TEX_BRIDGE_VERTICAL_START := preload("res://assets/overworld/tile_bridge_v
 const TEX_BRIDGE_VERTICAL_MIDDLE := preload("res://assets/overworld/tile_bridge_vertical_section.png")
 const TEX_BRIDGE_VERTICAL_END := preload("res://assets/overworld/tile_bridge_vertical_edge_south.png")
 const TERRAIN_OBSTACLE_LAYER := 2
-const BRIDGE_ASSET_WIDTH_SCALE := 1.3
+const BridgeVisualLayout := preload("res://tools/map_editor/core/bridge_visual_layout.gd")
+const BRIDGE_ASSET_WIDTH_SCALE := BridgeVisualLayout.WIDTH_SCALE
 const TERRAIN_FOOTPRINT_SIZE := Vector3(0.45,0.25,0.45)
 const TERRAIN_FOOTPRINT_OFFSET_Y := -0.5
 # Building records use their saved position as the front, ground-contact line of
@@ -315,6 +316,8 @@ var player_frame_index := 0
 var player_animation_time := 0.0
 var swimming := false
 var swim_transitioning := false
+var dive_departure_surface: Dictionary = {}
+var dive_departure_position := Vector3.ZERO
 var swim_direction := "down"
 var swim_atlas: Texture2D
 var dive_atlas: Texture2D
@@ -504,9 +507,38 @@ func _terrain_foot_blocked(candidate:Vector3)->bool:
 	probe_position.y = maxf(candidate.y, PLAYER_GROUND_HEIGHT) + TERRAIN_FOOTPRINT_OFFSET_Y
 	query.transform = Transform3D(Basis.IDENTITY, probe_position)
 	query.collision_mask=TERRAIN_OBSTACLE_LAYER;query.collide_with_bodies=true;query.collide_with_areas=false;query.exclude=[player.get_rid()]
-	var hits := world.get_world_3d().direct_space_state.intersect_shape(query,1)
-	if not hits.is_empty() and collision_diagnostics: _report_collision_blocker(hits[0].collider)
-	return not hits.is_empty()
+	var landing := _is_bridge_landing(candidate)
+	var space := world.get_world_3d().direct_space_state
+	var hits := space.intersect_shape(query, 1)
+	while not hits.is_empty():
+		var collider: CollisionObject3D = hits[0].collider
+		if landing and collider.get_meta("shoreline_apron", false):
+			query.exclude = query.exclude + [collider.get_rid()]
+			hits = space.intersect_shape(query, 1)
+			continue
+		if collision_diagnostics: _report_collision_blocker(collider)
+		return true
+	return false
+
+
+func _is_bridge_landing(candidate: Vector3) -> bool:
+	# Shoreline blending overlaps the dry ramp landing. Let the foot probe cross
+	# those aprons inside the bridge approach while still checking other blockers.
+	var terrain := _terrain_at(candidate)
+	if terrain.is_empty() or terrain == "water": return false
+	for surface: Dictionary in traversal_surfaces:
+		if not surface.has("length") or surface.has("recessed_outline"): continue
+		if int(surface.get("visual_layer", _visual_layer_for_position(surface.center))) != _active_visual_layer(): continue
+		var coordinate := _surface_coordinates(surface, candidate)
+		var half_length := float(surface.length) * 0.5
+		var half_width := float(surface.width) * 0.5
+		var lower := float(surface.get("lateral_min", -half_width))
+		var upper := float(surface.get("lateral_max", half_width))
+		var margin := 0.5 + maxf(TERRAIN_FOOTPRINT_SIZE.x, TERRAIN_FOOTPRINT_SIZE.z) * 0.5
+		if coordinate.y < minf(lower, upper) or coordinate.y > maxf(lower, upper): continue
+		if absf(coordinate.x) >= half_length and absf(coordinate.x) <= half_length + float(surface.entrance_length) + margin:
+			return true
+	return false
 
 
 func _swim_constrained_velocity(desired: Vector3, delta: float) -> Vector3:
@@ -1515,7 +1547,8 @@ func _build_water_transition_collision_aprons(region_data:Dictionary,origin:Vect
 			"east":offset.x=0.05;size=Vector3(0.5,2.0,1.0)
 			_:continue
 		var boundary:Vector2=value.region_position
-		_add_static_collision("%sWaterTransitionCollision%d"%[prefix,apron_index],origin+Vector3(boundary.x,1.0,boundary.y)+offset,size,TERRAIN_OBSTACLE_LAYER)
+		var apron := _add_static_collision("%sWaterTransitionCollision%d"%[prefix,apron_index],origin+Vector3(boundary.x,1.0,boundary.y)+offset,size,TERRAIN_OBSTACLE_LAYER)
+		apron.set_meta("shoreline_apron", true)
 		apron_index+=1
 
 
@@ -1708,9 +1741,10 @@ func _build_universal_objects(region_data: Dictionary, origin: Vector3, prefix: 
 				var width:=float(dimensions[0]) if dimensions is Array and dimensions.size()>=1 else 1.0
 				height=width*float(asset_texture.get_height())/maxf(float(asset_texture.get_width()),1.0)
 			if bool(object.get("is_attached",false)) and not String(object.get("host_id","")).is_empty() and object.get("local_position") is Array and object.local_position.size()>=2:
-				attached_overlay_entries.append({"name":node_name+"AttachedOverlay","host_id":prefix+"|"+String(object.host_id),"texture":asset_texture,"height":height,"local_position":Vector2(float(object.local_position[0]),float(object.local_position[1])),"rotation_degrees":float(object.get("rotation_degrees",0.0)),"attachment_order":int(object.get("attachment_order",0)),"fallback_position":position})
+				attached_overlay_entries.append({"name":node_name+"AttachedOverlay","host_id":prefix+"|"+String(object.host_id),"texture":asset_texture,"height":height,"local_position":Vector2(float(object.local_position[0]),float(object.local_position[1])),"rotation_degrees":float(object.get("rotation_degrees",0.0)),"attachment_order":int(object.get("attachment_order",0)),"mirror_x":bool(object.get("mirror_x",false)),"fallback_position":position})
 			else:
 				var art:=_add_world_billboard(node_name,position,asset_texture,height*float(asset_texture.get_width())/maxf(float(asset_texture.get_height()),1.0),0.0)
+				art.flip_h=bool(object.get("mirror_x",false))
 				_register_overlay_object(art,node_name+"OverlayRoot",position,art.global_position,height,float(object.get("rotation_degrees",0.0)))
 		else:
 			# The map editor can serialize any imported overworld sprite as an
@@ -1739,6 +1773,8 @@ func _build_universal_objects(region_data: Dictionary, origin: Vector3, prefix: 
 					var is_signpost: bool = metadata is Dictionary and bool(metadata.get("signpost", false))
 					if is_signpost or type_id in ["asset.indoor_display", "asset.indoor_billboard_tropical_research"]:
 						object_sort_entries[-1]["interaction_text"] = String(object.get("interaction_text", ""))
+						if is_signpost and metadata.has("sign_polygon"):
+							object_sort_entries[-1]["sign_polygon"] = metadata.sign_polygon
 					if is_signpost and metadata.has("active_texture"):
 						var active_path := String(metadata.active_texture).replace("\\", "/")
 						if ResourceLoader.exists(active_path):
@@ -1912,7 +1948,7 @@ func _build_traversal_bridge(data: Dictionary, origin: Vector3, node_name: Strin
 	for tile_index in length:
 		var offset := float(tile_index) - float(length - 1) * 0.5
 		var tile_center: Vector3 = center + axis * offset
-		tile_center.y = elevation + 0.015
+		tile_center.y = elevation + BridgeVisualLayout.DECK_HEIGHT_OFFSET
 		var tile := MeshInstance3D.new()
 		tile.name = "%sDeckTile%d" % [node_name, tile_index]
 		var mesh := PlaneMesh.new()
@@ -1925,7 +1961,8 @@ func _build_traversal_bridge(data: Dictionary, origin: Vector3, node_name: Strin
 		tile.material_override = deck_material
 		tile.position = tile_center
 		world.add_child(tile)
-		bridge_sort_entries.append({"name":"%sOcclusion%d" % [node_name, tile_index], "position":tile_center, "texture":textures[texture_index], "size":mesh.size, "surface":surface})
+		tile.hide() # The sorted canvas owns the deck art.
+		bridge_sort_entries.append({"name":"%sOcclusion%d" % [node_name, tile_index], "position":tile_center, "texture":textures[texture_index], "size":mesh.size})
 	# Railings are permanent structure collision, but are high enough that actors
 	# beneath the bridge can pass below them. Their X/Z placement is orientation-free.
 	for side in [-1.0, 1.0]:
@@ -1982,7 +2019,7 @@ func _update_traversal_surface(world_position: Vector3, input_vector: Vector2 = 
 			chosen_height = float(surface["elevation"]) * (1.0 - (longitudinal - half_length) / ramp)
 			break
 	if not chosen.is_empty() and (active_traversal_layer > 0 or chosen_height < 0.35 or _is_entering_surface_end(chosen, world_position, input_vector)):
-		active_traversal_layer = int(chosen["traversal_layer"]) if chosen_height > 0.35 else 0
+		active_traversal_layer = int(chosen["traversal_layer"]) if chosen_height > 0.001 else 0
 		active_traversal_surface = chosen if active_traversal_layer > 0 else {}
 		player.position.y = PLAYER_GROUND_HEIGHT + chosen_height
 	else:
@@ -1990,7 +2027,7 @@ func _update_traversal_surface(world_position: Vector3, input_vector: Vector2 = 
 		active_traversal_surface = {}
 		player.position.y = PLAYER_GROUND_HEIGHT
 	_update_platform_collision_mask()
-	_update_bridge_occlusion_priority()
+	_sync_follower_traversal_height()
 
 
 func _is_entering_surface_end(surface: Dictionary, world_position: Vector3, input_vector: Vector2) -> bool:
@@ -1999,20 +2036,25 @@ func _is_entering_surface_end(surface: Dictionary, world_position: Vector3, inpu
 	return absf(coordinate.x) >= float(surface["length"]) * 0.5 - 0.25 and coordinate.x * world_input.dot(surface["axis"]) < 0.0
 
 
-func _update_bridge_occlusion_priority() -> void:
-	var actor_priority := 10 if active_traversal_layer > 0 else 0
-	if player_sort_root != null:
-		player_sort_root.z_index = actor_priority
-	# The companion follows the player's traversal state while retaining its
-	# trailing X/Z position and normal depth sorting relative to the player.
+func _sync_follower_traversal_height() -> void:
 	if follower != null:
 		follower.position.y = player.position.y
 		follower_target.y = player.position.y
-	if follower_sort_root != null:
-		follower_sort_root.z_index = actor_priority
-	for entry: Dictionary in bridge_sort_entries:
-		if entry.has("sort_root"):
-			(entry["sort_root"] as CanvasItem).z_index = 5
+
+
+func _bridge_actor_sort_feet(feet: Vector3, surface: Dictionary) -> Vector3:
+	if not surface.has("length"):
+		return feet
+	var coordinate := _surface_coordinates(surface, feet)
+	var length := float(surface["length"])
+	if absf(coordinate.x) > length * 0.5:
+		return feet
+	var axis: Vector3 = surface["axis"]
+	var tile_offset := minf(floorf(coordinate.x + length * 0.5), length - 1.0) - (length - 1.0) * 0.5
+	var tile_center: Vector3 = surface["center"] + axis * tile_offset
+	var half_depth := 0.5 if absf(axis.z) > 0.5 else float(surface["width"]) * 0.5
+	feet.z = maxf(feet.z, tile_center.z + half_depth + 0.001)
+	return feet
 
 
 func _build_route(route_data: Dictionary) -> void:
@@ -2567,7 +2609,7 @@ func _register_sortable_object(source: Sprite3D, node_name: String, placement: V
 
 func _register_overlay_object(source:Sprite3D,node_name:String,placement:Vector3,visual_center:Vector3,visual_height:float,rotation_degrees:float,render_band:int=0)->void:
 	source.visible=false
-	overlay_sort_entries.append({"name":node_name,"placement":placement,"visual_center":visual_center,"texture":source.texture,"height":visual_height,"rotation_degrees":rotation_degrees,"render_band":render_band})
+	overlay_sort_entries.append({"name":node_name,"placement":placement,"visual_center":visual_center,"texture":source.texture,"mirror_x":source.flip_h,"height":visual_height,"rotation_degrees":rotation_degrees,"render_band":render_band})
 
 
 func _register_background_object(source: Sprite3D, node_name: String, placement: Vector3, visual_center: Vector3, visual_height: float,instance_id:String="") -> void:
@@ -2609,6 +2651,7 @@ func _attach_sorted_world_entries() -> void:
 	for entry:Dictionary in overlay_sort_entries:
 		if entry.has("sort_root"): continue
 		entry["sort_root"]=_create_sorted_sprite(String(entry.name),entry.texture)
+		(entry.sort_root.get_node("Visual") as Sprite2D).flip_h=bool(entry.get("mirror_x",false))
 		(entry.sort_root as Node2D).rotation_degrees=float(entry.get("rotation_degrees",0.0))
 		(entry.sort_root as CanvasItem).z_index=int(entry.get("render_band",0))
 	if player_sort_root == null:
@@ -2630,11 +2673,11 @@ func _attach_sorted_world_entries() -> void:
 		var host:Dictionary=hosts.get(String(entry.get("host_id","")),{})
 		if host.is_empty():
 			entry["fallback_built"] = true
-			var fallback_root:=_create_sorted_sprite(String(entry.name)+"Fallback",entry.texture);fallback_root.rotation_degrees=float(entry.get("rotation_degrees",0.0));overlay_sort_entries.append({"name":String(entry.name)+"Fallback","placement":entry.fallback_position,"visual_center":entry.fallback_position+Vector3(0,float(entry.height)*0.5,0),"texture":entry.texture,"height":entry.height,"rotation_degrees":entry.rotation_degrees,"sort_root":fallback_root,"visual_layer":entry.get("visual_layer",_visual_layer_for_position(entry.fallback_position))});entry["fallback_entry"] = overlay_sort_entries[-1];continue
+			var fallback_root:=_create_sorted_sprite(String(entry.name)+"Fallback",entry.texture);(fallback_root.get_node("Visual") as Sprite2D).flip_h=bool(entry.get("mirror_x",false));fallback_root.rotation_degrees=float(entry.get("rotation_degrees",0.0));overlay_sort_entries.append({"name":String(entry.name)+"Fallback","placement":entry.fallback_position,"visual_center":entry.fallback_position+Vector3(0,float(entry.height)*0.5,0),"texture":entry.texture,"height":entry.height,"rotation_degrees":entry.rotation_degrees,"sort_root":fallback_root,"visual_layer":entry.get("visual_layer",_visual_layer_for_position(entry.fallback_position))});entry["fallback_entry"] = overlay_sort_entries[-1];continue
 		var overhang:float=(entry.local_position as Vector2).length()+float(entry.height)*(1.0+float(entry.texture.get_width())/maxf(float(entry.texture.get_height()),1))
 		host["static_overhang"]=maxf(float(host.get("static_overhang",0)),overhang)
 		var pivot:=Node2D.new();pivot.name=String(entry.name);pivot.rotation_degrees=float(entry.get("rotation_degrees",0.0))
-		var art:=Sprite2D.new();art.name="Visual";art.texture=entry.texture;art.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST;pivot.add_child(art);(host.sort_root as Node2D).add_child(pivot);entry["host_entry"]=host;entry["pivot"]=pivot;entry["visual"]=art
+		var art:=Sprite2D.new();art.name="Visual";art.texture=entry.texture;art.flip_h=bool(entry.get("mirror_x",false));art.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST;pivot.add_child(art);(host.sort_root as Node2D).add_child(pivot);entry["host_entry"]=host;entry["pivot"]=pivot;entry["visual"]=art
 	for entry: Dictionary in npc_sort_entries:
 		if entry.has("sort_root"): continue
 		var npc_visual := entry["visual"] as Sprite3D
@@ -2644,7 +2687,6 @@ func _attach_sorted_world_entries() -> void:
 	for entry: Dictionary in bridge_sort_entries:
 		if entry.has("sort_root"): continue
 		entry["sort_root"] = _create_sorted_sprite(String(entry["name"]), entry["texture"])
-		(entry["sort_root"] as CanvasItem).z_index = 5
 
 func _create_sorted_sprite(node_name: String, texture: Texture2D) -> Node2D:
 	var sort_point := Node2D.new()
@@ -2677,7 +2719,14 @@ func _update_sort_canvas() -> void:
 	_update_map_borders(active_visual_layer)
 	OverworldTextureAnimation.update_visibility(camera,active_visual_layer)
 	var player_feet := Vector3(player.global_position.x, 0.0, player.global_position.z)
-	var contact_elevation := minf(0.0, player.global_position.y - PLAYER_GROUND_HEIGHT) if not swimming and not swim_transitioning else 0.0
+	if not dive_departure_surface.is_empty():
+		var departure_feet := _bridge_actor_sort_feet(dive_departure_position, dive_departure_surface)
+		player_feet.z = maxf(player_feet.z, departure_feet.z)
+	else:
+		player_feet = _bridge_actor_sort_feet(player_feet, active_traversal_surface)
+	# Walking sprites make contact with the traversal surface, including ramps
+	# and recessed paths. A bridge dive interpolates from the same contact height.
+	var contact_elevation := player.global_position.y - PLAYER_GROUND_HEIGHT if not swimming else 0.0
 	_update_sorted_art(player_sort_root, player_feet, player.global_position, SWIM_VISUAL_HEIGHT if swimming else PLAYER_VISUAL_HEIGHT, pixels_per_world_unit, contact_elevation)
 	if not swimming and not swim_transitioning:
 		_apply_player_frame_adjustment(pixels_per_world_unit)
@@ -2688,7 +2737,7 @@ func _update_sort_canvas() -> void:
 	var follower_feet:=Vector3(follower.global_position.x,0.0,follower.global_position.z)
 	follower_sort_root.visible=follower.visible
 	if follower.visible:
-		_update_sorted_art(follower_sort_root, follower_feet, follower.global_position, 0.9 * follower_sprite.scale.y, pixels_per_world_unit, contact_elevation)
+		_update_sorted_art(follower_sort_root, _bridge_actor_sort_feet(follower_feet, active_traversal_surface), follower.global_position, 0.9 * follower_sprite.scale.y, pixels_per_world_unit, contact_elevation)
 	for entry: Dictionary in npc_sort_entries:
 		var npc := entry["node"] as Area3D
 		var npc_visual := entry["visual"] as Sprite3D
@@ -2757,10 +2806,12 @@ func _update_sort_canvas() -> void:
 		for entry:Dictionary in bridge_sort_entries:
 			static_cache.update(entry,camera,_sort_entry_layer(entry,entry.position)==active_visual_layer,projection_signature,projection_origin,pixels_per_world_unit,func():
 				var visual:Sprite2D=entry.sort_root.get_node("Visual")
-				entry.sort_root.position=camera.unproject_position(entry.position)
-				visual.position=Vector2.ZERO
-				visual.scale=Vector2(entry.size.x,entry.size.y*0.72)*pixels_per_world_unit/Vector2(visual.texture.get_size()))
-	_update_bridge_occlusion_priority()
+				var tile_center: Vector3 = entry.position
+				var size: Vector2 = entry.size
+				var front_edge := Vector3(tile_center.x, 0.0, tile_center.z + size.y * 0.5)
+				entry.sort_root.position = camera.unproject_position(front_edge)
+				visual.position = camera.unproject_position(tile_center) - entry.sort_root.position
+				visual.scale=Vector2(entry.size.x,entry.size.y*BridgeVisualLayout.DEPTH_PROJECTION)*pixels_per_world_unit/Vector2(visual.texture.get_size()))
 	_update_platform_art_layers()
 
 
@@ -2845,13 +2896,26 @@ func _update_sorted_wall(entry:Dictionary)->void:
 	art.scale=(b-a).abs()/art.get_rect().size
 
 
+func _object_interaction_hit(entry: Dictionary, art: Sprite2D, screen_position: Vector2) -> bool:
+	var local_position := art.to_local(screen_position)
+	var outline: Variant = entry.get("sign_polygon")
+	if not outline is Array or outline.size() < 3:
+		return art.get_rect().has_point(local_position)
+	var polygon := PackedVector2Array()
+	for point in outline:
+		if not _valid_navigation_point(point):
+			return false
+		polygon.append(Vector2(float(point[0]), float(point[1])))
+	return Geometry2D.is_point_in_polygon(local_position - art.get_rect().position, polygon)
+
+
 func _try_display_text_click(screen_position:Vector2)->bool:
 	for entry:Dictionary in object_sort_entries:
 		var text:=String(entry.get("interaction_text",""))
 		var slot := String(entry.get("exhibit_slot", ""))
 		if (slot.is_empty() and text.strip_edges().is_empty()) or not (entry.sort_root as CanvasItem).is_visible_in_tree():continue
 		var art:Sprite2D=entry.sort_root.get_node("Visual")
-		if art.get_rect().has_point(art.to_local(screen_position)):
+		if _object_interaction_hit(entry, art, screen_position):
 			if not slot.is_empty() and adventure_started and _active_visual_layer() == int(entry.visual_layer):
 				_open_habitat_exhibit(slot)
 				return true
@@ -3057,7 +3121,7 @@ func _add_ward_block(block_name: String, block_position: Vector3, block_size: Ve
 	world.add_child(body)
 
 
-func _add_static_collision(collision_name: String, collision_position: Vector3, collision_size: Vector3, physics_layer: int = 1) -> void:
+func _add_static_collision(collision_name: String, collision_position: Vector3, collision_size: Vector3, physics_layer: int = 1) -> StaticBody3D:
 	var body := StaticBody3D.new()
 	body.name = collision_name
 	body.position = collision_position
@@ -3066,6 +3130,7 @@ func _add_static_collision(collision_name: String, collision_position: Vector3, 
 	body.set_meta("elevation_span",Vector2(collision_position.y-collision_size.y*0.5,collision_position.y+collision_size.y*0.5))
 	body.add_child(_box_shape(collision_size))
 	world.add_child(body)
+	return body
 
 
 func _npc_foot_body()->StaticBody3D:
@@ -3473,8 +3538,14 @@ func _reset_to_start() -> void:
 func _build_dialog_ui() -> void:
 	dialog_panel = PanelContainer.new()
 	dialog_panel.z_index = 110
-	dialog_panel.position = Vector2(80, 345)
-	dialog_panel.size = Vector2(800, 165)
+	dialog_panel.anchor_left = 0.5
+	dialog_panel.anchor_right = 0.5
+	dialog_panel.anchor_top = 1.0
+	dialog_panel.anchor_bottom = 1.0
+	dialog_panel.offset_left = -400
+	dialog_panel.offset_right = 400
+	dialog_panel.offset_top = -240
+	dialog_panel.offset_bottom = -30
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 18)
 	margin.add_theme_constant_override("margin_right", 18)
@@ -3524,22 +3595,55 @@ func _clear_dialogue_choice() -> void:
 func _start_yes_no_dialogue(text: String, answer: Callable) -> void:
 	_start_dialogue("",[text])
 	dialog_choosing = true; dialogue_choice_action = answer
-	dialog_button.hide(); dialog_choice_row.show(); dialog_no_button.grab_focus()
+	_update_dialogue()
 
 
 func _answer_dialogue_choice(yes: bool) -> void:
-	if not dialog_open or not dialog_choosing: return
+	if not dialog_open or not dialog_choosing or dialog_page < active_dialogue.size() - 1: return
 	var answer := dialogue_choice_action
 	_clear_dialogue_choice()
 	dialog_open = false; dialog_panel.hide(); dialogue_complete_action = Callable()
 	if answer.is_valid(): answer.call(yes)
 
 
+# Match the Label's smart word wrapping, including explicit blank lines and
+# words too long for one line. Keep source text intact across generated pages.
+func _dialogue_line_count(text: String) -> int:
+	var paragraph := TextParagraph.new()
+	paragraph.width = 750.0
+	paragraph.break_flags = TextServer.BREAK_MANDATORY | TextServer.BREAK_WORD_BOUND | TextServer.BREAK_ADAPTIVE
+	paragraph.add_string(text, dialog_label.get_theme_font("font"), dialog_label.get_theme_font_size("font_size"))
+	return paragraph.get_line_count() + (1 if text.ends_with("\n") else 0)
+
+
+func _paginate_dialogue_text(text: String) -> Array[String]:
+	var pages: Array[String] = []
+	while not text.is_empty():
+		var low := 1
+		var high := text.length()
+		while low < high:
+			var middle := (low + high + 1) / 2
+			if _dialogue_line_count(text.left(middle)) <= 3: low = middle
+			else: high = middle - 1
+		var end := low
+		if end < text.length():
+			# Prefer a word boundary, falling back to characters for oversized words.
+			for index in range(end - 1, -1, -1):
+				if text[index] in [" ", "\n", "\t"]:
+					end = index + 1
+					break
+		pages.append(text.left(end))
+		text = text.substr(end)
+	if pages.is_empty(): pages.append("")
+	return pages
+
+
 func _start_dialogue(speaker: String, pages: Array, after_dialogue := Callable()) -> void:
 	_clear_dialogue_choice()
 	active_dialogue.clear()
 	for page: Variant in pages:
-		active_dialogue.append(String(page))
+		active_dialogue.append_array(_paginate_dialogue_text(String(page)))
+	if active_dialogue.is_empty(): active_dialogue.append("")
 	active_dialogue_speaker = speaker
 	dialogue_complete_action = after_dialogue
 	dialog_page = 0
@@ -3549,7 +3653,7 @@ func _start_dialogue(speaker: String, pages: Array, after_dialogue := Callable()
 
 
 func _advance_dialogue() -> void:
-	if dialog_choosing: return
+	if not dialog_open or (dialog_choosing and dialog_page == active_dialogue.size() - 1): return
 	dialog_page += 1
 	if dialog_page >= active_dialogue.size():
 		dialog_open = false
@@ -3565,7 +3669,11 @@ func _advance_dialogue() -> void:
 func _update_dialogue() -> void:
 	dialog_speaker.text = active_dialogue_speaker
 	dialog_label.text = active_dialogue[dialog_page]
-	dialog_button.text = "Close" if dialog_page == active_dialogue.size() - 1 else "Next"
+	var final_page := dialog_page == active_dialogue.size() - 1
+	dialog_button.text = "Close" if final_page else "Next (%d/%d)" % [dialog_page + 1, active_dialogue.size()]
+	dialog_button.visible = not (dialog_choosing and final_page)
+	dialog_choice_row.visible = dialog_choosing and final_page
+	if dialog_choice_row.visible: dialog_no_button.grab_focus()
 
 
 func _update_family_children(delta: float) -> void:
@@ -3697,10 +3805,13 @@ func _start_swimming(water_position: Vector3, direction: String) -> void:
 	bag_panel.hide()
 	water_position.y = 0.65
 	swim_transitioning = true
+	dive_departure_surface = active_traversal_surface
+	dive_departure_position = Vector3(player.position.x, 0.0, player.position.z)
 	active_traversal_layer = 0
 	active_traversal_surface = {}
-	player.position.y = 0.65
-	_update_bridge_occlusion_priority()
+	if dive_departure_surface.is_empty():
+		player.position.y = PLAYER_GROUND_HEIGHT
+	_sync_follower_traversal_height()
 	player.velocity = Vector3.ZERO
 	follower.hide()
 	dive_atlas = PlayerPalette.create_texture(player_palette_preset, "dive")
@@ -3722,7 +3833,8 @@ func _start_swimming(water_position: Vector3, direction: String) -> void:
 		var previous_position := player.position
 		player.position = jump_origin.lerp(water_position, progress)
 		# Normal camera following is paused with movement during this transition.
-		camera.position += player.position - previous_position
+		var movement := player.position - previous_position
+		camera.position += Vector3(movement.x, 0.0, movement.z)
 		swim_jump_height = sin(progress * PI) * 0.6
 		_update_sort_canvas()
 	, 0.0, 1.0, DIVE_JUMP_TIME)
@@ -3736,6 +3848,7 @@ func _start_swimming(water_position: Vector3, direction: String) -> void:
 	_hide_swim_transition_effect()
 	swimming = true
 	swim_transitioning = false
+	dive_departure_surface = {}
 	swim_direction = direction
 	swim_atlas = PlayerPalette.create_texture(player_palette_preset, "swim")
 	player_frame_index = 0
@@ -4013,7 +4126,7 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE: npc_script_movement.release_player()
 	if dialog_open and event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_ENTER or event.keycode == KEY_SPACE:
-			if dialog_choosing:
+			if dialog_choosing and dialog_page == active_dialogue.size() - 1:
 				_answer_dialogue_choice(dialog_yes_button.has_focus())
 				get_viewport().set_input_as_handled()
 			else: _advance_dialogue()
