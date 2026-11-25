@@ -22,6 +22,7 @@ static var SPRITES := {
 	"woman": {"grid_path":"res://assets/trainers/Female Citizen.png", "columns":5, "walk_sequence":[0,1,0,2,0,3,0,4], "x_edges":[0,215,395,580,760,962], "y_edges":[0,335,640,950,1260]},
 	"Professor": {"grid_path":"res://assets/trainers/Professor.png", "columns":5, "walk_sequence":[0,1,0,2,0,3,0,4], "x_edges":[0,235,445,650,860,1082], "y_edges":[0,375,720,1060,1410]},
 	"Scientist": {"grid_path":"res://assets/trainers/Scientist.png", "columns":5, "walk_sequence":[0,1,0,2,0,3,0,4], "x_edges":[0,235,445,650,860,1082], "y_edges":[0,375,720,1060,1410]},
+	"Trayven": {"grid_path":"res://assets/trainers/Trayven Pixel Sprite Sheet.png", "columns":5, "walk_sequence":[0,1,0,2,0,3,0,4], "x_edges":[16,224,432,640,848,1056], "y_edges":[24,360,696,1032,1368]},
 	"boy": {"grid_path":"res://assets/trainers/Boy.png"},
 	"girl": {"grid_path":"res://assets/trainers/Girl.png"},
 }
@@ -36,6 +37,19 @@ static func walk_frame_count(sprite_id: String) -> int:
 static var _cache: Dictionary = {}
 static var _source_images: Dictionary = {}
 static var _warned: Dictionary = {}
+static var _prepared: Dictionary = {}
+
+
+static func prepare(sprite_id: String) -> void:
+	sprite_id = canonical_id(sprite_id)
+	if _prepared.has(sprite_id): return
+	# Shared across actors using this sheet. Perform cropping/uploads at spawn,
+	# rather than on the first step in a new direction.
+	for direction in GRID_DIRECTIONS:
+		texture_for(sprite_id, direction)
+		for frame in walk_frame_count(sprite_id):
+			texture_for(sprite_id, direction, frame)
+	_prepared[sprite_id] = true
 
 
 static func texture_for(sprite_id:String,direction:String="down",walk_frame:int=-1,game_root:String="")->Texture2D:

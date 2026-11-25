@@ -1,0 +1,15 @@
+{
+	"1": {
+		"hidden": false,
+		"interaction_text": "",
+		"movement": {
+			"preset": "counterclockwise",
+			"range": [
+				2.0,
+				2.0
+			]
+		},
+		"sprite": "Trayven",
+		"type": "human"
+	}
+}

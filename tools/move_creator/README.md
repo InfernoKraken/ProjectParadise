@@ -42,16 +42,4 @@ The game engine remains responsible for hit resolution, triggering, payload exec
 
 Current limitations: no move learnset/distribution editing, arbitrary engine-field editor, balance analysis, or new gameplay-mechanic creation. A gameplay mechanic must exist in the engine and be added to the approved field registry before Move Creator exposes it.
 
-Tests:
-
-```text
-godot --headless --path . --script res://tools/move_creator/tests/move_creator_model_test.gd
-godot --headless --path . --script res://tools/move_creator/tests/move_creator_integration_test.gd
-godot --headless --path . --script res://tools/move_creator/tests/normalized_move_authoring_test.gd
-godot --headless --path . --script res://tools/move_creator/tests/move_animation_editor_model_test.gd
-godot --headless --path . --script res://tools/move_creator/tests/pre_migration_features_test.gd
-godot --headless --path . --script res://tools/move_creator/tests/beam_event_test.gd
-godot --headless --path . --script res://tools/move_creator/tests/sprite_transform_events_test.gd
-godot --headless --path . --script res://tools/move_creator/tests/move_effect_mirroring_test.gd
-godot --headless --path . --script res://tools/move_creator/tests/structured_authoring_acceptance_test.gd
-```
+The legacy automated test suite has been removed. Validate changes using Godot import/parse checks and focused manual checks in Move Creator.

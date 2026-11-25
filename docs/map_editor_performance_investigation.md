@@ -1,5 +1,7 @@
 # Large-map editor performance investigation — 2026-11-01
 
+> Historical validation: the legacy test suites and fixtures have been removed. Test paths, commands, and results below are retained as checkpoint history and are no longer current validation instructions.
+
 ## Conclusion
 
 Terrain contributes mainly by expanding the editor's object list and triggering

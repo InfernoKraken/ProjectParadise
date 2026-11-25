@@ -4,6 +4,7 @@ signal battle_finished(player_won: bool, escaped: bool, captured_mon: Dictionary
 signal fakemon_selected(index: int)
 signal scheduled_effect_animation_requested(animation_id: String, effect_id: String)
 
+const BATTLE_SPEED := preload("res://battle/battle_speed.gd")
 const DATA_PATH := "res://data/battle_data.json"
 const EVOLVED_DATA_PATH := "res://data/evolved_fakemon.json"
 const EGG_GROUP_DATA_PATH := "res://data/egg_groups.json"
@@ -703,7 +704,7 @@ func _show_called_move_menu(caller_id: String) -> void:
 		message_label.show()
 		message_label.text = "%s used %s, but it could not recall an eligible move! " % [player["name"], battle_data["moves"][caller_id]["name"]]
 		_record_successful_move(player, caller_id)
-		await get_tree().create_timer(0.6).timeout
+		await get_tree().create_timer(BATTLE_SPEED.seconds(0.6)).timeout
 		_enemy_turn()
 		return
 	for candidate_id: String in available:
@@ -754,13 +755,13 @@ func _resolve_player_move_definition(selected_move: Dictionary, spent_move_id: S
 	if player_goes_first:
 		if await _perform_player_attack(selected_move, spent_move_id):
 			return
-		await get_tree().create_timer(0.6).timeout
+		await get_tree().create_timer(BATTLE_SPEED.seconds(0.6)).timeout
 		await _perform_enemy_attack(true, enemy_move_id)
 	else:
 		if await _perform_enemy_attack(false, enemy_move_id):
 			return
 		_set_action_buttons_disabled(true)
-		await get_tree().create_timer(0.6).timeout
+		await get_tree().create_timer(BATTLE_SPEED.seconds(0.6)).timeout
 		if not await _perform_player_attack(selected_move, spent_move_id) and not _finish_turn_conditions():
 			_set_action_buttons_disabled(false)
 
@@ -2057,7 +2058,7 @@ func _select_battle_party_mon(next_index: int) -> void:
 	_set_action_buttons_disabled(false)
 	if not was_forced:
 		_set_action_buttons_disabled(true)
-		await get_tree().create_timer(0.6).timeout
+		await get_tree().create_timer(BATTLE_SPEED.seconds(0.6)).timeout
 		_enemy_turn()
 
 
@@ -2153,7 +2154,7 @@ func _on_capture_pressed() -> void:
 	_set_action_buttons_disabled(true)
 	if not is_wild_battle:
 		message_label.text = "You cannot capture another trainer's Fakemon! Your action was used. "
-		await get_tree().create_timer(0.8).timeout
+		await get_tree().create_timer(BATTLE_SPEED.seconds(0.8)).timeout
 		_enemy_turn()
 		return
 	var hp_factor := 1.0 - (float(opponent_hp) / float(opponent["max_hp"])) * 0.66
@@ -2166,7 +2167,7 @@ func _on_capture_pressed() -> void:
 		_end_battle("Captured %s!" % opponent["name"])
 		return
 	message_label.text = "%s broke free! Your action was used. " % opponent["name"]
-	await get_tree().create_timer(0.8).timeout
+	await get_tree().create_timer(BATTLE_SPEED.seconds(0.8)).timeout
 	_enemy_turn()
 
 
@@ -2181,7 +2182,7 @@ func _on_run_pressed() -> void:
 		_end_battle("Got away safely!")
 		return
 	message_label.text = "Couldn't escape! The wild Fakemon gets its turn. "
-	await get_tree().create_timer(0.8).timeout
+	await get_tree().create_timer(BATTLE_SPEED.seconds(0.8)).timeout
 	_enemy_turn()
 
 

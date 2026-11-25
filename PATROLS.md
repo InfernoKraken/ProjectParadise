@@ -1,5 +1,7 @@
 # Vehicle patrols
 
+> Historical validation: the legacy test suites and fixtures have been removed. Test paths, commands, and results below are retained as checkpoint history and are no longer current validation instructions.
+
 Use **Add Patrol** or **Edit Patrols** in the map editor toolbar. Apply commits the configuration to the map. Save the map normally. Cancel leaves the map unchanged. Patrol edits use normal map undo/redo.
 
 Choose Finite or Traffic, a positive creation interval in seconds, and (for finite patrols) Repeat. The first vehicle is due immediately. Traffic patrols default to eight active ships. Set **Maximum active ships** to change the limit. Spawning waits when the limit is reached. An occupied start delays the next spawn; intervals restart after successful spawns, without catch-up bursts.

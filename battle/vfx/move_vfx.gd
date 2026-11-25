@@ -1,6 +1,8 @@
 class_name MoveVFX
 extends Node2D
 
+var playback_speed := 1.0
+
 signal impact
 
 const PRESETS := [
@@ -38,7 +40,7 @@ func _play_hit(color: Color) -> void:
 	impact.emit()
 	var original := _target.modulate
 	_target.modulate = color.lightened(0.65)
-	_active_tween = create_tween()
+	_active_tween = create_tween().set_speed_scale(playback_speed)
 	_active_tween.tween_property(_target, "position", _target_origin + (_target_origin - _caster_origin).normalized() * 18.0, 0.08)
 	_active_tween.parallel().tween_property(_target, "modulate", original, 0.14)
 	_active_tween.tween_property(_target, "position", _target_origin, 0.12).set_trans(Tween.TRANS_BACK)
@@ -47,12 +49,12 @@ func _play_hit(color: Color) -> void:
 
 func _play_lunge(color: Color) -> void:
 	var destination := _caster_origin.lerp(_target_origin, 0.32)
-	_active_tween = create_tween()
+	_active_tween = create_tween().set_speed_scale(playback_speed)
 	_active_tween.tween_property(_caster, "position", destination, 0.12).set_trans(Tween.TRANS_QUAD)
 	await _active_tween.finished
 	impact.emit()
 	await _flash_disc(_target_origin, color)
-	_active_tween = create_tween()
+	_active_tween = create_tween().set_speed_scale(playback_speed)
 	_active_tween.tween_property(_caster, "position", _caster_origin, 0.16).set_trans(Tween.TRANS_BACK)
 	await _active_tween.finished
 
@@ -61,7 +63,7 @@ func _play_projectile(color: Color) -> void:
 	var projectile := _disc(10.0, color)
 	projectile.position = _center_of(_caster)
 	add_child(projectile)
-	_active_tween = create_tween()
+	_active_tween = create_tween().set_speed_scale(playback_speed)
 	_active_tween.tween_property(projectile, "position", _center_of(_target), 0.28).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	_active_tween.parallel().tween_property(projectile, "scale", Vector2(1.6, 1.6), 0.28)
 	await _active_tween.finished
@@ -76,6 +78,7 @@ func _play_burst(color: Color) -> void:
 	particles.position = _center_of(_target)
 	particles.amount = 18
 	particles.lifetime = 0.35
+	particles.speed_scale = playback_speed
 	particles.one_shot = true
 	particles.explosiveness = 0.9
 	var material := ParticleProcessMaterial.new()
@@ -89,7 +92,7 @@ func _play_burst(color: Color) -> void:
 	particles.texture = _circle_texture(color)
 	add_child(particles)
 	particles.emitting = true
-	await get_tree().create_timer(0.42).timeout
+	await get_tree().create_timer(0.42 / playback_speed).timeout
 
 
 func _play_buff(color: Color) -> void:
@@ -101,7 +104,7 @@ func _play_buff(color: Color) -> void:
 		add_child(dot)
 		dots.append(dot)
 	impact.emit()
-	_active_tween = create_tween().set_parallel(true)
+	_active_tween = create_tween().set_speed_scale(playback_speed).set_parallel(true)
 	for index in dots.size():
 		_active_tween.tween_property(dots[index], "position", center + Vector2.from_angle(TAU * index / 6.0 + PI) * 8.0 - Vector2(0, 45), 0.45)
 		_active_tween.tween_property(dots[index], "modulate:a", 0.0, 0.45)
@@ -114,11 +117,11 @@ func _play_overlay(color: Color) -> void:
 	overlay.position = Vector2.ZERO
 	overlay.size = get_viewport_rect().size
 	add_child(overlay)
-	_active_tween = create_tween()
+	_active_tween = create_tween().set_speed_scale(playback_speed)
 	_active_tween.tween_property(overlay, "color:a", 0.28, 0.2)
 	await _active_tween.finished
 	impact.emit()
-	_active_tween = create_tween()
+	_active_tween = create_tween().set_speed_scale(playback_speed)
 	_active_tween.tween_interval(0.18)
 	_active_tween.tween_property(overlay, "color:a", 0.0, 0.25)
 	await _active_tween.finished
@@ -126,7 +129,7 @@ func _play_overlay(color: Color) -> void:
 
 func _play_shake() -> void:
 	impact.emit()
-	_active_tween = create_tween()
+	_active_tween = create_tween().set_speed_scale(playback_speed)
 	for offset in [Vector2(9, 0), Vector2(-9, 0), Vector2(6, 0), Vector2(-6, 0), Vector2.ZERO]:
 		_active_tween.tween_property(_target, "position", _target_origin + offset, 0.045)
 	await _active_tween.finished
@@ -137,7 +140,7 @@ func _play_icon(color: Color) -> void:
 	icon.position = _center_of(_target) - Vector2(0, 30)
 	add_child(icon)
 	impact.emit()
-	_active_tween = create_tween()
+	_active_tween = create_tween().set_speed_scale(playback_speed)
 	_active_tween.tween_property(icon, "position", icon.position - Vector2(0, 42), 0.5)
 	_active_tween.parallel().tween_property(icon, "scale", Vector2(1.35, 1.35), 0.25)
 	_active_tween.parallel().tween_property(icon, "modulate:a", 0.0, 0.5).set_delay(0.18)
@@ -149,7 +152,7 @@ func _flash_disc(at: Vector2, color: Color) -> void:
 	flash.position = at
 	flash.scale = Vector2(0.3, 0.3)
 	add_child(flash)
-	_active_tween = create_tween().set_parallel(true)
+	_active_tween = create_tween().set_speed_scale(playback_speed).set_parallel(true)
 	_active_tween.tween_property(flash, "scale", Vector2(2.4, 2.4), 0.16)
 	_active_tween.tween_property(flash, "modulate:a", 0.0, 0.16)
 	await _active_tween.finished

@@ -61,6 +61,8 @@ static func _validate_borders(borders: Variant, issues: Array[Dictionary]) -> vo
 			issues.append(_issue("error", path + ".enabled", "Expected a boolean."))
 		if not border.get("covers_player", false) is bool:
 			issues.append(_issue("error", path + ".covers_player", "Expected a boolean."))
+		if border.has("render_mode") and border.render_mode not in BorderLayout.RENDER_MODES:
+			issues.append(_issue("error", path + ".render_mode", "Expected behind_all, covers_player, or normal_layer."))
 		for axis in ["width", "height", "depth"]:
 			var value: Variant = border.get(axis, 4)
 			if not (value is int or value is float) or value != int(value) or value < 1 or value > BorderLayout.MAX_DIMENSION:

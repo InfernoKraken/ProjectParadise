@@ -1,5 +1,7 @@
 # Scripting V2 implementation report
 
+> Historical validation: the legacy test suites and fixtures have been removed. Test paths, commands, and results below are retained as checkpoint history and are no longer current validation instructions.
+
 V2 extends V1 with exactly four commands: MoveSprite, FollowSprite, StopFollowing,
 and FaceSprite. The primary [command reference](scripting_reference.md) is generated
 from registry metadata, with a regression check against the committed output.

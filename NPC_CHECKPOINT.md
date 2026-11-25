@@ -1,5 +1,7 @@
 # NPC placement/runtime — checkpoint one
 
+> Historical validation: the legacy test suites and fixtures have been removed. Test paths, commands, and results below are retained as checkpoint history and are no longer current validation instructions.
+
 This describes the original placement checkpoint. The subsequent movement presets and their verification are documented in [NPC_MOVEMENT.md](NPC_MOVEMENT.md).
 
 The Map Editor can add, select, drag, delete and duplicate stationary Human or Fakemon NPCs, choose a sprite and semantic facing, enter interaction text, and save/reload placements with companion definitions. Runtime instances use the existing talking-NPC physics, rendering, sorting and dialogue systems. No walking, AI, battles, scripting, schedules or quests were added.

@@ -16,7 +16,7 @@ var _catalog: AssetCatalog
 var _canvas: Control
 var _side: OptionButton
 var _enabled: CheckBox
-var _covers_player: CheckBox
+var _render_mode: OptionButton
 var _depth: SpinBox
 var _span: Label
 var _priority: OptionButton
@@ -26,6 +26,9 @@ var _art: OptionButton
 var _search: LineEdit
 var _scale: SpinBox
 var _rotation: SpinBox
+var _grid: SpinBox
+var _snap: CheckBox
+var _placement_point: Variant = null
 var _fill: Button
 var _hint: Label
 var _refreshing := false
@@ -52,11 +55,11 @@ func build(project_root: String, catalog: AssetCatalog) -> void:
 	_enabled.text = "Enabled in game"
 	row.add_child(_enabled)
 	_enabled.toggled.connect(_set_enabled)
-	_covers_player = CheckBox.new()
-	_covers_player.text = "Covers player"
-	_covers_player.tooltip_text = "Draw this side in front of the player and other overworld sprites."
-	row.add_child(_covers_player)
-	_covers_player.toggled.connect(func(value): _set_property("covers_player", value))
+	_render_mode = OptionButton.new()
+	for label in ["Behind All", "Covers Player", "Normal Layer"]: _render_mode.add_item(label)
+	_render_mode.tooltip_text = "Behind All: entire border behind actors. Covers Player: entire border above actors. Normal Layer: artwork above actors, terrain below."
+	row.add_child(_render_mode)
+	_render_mode.item_selected.connect(func(index): _set_property("render_mode", Layout.RENDER_MODES[index]))
 	_span = Label.new()
 	row.add_child(_span)
 	_depth = _number(row, "Depth", 1, Layout.MAX_DIMENSION, 1, 4)
@@ -99,13 +102,21 @@ func build(project_root: String, catalog: AssetCatalog) -> void:
 	var tools := HFlowContainer.new()
 	content.add_child(tools)
 	var modes := ButtonGroup.new()
-	for mode in ["paint", "erase"]:
-		var button := _button(tools, mode.capitalize(), func(): _canvas.terrain_brush_mode = mode)
+	for mode in ["paint", "erase", "move"]:
+		var button := _button(tools, mode.capitalize(), func(): _canvas.cancel_move(); _canvas.move_mode = mode == "move"; _canvas.terrain_brush_mode = mode)
 		button.toggle_mode = true
 		button.button_group = modes
 		button.button_pressed = mode == "paint"
 	_fill = _button(tools, "Fill terrain", _fill_terrain)
 	_button(tools, "Frame canvas", func(): _canvas.frame_all())
+	_grid = _number(tools, "Grid", 0.05, 8, 0.05, 1)
+	_grid.tooltip_text = "Grid spacing in map units. Visual assets snap to this spacing; terrain uses whole tiles."
+	_grid.value_changed.connect(func(value): _canvas.grid_size = value; _canvas.queue_redraw())
+	_snap = CheckBox.new()
+	_snap.text = "Snap"
+	_snap.button_pressed = true
+	_snap.toggled.connect(func(value): _canvas.snapping = value)
+	tools.add_child(_snap)
 	var preview := CheckBox.new()
 	preview.text = "Preview"
 	preview.tooltip_text = "Show the artwork with the gameplay ground projection and hide the editing grid."
@@ -123,6 +134,8 @@ func build(project_root: String, catalog: AssetCatalog) -> void:
 	_canvas.terrain_stroke_started.connect(_reset_stroke)
 	_canvas.terrain_stroke_finished.connect(_reset_stroke)
 	_canvas.terrain_cell_changed.connect(_paint)
+	_canvas.art_point_changed.connect(_paint_art_point)
+	_canvas.element_move_requested.connect(_move_element)
 	content.add_child(_canvas)
 	_build_palette()
 	_refresh_layer()
@@ -175,7 +188,9 @@ func _update_art_controls() -> void:
 	_rotation.editable = has_art
 
 func _refresh_layer() -> void:
+	if _canvas != null: _canvas.cancel_move()
 	var terrain := _layer.selected == 0
+	if _canvas != null: _canvas.precise_art = not terrain
 	_terrain.visible = terrain
 	_fill.visible = terrain
 	for control: Control in [_search, _art, _scale.get_parent(), _rotation.get_parent()]:
@@ -183,16 +198,17 @@ func _refresh_layer() -> void:
 
 func _refresh(frame: bool = false) -> void:
 	_refreshing = true
+	_canvas.cancel_move()
 	var side := _side_name()
 	var definition := Layout.definition(_map, side)
 	var dimensions := Layout.dimensions(_map, side, definition)
 	var horizontal := Layout.horizontal(side)
 	_enabled.set_pressed_no_signal(definition.get("enabled") == true)
-	_covers_player.set_pressed_no_signal(definition.get("covers_player") == true)
+	_render_mode.select(Layout.RENDER_MODES.find(Layout.render_mode(definition)))
 	_depth.set_value_no_signal(Layout.depth(definition, side))
 	_priority.select(Layout.CORNER_PRIORITIES.find(Layout.corner_priority(_map)))
 	_span.text = "Map width · %d tiles" % dimensions.x if horizontal else "Map height · %d tiles" % dimensions.y
-	_hint.text = "Drag to paint or erase the selected layer. Middle-drag to pan, wheel to zoom. Shrinking hides cells outside the canvas."
+	_hint.text = "Paint/Erase brushes affect the selected layer. Move drags one existing element; right-click cancels. Artwork may share tiles; terrain destinations are protected. Middle-drag to pan, wheel to zoom. Grid/Snap controls visual asset positions; terrain stays on whole tiles. Shrinking hides cells outside the canvas."
 	if not _enabled.button_pressed:
 		_hint.text = "This side is hidden in Placement Preview and in game. " + _hint.text
 	_canvas.show_border(dimensions, Layout.editable_cells(_map, side, definition), frame)
@@ -215,6 +231,7 @@ func _set_property(key: String, value: Variant) -> void:
 	if _refreshing: return
 	var definition := _editable_definition()
 	definition[key] = value
+	if key == "render_mode": definition.erase("covers_player")
 	checkpoint_requested.emit()
 	_commit(definition)
 	_refresh()
@@ -234,6 +251,12 @@ func _commit(definition: Dictionary) -> void:
 func _reset_stroke() -> void:
 	_stroke_checkpoint = false
 	_last_cell = Vector2i(-1, -1)
+	_canvas._last_art_point = Vector2.INF
+
+func _paint_art_point(point: Vector2, erase: bool) -> void:
+	_placement_point = point
+	_paint(Vector2i(roundi(point.x), roundi(point.y)), erase)
+	_placement_point = null
 
 func _paint(cell: Vector2i, erase: bool) -> void:
 	var definition := _editable_definition()
@@ -246,6 +269,9 @@ func _paint(cell: Vector2i, erase: bool) -> void:
 	if not erase:
 		value = _terrain.get_selected_metadata() if layer == "terrain" else _selected_art()
 		if value == null: return
+		if layer == "art" and _placement_point is Vector2:
+			var offset: Vector2 = _placement_point - Vector2(cell)
+			value["anchor_offset"] = [offset.x, offset.y]
 		if value is Dictionary and value.has("footprint") and bounds.has_point(_last_cell): return
 	var cells: Dictionary = definition.get("cells", {}) if definition.get("cells") is Dictionary else {}
 	var start := _last_cell if bounds.has_point(_last_cell) else cell
@@ -287,7 +313,7 @@ func _fit_building(cell: Vector2i, art: Dictionary, canvas_size: Vector2i) -> Va
 	var bounds := Rect2(-Vector2.ONE * 0.5, span)
 	var minimum := bounds.position + Vector2(footprint.x * 0.5, footprint.y)
 	var maximum := bounds.end - Vector2(footprint.x * 0.5, 0)
-	var offset := Vector2(cell).clamp(minimum, maximum) - Vector2(cell)
+	var offset := Layout.art_anchor(Vector2(cell), art).clamp(minimum, maximum) - Vector2(cell)
 	var placement := art.duplicate()
 	placement["anchor_offset"] = [offset.x, offset.y]
 	return placement
@@ -373,3 +399,40 @@ func _number(parent: Control, label: String, minimum: float, maximum: float, ste
 	number.value = initial
 	row.add_child(number)
 	return number
+
+
+func _move_element(source: String, point: Vector2, layer: String) -> void:
+	var definition := _editable_definition()
+	var cells: Dictionary = definition.cells.duplicate(true)
+	if not cells.get(source, {}).has(layer): return
+	var dimensions := Layout.dimensions(_map, _side_name(), definition)
+	var cell := Vector2i(point.round())
+	if not Rect2i(Vector2i.ZERO, dimensions).has_point(cell):
+		_hint.text = "Move cancelled: destination is outside the border."
+		return
+	var target := Layout.cell_key(cell)
+	if target != source and cells.get(target, {}).has(layer):
+		if layer == "art":
+			# Cell keys are storage slots, not decorative collision footprints.
+			# Retain the source slot and use its existing offset to share a tile.
+			target = source
+			cell = Layout.cell_position(source)
+		else:
+			_hint.text = "Move cancelled: destination already contains terrain."
+			return
+	var value: Variant = cells[source][layer]
+	if layer == "art":
+		value = value.duplicate(true)
+		var offset := point - Vector2(cell)
+		value["anchor_offset"] = [offset.x, offset.y]
+		if value.has("footprint"):
+			value = _fit_building(cell, value, dimensions)
+			if value == null: return
+	if source == target and cells[source][layer] == value: return
+	cells[source].erase(layer)
+	if cells[source].is_empty(): cells.erase(source)
+	if not cells.has(target): cells[target] = {}
+	cells[target][layer] = value
+	definition.cells = cells
+	checkpoint_requested.emit()
+	_commit(definition)

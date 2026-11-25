@@ -1,0 +1,124 @@
+{
+	"default_rectangle": {
+		"foreground_reference_nonwhite": 521185,
+		"minimum_errors_for_one_label_per_exact_rgb_on_sampled_pixels": 6215,
+		"mismatch_examples": [
+			{
+				"suggested": "Background",
+				"truth": "Hair",
+				"x": 670,
+				"y": 74
+			},
+			{
+				"suggested": "Background",
+				"truth": "Hair",
+				"x": 669,
+				"y": 76
+			},
+			{
+				"suggested": "Other",
+				"truth": "Hair",
+				"x": 670,
+				"y": 78
+			},
+			{
+				"suggested": "Other",
+				"truth": "Hair",
+				"x": 671,
+				"y": 78
+			},
+			{
+				"suggested": "Background",
+				"truth": "Hair",
+				"x": 664,
+				"y": 79
+			}
+		],
+		"rectangle": [
+			0,
+			0,
+			200,
+			400
+		],
+		"reference_mismatches": 92125,
+		"rgb_shared_between_classes": 40,
+		"sample_count_before_explicit_sampling": 0,
+		"sampled_by_class_hair_skin_other_background": [
+			11213,
+			8162,
+			13390,
+			47235
+		],
+		"sampled_total": 80000,
+		"source_nontransparent": 1620234,
+		"uncertain_background": 386,
+		"uncertain_foreground": 287364,
+		"uncertain_foreground_percent": 55.1366597273521,
+		"uncertain_mixed_votes": 287750,
+		"uncertain_outside_tolerance": 0,
+		"uncertain_total": 287750,
+		"unique_sampled_rgb": 41,
+		"validation": "287750 uncertain pixels remain; review highlighted pixels before export."
+	},
+	"full_reference": {
+		"foreground_reference_nonwhite": 521185,
+		"minimum_errors_for_one_label_per_exact_rgb_on_sampled_pixels": 90335,
+		"mismatch_examples": [
+			{
+				"suggested": "Background",
+				"truth": "Hair",
+				"x": 670,
+				"y": 74
+			},
+			{
+				"suggested": "Background",
+				"truth": "Hair",
+				"x": 669,
+				"y": 76
+			},
+			{
+				"suggested": "Other",
+				"truth": "Hair",
+				"x": 670,
+				"y": 78
+			},
+			{
+				"suggested": "Other",
+				"truth": "Hair",
+				"x": 671,
+				"y": 78
+			},
+			{
+				"suggested": "Background",
+				"truth": "Hair",
+				"x": 664,
+				"y": 79
+			}
+		],
+		"rectangle": [
+			0,
+			0,
+			1386,
+			1169
+		],
+		"reference_mismatches": 92125,
+		"rgb_shared_between_classes": 41,
+		"sample_count_before_explicit_sampling": 0,
+		"sampled_by_class_hair_skin_other_background": [
+			167412,
+			113905,
+			239868,
+			1099049
+		],
+		"sampled_total": 1620234,
+		"source_nontransparent": 1620234,
+		"uncertain_background": 372,
+		"uncertain_foreground": 262308,
+		"uncertain_foreground_percent": 50.3291537553844,
+		"uncertain_mixed_votes": 262680,
+		"uncertain_outside_tolerance": 0,
+		"uncertain_total": 262680,
+		"unique_sampled_rgb": 41,
+		"validation": "262680 uncertain pixels remain; review highlighted pixels before export."
+	}
+}

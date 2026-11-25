@@ -264,19 +264,20 @@ func _draw_map_borders(covers_player: bool) -> void:
 		var strip := BorderLayout.region(_border_preview_map, bounds, side)
 		if not strip.has_area(): continue
 		var definition := BorderLayout.definition(_border_preview_map, side)
-		if (definition.get("covers_player") == true) != covers_player: continue
+		var mode := BorderLayout.render_mode(definition)
+		if mode != "normal_layer" and (mode == "covers_player") != covers_player: continue
 		var cells: Variant = definition.get("cells")
 		if not cells is Dictionary or cells.is_empty(): continue
 		var anchor := BorderLayout.repeat_origin(bounds, strip, side)
 		var seam := BorderLayout.seam_region(_border_preview_map, bounds, side) if canonical else Rect2()
-		_draw_border_strip(strip, anchor, BorderLayout.repeat_dimensions(_border_preview_map, side, definition), cells, seam, BorderLayout.horizontal(side))
+		_draw_border_strip(strip, anchor, BorderLayout.repeat_dimensions(_border_preview_map, side, definition), cells, seam, BorderLayout.horizontal(side), mode != "normal_layer" or not covers_player, mode != "normal_layer" or covers_player)
 
-func _draw_border_strip(strip: Rect2, anchor: Vector2, dimensions: Vector2i, cells: Dictionary, seam := Rect2(), along_x := false) -> void:
+func _draw_border_strip(strip: Rect2, anchor: Vector2, dimensions: Vector2i, cells: Dictionary, seam := Rect2(), along_x := false, draw_terrain := true, draw_art := true) -> void:
 	var view := Rect2(screen_to_world(Vector2.ZERO), screen_to_world(size) - screen_to_world(Vector2.ZERO))
 	var padding := 0.0
 	for cell in cells.values():
 		if cell is Dictionary and cell.get("art") is Dictionary:
-			padding = maxf(padding, BorderLayout.art_size(cell.art).length() / _ground_projection().y)
+			padding = maxf(padding, (BorderLayout.art_size(cell.art).length() + BorderLayout.art_anchor(Vector2.ZERO, cell.art).length()) / _ground_projection().y)
 	var visible := strip.intersection(view.grow(maxf(padding, 1.0 if seam.has_area() else 0.0)))
 	if not visible.has_area(): return
 	var window := BorderLayout.tile_window(visible, anchor)
@@ -289,14 +290,14 @@ func _draw_border_strip(strip: Rect2, anchor: Vector2, dimensions: Vector2i, cel
 			var tile := Rect2(anchor + Vector2(x, z), Vector2.ONE)
 			var clipped := tile.intersection(strip)
 			var terrain := String(cell.get("terrain", ""))
-			if tile.intersects(view):
+			if draw_terrain and tile.intersects(view):
 				_draw_border_tile(tile, clipped, terrain)
 			var patch := BorderLayout.seam_patch(clipped, seam, along_x)
-			if patch.has_area() and patch.intersects(view):
+			if draw_terrain and patch.has_area() and patch.intersects(view):
 				var uv_offset := patch.position - tile.position
 				var source := Rect2(patch.position - Vector2(fposmod(uv_offset.x, 1), fposmod(uv_offset.y, 1)), Vector2.ONE)
 				_draw_border_tile(source, patch, terrain)
-			if cell.get("art") is Dictionary:
+			if draw_art and cell.get("art") is Dictionary:
 				var art_anchor := BorderLayout.art_anchor(tile.get_center(), cell.art)
 				var footprint := BorderLayout.building_footprint(cell.art)
 				var fits: bool = cell.art.get("flat") == true or strip.has_point(art_anchor)

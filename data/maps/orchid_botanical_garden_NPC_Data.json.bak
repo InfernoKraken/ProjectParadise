@@ -4,5 +4,11 @@
 		"interaction_text": "",
 		"sprite": "Scientist",
 		"type": "human"
+	},
+	"2": {
+		"hidden": false,
+		"interaction_text": "Ahhh. \nPlaces like this make even the days a little more doable. Wouldn't you say?",
+		"sprite": "Young Man",
+		"type": "human"
 	}
 }

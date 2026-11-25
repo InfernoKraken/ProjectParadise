@@ -304,11 +304,6 @@
 					1.0
 				],
 				"type": "polygon"
-			},
-			{
-				"closed": false,
-				"points": [],
-				"type": "polygon"
 			}
 		],
 		"type": "polygons"

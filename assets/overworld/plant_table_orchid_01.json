@@ -2,8 +2,8 @@
 	"collision_boxes": [
 		{
 			"offset": [
-				0.0,
-				-0.799999713897705
+				-0.00792121887207031,
+				-0.753549575805664
 			],
 			"size": [
 				2.20000004768372,
@@ -18,5 +18,6 @@
 		1.0
 	],
 	"standardize_scale": true,
-	"visual_height": 2.5
+	"visual_height": 2.5,
+	"sort_offset_y": -0.45
 }

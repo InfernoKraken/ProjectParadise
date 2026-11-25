@@ -1,6 +1,8 @@
 class_name MoveAnimationPlayer
 extends Node
 
+var playback_speed := 1.0
+
 const CONTEXTUAL_ASSETS := preload("res://battle/move_animation/contextual_move_effect_resolver.gd")
 
 signal marker_reached(marker_name: String)
@@ -30,11 +32,11 @@ func play(definition: MoveAnimationDefinition, context: MoveAnimationContext) ->
 	_original_modulates = {"user": context.user.modulate, "target": context.target.modulate}
 	var started := Time.get_ticks_msec() / 1000.0
 	for event: Dictionary in definition.data.get("events", []):
-		var wait_time := float(event.get("time", 0.0)) - (Time.get_ticks_msec() / 1000.0 - started)
+		var wait_time := float(event.get("time", 0.0)) / playback_speed - (Time.get_ticks_msec() / 1000.0 - started)
 		if wait_time > 0.0: await get_tree().create_timer(wait_time).timeout
 		if _cancelled or generation != _generation: return false
 		_execute(event)
-	var remaining := definition.duration() - (Time.get_ticks_msec() / 1000.0 - started)
+	var remaining := definition.duration() / playback_speed - (Time.get_ticks_msec() / 1000.0 - started)
 	if remaining > 0.0: await get_tree().create_timer(remaining).timeout
 	if _cancelled or generation != _generation: return false
 	_cleanup(); animation_finished.emit(); return true
@@ -87,7 +89,7 @@ func _impact_sprite(event: Dictionary) -> void:
 	if instance_id.is_empty(): instance_id = "__impact_%d" % sprite.get_instance_id()
 	_effects[instance_id] = sprite
 	if event.get("sprite_sheet") is Dictionary: _animate_sheet(sprite, event["sprite_sheet"])
-	var lifetime := create_tween(); _tweens.append(lifetime)
+	var lifetime := create_tween().set_speed_scale(playback_speed); _tweens.append(lifetime)
 	lifetime.tween_interval(float(event.get("duration", 0.3)))
 	lifetime.tween_callback(_destroy.bind(instance_id))
 
@@ -107,7 +109,7 @@ func _beam(event: Dictionary) -> void:
 	var instance_id := String(event.get("instance_id", "")); _effects[instance_id] = sprite
 	var duration := float(event.get("duration", 0.5))
 	if duration >= 0.0:
-		var lifetime := create_tween(); _tweens.append(lifetime); lifetime.tween_interval(duration); lifetime.tween_callback(_destroy.bind(instance_id))
+		var lifetime := create_tween().set_speed_scale(playback_speed); _tweens.append(lifetime); lifetime.tween_interval(duration); lifetime.tween_callback(_destroy.bind(instance_id))
 
 func _vertical_sprite(event: Dictionary) -> void:
 	var sprite := _create_sprite({"asset":event.get("asset", ""),"position":event.get("position", {}),"scale":event.get("scale", 1.0),"rotation":event.get("rotation", 0.0),"opacity":event.get("opacity", 1.0),"tint":event.get("tint", "#FFFFFF"),"is_behind":event.get("is_behind", false)})
@@ -116,7 +118,7 @@ func _vertical_sprite(event: Dictionary) -> void:
 	if mode == "fall_to_anchor": sprite.position = anchor - Vector2(0.0, distance)
 	else: sprite.position = anchor; destination = anchor - Vector2(0.0, distance)
 	_context.effect_layer.add_child(sprite); var instance_id := String(event.get("instance_id", "vertical_effect")); _effects[instance_id] = sprite
-	var tween := create_tween(); _tweens.append(tween); tween.tween_property(sprite, "position", destination, float(event.get("duration", 0.5))); tween.tween_callback(_destroy.bind(instance_id))
+	var tween := create_tween().set_speed_scale(playback_speed); _tweens.append(tween); tween.tween_property(sprite, "position", destination, float(event.get("duration", 0.5))); tween.tween_callback(_destroy.bind(instance_id))
 
 func _apply_beam_layer(sprite: Sprite2D, layer: String, start: Vector2, end: Vector2) -> void:
 	match layer:
@@ -135,7 +137,7 @@ func _free_sprite(sprite_reference: WeakRef) -> void:
 
 func _animate_sheet(sprite: Sprite2D, sheet: Dictionary) -> void:
 	var frame_count := int(sheet["frame_count"]); var fps := float(sheet["fps"]); var loop := bool(sheet.get("loop", false)); var duration := frame_count / fps
-	var tween := create_tween(); _tweens.append(tween)
+	var tween := create_tween().set_speed_scale(playback_speed); _tweens.append(tween)
 	tween.tween_method(_set_sheet_frame.bind(weakref(sprite), fps, frame_count), 0.0, duration, duration)
 	if loop: tween.set_loops()
 
@@ -148,13 +150,13 @@ func _set_sheet_frame(value: float, sprite_reference: WeakRef, fps: float, frame
 func _tween_effect(event: Dictionary, property: NodePath, value: Variant) -> void:
 	var sprite: Sprite2D = _effects.get(String(event.get("instance_id", "")))
 	if not is_instance_valid(sprite): push_warning("Inactive move effect reference."); return
-	var tween := create_tween(); _tweens.append(tween); tween.tween_property(sprite, property, value, float(event.get("duration", 0.0))).set_trans(_transition(String(event.get("easing", "linear"))))
+	var tween := create_tween().set_speed_scale(playback_speed); _tweens.append(tween); tween.tween_property(sprite, property, value, float(event.get("duration", 0.0))).set_trans(_transition(String(event.get("easing", "linear"))))
 
 func _fade_effect(event: Dictionary) -> void:
 	var instance_id := String(event.get("instance_id", ""))
 	var sprite: Sprite2D = _effects.get(instance_id)
 	if not is_instance_valid(sprite): push_warning("Inactive move effect reference."); return
-	var tween := create_tween(); _tweens.append(tween)
+	var tween := create_tween().set_speed_scale(playback_speed); _tweens.append(tween)
 	tween.tween_property(sprite, "modulate:a", float(event.get("opacity", 1.0)), float(event.get("duration", 0.0)))
 	if float(event.get("opacity", 1.0)) <= 0.0: tween.tween_callback(_destroy.bind(instance_id))
 
@@ -164,7 +166,7 @@ func _destroy(id: String) -> void:
 	_effects.erase(id)
 
 func _shake(event: Dictionary) -> void:
-	var which := String(event["battler"]); var node := _context.battler(which); var origin: Vector2 = _baselines[which]; var magnitude := float(event.get("magnitude", 6.0)); var duration := float(event.get("duration", 0.2)); var tween := create_tween(); _tweens.append(tween)
+	var which := String(event["battler"]); var node := _context.battler(which); var origin: Vector2 = _baselines[which]; var magnitude := float(event.get("magnitude", 6.0)); var duration := float(event.get("duration", 0.2)); var tween := create_tween().set_speed_scale(playback_speed); _tweens.append(tween)
 	for offset in [magnitude, -magnitude, magnitude * 0.5, -magnitude * 0.5, 0.0]: tween.tween_property(node, "position", origin + Vector2(offset, 0), duration / 5.0)
 
 func _move_battler(event: Dictionary) -> void:
@@ -176,12 +178,12 @@ func _move_battler(event: Dictionary) -> void:
 		var other: CanvasItem = _context.target if which == "user" else _context.user; var direction: Vector2 = (other.position - origin).normalized()
 		if movement == "away_from_target": direction = -direction
 		destination += direction * float(event.get("distance", 0.0))
-	var tween := create_tween(); _tweens.append(tween); tween.tween_property(node, "position", destination, float(event.get("duration", 0.0)))
+	var tween := create_tween().set_speed_scale(playback_speed); _tweens.append(tween); tween.tween_property(node, "position", destination, float(event.get("duration", 0.0)))
 
 func _scale_battler(event: Dictionary) -> void:
 	var which := String(event.get("battler", "user")); var node := _context.battler(which); var origin: Vector2 = _original_scales[which]
 	var delta := float(event.get("scale_delta_percent", 50.0)) / 100.0; var factor := 1.0 + delta if String(event.get("mode", "stretch")) == "stretch" else 1.0 - delta
-	var loop_duration := float(event.get("loop_duration", 0.4)); var tween := create_tween(); _tweens.append(tween)
+	var loop_duration := float(event.get("loop_duration", 0.4)); var tween := create_tween().set_speed_scale(playback_speed); _tweens.append(tween)
 	for _loop in int(event.get("loops", 1)):
 		tween.tween_property(node, "scale", origin * factor, loop_duration * 0.5); tween.tween_property(node, "scale", origin, loop_duration * 0.5)
 
@@ -199,7 +201,7 @@ func _color_battler(event: Dictionary) -> void:
 			var low := tinted
 			low.a = baseline.a * float(event.get("min_opacity", 0.25))
 			node.modulate = low
-			var tween := create_tween(); _tweens.append(tween)
+			var tween := create_tween().set_speed_scale(playback_speed); _tweens.append(tween)
 			tween.tween_property(node, "modulate", tinted, duration * 0.5)
 			tween.tween_property(node, "modulate", low, duration * 0.5)
 			tween.tween_callback(_restore_battler_color.bind(node, baseline))
@@ -208,13 +210,13 @@ func _color_battler(event: Dictionary) -> void:
 		var bright := tinted
 		bright.r *= 1.6; bright.g *= 1.6; bright.b *= 1.6
 		node.modulate = tinted
-		var tween := create_tween(); _tweens.append(tween)
+		var tween := create_tween().set_speed_scale(playback_speed); _tweens.append(tween)
 		tween.tween_property(node, "modulate", bright, duration * 0.5)
 		tween.tween_property(node, "modulate", tinted, duration * 0.5)
 		tween.tween_callback(_restore_battler_color.bind(node, baseline))
 		return
 	node.modulate = tinted
-	var hold := create_tween(); _tweens.append(hold)
+	var hold := create_tween().set_speed_scale(playback_speed); _tweens.append(hold)
 	hold.tween_interval(duration)
 	hold.tween_callback(_restore_battler_color.bind(node, baseline))
 
@@ -224,11 +226,11 @@ func _restore_battler_color(node: CanvasItem, color: Color) -> void:
 func _tint(event: Dictionary) -> void:
 	if _context.background_overlay == null: return
 	_context.background_overlay.visible = true; _context.background_overlay.color = Color(String(event["color"]), 0.0)
-	var tween := create_tween(); _tweens.append(tween); tween.tween_property(_context.background_overlay, "color:a", float(event.get("opacity", 1.0)), float(event.get("duration", 0.0)))
+	var tween := create_tween().set_speed_scale(playback_speed); _tweens.append(tween); tween.tween_property(_context.background_overlay, "color:a", float(event.get("opacity", 1.0)), float(event.get("duration", 0.0)))
 
 func _restore_background(duration: float) -> void:
 	if _context.background_overlay == null: return
-	var tween := create_tween(); _tweens.append(tween); tween.tween_property(_context.background_overlay, "color:a", 0.0, duration)
+	var tween := create_tween().set_speed_scale(playback_speed); _tweens.append(tween); tween.tween_property(_context.background_overlay, "color:a", 0.0, duration)
 
 func _transition(name: String) -> Tween.TransitionType:
 	return Tween.TRANS_QUAD if name != "linear" else Tween.TRANS_LINEAR

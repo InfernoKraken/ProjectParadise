@@ -7,6 +7,8 @@ signal move_animation_marker(marker_name: String)
 @export var animations_enabled := true
 @onready var vfx: MoveVFX = $MoveVFX
 
+const BATTLE_SPEED := preload("res://battle/battle_speed.gd")
+
 const TYPE_PALETTE := preload("res://data/type_palette.gd")
 
 var definition_player: MoveAnimationPlayer
@@ -27,6 +29,7 @@ func play_definition(animation_id: String, context: MoveAnimationContext) -> boo
 	if definition == null or String(definition.data.get("id", "")) != animation_id or not definition.validation_errors().is_empty():
 		push_warning("Move animation '%s' could not be loaded." % animation_id)
 		return false
+	definition_player.playback_speed = BATTLE_SPEED.multiplier()
 	return await definition_player.play(definition, context)
 
 
@@ -69,6 +72,7 @@ func play_move(move: Dictionary, caster: Control, target: Control, move_id := ""
 		move_impacted.emit()
 		_emit_semantic_marker(semantic_marker)
 	vfx.impact.connect(mark_impact, CONNECT_ONE_SHOT)
+	vfx.playback_speed = BATTLE_SPEED.multiplier()
 	await vfx.play(fallback, caster, target, color_for_move(move))
 	if not did_impact:
 		move_impacted.emit()
@@ -105,7 +109,7 @@ func _create_context(caster: Control, target: Control) -> MoveAnimationContext:
 
 func play_windup(caster: Control, preset: String) -> void:
 	var original_scale := caster.scale
-	var tween := create_tween()
+	var tween := create_tween().set_speed_scale(BATTLE_SPEED.multiplier())
 	var windup_scale := Vector2(0.92, 1.08) if preset == "caster_lunge" else Vector2(1.08, 0.94)
 	tween.tween_property(caster, "scale", windup_scale, 0.1)
 	tween.tween_property(caster, "scale", original_scale, 0.1)

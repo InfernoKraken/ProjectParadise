@@ -74,6 +74,7 @@ const MapBorderRenderer := preload("res://world/map_border_renderer.gd")
 const MapBorderLayout := preload("res://tools/map_editor/core/map_border_layout.gd")
 const TerrainTransitionTextureCache := preload("res://world/terrain_transition_texture_cache.gd")
 const PlayerPalette := preload("res://world/player_palette.gd")
+const OutfitResource := preload("res://world/outfit_data.gd")
 const PlayerSpriteFrames := preload("res://world/player_sprite_frames.gd")
 const SwimSpriteFrames := preload("res://world/swim_sprite_frames.gd")
 const NpcMovement := preload("res://world/npc_movement.gd")
@@ -213,6 +214,9 @@ var follower_sprite: Sprite3D
 var sort_canvas: CanvasLayer
 var day_night_controller: Node
 var sort_root: Node2D
+var equipped_outfit: OutfitResource
+var player_occlusion_material: ShaderMaterial
+var player_outfit_visual: Sprite2D
 var player_sort_root: Node2D
 var follower_sort_root: Node2D
 var npc_sort_entries: Array[Dictionary] = []
@@ -314,6 +318,7 @@ var player_atlas: Texture2D
 var player_animation := "idle_down"
 var player_frame_index := 0
 var player_animation_time := 0.0
+var player_animation_frame_cache: Dictionary = {}
 var swimming := false
 var swim_transitioning := false
 var dive_departure_surface: Dictionary = {}
@@ -398,6 +403,7 @@ func _start_map_test(filename:String)->void:
 		return
 	if startup_panel!=null:startup_panel.queue_free();startup_panel=null
 	if player_selection_panel != null: player_selection_panel.hide()
+	equipped_outfit = null
 	player_gender = "Male"
 	player_style = "Medium"
 	player_palette_preset = PlayerPalette.DEFAULT_PRESET
@@ -638,8 +644,9 @@ func build_rainforest() -> void:
 	player.collision_layer = 1 | ACTOR_COLLISION_LAYER
 	player.name = "Player"
 	player.position = spawn_position
-	player_atlas = PlayerPalette.create_texture(PlayerPalette.DEFAULT_PRESET)
-	player_sprite = _billboard_sprite(PlayerSpriteFrames.frames("Male", "idle_down", player_atlas)[0], PLAYER_VISUAL_HEIGHT, "PlayerSprite")
+	player_atlas = PlayerSpriteFrames.create_texture(player_gender, player_palette_preset)
+	_prepare_player_animation_frames()
+	player_sprite = _billboard_sprite(_player_animation_frames("idle_down")[0], PLAYER_VISUAL_HEIGHT, "PlayerSprite")
 	player_sprite.offset = Vector2(0.0, float(player_sprite.texture.get_height()) * 0.5)
 	player.add_child(player_sprite)
 	player.add_child(_box_shape(Vector3(0.8, 1.2, 0.8)))
@@ -1772,7 +1779,7 @@ func _build_universal_objects(region_data: Dictionary, origin: Vector3, prefix: 
 						_split_habitat_pen_art(object_sort_entries[-1])
 					var is_signpost: bool = metadata is Dictionary and bool(metadata.get("signpost", false))
 					if is_signpost or type_id in ["asset.indoor_display", "asset.indoor_billboard_tropical_research"]:
-						object_sort_entries[-1]["interaction_text"] = String(object.get("interaction_text", ""))
+						object_sort_entries[-1]["interaction_text"] = String(object.get("interaction_text", metadata.get("interaction_text", "")))
 						if is_signpost and metadata.has("sign_polygon"):
 							object_sort_entries[-1]["sign_polygon"] = metadata.sign_polygon
 					if is_signpost and metadata.has("active_texture"):
@@ -1980,8 +1987,8 @@ func _surface_coordinates(surface: Dictionary, world_position: Vector3) -> Vecto
 func _update_traversal_surface(world_position: Vector3, input_vector: Vector2 = Vector2.ZERO) -> void:
 	if not active_traversal_surface.is_empty() and int(active_traversal_surface.get("visual_layer",_visual_layer_for_position(active_traversal_surface.center))) != _active_visual_layer():
 		active_traversal_layer = 0; active_traversal_surface = {}
-	# Once an actor is on a traversal surface, its lateral footprint is contained
-	# by that surface. It may leave only past either authored end/ramp.
+	# Rails contain actors only along the deck. The approach ramps extend past
+	# the wooden art and must allow lateral movement back onto the path.
 	if active_traversal_layer > 0 and not active_traversal_surface.is_empty():
 		var active_coordinate := _surface_coordinates(active_traversal_surface, world_position)
 		var player_half_width := 0.4
@@ -1989,8 +1996,12 @@ func _update_traversal_surface(world_position: Vector3, input_vector: Vector2 = 
 		var lower := float(active_traversal_surface.get("lateral_min", -half_width)) + player_half_width
 		var upper := float(active_traversal_surface.get("lateral_max", half_width)) - player_half_width
 		var constrained_lateral := clampf(active_coordinate.y, lower, upper) if lower <= upper else (lower + upper) * 0.5
-		player.position += (active_traversal_surface["side_axis"] as Vector3) * (constrained_lateral - active_coordinate.y)
-		world_position = player.position
+		var deck_end := float(active_traversal_surface["length"]) * 0.5
+		var touching_deck := absf(active_coordinate.x) <= deck_end + player_half_width + player.safe_margin + 0.01
+		var entering_deck := _is_entering_surface_end(active_traversal_surface, world_position, input_vector)
+		if absf(active_coordinate.x) <= deck_end or (touching_deck and entering_deck):
+			player.position += (active_traversal_surface["side_axis"] as Vector3) * (constrained_lateral - active_coordinate.y)
+			world_position = player.position
 	var chosen: Dictionary = {}
 	var chosen_height := 0.0
 	for surface: Dictionary in traversal_surfaces:
@@ -2018,7 +2029,7 @@ func _update_traversal_surface(world_position: Vector3, input_vector: Vector2 = 
 			chosen = surface
 			chosen_height = float(surface["elevation"]) * (1.0 - (longitudinal - half_length) / ramp)
 			break
-	if not chosen.is_empty() and (active_traversal_layer > 0 or chosen_height < 0.35 or _is_entering_surface_end(chosen, world_position, input_vector)):
+	if not chosen.is_empty() and (active_traversal_layer > 0 or chosen_height <= 0.0 or _is_entering_surface_end(chosen, world_position, input_vector)):
 		active_traversal_layer = int(chosen["traversal_layer"]) if chosen_height > 0.001 else 0
 		active_traversal_surface = chosen if active_traversal_layer > 0 else {}
 		player.position.y = PLAYER_GROUND_HEIGHT + chosen_height
@@ -2231,6 +2242,7 @@ func _build_colored_warp(warp_name: String, position: Vector3, callback: Callabl
 
 
 func _add_talking_npc(npc_name: String, position: Vector3, color: Color, speaker: String, pages: Array, after_dialogue := Callable(), sprite_id:String="", patrol_spawn: bool = false) -> Area3D:
+	if not sprite_id.is_empty(): NpcSpriteLibrary.prepare(sprite_id)
 	var npc := Area3D.new()
 	npc.name = npc_name
 	npc.position = position
@@ -2656,6 +2668,11 @@ func _attach_sorted_world_entries() -> void:
 		(entry.sort_root as CanvasItem).z_index=int(entry.get("render_band",0))
 	if player_sort_root == null:
 		player_sort_root = _create_sorted_sprite("PlayerSortRoot", player_sprite.texture)
+		player_outfit_visual = Sprite2D.new()
+		player_outfit_visual.name = "Outfit"
+		player_outfit_visual.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		player_sort_root.get_node("Visual").add_child(player_outfit_visual)
+		_sync_player_outfit()
 		follower_sort_root = _create_sorted_sprite("FollowerSortRoot", follower_sprite.texture)
 		player_sprite.visible = false
 		follower_sprite.visible = false
@@ -2728,8 +2745,6 @@ func _update_sort_canvas() -> void:
 	# and recessed paths. A bridge dive interpolates from the same contact height.
 	var contact_elevation := player.global_position.y - PLAYER_GROUND_HEIGHT if not swimming else 0.0
 	_update_sorted_art(player_sort_root, player_feet, player.global_position, SWIM_VISUAL_HEIGHT if swimming else PLAYER_VISUAL_HEIGHT, pixels_per_world_unit, contact_elevation)
-	if not swimming and not swim_transitioning:
-		_apply_player_frame_adjustment(pixels_per_world_unit)
 	if swim_transitioning:
 		(player_sort_root.get_node("Visual") as Sprite2D).position.y -= swim_jump_height * pixels_per_world_unit
 	if swim_transition_effect_root != null and swim_transition_effect_root.visible:
@@ -3412,6 +3427,19 @@ func _build_party_menu() -> void:
 	settings_title.text = "SETTINGS"
 	settings_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	settings_list.add_child(settings_title)
+	var speed_label := Label.new()
+	speed_label.text = "Battle speed"
+	settings_list.add_child(speed_label)
+	var battle_speed := SpinBox.new()
+	battle_speed.name = "BattleSpeed"
+	battle_speed.min_value = preload("res://battle/battle_speed.gd").MIN_SPEED
+	battle_speed.max_value = preload("res://battle/battle_speed.gd").MAX_SPEED
+	battle_speed.step = 0.25
+	battle_speed.suffix = "x"
+	battle_speed.value = preload("res://battle/battle_speed.gd").multiplier()
+	battle_speed.tooltip_text = "Speeds up battle effects and messages. Default: 2x."
+	battle_speed.value_changed.connect(preload("res://battle/battle_speed.gd").set_multiplier)
+	settings_list.add_child(battle_speed)
 	save_slot_selector = OptionButton.new()
 	save_slot_selector.name = "SaveSlotSelector"
 	for slot in SAVE_SLOT_COUNT:
@@ -3443,7 +3471,7 @@ func _build_party_menu() -> void:
 	settings_panel.anchor_top = 1.0
 	settings_panel.anchor_bottom = 1.0
 	settings_panel.offset_left = 24.0
-	settings_panel.offset_top = -284.0
+	settings_panel.offset_top = -364.0
 	settings_panel.offset_right = 244.0
 	settings_panel.offset_bottom = -72.0
 
@@ -3721,7 +3749,8 @@ func _set_npc_pose(npc:Area3D,direction:String,walk_frame:int=-1)->void:
 	if texture==null:return
 	var visual:=npc.get_child(0) as Sprite3D
 	if visual==null:return
-	visual.texture=texture
+	if visual.texture != texture:
+		visual.texture=texture
 	if npc.get_meta("npc_definition", {}).get("type") == "vehicle":
 		_configure_vehicle_hull(npc, direction)
 		npc.set_meta("visual_height", npc_visual_resolver.display_height("vehicle", sprite_id, direction))
@@ -3851,9 +3880,11 @@ func _start_swimming(water_position: Vector3, direction: String) -> void:
 	dive_departure_surface = {}
 	swim_direction = direction
 	swim_atlas = PlayerPalette.create_texture(player_palette_preset, "swim")
+	for swim_facing in SwimSpriteFrames.SWIM_REGIONS[player_gender]:
+		_player_swim_frames(swim_facing)
 	player_frame_index = 0
 	player_animation_time = 0.0
-	_set_player_visual(SwimSpriteFrames.frames(player_gender, swim_direction, swim_atlas)[0], false)
+	_set_player_visual(_player_swim_frames(swim_direction)[0], false)
 	player_sort_root.show()
 	hint_label.text = "Swimming! Each new water tile has a 5% Moach encounter chance; swim onto shore to leave."
 	_update_sort_canvas()
@@ -3897,7 +3928,7 @@ func _update_swim_animation(input_vector: Vector2, delta: float) -> void:
 		else:
 			swim_direction = "up" if input_vector.y < 0.0 else "down"
 	player_animation_time += delta
-	var frames := SwimSpriteFrames.frames(player_gender, swim_direction, swim_atlas)
+	var frames := _player_swim_frames(swim_direction)
 	if input_vector.length_squared() > 0.01 and player_animation_time >= 0.16:
 		player_animation_time = 0.0
 		player_frame_index = (player_frame_index + 1) % frames.size()
@@ -3907,10 +3938,15 @@ func _update_swim_animation(input_vector: Vector2, delta: float) -> void:
 
 
 func _set_player_visual(texture: Texture2D, flip_h: bool) -> void:
-	player_sprite.texture = texture
+	if player_outfit_visual != null:
+		player_outfit_visual.hide()
+		(player_sort_root.get_node("Visual") as Sprite2D).material = null
+	if player_sprite.texture != texture:
+		player_sprite.texture = texture
 	if player_sort_root != null:
 		var visual := player_sort_root.get_node("Visual") as Sprite2D
-		visual.texture = texture
+		if visual.texture != texture:
+			visual.texture = texture
 		visual.flip_h = flip_h
 		visual.show()
 
@@ -4186,7 +4222,7 @@ func _build_player_selection() -> void:
 		grid.add_child(button)
 		var preview := TextureRect.new()
 		preview.name = "Preview"
-		var preview_atlas := PlayerPalette.create_texture(String(choice["preset"]))
+		var preview_atlas := PlayerSpriteFrames.create_texture(String(choice["gender"]), String(choice["preset"]))
 		preview.texture = PlayerSpriteFrames.frames(String(choice["gender"]), "idle_down", preview_atlas)[0]
 		# TextureRect retains an AtlasTexture's native frame dimensions. Scale it
 		# uniformly into a shared box instead of distorting or overflowing it.
@@ -4219,17 +4255,21 @@ func _on_player_choice_selected(index: int) -> void:
 func _apply_player_appearance() -> void:
 	if player_sprite == null:
 		return
-	player_atlas = PlayerPalette.create_texture(player_palette_preset)
+	player_atlas = PlayerSpriteFrames.create_texture(player_gender, player_palette_preset)
+	_prepare_player_animation_frames()
 	player_animation = "idle_down"
 	player_frame_index = 0
 	player_animation_time = 0.0
-	player_sprite.texture = PlayerSpriteFrames.frames(player_gender, player_animation, player_atlas)[0]
+	player_sprite.texture = _player_animation_frames(player_animation)[0]
 	player_sprite.pixel_size = PLAYER_VISUAL_HEIGHT / float(player_sprite.texture.get_height())
 	player_sprite.offset = Vector2(0.0, float(player_sprite.texture.get_height()) * 0.5)
 	if player_sort_root != null:
 		var visual := player_sort_root.get_node("Visual") as Sprite2D
 		visual.texture = player_sprite.texture
 		visual.flip_h = false
+	if equipped_outfit != null and equipped_outfit.body_type != player_gender:
+		equipped_outfit = null
+	_sync_player_outfit()
 	player.name = "%s%sPlayer" % [player_style, player_gender]
 
 
@@ -4259,39 +4299,81 @@ func _update_player_animation(input_vector: Vector2, delta: float) -> void:
 		player_animation_time = 0.0
 	player_animation_time += delta
 	var animation_frames := _player_animation_frames(player_animation)
-	if player_animation.begins_with("walk_") and player_animation_time >= 0.16:
-		player_animation_time = 0.0
-		player_frame_index = (player_frame_index + 1) % animation_frames.size()
+	if player_animation.begins_with("walk_"):
+		while player_animation_time >= PlayerSpriteFrames.WALK_FRAME_DURATIONS[player_frame_index]:
+			player_animation_time -= PlayerSpriteFrames.WALK_FRAME_DURATIONS[player_frame_index]
+			player_frame_index = (player_frame_index + 1) % animation_frames.size()
 	var frame: Texture2D = animation_frames[player_frame_index]
-	player_sprite.texture = frame
+	if player_sprite.texture != frame:
+		player_sprite.texture = frame
 	if player_sort_root != null:
 		var visual := player_sort_root.get_node("Visual") as Sprite2D
-		visual.texture = frame
-		visual.flip_h = player_gender == "Male" and player_animation.ends_with("left")
+		if visual.texture != frame:
+			visual.texture = frame
+		visual.flip_h = false
+
+	_sync_player_outfit()
 
 
-func _apply_player_frame_adjustment(pixels_per_world_unit: float) -> void:
-	var adjustment := PlayerSpriteFrames.frame_adjustment(player_gender, player_animation, player_frame_index)
-	var frame_scale: Vector2 = adjustment["scale"]
-	var frame_offset: Vector2 = adjustment["offset"]
-	var visual := player_sort_root.get_node("Visual") as Sprite2D
-	var height_pixels := PLAYER_VISUAL_HEIGHT * pixels_per_world_unit
-	visual.scale *= frame_scale
-	# Scale around the feet rather than the Sprite2D center. Sorting and the
-	# collision body retain their original world-space contact position.
-	visual.position += Vector2(0.0, height_pixels * (1.0 - frame_scale.y) * 0.5) + frame_offset * height_pixels
+func equip_player_outfit(outfit: OutfitResource) -> bool:
+	if outfit != null and (outfit.outfit_id.is_empty() or outfit.body_type != player_gender):
+		return false
+	equipped_outfit = outfit
+	_sync_player_outfit()
+	return true
+
+
+func _sync_player_outfit() -> void:
+	if player_outfit_visual == null:
+		return
+	var texture: Texture2D = null
+	if equipped_outfit != null and not swimming and not swim_transitioning:
+		texture = equipped_outfit.frame(player_animation, player_frame_index)
+	if player_outfit_visual.texture != texture:
+		player_outfit_visual.texture = texture
+	player_outfit_visual.visible = texture != null
+	var base_visual := player_sort_root.get_node("Visual") as Sprite2D
+	var mask: Texture2D = equipped_outfit.visibility_mask(player_animation, player_frame_index) if texture != null else null
+	if mask == null:
+		base_visual.material = null
+	else:
+		if player_occlusion_material == null:
+			player_occlusion_material = ShaderMaterial.new()
+			player_occlusion_material.shader = preload("res://world/outfit_occlusion.gdshader")
+		if player_occlusion_material.get_shader_parameter("occlusion_mask") != mask:
+			player_occlusion_material.set_shader_parameter("occlusion_mask", mask)
+		player_occlusion_material.set_shader_parameter("canvas_size", player_sprite.texture.get_size())
+		base_visual.material = player_occlusion_material
+	if texture != null:
+		player_outfit_visual.scale = player_sprite.texture.get_size() / texture.get_size()
+
+
+func _prepare_player_animation_frames() -> void:
+	for rows in [PlayerSpriteFrames.CARDINAL_ROWS, PlayerSpriteFrames.DIAGONAL_ROWS]:
+		for direction in rows:
+			_player_animation_frames("idle_" + direction)
+			_player_animation_frames("walk_" + direction)
+
+
+func _player_swim_frames(direction: String) -> Array[AtlasTexture]:
+	var cache_key := "%s:%s:swim:%s" % [player_gender, player_palette_preset, direction]
+	if not player_animation_frame_cache.has(cache_key):
+		player_animation_frame_cache[cache_key] = SwimSpriteFrames.frames(player_gender, direction, swim_atlas)
+	return player_animation_frame_cache[cache_key]
 
 
 func _player_animation_frames(animation: String) -> Array[AtlasTexture]:
 	var gender := player_gender if not player_gender.is_empty() else "Male"
-	var atlas: Texture2D = PlayerPalette.create_texture(player_palette_preset, "diagonal") if PlayerSpriteFrames.is_diagonal(animation) else player_atlas
+	# Appearance keys retain shared atlas regions when revisiting a player style.
+	var cache_key := "%s:%s:walk:%s" % [gender, player_palette_preset, animation]
+	if player_animation_frame_cache.has(cache_key):
+		return player_animation_frame_cache[cache_key]
+	# Keep AtlasTexture resources alive across ticks. Replacing them every tick
+	# dirties sprite rendering even when the displayed animation pose is unchanged.
+	var atlas: Texture2D = PlayerSpriteFrames.create_texture(gender, player_palette_preset, true) if PlayerSpriteFrames.is_diagonal(animation) else player_atlas
 	var authored := PlayerSpriteFrames.frames(gender, animation, atlas)
-	if not animation.begins_with("walk_") or authored.size() < 2:
-		return authored
-	var direction := animation.trim_prefix("walk_")
-	var neutral := PlayerSpriteFrames.frames(gender, "idle_" + direction, atlas)[0]
-	# Each leg pose returns through the matching directional neutral pose.
-	return [authored[0], neutral, authored[1], neutral]
+	player_animation_frame_cache[cache_key] = authored
+	return authored
 
 
 func _build_startup_save_prompt() -> void:
@@ -4363,6 +4445,7 @@ func _write_save(path: String, show_feedback: bool, success_message: String) -> 
 		"version": SAVE_VERSION,
 		"game_flags": game_flags.values,
 		"player_gender": player_gender,
+		"equipped_outfit_id": equipped_outfit.outfit_id if equipped_outfit != null else "",
 		"player_color_name": player_color_name,
 		"player_color": player_color.to_html(false),
 		"player_style": player_style,
@@ -4412,6 +4495,7 @@ func _restore_save(path: String) -> bool:
 			save_status_label.text = "Save party or Cloud data is invalid."
 		return false
 	player_gender = String(data.get("player_gender", "Male"))
+	equipped_outfit = preload("res://world/outfit_catalog.gd").find(String(data.get("equipped_outfit_id", "")))
 	player_style = String(data.get("player_style", "Medium"))
 	player_palette_preset = String(data.get("player_palette_preset", PlayerPalette.DEFAULT_PRESET))
 	player_color_name = player_style
@@ -4818,6 +4902,7 @@ func _build_placed_npcs(region_data: Dictionary, origin: Vector3) -> void:
 
 func _spawn_placed_npc(region_data: Dictionary, origin: Vector3, record: Dictionary, patrol_spawn: bool = false) -> Area3D:
 	var map_file := String(region_data.get("_npc_map_file", ""))
+	if record.type == "human": NpcSpriteLibrary.prepare(String(record.sprite))
 	var texture:Texture2D = npc_visual_resolver.texture_for(String(record.type), String(record.sprite), String(record.facing))
 	if texture == null:
 		push_warning("NPC %s/%d could not resolve art." % [map_file, int(record.id)])

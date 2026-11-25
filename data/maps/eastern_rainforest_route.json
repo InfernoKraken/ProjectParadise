@@ -69,6 +69,17 @@
 		}
 	],
 	"map_type": "Rainforest",
+	"npcs": [
+		{
+			"facing": "down",
+			"id": 1,
+			"position": [
+				-1.0,
+				0.0,
+				-5.0
+			]
+		}
+	],
 	"objects": [
 		{
 			"elevation": 1.0,

@@ -1,5 +1,7 @@
 # Boats: first checkpoint
 
+> Historical validation: the legacy test suites and fixtures have been removed. Test paths, commands, and results below are retained as checkpoint history and are no longer current validation instructions.
+
 In the Map Editor, add an NPC and choose Type **Vehicle**, then **Cargo**, **Luxury**, or **Tug**. Place its ground anchor in water and choose an existing movement preset and ranges. Existing scripted NPC move paths also work with its map-local NPC ID. Vehicles have no dialogue or interaction controls.
 
 Boats always use swimming traversal, including older definitions without a movement_mode. Every water cell covered by the hull footprint must remain in canonical water. Boats share NPC pause gates, collision, map activation, save/undo and movers. They push a player obstructing their motion using the player's physics; solid obstructions can stop the push and boat. Each boat has directional hull bounds configured in npc_visual_resolver.gd. These exclude wakes and superstructure and project the normalized art into the map plane. Physical collision and movement queries share the same hull box at water level; boarding remains future work.

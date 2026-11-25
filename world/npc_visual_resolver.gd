@@ -6,7 +6,7 @@ const BOATS := {"Cargo":"container", "Luxury":"luxury", "Tug":"tug"}
 const BOAT_SIDE_FACING := {"Cargo":"left", "Luxury":"left", "Tug":"right"}
 const BOAT_LENGTHS := {"Cargo":4.0, "Luxury":3.0, "Tug":2.5}
 
-const HUMANS := ["Young Man", "Young Woman", "Young Boy", "Young Girl", "Professor", "Scientist"]
+const HUMANS := ["Young Man", "Young Woman", "Young Boy", "Young Girl", "Professor", "Scientist", "Trayven"]
 const FACINGS := ["down", "up", "left", "right"]
 var root: String
 var in_game_project := false

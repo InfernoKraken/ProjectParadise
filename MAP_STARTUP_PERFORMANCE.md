@@ -1,5 +1,7 @@
 # Map startup performance checkpoint
 
+> Historical validation: the legacy test suites and fixtures have been removed. Test paths, commands, and results below are retained as checkpoint history and are no longer current validation instructions.
+
 Investigated October 9, 2026 using Godot 4.7.1 on Windows.
 
 ## Findings and changes

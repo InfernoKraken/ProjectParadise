@@ -7,6 +7,7 @@
 		]
 	},
 	"base_terrain_type": "forest_floor",
+	"border_corner_priority": "east_west",
 	"borders": {
 		"east": {
 			"cells": {},
@@ -16,7 +17,22 @@
 		"south": {
 			"cells": {
 				"0,0": {
-					"terrain": "warm_honey_limestone_paving"
+					"terrain": "stone"
+				},
+				"0,1": {
+					"art": {
+						"anchor_offset": [
+							0.47460573911667,
+							-0.45927160978317
+						],
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							2.08475613594055,
+							1.29999995231628
+						],
+						"texture": "assets/overworld/garden_tools_table.png"
+					}
 				},
 				"1,0": {
 					"terrain": "warm_honey_limestone_paving"
@@ -24,38 +40,154 @@
 				"2,0": {
 					"terrain": "warm_honey_limestone_paving"
 				},
+				"2,1": {
+					"art": {
+						"anchor_offset": [
+							0.3286349773407,
+							-0.44534951448441
+						],
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							2.08475613594055,
+							1.29999995231628
+						],
+						"texture": "assets/overworld/garden_tools_table.png"
+					}
+				},
 				"3,0": {
 					"terrain": "warm_honey_limestone_paving"
 				},
 				"4,0": {
-					"terrain": "warm_honey_limestone_paving"
+					"art": {
+						"anchor_offset": [
+							-0.26029825210571,
+							0.26693254709244
+						],
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.24876534938812,
+							0.69999998807907
+						],
+						"texture": "assets/overworld/garden_tools_pots.png"
+					},
+					"terrain": "stone"
 				},
 				"5,0": {
+					"art": {
+						"anchor_offset": [
+							0.0,
+							0.0
+						],
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.24876534938812,
+							0.69999998807907
+						],
+						"texture": "assets/overworld/garden_tools_pots.png"
+					},
 					"terrain": "warm_honey_limestone_paving"
+				},
+				"5,1": {
+					"art": {
+						"anchor_offset": [
+							-0.30331087112427,
+							-0.49813032150269
+						],
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.24876534938812,
+							0.69999998807907
+						],
+						"texture": "assets/overworld/garden_tools_pots.png"
+					}
+				},
+				"6,0": {
+					"terrain": "warm_honey_limestone_paving"
+				},
+				"6,1": {
+					"art": {
+						"anchor_offset": [
+							-0.11539888381958,
+							-0.44278252124786
+						],
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.22741436958313,
+							1.0
+						],
+						"texture": "assets/overworld/garden_tools_wheelbarrow.png"
+					}
 				}
 			},
-			"depth": 4,
-			"enabled": true
+			"depth": 2,
+			"enabled": true,
+			"render_mode": "normal_layer"
 		},
 		"west": {
 			"cells": {
-				"3,16": {
-					"terrain": "warm_honey_limestone_paving"
-				},
 				"3,17": {
+					"art": {
+						"anchor_offset": [
+							-0.08273839950562,
+							0.17867088317871
+						],
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							0.89197528362274,
+							0.5
+						],
+						"texture": "assets/overworld/garden_tools_pots.png"
+					},
 					"terrain": "warm_honey_limestone_paving"
 				},
 				"3,18": {
+					"art": {
+						"anchor_offset": [
+							0.00550746917725,
+							0.33752250671387
+						],
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.17224407196045,
+							1.5
+						],
+						"texture": "assets/overworld/garden_tools_rack.png"
+					},
 					"terrain": "warm_honey_limestone_paving"
 				},
 				"3,19": {
-					"terrain": "warm_honey_limestone_paving"
+					"art": {
+						"anchor_offset": [
+							-0.02775502204895,
+							0.31280517578125
+						],
+						"flat": false,
+						"rotation": 0.0,
+						"size": [
+							1.22741436958313,
+							1.0
+						],
+						"texture": "assets/overworld/garden_tools_wheelbarrow.png"
+					},
+					"terrain": "stone"
 				}
 			},
 			"depth": 4,
-			"enabled": true
+			"enabled": true,
+			"render_mode": "normal_layer"
 		}
 	},
+	"bounds_center": [
+		-0.5,
+		0.0
+	],
 	"entry": [
 		0,
 		0.65,
@@ -81,6 +213,15 @@
 				-2.65000009536743,
 				0.0,
 				2.15000009536743
+			]
+		},
+		{
+			"facing": "down",
+			"id": 2,
+			"position": [
+				-0.34644481539726,
+				0.0,
+				-0.66080594062805
 			]
 		}
 	],
@@ -161,9 +302,9 @@
 			"length": 6.0,
 			"orientation": "vertical",
 			"position": [
-				-4.0,
+				-3.93623399734497,
 				0.0,
-				2.79999995231628
+				2.74846935272217
 			],
 			"traversal_layer": 1.0,
 			"type": "structure.bridge",
@@ -781,9 +922,9 @@
 			"asset_path": "res://assets/overworld/plant_table_orchid_01.png",
 			"height": 2.5,
 			"position": [
-				-8.0,
+				-7.99207878112793,
 				0.0,
-				8.19999980926514
+				7.9535493850708
 			],
 			"size": [
 				1.0,
@@ -1040,6 +1181,21 @@
 			"type": "asset.tree_palm_small"
 		},
 		{
+			"asset_path": "res://assets/overworld/tree_palm_small.png",
+			"height": 1.0,
+			"position": [
+				-9.88467693328857,
+				0.0,
+				-1.30599403381348
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.tree_palm_small"
+		},
+		{
 			"height": 3.8,
 			"position": [
 				1.35000002384186,
@@ -1197,9 +1353,9 @@
 			"asset_path": "res://assets/overworld/park_table.png",
 			"height": 2.25,
 			"position": [
-				-5.75,
+				-5.67870903015137,
 				0.0,
-				8.69999980926514
+				8.5207633972168
 			],
 			"size": [
 				1.0,
@@ -1269,6 +1425,21 @@
 			"type": "asset.flower_tall_torch_ginger_cluster"
 		},
 		{
+			"asset_path": "res://assets/overworld/flower_tall_torch_ginger_cluster.png",
+			"height": 1.8,
+			"position": [
+				-9.84368515014648,
+				0.0,
+				0.04270716011524
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.flower_tall_torch_ginger_cluster"
+		},
+		{
 			"asset_path": "res://assets/overworld/flower_tall_banana_plant.png",
 			"height": 1.7,
 			"position": [
@@ -1305,6 +1476,21 @@
 				-6.7,
 				0.0,
 				-5.25000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.flower_tall_banana_plant"
+		},
+		{
+			"asset_path": "res://assets/overworld/flower_tall_banana_plant.png",
+			"height": 1.7,
+			"position": [
+				-10.2417907714844,
+				0.0,
+				1.67898082733154
 			],
 			"size": [
 				1.0,
@@ -1352,6 +1538,38 @@
 				-8.89999961853027,
 				0.0,
 				-8.80000019073486
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_generic",
+			"variant": 3.0
+		},
+		{
+			"asset_path": "res://assets/overworld/rocks_generic_03.png",
+			"height": 1.0,
+			"position": [
+				-10.52942943573,
+				0.0,
+				3.62240052223206
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.rocks_generic",
+			"variant": 3.0
+		},
+		{
+			"asset_path": "res://assets/overworld/rocks_generic_03.png",
+			"height": 1.0,
+			"position": [
+				-10.0741720199585,
+				0.0,
+				4.37054443359375
 			],
 			"size": [
 				1.0,
@@ -1551,9 +1769,9 @@
 			"asset_path": "res://assets/overworld/orchid_ground_potted.png",
 			"height": 1.25,
 			"position": [
-				-9.69999980926514,
+				-9.90150928497314,
 				0.0,
-				5.84999990463257
+				6.72392988204956
 			],
 			"size": [
 				1.0,
@@ -2209,7 +2427,7 @@
 				1.0
 			],
 			"type": "asset.stump",
-			"variant": 1
+			"variant": 1.0
 		},
 		{
 			"asset_path": "res://assets/overworld/stump_01.png",
@@ -2226,7 +2444,7 @@
 				1.0
 			],
 			"type": "asset.stump",
-			"variant": 1
+			"variant": 1.0
 		},
 		{
 			"asset_path": "res://assets/overworld/stump_00.png",
@@ -2685,6 +2903,21 @@
 			"asset_path": "res://assets/overworld/vegetation_orchid_ground_bamboo.png",
 			"height": 1.45,
 			"position": [
+				-10.4591455459595,
+				0.0,
+				4.5890941619873
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.vegetation_orchid_ground_bamboo"
+		},
+		{
+			"asset_path": "res://assets/overworld/vegetation_orchid_ground_bamboo.png",
+			"height": 1.45,
+			"position": [
 				2.65000009536743,
 				0.0,
 				5.55000019073486
@@ -3022,7 +3255,7 @@
 				1.0
 			],
 			"type": "asset.vegitation_fern_small",
-			"variant": 0
+			"variant": 0.0
 		},
 		{
 			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
@@ -3038,7 +3271,7 @@
 				1.0
 			],
 			"type": "asset.vegitation_fern_small",
-			"variant": 0
+			"variant": 0.0
 		},
 		{
 			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
@@ -3145,7 +3378,7 @@
 				1.0
 			],
 			"type": "asset.vegitation_fern_small",
-			"variant": 0
+			"variant": 0.0
 		},
 		{
 			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
@@ -3161,7 +3394,7 @@
 				1.0
 			],
 			"type": "asset.vegitation_fern_small",
-			"variant": 0
+			"variant": 0.0
 		},
 		{
 			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
@@ -3177,7 +3410,7 @@
 				1.0
 			],
 			"type": "asset.vegitation_fern_small",
-			"variant": 0
+			"variant": 0.0
 		},
 		{
 			"asset_path": "res://assets/overworld/vegitation_fern_small_00.png",
@@ -3397,6 +3630,96 @@
 				1.0
 			],
 			"type": "asset.sign_normal_outside"
+		},
+		{
+			"asset_path": "res://assets/overworld/props_rocks_general_00.png",
+			"height": 1.0,
+			"position": [
+				-10.599066734314,
+				0.0,
+				-1.95078778266907
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.props_rocks_general",
+			"variant": 0.0
+		},
+		{
+			"asset_path": "res://assets/overworld/props_rocks_general_01.png",
+			"height": 1.0,
+			"position": [
+				-10.3705253601074,
+				0.0,
+				-1.43784439563751
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.props_rocks_general",
+			"variant": 1.0
+		},
+		{
+			"asset_path": "res://assets/overworld/props_rocks_general_00.png",
+			"height": 1.0,
+			"position": [
+				-9.48197078704834,
+				0.0,
+				1.2214849293232
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.props_rocks_general",
+			"variant": 0.0
+		},
+		{
+			"height": 0.45,
+			"position": [
+				-10.7990970611572,
+				0.2,
+				5.29564332962036
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.blue"
+		},
+		{
+			"height": 0.45,
+			"position": [
+				-10.8125314712524,
+				0.2,
+				6.37855625152588
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.blue"
+		},
+		{
+			"height": 0.45,
+			"position": [
+				-9.94604110717773,
+				0.2,
+				5.05816221237183
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "flower.blue"
 		}
 	],
 	"orchids": [],
@@ -3418,7 +3741,7 @@
 	},
 	"script_source": "Block BotanicalScientistHint:\n  IfFlag Starter StarterDescovered\n  TextBox \"I work for the Tropical Research Institute. You can find us due east of the Jalovea Challenger center, tucked behind a small forest.\"\nEnd\n\nBlock StarterDescovered:\n  TextBox \"The professor is a generous man, isn't he? I hope you and your companion get along just fine.\"\nEnd",
 	"size": [
-		20,
+		21.0,
 		20
 	],
 	"tall_grass_species": [],
@@ -4003,10 +4326,6 @@
 				[
 					-4,
 					9
-				],
-				[
-					-10,
-					6
 				]
 			],
 			"terrain_type": "stone"

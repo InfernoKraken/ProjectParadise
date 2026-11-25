@@ -1762,7 +1762,7 @@ func _refresh_inspector()->void:
 		_add_exhibit_editor(source_record)
 	if source_record is Dictionary and (object_type in ["asset.indoor_display", "asset.indoor_billboard_tropical_research"] or bool(catalog.by_id.get(object_type, {}).get("signpost", false))):
 		var textbox_label:=Label.new();textbox_label.text="Textbox (click display in game)";inspector.add_child(textbox_label)
-		var textbox:=TextEdit.new();textbox.name="IndoorDisplayTextbox";textbox.custom_minimum_size.y=120;textbox.text=String(source_record.get("interaction_text",""));inspector.add_child(textbox)
+		var textbox:=TextEdit.new();textbox.name="IndoorDisplayTextbox";textbox.custom_minimum_size.y=120;textbox.text=String(source_record.get("interaction_text",catalog.by_id.get(object_type, {}).get("interaction_text", "")));inspector.add_child(textbox)
 		textbox.focus_exited.connect(func():
 			if String(source_record.get("interaction_text",""))==textbox.text:return
 			_push_undo();source_record["interaction_text"]=textbox.text;document.dirty=true;_refresh_raw())

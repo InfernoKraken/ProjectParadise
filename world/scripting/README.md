@@ -1,5 +1,7 @@
 # Scripting system
 
+> Historical validation: the legacy test suites and fixtures have been removed. Test paths, commands, and results below are retained as checkpoint history and are no longer current validation instructions.
+
 The current checkpoint is **V2**, with MoveSprite, FollowSprite, StopFollowing,
 FaceSprite, and map-owned paths. Start with the generated
 [command reference](../../docs/scripting_reference.md), also available in SCRIPT →

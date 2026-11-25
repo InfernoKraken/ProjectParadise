@@ -191,11 +191,7 @@ checkpoint reuses the current translucent surface; it does not add a new water
 shader or change shoreline legality. `semi_submerged_*` stays out of the palette
 until its separate behavior is implemented.
 
-Regression scripts: `tests/water_decoration_test.gd` in the game project and
-`tests/water_decoration_editor_test.gd` in the map-editor project. Both report a
-zero-failure summary on success. The runtime test optionally accepts
-`-- --render-check` with a real OpenGL3 renderer to verify pixel compositing and
-mask clipping; headless runs validate nodes, ordering, and shared surface reuse.
+The legacy automated regression suites have been removed. Validate changes using Godot import/parse checks and focused manual checks in the map editor and game.
 
 NPC Inspector and SCRIPT Source edit the same map-level OnInteract Block assignment. An assigned Block owns interaction; companion text is a fallback when the assignment is blank. NPCs moved by an assigned script (including called/conditional Blocks) ignore movement presets from map load; other NPCs retain their presets. SCRIPT hides placement labels, bounds, collision boxes and grid while retaining path handles and warnings. Unfinished, unused paths remain editor diagnostics without blocking valid runtime commands.
 
@@ -299,3 +295,9 @@ Select a habitat control display in the Map Editor and open **Configure Exhibit*
 In game, select a species at the lectern to display it, or choose **Clear exhibit** to empty the pen. Captures, starters, gifts, and evolutions qualify, including species in Cloud storage. A species can occupy one slot. The save records species and slot IDs, and the game recreates the exhibit from its template.
 
 Flag autocomplete: after `IfFlag `, `SetFlag `, or `ClearFlag `, the script editors suggest sorted, unique flag names used by those commands across saved `data/maps/*.json` scripts and the current map's unsaved script. Type a prefix to narrow suggestions. Comments, quoted dialogue, and backup files are excluded. New names can still be entered freely; `IfFlag` continues to suggest Block names for its second argument.
+
+The Map Border Editor has Grid (0.05–8 map units) and Snap controls. Visual assets can be positioned on fractional grid increments or freely with Snap disabled; terrain continues to paint whole tiles. Grid lines mark the placement coordinates and remain hidden in Preview. Artwork uses cell records with anchor offsets; Move can place multiple records visually within the same tile without replacing them.
+
+Border Move mode drags one existing element on the selected layer. Click artwork itself to move it, using Grid/Snap for its new anchor; terrain moves by whole tiles. Artwork settings and terrain underneath are preserved. Release commits one undo step; right-click cancels. Artwork may share a tile or overlap other artwork: Move preserves both elements using anchor offsets. Occupied terrain destinations and out-of-bounds drops are rejected. Paint remains a continuous brush.
+
+Border rendering is selected per side: **Behind All** keeps terrain and artwork behind actors; **Covers Player** places both above actors; **Normal Layer** places artwork above actors and terrain below. Existing `covers_player` booleans remain supported until a rendering mode is selected, which saves `render_mode` instead. The map Placement Preview uses the same split.

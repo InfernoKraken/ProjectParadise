@@ -1,5 +1,7 @@
 # Jalovea City performance investigation — 2026-10-31
 
+> Historical validation: the legacy test suites and fixtures have been removed. Test paths, commands, and results below are retained as checkpoint history and are no longer current validation instructions.
+
 ## Conclusion
 
 Prioritize the NPC/decorative water overlay update, not a new base-tile chunk

@@ -38,7 +38,8 @@ func configure(map: Dictionary, origin: Vector3, layer: int, canvas: CanvasLayer
 		var definition := Layout.definition(map, side)
 		var cells: Variant = definition.get("cells")
 		if not cells is Dictionary or cells.is_empty(): continue
-		var covers: bool = canvas != null and definition.get("covers_player") == true
+		var mode := Layout.render_mode(definition)
+		var covers: bool = canvas != null and mode != "behind_all"
 		if covers and _foreground == null:
 			_foreground = Node2D.new()
 			_foreground.name = "ForegroundMapBorders"
@@ -51,7 +52,7 @@ func configure(map: Dictionary, origin: Vector3, layer: int, canvas: CanvasLayer
 		var padding := 0.0
 		for cell in cells.values():
 			if cell is Dictionary and cell.get("art") is Dictionary:
-				padding = maxf(padding, Layout.art_size(cell.art).length())
+				padding = maxf(padding, Layout.art_size(cell.art).length() + Layout.art_anchor(Vector2.ZERO, cell.art).length())
 		var seam := Layout.seam_region(map, local_bounds, side) if canonical else Rect2()
 		seam.position += offset
 		var anchor := Layout.repeat_origin(bounds, strip, side)
@@ -60,7 +61,7 @@ func configure(map: Dictionary, origin: Vector3, layer: int, canvas: CanvasLayer
 		_states[side] = {"strip": strip, "anchor": anchor, "uv_phase": uv_phase,
 			"dimensions": Layout.repeat_dimensions(map, side, definition), "cells": cells, "root": root,
 			"seam": seam, "along_x": Layout.horizontal(side),
-			"covers_player": covers, "foreground_items": [],
+			"covers_player": covers, "render_mode": mode, "foreground_items": [],
 			"padding": padding, "height": origin.y + (0.401 if canonical else 0.001),
 			"materials": {}, "terrain_window": Rect2i(), "art_window": Rect2i()}
 
@@ -178,6 +179,7 @@ func _add_art(state: Dictionary, anchor: Vector2, art: Dictionary) -> void:
 
 func _add_foreground(state: Dictionary, source: MeshInstance3D, billboard: bool, clip: bool, priority: int) -> void:
 	if not state.covers_player: return
+	if state.render_mode == "normal_layer" and priority == 0: return
 	source.layers = 0
 	source.set_meta("border_foreground_source", true)
 	var item := Foreground.make(source, state.strip, billboard, clip, priority)

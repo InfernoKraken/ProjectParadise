@@ -10,5 +10,23 @@
 		"interaction_text": "Ahhh. \nPlaces like this make even the days a little more doable. Wouldn't you say?",
 		"sprite": "Young Man",
 		"type": "human"
+	},
+	"3": {
+		"hidden": false,
+		"interaction_text": "This is the cultivation section. We raise orchids here before they join the garden displays.\nI'm checking this batch today. There's always another pot to tend!",
+		"sprite": "Scientist",
+		"type": "human"
+	},
+	"4": {
+		"hidden": false,
+		"interaction_text": "I'm helping with the potting today.\nKeeping track of all these plants is quite a job. I hope I haven't mixed up any labels!",
+		"sprite": "Young Woman",
+		"type": "human"
+	},
+	"5": {
+		"hidden": false,
+		"interaction_text": "I came for the flowers, but watching the gardeners work is interesting too.\nI'd like to try growing an orchid at home someday.",
+		"sprite": "Young Man",
+		"type": "human"
 	}
 }

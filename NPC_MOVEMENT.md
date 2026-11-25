@@ -1,5 +1,7 @@
 # Bounded NPC movement presets
 
+> Historical validation: the legacy test suites and fixtures have been removed. Test paths, commands, and results below are retained as checkpoint history and are no longer current validation instructions.
+
 Select an NPC in the Map Editor. Its inspector now has **Movement**, **Max X range ±**, and **Max Y range ±** controls. Range is measured in map units from its placed initial position, in both directions: X = 3 permits movement from start X − 3 to start X + 3. Map/screen Y corresponds to world Z. Elevation remains unchanged.
 
 Presets:

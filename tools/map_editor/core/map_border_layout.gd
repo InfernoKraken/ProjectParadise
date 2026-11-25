@@ -3,6 +3,13 @@ extends RefCounted
 const Bounds := preload("map_bounds.gd")
 const SIDES := ["north", "south", "east", "west"]
 const CORNER_PRIORITIES := ["north_south", "east_west"]
+const RENDER_MODES := ["behind_all", "covers_player", "normal_layer"]
+
+static func render_mode(border: Dictionary) -> String:
+	var mode: String = str(border.get("render_mode", ""))
+	if mode in RENDER_MODES: return mode
+	return "covers_player" if border.get("covers_player") == true else "behind_all"
+
 const MAX_DIMENSION := 128
 const MAX_ART_SIZE := 64.0
 

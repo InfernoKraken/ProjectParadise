@@ -7164,6 +7164,21 @@
 				1.0
 			],
 			"type": "asset.sign_lab_banner_right"
+		},
+		{
+			"asset_path": "res://assets/overworld/building_park_botanical_jalvoea_city.png",
+			"height": 7.53103448275862,
+			"position": [
+				20.0,
+				0.0,
+				-6.0
+			],
+			"size": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"type": "asset.building_park_botanical_jalvoea_city"
 		}
 	],
 	"origin": [
@@ -14976,9 +14991,9 @@
 		-11.0
 	],
 	"warp_9": [
-		18.0,
+		19.7000007629395,
 		0.0,
-		-7.0
+		-6.90000009536743
 	],
 	"warp_metadata": {
 		"return_warp": {
@@ -15051,7 +15066,7 @@
 			"entrance_map_warp_id": 1,
 			"facing": "generic",
 			"id": 9,
-			"show_sprite": true,
+			"show_sprite": false,
 			"sprite": "generic"
 		}
 	},

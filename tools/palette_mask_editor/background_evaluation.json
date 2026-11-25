@@ -1,0 +1,85 @@
+{
+	"assets": {
+		"Diving In Sprite.png": {
+			"border_fraction": 0.998913718187461,
+			"enclosed_candidates": 1002,
+			"enclosed_tp": 0,
+			"enclosed_truth": 1129,
+			"exterior_tp": 1196469,
+			"exterior_truth": 1196488,
+			"false_background_by_true_class": {
+				"Hair": 0,
+				"Other": 68,
+				"Skin": 76
+			},
+			"fn": 1148,
+			"fp": 144,
+			"mode": "opaque_exterior_exact",
+			"precision_percent": 99.9879660341313,
+			"recall_percent": 99.9041429772624,
+			"tp": 1196469,
+			"truth_background": 1197617
+		},
+		"PlayerSprite.png": {
+			"border_fraction": 1.0,
+			"enclosed_candidates": 333,
+			"enclosed_tp": 2,
+			"enclosed_truth": 356,
+			"exterior_tp": 1098180,
+			"exterior_truth": 1098693,
+			"false_background_by_true_class": {
+				"Hair": 166,
+				"Other": 190,
+				"Skin": 256
+			},
+			"fn": 867,
+			"fp": 612,
+			"mode": "opaque_exterior_exact",
+			"precision_percent": 99.9443025717286,
+			"recall_percent": 99.9211136173182,
+			"tp": 1098182,
+			"truth_background": 1099049
+		},
+		"Player_Swimming Sprites.png": {
+			"border_fraction": 0.0,
+			"enclosed_candidates": 0,
+			"enclosed_tp": 0,
+			"enclosed_truth": 8686,
+			"exterior_tp": 1207948,
+			"exterior_truth": 1577664,
+			"false_background_by_true_class": {
+				"Hair": 166,
+				"Other": 35,
+				"Skin": 11
+			},
+			"fn": 378402,
+			"fp": 212,
+			"mode": "alpha",
+			"precision_percent": 99.9824526552774,
+			"recall_percent": 76.1463737510638,
+			"tp": 1207948,
+			"truth_background": 1586350
+		},
+		"Walking_Anim_Diagonal.png": {
+			"border_fraction": 1.0,
+			"enclosed_candidates": 803,
+			"enclosed_tp": 1,
+			"enclosed_truth": 1486,
+			"exterior_tp": 810540,
+			"exterior_truth": 817322,
+			"false_background_by_true_class": {
+				"Hair": 103,
+				"Other": 308,
+				"Skin": 32
+			},
+			"fn": 8267,
+			"fp": 443,
+			"mode": "opaque_exterior_exact",
+			"precision_percent": 99.9453750012331,
+			"recall_percent": 98.9903615988119,
+			"tp": 810541,
+			"truth_background": 818808
+		}
+	},
+	"checks_failed": 0
+}

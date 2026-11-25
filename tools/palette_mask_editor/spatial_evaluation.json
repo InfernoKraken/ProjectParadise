@@ -1,0 +1,1177 @@
+{
+	"aligned_copy_rgb_differences": 0,
+	"baseline": {
+		"classes": [
+			{
+				"class": "Hair",
+				"fp": 8,
+				"precision_percent": 83.3333333333333,
+				"recall_percent": 0.0391496691852954,
+				"review_or_correct_pixels": 102132,
+				"suggested_wrong": 17435,
+				"tp": 40,
+				"truth": 102172,
+				"uncertain": 98106,
+				"uncertain_percent": 96.0204361273147,
+				"wrong_confident": 4026
+			},
+			{
+				"class": "Skin",
+				"fp": 806,
+				"precision_percent": 98.1308411214953,
+				"recall_percent": 61.2435413138813,
+				"review_or_correct_pixels": 26778,
+				"suggested_wrong": 14400,
+				"tp": 42315,
+				"truth": 69093,
+				"uncertain": 24900,
+				"uncertain_percent": 36.038383048934,
+				"wrong_confident": 1878
+			},
+			{
+				"class": "Other",
+				"fp": 3924,
+				"precision_percent": 95.9695973705834,
+				"recall_percent": 67.1119921852554,
+				"review_or_correct_pixels": 45788,
+				"suggested_wrong": 22172,
+				"tp": 93436,
+				"truth": 139224,
+				"uncertain": 43831,
+				"uncertain_percent": 31.4823593633282,
+				"wrong_confident": 1957
+			},
+			{
+				"class": "Background",
+				"fp": 3123,
+				"precision_percent": 98.8724125605225,
+				"recall_percent": 99.9970786713797,
+				"review_or_correct_pixels": 8,
+				"suggested_wrong": 8,
+				"tp": 273840,
+				"truth": 273848,
+				"uncertain": 8,
+				"uncertain_percent": 0.00292132862025649,
+				"wrong_confident": 0
+			}
+		],
+		"foreground_pixels": 310489,
+		"foreground_review_or_correct": 174698,
+		"foreground_review_or_correct_percent": 56.2654393553395,
+		"foreground_uncertain_percent": 53.7336266341159
+	},
+	"checks_failed": 0,
+	"frames": [
+		{
+			"direction": "male_down",
+			"spatial": {
+				"classes": [
+					{
+						"class": "Hair",
+						"fp": 147,
+						"precision_percent": 97.2425436128306,
+						"recall_percent": 96.0711638250556,
+						"review_or_correct_pixels": 212,
+						"suggested_wrong": 190,
+						"tp": 5184,
+						"truth": 5396,
+						"uncertain": 174,
+						"uncertain_percent": 3.22461082283173,
+						"wrong_confident": 38
+					},
+					{
+						"class": "Skin",
+						"fp": 248,
+						"precision_percent": 94.1893158388004,
+						"recall_percent": 76.4113286447443,
+						"review_or_correct_pixels": 1241,
+						"suggested_wrong": 1094,
+						"tp": 4020,
+						"truth": 5261,
+						"uncertain": 977,
+						"uncertain_percent": 18.5706139517202,
+						"wrong_confident": 264
+					},
+					{
+						"class": "Other",
+						"fp": 210,
+						"precision_percent": 98.0763946139049,
+						"recall_percent": 83.9764705882353,
+						"review_or_correct_pixels": 2043,
+						"suggested_wrong": 592,
+						"tp": 10707,
+						"truth": 12750,
+						"uncertain": 1637,
+						"uncertain_percent": 12.8392156862745,
+						"wrong_confident": 406
+					},
+					{
+						"class": "Background",
+						"fp": 125,
+						"precision_percent": 99.1909908743771,
+						"recall_percent": 92.5874463843412,
+						"review_or_correct_pixels": 1227,
+						"suggested_wrong": 655,
+						"tp": 15326,
+						"truth": 16553,
+						"uncertain": 1205,
+						"uncertain_percent": 7.27964719386214,
+						"wrong_confident": 22
+					}
+				],
+				"foreground_pixels": 23407,
+				"foreground_review_or_correct": 3496,
+				"foreground_review_or_correct_percent": 14.9357029948306,
+				"foreground_uncertain_percent": 11.910966804802
+			},
+			"target_rect": [
+				693,
+				458,
+				148,
+				270
+			],
+			"training_rect": [
+				582,
+				72,
+				161,
+				307
+			]
+		},
+		{
+			"direction": "male_down",
+			"spatial": {
+				"classes": [
+					{
+						"class": "Hair",
+						"fp": 194,
+						"precision_percent": 96.2161107860347,
+						"recall_percent": 96.4984350547731,
+						"review_or_correct_pixels": 179,
+						"suggested_wrong": 166,
+						"tp": 4933,
+						"truth": 5112,
+						"uncertain": 157,
+						"uncertain_percent": 3.07120500782473,
+						"wrong_confident": 22
+					},
+					{
+						"class": "Skin",
+						"fp": 243,
+						"precision_percent": 93.6136662286465,
+						"recall_percent": 65.8045446148162,
+						"review_or_correct_pixels": 1851,
+						"suggested_wrong": 1746,
+						"tp": 3562,
+						"truth": 5413,
+						"uncertain": 1486,
+						"uncertain_percent": 27.4524293367818,
+						"wrong_confident": 365
+					},
+					{
+						"class": "Other",
+						"fp": 272,
+						"precision_percent": 97.3180832183001,
+						"recall_percent": 82.4768112308849,
+						"review_or_correct_pixels": 2097,
+						"suggested_wrong": 489,
+						"tp": 9870,
+						"truth": 11967,
+						"uncertain": 1717,
+						"uncertain_percent": 14.34778975516,
+						"wrong_confident": 380
+					},
+					{
+						"class": "Background",
+						"fp": 101,
+						"precision_percent": 99.3005540166205,
+						"recall_percent": 90.4098360655738,
+						"review_or_correct_pixels": 1521,
+						"suggested_wrong": 938,
+						"tp": 14339,
+						"truth": 15860,
+						"uncertain": 1478,
+						"uncertain_percent": 9.31904161412358,
+						"wrong_confident": 43
+					}
+				],
+				"foreground_pixels": 22492,
+				"foreground_review_or_correct": 4127,
+				"foreground_review_or_correct_percent": 18.3487462208785,
+				"foreground_uncertain_percent": 14.9386448515028
+			},
+			"target_rect": [
+				861,
+				459,
+				141,
+				272
+			],
+			"training_rect": [
+				582,
+				72,
+				161,
+				307
+			]
+		},
+		{
+			"direction": "male_up",
+			"spatial": {
+				"classes": [
+					{
+						"class": "Hair",
+						"fp": 133,
+						"precision_percent": 97.1367061356297,
+						"recall_percent": 94.1176470588235,
+						"review_or_correct_pixels": 282,
+						"suggested_wrong": 277,
+						"tp": 4512,
+						"truth": 4794,
+						"uncertain": 244,
+						"uncertain_percent": 5.08969545264914,
+						"wrong_confident": 38
+					},
+					{
+						"class": "Skin",
+						"fp": 92,
+						"precision_percent": 94.7156806433084,
+						"recall_percent": 46.8865510378163,
+						"review_or_correct_pixels": 1868,
+						"suggested_wrong": 1799,
+						"tp": 1649,
+						"truth": 3517,
+						"uncertain": 1486,
+						"uncertain_percent": 42.2519192493602,
+						"wrong_confident": 382
+					},
+					{
+						"class": "Other",
+						"fp": 367,
+						"precision_percent": 96.1254222972973,
+						"recall_percent": 78.1679258241758,
+						"review_or_correct_pixels": 2543,
+						"suggested_wrong": 337,
+						"tp": 9105,
+						"truth": 11648,
+						"uncertain": 2278,
+						"uncertain_percent": 19.5570054945055,
+						"wrong_confident": 265
+					},
+					{
+						"class": "Background",
+						"fp": 129,
+						"precision_percent": 99.233466040763,
+						"recall_percent": 87.530793018502,
+						"review_or_correct_pixels": 2379,
+						"suggested_wrong": 1723,
+						"tp": 16700,
+						"truth": 19079,
+						"uncertain": 2343,
+						"uncertain_percent": 12.2805178468473,
+						"wrong_confident": 36
+					}
+				],
+				"foreground_pixels": 19959,
+				"foreground_review_or_correct": 4693,
+				"foreground_review_or_correct_percent": 23.5132020642317,
+				"foreground_uncertain_percent": 20.0811663911018
+			},
+			"target_rect": [
+				1042,
+				462,
+				149,
+				262
+			],
+			"training_rect": [
+				987,
+				81,
+				154,
+				294
+			]
+		},
+		{
+			"direction": "male_up",
+			"spatial": {
+				"classes": [
+					{
+						"class": "Hair",
+						"fp": 173,
+						"precision_percent": 96.4686670749132,
+						"recall_percent": 95.53264604811,
+						"review_or_correct_pixels": 221,
+						"suggested_wrong": 218,
+						"tp": 4726,
+						"truth": 4947,
+						"uncertain": 201,
+						"uncertain_percent": 4.06306852637962,
+						"wrong_confident": 20
+					},
+					{
+						"class": "Skin",
+						"fp": 71,
+						"precision_percent": 95.2855245683931,
+						"recall_percent": 41.73938336242,
+						"review_or_correct_pixels": 2003,
+						"suggested_wrong": 1916,
+						"tp": 1435,
+						"truth": 3438,
+						"uncertain": 1590,
+						"uncertain_percent": 46.2478184991274,
+						"wrong_confident": 413
+					},
+					{
+						"class": "Other",
+						"fp": 346,
+						"precision_percent": 96.2747631352283,
+						"recall_percent": 80.0823929786853,
+						"review_or_correct_pixels": 2224,
+						"suggested_wrong": 308,
+						"tp": 8942,
+						"truth": 11166,
+						"uncertain": 2011,
+						"uncertain_percent": 18.0100304495791,
+						"wrong_confident": 213
+					},
+					{
+						"class": "Background",
+						"fp": 76,
+						"precision_percent": 99.5116308957717,
+						"recall_percent": 88.3299110198494,
+						"review_or_correct_pixels": 2046,
+						"suggested_wrong": 1473,
+						"tp": 15486,
+						"truth": 17532,
+						"uncertain": 2026,
+						"uncertain_percent": 11.5560118640201,
+						"wrong_confident": 20
+					}
+				],
+				"foreground_pixels": 19551,
+				"foreground_review_or_correct": 4448,
+				"foreground_review_or_correct_percent": 22.7507544371132,
+				"foreground_uncertain_percent": 19.4465756227303
+			},
+			"target_rect": [
+				1202,
+				462,
+				141,
+				263
+			],
+			"training_rect": [
+				987,
+				81,
+				154,
+				294
+			]
+		},
+		{
+			"direction": "male_side",
+			"spatial": {
+				"classes": [
+					{
+						"class": "Hair",
+						"fp": 43,
+						"precision_percent": 99.0768570201803,
+						"recall_percent": 90.7392843098702,
+						"review_or_correct_pixels": 471,
+						"suggested_wrong": 370,
+						"tp": 4615,
+						"truth": 5086,
+						"uncertain": 367,
+						"uncertain_percent": 7.21588674793551,
+						"wrong_confident": 104
+					},
+					{
+						"class": "Skin",
+						"fp": 142,
+						"precision_percent": 94.9321912919343,
+						"recall_percent": 49.887471867967,
+						"review_or_correct_pixels": 2672,
+						"suggested_wrong": 2580,
+						"tp": 2660,
+						"truth": 5332,
+						"uncertain": 2307,
+						"uncertain_percent": 43.2670667666917,
+						"wrong_confident": 365
+					},
+					{
+						"class": "Other",
+						"fp": 695,
+						"precision_percent": 91.8580131208997,
+						"recall_percent": 75.1701658517879,
+						"review_or_correct_pixels": 2590,
+						"suggested_wrong": 284,
+						"tp": 7841,
+						"truth": 10431,
+						"uncertain": 2408,
+						"uncertain_percent": 23.0850349918512,
+						"wrong_confident": 182
+					},
+					{
+						"class": "Background",
+						"fp": 130,
+						"precision_percent": 99.0521327014218,
+						"recall_percent": 75.6445236371736,
+						"review_or_correct_pixels": 4374,
+						"suggested_wrong": 3687,
+						"tp": 13585,
+						"truth": 17959,
+						"uncertain": 4015,
+						"uncertain_percent": 22.3564786458043,
+						"wrong_confident": 359
+					}
+				],
+				"foreground_pixels": 20849,
+				"foreground_review_or_correct": 5733,
+				"foreground_review_or_correct_percent": 27.4977217132716,
+				"foreground_uncertain_percent": 24.3752697971126
+			},
+			"target_rect": [
+				700,
+				824,
+				147,
+				264
+			],
+			"training_rect": [
+				377,
+				77,
+				148,
+				317
+			]
+		},
+		{
+			"direction": "male_side",
+			"spatial": {
+				"classes": [
+					{
+						"class": "Hair",
+						"fp": 34,
+						"precision_percent": 99.1448692152917,
+						"recall_percent": 87.8146580530185,
+						"review_or_correct_pixels": 547,
+						"suggested_wrong": 353,
+						"tp": 3942,
+						"truth": 4489,
+						"uncertain": 458,
+						"uncertain_percent": 10.202717754511,
+						"wrong_confident": 89
+					},
+					{
+						"class": "Skin",
+						"fp": 126,
+						"precision_percent": 93.6299292214358,
+						"recall_percent": 40.7660136473696,
+						"review_or_correct_pixels": 2691,
+						"suggested_wrong": 2605,
+						"tp": 1852,
+						"truth": 4543,
+						"uncertain": 2186,
+						"uncertain_percent": 48.117983711204,
+						"wrong_confident": 505
+					},
+					{
+						"class": "Other",
+						"fp": 787,
+						"precision_percent": 90.6175488793515,
+						"recall_percent": 72.1705279149259,
+						"review_or_correct_pixels": 2931,
+						"suggested_wrong": 179,
+						"tp": 7601,
+						"truth": 10532,
+						"uncertain": 2796,
+						"uncertain_percent": 26.5476642612989,
+						"wrong_confident": 135
+					},
+					{
+						"class": "Background",
+						"fp": 99,
+						"precision_percent": 99.3549227862123,
+						"recall_percent": 79.2350862606527,
+						"review_or_correct_pixels": 3996,
+						"suggested_wrong": 3167,
+						"tp": 15248,
+						"truth": 19244,
+						"uncertain": 3679,
+						"uncertain_percent": 19.1176470588235,
+						"wrong_confident": 317
+					}
+				],
+				"foreground_pixels": 19564,
+				"foreground_review_or_correct": 6169,
+				"foreground_review_or_correct_percent": 31.5324064608465,
+				"foreground_uncertain_percent": 27.80617460642
+			},
+			"target_rect": [
+				858,
+				823,
+				147,
+				264
+			],
+			"training_rect": [
+				377,
+				77,
+				148,
+				317
+			]
+		},
+		{
+			"direction": "female_down",
+			"spatial": {
+				"classes": [
+					{
+						"class": "Hair",
+						"fp": 52,
+						"precision_percent": 99.41579597798,
+						"recall_percent": 88.0935788949726,
+						"review_or_correct_pixels": 1196,
+						"suggested_wrong": 931,
+						"tp": 8849,
+						"truth": 10045,
+						"uncertain": 661,
+						"uncertain_percent": 6.58038825286212,
+						"wrong_confident": 535
+					},
+					{
+						"class": "Skin",
+						"fp": 294,
+						"precision_percent": 94.5605920444033,
+						"recall_percent": 87.0550161812298,
+						"review_or_correct_pixels": 760,
+						"suggested_wrong": 562,
+						"tp": 5111,
+						"truth": 5871,
+						"uncertain": 563,
+						"uncertain_percent": 9.58950774995742,
+						"wrong_confident": 197
+					},
+					{
+						"class": "Other",
+						"fp": 527,
+						"precision_percent": 93.9874500855676,
+						"recall_percent": 85.5007784120394,
+						"review_or_correct_pixels": 1397,
+						"suggested_wrong": 546,
+						"tp": 8238,
+						"truth": 9635,
+						"uncertain": 1066,
+						"uncertain_percent": 11.063829787234,
+						"wrong_confident": 331
+					},
+					{
+						"class": "Background",
+						"fp": 192,
+						"precision_percent": 98.9784517158819,
+						"recall_percent": 95.4048925585927,
+						"review_or_correct_pixels": 896,
+						"suggested_wrong": 468,
+						"tp": 18603,
+						"truth": 19499,
+						"uncertain": 894,
+						"uncertain_percent": 4.58485050515411,
+						"wrong_confident": 2
+					}
+				],
+				"foreground_pixels": 25551,
+				"foreground_review_or_correct": 3353,
+				"foreground_review_or_correct_percent": 13.1227740597237,
+				"foreground_uncertain_percent": 8.96246722241791
+			},
+			"target_rect": [
+				329,
+				466,
+				170,
+				265
+			],
+			"training_rect": [
+				777,
+				86,
+				189,
+				294
+			]
+		},
+		{
+			"direction": "female_down",
+			"spatial": {
+				"classes": [
+					{
+						"class": "Hair",
+						"fp": 171,
+						"precision_percent": 97.2552166934189,
+						"recall_percent": 75.6240639041438,
+						"review_or_correct_pixels": 1953,
+						"suggested_wrong": 1736,
+						"tp": 6059,
+						"truth": 8012,
+						"uncertain": 1420,
+						"uncertain_percent": 17.7234148776835,
+						"wrong_confident": 533
+					},
+					{
+						"class": "Skin",
+						"fp": 691,
+						"precision_percent": 85.1748551812916,
+						"recall_percent": 66.9025952140209,
+						"review_or_correct_pixels": 1964,
+						"suggested_wrong": 1826,
+						"tp": 3970,
+						"truth": 5934,
+						"uncertain": 1456,
+						"uncertain_percent": 24.5365689248399,
+						"wrong_confident": 508
+					},
+					{
+						"class": "Other",
+						"fp": 949,
+						"precision_percent": 85.5972074669904,
+						"recall_percent": 63.3992805755396,
+						"review_or_correct_pixels": 3256,
+						"suggested_wrong": 1008,
+						"tp": 5640,
+						"truth": 8896,
+						"uncertain": 2480,
+						"uncertain_percent": 27.8776978417266,
+						"wrong_confident": 776
+					},
+					{
+						"class": "Background",
+						"fp": 128,
+						"precision_percent": 99.4363468228456,
+						"recall_percent": 86.5106122136235,
+						"review_or_correct_pixels": 3521,
+						"suggested_wrong": 2888,
+						"tp": 22581,
+						"truth": 26102,
+						"uncertain": 3399,
+						"uncertain_percent": 13.0219906520573,
+						"wrong_confident": 122
+					}
+				],
+				"foreground_pixels": 22842,
+				"foreground_review_or_correct": 7173,
+				"foreground_review_or_correct_percent": 31.4026792750197,
+				"foreground_uncertain_percent": 23.4480343227388
+			},
+			"target_rect": [
+				495,
+				465,
+				184,
+				266
+			],
+			"training_rect": [
+				777,
+				86,
+				189,
+				294
+			]
+		},
+		{
+			"direction": "female_up",
+			"spatial": {
+				"classes": [
+					{
+						"class": "Hair",
+						"fp": 87,
+						"precision_percent": 99.191675183499,
+						"recall_percent": 92.9884156432367,
+						"review_or_correct_pixels": 805,
+						"suggested_wrong": 712,
+						"tp": 10676,
+						"truth": 11481,
+						"uncertain": 516,
+						"uncertain_percent": 4.49438202247191,
+						"wrong_confident": 289
+					},
+					{
+						"class": "Skin",
+						"fp": 142,
+						"precision_percent": 92.1633554083885,
+						"recall_percent": 47.8647176841502,
+						"review_or_correct_pixels": 1819,
+						"suggested_wrong": 1772,
+						"tp": 1670,
+						"truth": 3489,
+						"uncertain": 1656,
+						"uncertain_percent": 47.463456577816,
+						"wrong_confident": 163
+					},
+					{
+						"class": "Other",
+						"fp": 406,
+						"precision_percent": 94.5794392523364,
+						"recall_percent": 76.410311724733,
+						"review_or_correct_pixels": 2187,
+						"suggested_wrong": 333,
+						"tp": 7084,
+						"truth": 9271,
+						"uncertain": 1950,
+						"uncertain_percent": 21.0333297378924,
+						"wrong_confident": 237
+					},
+					{
+						"class": "Background",
+						"fp": 95,
+						"precision_percent": 99.4551815105809,
+						"recall_percent": 87.0626035443546,
+						"review_or_correct_pixels": 2577,
+						"suggested_wrong": 1866,
+						"tp": 17342,
+						"truth": 19919,
+						"uncertain": 2536,
+						"uncertain_percent": 12.7315628294593,
+						"wrong_confident": 41
+					}
+				],
+				"foreground_pixels": 24241,
+				"foreground_review_or_correct": 4811,
+				"foreground_review_or_correct_percent": 19.8465409842828,
+				"foreground_uncertain_percent": 17.0042489996287
+			},
+			"target_rect": [
+				1018,
+				820,
+				160,
+				276
+			],
+			"training_rect": [
+				1189,
+				93,
+				159,
+				283
+			]
+		},
+		{
+			"direction": "female_up",
+			"spatial": {
+				"classes": [
+					{
+						"class": "Hair",
+						"fp": 75,
+						"precision_percent": 99.2538055914834,
+						"recall_percent": 92.012543811105,
+						"review_or_correct_pixels": 866,
+						"suggested_wrong": 770,
+						"tp": 9976,
+						"truth": 10842,
+						"uncertain": 612,
+						"uncertain_percent": 5.64471499723298,
+						"wrong_confident": 254
+					},
+					{
+						"class": "Skin",
+						"fp": 214,
+						"precision_percent": 90.2727272727273,
+						"recall_percent": 53.574318856218,
+						"review_or_correct_pixels": 1721,
+						"suggested_wrong": 1657,
+						"tp": 1986,
+						"truth": 3707,
+						"uncertain": 1522,
+						"uncertain_percent": 41.0574588616132,
+						"wrong_confident": 199
+					},
+					{
+						"class": "Other",
+						"fp": 393,
+						"precision_percent": 94.7544046983449,
+						"recall_percent": 76.0960445921321,
+						"review_or_correct_pixels": 2230,
+						"suggested_wrong": 422,
+						"tp": 7099,
+						"truth": 9329,
+						"uncertain": 1921,
+						"uncertain_percent": 20.5917032908136,
+						"wrong_confident": 309
+					},
+					{
+						"class": "Background",
+						"fp": 119,
+						"precision_percent": 99.2228317659352,
+						"recall_percent": 88.9936738519213,
+						"review_or_correct_pixels": 1879,
+						"suggested_wrong": 1215,
+						"tp": 15193,
+						"truth": 17072,
+						"uncertain": 1840,
+						"uncertain_percent": 10.7778819119025,
+						"wrong_confident": 39
+					}
+				],
+				"foreground_pixels": 23878,
+				"foreground_review_or_correct": 4817,
+				"foreground_review_or_correct_percent": 20.1733813552224,
+				"foreground_uncertain_percent": 16.9821593098249
+			},
+			"target_rect": [
+				1205,
+				820,
+				150,
+				273
+			],
+			"training_rect": [
+				1189,
+				93,
+				159,
+				283
+			]
+		},
+		{
+			"direction": "female_left",
+			"spatial": {
+				"classes": [
+					{
+						"class": "Hair",
+						"fp": 467,
+						"precision_percent": 93.2338452622428,
+						"recall_percent": 84.2167255594817,
+						"review_or_correct_pixels": 1206,
+						"suggested_wrong": 949,
+						"tp": 6435,
+						"truth": 7641,
+						"uncertain": 959,
+						"uncertain_percent": 12.550713257427,
+						"wrong_confident": 247
+					},
+					{
+						"class": "Skin",
+						"fp": 236,
+						"precision_percent": 93.0526935531351,
+						"recall_percent": 59.7768532526475,
+						"review_or_correct_pixels": 2127,
+						"suggested_wrong": 2001,
+						"tp": 3161,
+						"truth": 5288,
+						"uncertain": 1846,
+						"uncertain_percent": 34.9092284417549,
+						"wrong_confident": 281
+					},
+					{
+						"class": "Other",
+						"fp": 556,
+						"precision_percent": 90.2009164610504,
+						"recall_percent": 65.6406310119277,
+						"review_or_correct_pixels": 2679,
+						"suggested_wrong": 351,
+						"tp": 5118,
+						"truth": 7797,
+						"uncertain": 2477,
+						"uncertain_percent": 31.7686289598564,
+						"wrong_confident": 202
+					},
+					{
+						"class": "Background",
+						"fp": 147,
+						"precision_percent": 98.9451022604952,
+						"recall_percent": 61.0899424014178,
+						"review_or_correct_pixels": 8782,
+						"suggested_wrong": 5827,
+						"tp": 13788,
+						"truth": 22570,
+						"uncertain": 8106,
+						"uncertain_percent": 35.9149313247674,
+						"wrong_confident": 676
+					}
+				],
+				"foreground_pixels": 20726,
+				"foreground_review_or_correct": 6012,
+				"foreground_review_or_correct_percent": 29.0070442921934,
+				"foreground_uncertain_percent": 25.4848981955032
+			},
+			"target_rect": [
+				17,
+				824,
+				164,
+				264
+			],
+			"training_rect": [
+				33,
+				82,
+				160,
+				332
+			]
+		},
+		{
+			"direction": "female_left",
+			"spatial": {
+				"classes": [
+					{
+						"class": "Hair",
+						"fp": 492,
+						"precision_percent": 92.9864575908767,
+						"recall_percent": 84.9459565047532,
+						"review_or_correct_pixels": 1156,
+						"suggested_wrong": 869,
+						"tp": 6523,
+						"truth": 7679,
+						"uncertain": 915,
+						"uncertain_percent": 11.9156140122412,
+						"wrong_confident": 241
+					},
+					{
+						"class": "Skin",
+						"fp": 238,
+						"precision_percent": 93.7810295270447,
+						"recall_percent": 54.5855513307985,
+						"review_or_correct_pixels": 2986,
+						"suggested_wrong": 2739,
+						"tp": 3589,
+						"truth": 6575,
+						"uncertain": 2537,
+						"uncertain_percent": 38.5855513307985,
+						"wrong_confident": 449
+					},
+					{
+						"class": "Other",
+						"fp": 704,
+						"precision_percent": 88.7593804885837,
+						"recall_percent": 66.8309689829286,
+						"review_or_correct_pixels": 2759,
+						"suggested_wrong": 349,
+						"tp": 5559,
+						"truth": 8318,
+						"uncertain": 2556,
+						"uncertain_percent": 30.7285405145468,
+						"wrong_confident": 203
+					},
+					{
+						"class": "Background",
+						"fp": 171,
+						"precision_percent": 98.6811661267932,
+						"recall_percent": 61.7400115807759,
+						"review_or_correct_pixels": 7929,
+						"suggested_wrong": 4989,
+						"tp": 12795,
+						"truth": 20724,
+						"uncertain": 7217,
+						"uncertain_percent": 34.8243582320015,
+						"wrong_confident": 712
+					}
+				],
+				"foreground_pixels": 22572,
+				"foreground_review_or_correct": 6901,
+				"foreground_review_or_correct_percent": 30.5732766259082,
+				"foreground_uncertain_percent": 26.6170476696792
+			},
+			"target_rect": [
+				181,
+				824,
+				164,
+				264
+			],
+			"training_rect": [
+				33,
+				82,
+				160,
+				332
+			]
+		},
+		{
+			"direction": "female_right",
+			"spatial": {
+				"classes": [
+					{
+						"class": "Hair",
+						"fp": 63,
+						"precision_percent": 99.0941768511862,
+						"recall_percent": 85.7213930348259,
+						"review_or_correct_pixels": 1148,
+						"suggested_wrong": 963,
+						"tp": 6892,
+						"truth": 8040,
+						"uncertain": 851,
+						"uncertain_percent": 10.5845771144279,
+						"wrong_confident": 297
+					},
+					{
+						"class": "Skin",
+						"fp": 150,
+						"precision_percent": 96.4446551315478,
+						"recall_percent": 69.7821985937232,
+						"review_or_correct_pixels": 1762,
+						"suggested_wrong": 1620,
+						"tp": 4069,
+						"truth": 5831,
+						"uncertain": 1358,
+						"uncertain_percent": 23.2893157262905,
+						"wrong_confident": 404
+					},
+					{
+						"class": "Other",
+						"fp": 644,
+						"precision_percent": 90.2261344665351,
+						"recall_percent": 66.3726694205649,
+						"review_or_correct_pixels": 3012,
+						"suggested_wrong": 324,
+						"tp": 5945,
+						"truth": 8957,
+						"uncertain": 2740,
+						"uncertain_percent": 30.590599531093,
+						"wrong_confident": 272
+					},
+					{
+						"class": "Background",
+						"fp": 130,
+						"precision_percent": 99.3149241146712,
+						"recall_percent": 92.0754348250928,
+						"review_or_correct_pixels": 1622,
+						"suggested_wrong": 1312,
+						"tp": 18846,
+						"truth": 20468,
+						"uncertain": 1608,
+						"uncertain_percent": 7.85616572210279,
+						"wrong_confident": 14
+					}
+				],
+				"foreground_pixels": 22828,
+				"foreground_review_or_correct": 5922,
+				"foreground_review_or_correct_percent": 25.9418258279306,
+				"foreground_uncertain_percent": 21.6795163833888
+			},
+			"target_rect": [
+				351,
+				824,
+				164,
+				264
+			],
+			"training_rect": [
+				200,
+				83,
+				176,
+				327
+			]
+		},
+		{
+			"direction": "female_right",
+			"spatial": {
+				"classes": [
+					{
+						"class": "Hair",
+						"fp": 182,
+						"precision_percent": 97.0139458572601,
+						"recall_percent": 68.6919144981413,
+						"review_or_correct_pixels": 2695,
+						"suggested_wrong": 2478,
+						"tp": 5913,
+						"truth": 8608,
+						"uncertain": 1712,
+						"uncertain_percent": 19.8884758364312,
+						"wrong_confident": 983
+					},
+					{
+						"class": "Skin",
+						"fp": 261,
+						"precision_percent": 89.8876404494382,
+						"recall_percent": 47.4049856967716,
+						"review_or_correct_pixels": 2574,
+						"suggested_wrong": 2558,
+						"tp": 2320,
+						"truth": 4894,
+						"uncertain": 2331,
+						"uncertain_percent": 47.6297507151614,
+						"wrong_confident": 243
+					},
+					{
+						"class": "Other",
+						"fp": 1128,
+						"precision_percent": 79.8247182972635,
+						"recall_percent": 52.3396270669638,
+						"review_or_correct_pixels": 4064,
+						"suggested_wrong": 471,
+						"tp": 4463,
+						"truth": 8527,
+						"uncertain": 3653,
+						"uncertain_percent": 42.8403893514718,
+						"wrong_confident": 411
+					},
+					{
+						"class": "Background",
+						"fp": 114,
+						"precision_percent": 99.3901134175048,
+						"recall_percent": 87.3559975548973,
+						"review_or_correct_pixels": 2689,
+						"suggested_wrong": 2176,
+						"tp": 18578,
+						"truth": 21267,
+						"uncertain": 2641,
+						"uncertain_percent": 12.4183006535948,
+						"wrong_confident": 48
+					}
+				],
+				"foreground_pixels": 22029,
+				"foreground_review_or_correct": 9333,
+				"foreground_review_or_correct_percent": 42.3668800217895,
+				"foreground_uncertain_percent": 34.9357664896273
+			},
+			"target_rect": [
+				517,
+				824,
+				164,
+				264
+			],
+			"training_rect": [
+				200,
+				83,
+				176,
+				327
+			]
+		}
+	],
+	"landmarks_in_benchmark": [],
+	"spatial": {
+		"classes": [
+			{
+				"class": "Hair",
+				"fp": 2313,
+				"precision_percent": 97.473456547385,
+				"recall_percent": 87.3380182437458,
+				"review_or_correct_pixels": 12937,
+				"suggested_wrong": 10982,
+				"tp": 89235,
+				"truth": 102172,
+				"uncertain": 9247,
+				"uncertain_percent": 9.05042477391066,
+				"wrong_confident": 3690
+			},
+			{
+				"class": "Skin",
+				"fp": 3148,
+				"precision_percent": 92.8781503099407,
+				"recall_percent": 59.4184649675076,
+				"review_or_correct_pixels": 28039,
+				"suggested_wrong": 26475,
+				"tp": 41054,
+				"truth": 69093,
+				"uncertain": 23301,
+				"uncertain_percent": 33.7241109808519,
+				"wrong_confident": 4738
+			},
+			{
+				"class": "Other",
+				"fp": 7984,
+				"precision_percent": 92.8198856073959,
+				"recall_percent": 74.1337700396483,
+				"review_or_correct_pixels": 36012,
+				"suggested_wrong": 5993,
+				"tp": 103212,
+				"truth": 139224,
+				"uncertain": 31690,
+				"uncertain_percent": 22.7618801356088,
+				"wrong_confident": 4322
+			},
+			{
+				"class": "Background",
+				"fp": 1756,
+				"precision_percent": 99.2370723738519,
+				"recall_percent": 83.4075837690982,
+				"review_or_correct_pixels": 45438,
+				"suggested_wrong": 32384,
+				"tp": 228410,
+				"truth": 273848,
+				"uncertain": 42987,
+				"uncertain_percent": 15.6973941748707,
+				"wrong_confident": 2451
+			}
+		],
+		"foreground_pixels": 310489,
+		"foreground_review_or_correct": 76988,
+		"foreground_review_or_correct_percent": 24.7957254524315,
+		"foreground_uncertain_percent": 20.6892997819568
+	}
+}
